@@ -12,7 +12,33 @@
 		5C2A0DB52BA14A96009A0168 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2A0DB42BA14A96009A0168 /* Item.swift */; };
 		5C2A0DB72BA14A98009A0168 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C2A0DB62BA14A98009A0168 /* Assets.xcassets */; };
 		5C2A0DBA2BA14A98009A0168 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C2A0DB92BA14A98009A0168 /* Preview Assets.xcassets */; };
+		5C2A0DE12BA14B62009A0168 /* FinderSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2A0DE02BA14B62009A0168 /* FinderSync.swift */; };
+		5C2A0DE62BA14B62009A0168 /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C2A0DDE2BA14B62009A0168 /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5C2A0DE42BA14B62009A0168 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C2A0DA52BA14A96009A0168 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C2A0DDD2BA14B62009A0168;
+			remoteInfo = FinderSyncExt;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5C2A0DD12BA14AB8009A0168 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5C2A0DE62BA14B62009A0168 /* FinderSyncExt.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5C2A0DAD2BA14A96009A0168 /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -22,10 +48,21 @@
 		5C2A0DB62BA14A98009A0168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C2A0DB92BA14A98009A0168 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5C2A0DBB2BA14A98009A0168 /* RClick.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RClick.entitlements; sourceTree = "<group>"; };
+		5C2A0DDE2BA14B62009A0168 /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C2A0DE02BA14B62009A0168 /* FinderSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSync.swift; sourceTree = "<group>"; };
+		5C2A0DE22BA14B62009A0168 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C2A0DE32BA14B62009A0168 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5C2A0DAA2BA14A96009A0168 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C2A0DDB2BA14B62009A0168 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -39,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				5C2A0DAF2BA14A96009A0168 /* RClick */,
+				5C2A0DDF2BA14B62009A0168 /* FinderSyncExt */,
 				5C2A0DAE2BA14A96009A0168 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				5C2A0DAD2BA14A96009A0168 /* RClick.app */,
+				5C2A0DDE2BA14B62009A0168 /* FinderSyncExt.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,6 +111,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		5C2A0DDF2BA14B62009A0168 /* FinderSyncExt */ = {
+			isa = PBXGroup;
+			children = (
+				5C2A0DE02BA14B62009A0168 /* FinderSync.swift */,
+				5C2A0DE22BA14B62009A0168 /* Info.plist */,
+				5C2A0DE32BA14B62009A0168 /* FinderSyncExt.entitlements */,
+			);
+			path = FinderSyncExt;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -82,15 +131,34 @@
 				5C2A0DA92BA14A96009A0168 /* Sources */,
 				5C2A0DAA2BA14A96009A0168 /* Frameworks */,
 				5C2A0DAB2BA14A96009A0168 /* Resources */,
+				5C2A0DD12BA14AB8009A0168 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				5C2A0DE52BA14B62009A0168 /* PBXTargetDependency */,
 			);
 			name = RClick;
 			productName = RClick;
 			productReference = 5C2A0DAD2BA14A96009A0168 /* RClick.app */;
 			productType = "com.apple.product-type.application";
+		};
+		5C2A0DDD2BA14B62009A0168 /* FinderSyncExt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C2A0DE72BA14B62009A0168 /* Build configuration list for PBXNativeTarget "FinderSyncExt" */;
+			buildPhases = (
+				5C2A0DDA2BA14B62009A0168 /* Sources */,
+				5C2A0DDB2BA14B62009A0168 /* Frameworks */,
+				5C2A0DDC2BA14B62009A0168 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FinderSyncExt;
+			productName = FinderSyncExt;
+			productReference = 5C2A0DDE2BA14B62009A0168 /* FinderSyncExt.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -103,6 +171,9 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					5C2A0DAC2BA14A96009A0168 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					5C2A0DDD2BA14B62009A0168 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -121,6 +192,7 @@
 			projectRoot = "";
 			targets = (
 				5C2A0DAC2BA14A96009A0168 /* RClick */,
+				5C2A0DDD2BA14B62009A0168 /* FinderSyncExt */,
 			);
 		};
 /* End PBXProject section */
@@ -132,6 +204,13 @@
 			files = (
 				5C2A0DBA2BA14A98009A0168 /* Preview Assets.xcassets in Resources */,
 				5C2A0DB72BA14A98009A0168 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C2A0DDC2BA14B62009A0168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,7 +227,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5C2A0DDA2BA14B62009A0168 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C2A0DE12BA14B62009A0168 /* FinderSync.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5C2A0DE52BA14B62009A0168 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C2A0DDD2BA14B62009A0168 /* FinderSyncExt */;
+			targetProxy = 5C2A0DE42BA14B62009A0168 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5C2A0DBC2BA14A98009A0168 /* Debug */ = {
@@ -272,6 +367,7 @@
 		5C2A0DBF2BA14A98009A0168 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
@@ -298,6 +394,7 @@
 		5C2A0DC02BA14A98009A0168 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
@@ -321,6 +418,56 @@
 			};
 			name = Release;
 		};
+		5C2A0DE82BA14B62009A0168 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinderSyncExt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5C2A0DE92BA14B62009A0168 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinderSyncExt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -338,6 +485,15 @@
 			buildConfigurations = (
 				5C2A0DBF2BA14A98009A0168 /* Debug */,
 				5C2A0DC02BA14A98009A0168 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5C2A0DE72BA14B62009A0168 /* Build configuration list for PBXNativeTarget "FinderSyncExt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C2A0DE82BA14B62009A0168 /* Debug */,
+				5C2A0DE92BA14B62009A0168 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
