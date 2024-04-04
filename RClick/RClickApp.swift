@@ -2,31 +2,30 @@
 //  RClickApp.swift
 //  RClick
 //
-//  Created by 李旭 on 2024/3/13.
+//  Created by 李旭 on 2024/4/4.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct RClickApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
 
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+        
+        MenuBarExtra(
+            "RClick", systemImage: "star", isInserted: $showMenuBarExtra
+        ) {
+            MenuBarView()
+        }
+        
+        Settings {
+            SettingsView()
+            
+        }
     }
 }

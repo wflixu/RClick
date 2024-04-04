@@ -2,7 +2,7 @@
 //  FinderSync.swift
 //  FinderSyncExt
 //
-//  Created by 李旭 on 2024/3/13.
+//  Created by 李旭 on 2024/4/4.
 //
 
 import Cocoa
@@ -10,11 +10,11 @@ import FinderSync
 
 class FinderSync: FIFinderSync {
 
-    var myFolderURL = URL(fileURLWithPath: "/")
+    var myFolderURL = URL(fileURLWithPath: "/Users/")
     
     override init() {
         super.init()
-        initLogSetting()
+        
         NSLog("FinderSync() launched from %@", Bundle.main.bundlePath as NSString)
         
         // Set up the directory we are syncing.
@@ -55,42 +55,17 @@ class FinderSync: FIFinderSync {
     }
     
     override var toolbarItemToolTip: String {
-        return "FinderSy: Click the toolbar item for a menu."
+        return "RClick: Click the toolbar item for a menu."
     }
     
     override var toolbarItemImage: NSImage {
-        return NSImage(named: NSImage.cautionName)!
+        return NSImage(systemSymbolName:"computermouse", accessibilityDescription: "RClick Menu")!
     }
     
     override func menu(for menuKind: FIMenuKind) -> NSMenu {
         // Produce a menu for the extension.
-        let menu = NSMenu(title: "RClick")
-        
-        if (menuKind == FIMenuKind.contextualMenuForContainer) {
-            menu.addItem(withTitle: "MenuForContainer", action: #selector(sampleAction(_:)), keyEquivalent: "")
-            
-            // 创建一级菜单项
-           let fileMenuItem = NSMenuItem(title: "File", action: nil, keyEquivalent: "")
-                   
-            // 创建二级菜单
-           let subMenu = NSMenu()
-           
-           // 添加二级菜单项
-           subMenu.addItem(NSMenuItem(title: "New", action: nil, keyEquivalent: ""))
-           subMenu.addItem(NSMenuItem(title: "Open", action: nil, keyEquivalent: ""))
-           subMenu.addItem(NSMenuItem.separator())
-           subMenu.addItem(NSMenuItem(title: "Quit", action: nil, keyEquivalent: "q"))
-           
-           // 将二级菜单附加到一级菜单项
-            fileMenuItem.submenu = subMenu
-              // 添加一级菜单项到主菜单
-            menu.addItem(fileMenuItem)
-        }
-        
-        if (menuKind == FIMenuKind.contextualMenuForItems) {
-            menu.addItem(withTitle: "MenuForItems", action: #selector(sampleAction(_:)), keyEquivalent: "")
-        }
-        
+        let menu = NSMenu(title: "")
+        menu.addItem(withTitle: "Example Menu Item", action: #selector(sampleAction(_:)), keyEquivalent: "")
         return menu
     }
     
@@ -104,14 +79,6 @@ class FinderSync: FIFinderSync {
             NSLog("    %@", obj.path as NSString)
         }
     }
-    
-    func initLogSetting(){
-        let tmpPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0] as NSURL
-        let fileName = "/out.log"// 注意不是NSData!
-        let logFilePath = tmpPath.path!.appending(fileName)
-        freopen(logFilePath.cString(using: .utf8), "a+", stdout)
-        freopen(logFilePath.cString(using: .utf8), "a+", stderr);
-        //writeLog(str: logFilePath)
-    }
-    
+
 }
+
