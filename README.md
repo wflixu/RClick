@@ -16,3 +16,7 @@ Config you MacOS ContextMenu items, useing Latest Swift and SwiftUI.
 
 
 
+## Other similar projects:
+
+- https://github.com/lexrus/SwiftyMenu 
+- https://github.com/Ji4n1ng/OpenInTerminal
