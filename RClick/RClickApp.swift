@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-let channel = AppCommChannel()
+
 
 @main
 struct RClickApp: App {
@@ -46,5 +46,9 @@ struct RClickApp: App {
             .defaultAppStorage(.group)
     }
 }
+
+
+
+let channel = AppCommChannel()
 
 

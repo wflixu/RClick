@@ -5,24 +5,10 @@
 //  Created by 李旭 on 2024/4/5.
 //
 
-import Foundation
-
 
 import AppKit
 import Foundation
 import os.log
-
-
-
-
-protocol FolderItem: Hashable, Identifiable, Codable {
-    var path: String { get }
-}
-
-extension FolderItem {
-    var id: String { path }
-}
-
 
 private let logger = Logger(subsystem: subsystem, category: "folder_item")
 
@@ -35,6 +21,7 @@ struct BookmarkFolderItem: FolderItem {
     init(_ url: URL) {
         self.url = url
         let result = url.startAccessingSecurityScopedResource()
+        logger.warning("the path \(url.path) is in scope \(result)")
         if !result {
             logger.error("Fail to start access security scoped resource on \(url.path)")
         }

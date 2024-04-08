@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-import Foundation
 import os.log
 
 private let logger = Logger(subsystem: subsystem, category: "app_comm_channel")
@@ -22,7 +20,7 @@ actor AppCommChannel {
     }
 
     nonisolated func send(name: String, data: [AnyHashable: Any]? = nil) {
-        logger.notice("Sending \(name) data: \(data ?? [:])")
+        logger.notice("appchannel Sending \(name) data: \(data ?? [:])")
         DistributedNotificationCenter.default()
             .postNotificationName(.init(rawValue: name),
                                   object: bundleIdentifier,

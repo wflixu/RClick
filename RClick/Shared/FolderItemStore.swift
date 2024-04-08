@@ -33,6 +33,7 @@ final class FolderItemStore : Sendable {
     }
 
     @MainActor func refresh() {
+        logger.warning("FolderItemStore starting refres")
         try? load()
     }
 
@@ -112,8 +113,10 @@ final class FolderItemStore : Sendable {
     private func load() throws {
         if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS"),
            let syncItemData = UserDefaults.group.data(forKey: "SYNC_ITEMS") {
+            logger.warning("folditem store load bookmark: \(bookmarkItemData.base64EncodedString())")
             let decoder = PropertyListDecoder()
             bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
+            logger.warning("")
             let syncItems = try decoder.decode([SyncFolderItem].self, from: syncItemData)
             self.syncItems = syncItems
             FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
@@ -137,10 +140,6 @@ final class FolderItemStore : Sendable {
     }
 }
 
-extension UserDefaults {
-    static var group: UserDefaults {
-        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
-    }
-}
+
 
 

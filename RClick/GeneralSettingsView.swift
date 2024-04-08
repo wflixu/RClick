@@ -6,8 +6,11 @@
 //
 
 import FinderSync
+import os.log
 import SwiftData
 import SwiftUI
+
+private let logger = Logger(subsystem: subsystem, category: "main")
 
 struct GeneralSettingsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -56,28 +59,28 @@ struct GeneralSettingsView: View {
                 Button(action: addDir) {
                     Label("添加授权文件夹", systemImage: "folder.fill.badge.plus")
                 }
-                .fileImporter(
-                    isPresented: $showFileImporter,
-                    allowedContentTypes: [.directory],
-                    allowsMultipleSelection: false
-                ) { result in
-                    switch result {
-                    case .success(let files):
-                        files.forEach { file in
-                            // gain access to the directory
-                            let gotAccess = file.startAccessingSecurityScopedResource()
-                            if !gotAccess { return }
-                            // access the directory URL
-                            // (read templates in the directory, make a bookmark, etc.)
-                            handlePickedPDF(file)
-                            // release access
-                            file.stopAccessingSecurityScopedResource()
-                        }
-                    case .failure(let error):
-                        // handle error
-                        print(error)
-                    }
-                }
+//                .fileImporter(
+//                    isPresented: $showFileImporter,
+//                    allowedContentTypes: [.directory],
+//                    allowsMultipleSelection: false
+//                ) { result in
+//                    switch result {
+//                    case .success(let files):
+//                        files.forEach { file in
+//                            // gain access to the directory
+//                            let gotAccess = file.startAccessingSecurityScopedResource()
+//                            if !gotAccess { return }
+//                            // access the directory URL
+//                            // (read templates in the directory, make a bookmark, etc.)
+//                            handlePickedPDF(file)
+//                            // release access
+//                            file.stopAccessingSecurityScopedResource()
+//                        }
+//                    case .failure(let error):
+//                        // handle error
+//                        print(error)
+//                    }
+//                }
             }
             
             HStack {
@@ -92,8 +95,44 @@ struct GeneralSettingsView: View {
             Section {
                 HStack {
                     Button {
-                        channel.send(name: "ChoosePermissionFolder", data: nil)
+//                        channel.send(name: "ChoosePermissionFolder", data: nil)
+                        logger.warning("starting folder")
+                        showFileImporter = true
                     } label: { Label("Add Folders", systemImage: "folder.badge.plus") }
+                        .fileImporter(
+                            isPresented: $showFileImporter,
+                            allowedContentTypes: [.directory],
+                            allowsMultipleSelection: false
+                        ) { result in
+                            switch result {
+                            case .success(let files):
+                                    
+                                for (index, file) in files.enumerated() {
+                                    // gain access to the directory
+                                    store.appendItem(BookmarkFolderItem(file))
+                                }
+                                sendSignal(data: ["urls": files.map { url in url.path }])
+//                                channel.send(name: "ChoosePermissionFolder", data: ["urls": files.map { url in url.path }])
+                                 
+//                                for (index, file) in files.enumerated() {
+//                                    // gain access to the directory
+//                                    store.appendItem(BookmarkFolderItem(file))
+                            ////                                    let gotAccess = file.startAccessingSecurityScopedResource()
+//
+                            ////                                    logger.warning("file:\(gotAccess)")
+                            ////                                    if !gotAccess { return }
+                            ////                                    // access the directory URL
+                            ////                                    // (read templates in the directory, make a bookmark, etc.)
+//                                    ////                                    handlePickedPDF(file)
+                            ////                                    // release access
+                            ////                                    file.stopAccessingSecurityScopedResource()
+//                                }
+                            case .failure(let error):
+                                // handle error
+                                print(error)
+                            }
+                        }
+                        
                     Button {
                         store.deleteAllBookmarkItems()
                     } label: { Label("Remove All", systemImage: "folder.badge.minus") }
@@ -136,6 +175,14 @@ struct GeneralSettingsView: View {
     private func addDir() {
         showFileImporter = true
     }
+    
+    private func sendSignal(data: [AnyHashable: Any]) {
+        channel.send(name: "ChoosePermissionFolder", data: nil)
+    }
+    
+//    private func folderAddStore(urls:[URL]) {
+//        store.appendItems()
+//    }
 
     private func removeDir() {
         while let id = selectedDir.popFirst() {
