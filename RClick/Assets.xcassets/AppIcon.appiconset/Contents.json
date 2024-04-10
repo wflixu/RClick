@@ -19,13 +19,13 @@
       "size" : "32x32"
     },
     {
-      "filename" : "AppIcon-lite@2x.png",
+      "filename" : "AppIcon@0.25x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "AppIcon-lite@4x.png",
+      "filename" : "AppIcon@0.5x.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"

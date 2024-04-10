@@ -8,17 +8,15 @@
 import Foundation
 
 import FinderSync
+import Observation
 import OrderedCollections
 import os.log
 import SwiftUI
-import Observation
 
 private let logger = Logger(subsystem: subsystem, category: "folder_item_store")
 
-
 @Observable
-final class FolderItemStore : Sendable {
-
+final class FolderItemStore: Sendable {
     private(set) var bookmarkItems: [BookmarkFolderItem] = []
     private(set) var syncItems: [SyncFolderItem] = []
 
@@ -82,10 +80,22 @@ final class FolderItemStore : Sendable {
         try? save()
     }
 
+    @MainActor func deleteBookmarkItem(index: Int) {
+        bookmarkItems.remove(at: index)
+
+        try? save()
+    }
+
     @MainActor func deleteSyncItems(offsets: IndexSet) {
         withAnimation {
             syncItems.remove(atOffsets: offsets)
         }
+        try? save()
+    }
+
+    @MainActor func deleteSyncItem(index: Int) {
+        syncItems.remove(at: index)
+
         try? save()
     }
 
@@ -112,11 +122,12 @@ final class FolderItemStore : Sendable {
     @MainActor
     private func load() throws {
         if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS"),
-           let syncItemData = UserDefaults.group.data(forKey: "SYNC_ITEMS") {
-            logger.warning("folditem store load bookmark: \(bookmarkItemData.base64EncodedString())")
+           let syncItemData = UserDefaults.group.data(forKey: "SYNC_ITEMS")
+        {
+            logger.warning("------ starting load fodler item store")
             let decoder = PropertyListDecoder()
             bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
-            logger.warning("")
+
             let syncItems = try decoder.decode([SyncFolderItem].self, from: syncItemData)
             self.syncItems = syncItems
             FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
@@ -139,7 +150,3 @@ final class FolderItemStore : Sendable {
         channel.send(name: "RefreshFolderItems")
     }
 }
-
-
-
-

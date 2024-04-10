@@ -28,6 +28,8 @@ enum Key {
 
     static let showSubMenuForApplication = "SHOW_SUB_MENU_FOR_APPLICATION"
     static let showSubMenuForAction = "SHOW_SUB_MENU_FOR_ACTION"
+    static let messageFromFinder = "RCLICK_FINDER_Main"
+    static let messageFromMain = "RCLICK_MAIN_FINDER"
 }
 
 enum CopyOption: Int, CustomStringConvertible, CaseIterable, Identifiable {

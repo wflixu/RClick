@@ -33,22 +33,6 @@ class FinderCommChannel {
     @MainActor @objc func choosePermissionFolder(_ notification: Notification) {
         logger.warning("choosePermissionFolder: \(notification)")
         folderStore.refresh();
-//        let panel = NSOpenPanel()
-//        panel.allowsMultipleSelection = true
-//        panel.allowedContentTypes = [.folder]
-//        panel.canChooseDirectories = true
-//        if let pw = getpwuid(getuid()), let home = pw.pointee.pw_dir {
-//            let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
-//            panel.directoryURL = URL(fileURLWithPath: path)
-//        } else {
-//            panel.directoryURL = URL(fileURLWithPath: "/Users")
-//        }
-//        let tempstr = panel.directoryURL?.path() ?? "no path"
-//        logger.warning("choosePermissionFolder:\(tempstr)")
-//        if panel.runModal() == .OK {
-//            folderStore.appendItems(panel.urls.map { BookmarkFolderItem($0) })
-//            send(name: "AppRefreshFolderItems", data: nil)
-//        }
     }
     
     @MainActor @objc func refreshMenuItems(_ notification: Notification) {

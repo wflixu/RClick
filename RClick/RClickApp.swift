@@ -4,15 +4,16 @@
 //
 //  Created by 李旭 on 2024/4/4.
 //
-
+import Foundation
+import os.log
 import SwiftData
 import SwiftUI
 
-
+private let logger = Logger(subsystem: subsystem, category: "main")
 
 @main
 struct RClickApp: App {
-    //  @NSApplicationDelegateAdaptor private var appDelegate: MyAppDelegate
+      @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -29,26 +30,37 @@ struct RClickApp: App {
 
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
 
+    @Environment(\.scenePhase) var scenePhase: ScenePhase
+    @Environment(\.openWindow) var openWindow
+
+    let center = DistributedNotificationCenter.default()
+
+
+
+
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+    
+        
+       
 
         MenuBarExtra(
-            "RClick", systemImage: "computermouse.fill", isInserted: $showMenuBarExtra
+            "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
+            
             MenuBarView()
+        }
+        .onChange(of: ScenePhase.active, initial: true) {
+            logger.warning("scenephase is change ")
+           
         }
 
         Settings {
             SettingsView()
-        }.modelContainer(sharedModelContainer)
-            .defaultAppStorage(.group)
+        }
+        .modelContainer(sharedModelContainer)
+        .defaultAppStorage(.group)
     }
 }
 
-
-
 let channel = AppCommChannel()
-
-

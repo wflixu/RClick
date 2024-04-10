@@ -22,7 +22,7 @@ struct AppMenuItem: MenuItem {
     var enabled = true
     var inheritFromGlobalArguments = true
     var inheritFromGlobalEnvironment = true
-    var arguments: [String] = []
+    var arguments: [String] = ["-n", "--args $*"]
     var environment: [String: String] = [:]
 
     var appName: String {

@@ -39,6 +39,7 @@ struct BookmarkFolderItem: FolderItem {
     }
 
     init(from decoder: any Decoder) throws {
+        logger.warning("------ init bookmarkitem decoder")
         let values = try decoder.container(keyedBy: CodingKeys.self)
         bookmark = try values.decode(Data.self, forKey: .bookmark)
         var isStale = false
@@ -46,6 +47,7 @@ struct BookmarkFolderItem: FolderItem {
             url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
             let result = url.startAccessingSecurityScopedResource()
             let path = url.path
+            logger.warning("------ startAccessingSecurityScopedResource\(result), path\(path)")
             if !result {
                 logger.error("Fail to start access security scoped resource on \(path)")
             }

@@ -9,8 +9,24 @@ import SwiftUI
 
 struct MenuBarView: View {
     var body: some View {
-        Text("menubar ")
+        VStack {
+            SettingsLink {
+                Image(systemName: "gearshape")
+                Text("Settings")
+            }
+            Button(action: actionQuit) {
+                Image(systemName: "xmark.square")
+                Text("Quit")
+            }
+        }
     }
+
+    private func actionQuit() {
+        print("action action quirt")
+        NSApplication.shared.terminate(self)
+    }
+
+    private func actionSettings() {}
 }
 
 #Preview {

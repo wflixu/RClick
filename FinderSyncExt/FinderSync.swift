@@ -18,7 +18,9 @@ private let logger = Logger(subsystem: subsystem, category: "menu")
 
 class FinderSync: FIFinderSync {
     var myFolderURL = URL(fileURLWithPath: "/Users/")
-
+    
+    let messager = Messager()
+    
     override init() {
         super.init()
         channel.setup()
@@ -26,8 +28,6 @@ class FinderSync: FIFinderSync {
         
         // Set up the directory we are syncing.
         FIFinderSyncController.default().directoryURLs = [myFolderURL]
-        
-     
         
         // Monitor volumes
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { notification in
@@ -90,7 +90,7 @@ class FinderSync: FIFinderSync {
                 let menuItem = NSMenuItem()
                 menuItem.target = self
                 menuItem.title = String(format: String(localized: "Open in %@", comment: "Open in the given application"), item.name)
-                menuItem.action = #selector(dirAction(_:))
+                menuItem.action = #selector(ContainerAction(_:))
                 menuItem.toolTip = "\(item.name)"
                 menuItem.tag = 0
                 menuItem.image = item.icon
@@ -99,6 +99,30 @@ class FinderSync: FIFinderSync {
                 
         case .contextualMenuForItems:
             NSLog("contextualMenuForItems")
+                
+            for item in menuStore.appItems.filter(\.enabled) {
+                logger.warning("appitems:name: \(item.name)")
+                let menuItem = NSMenuItem()
+                menuItem.target = self
+                menuItem.title = item.name
+                menuItem.action = #selector(itemAction(_:))
+                menuItem.toolTip = "\(item.name)"
+                menuItem.tag = 0
+                menuItem.image = item.icon
+                applicationMenu.addItem(menuItem)
+            }
+            
+            for item in menuStore.actionItems.filter(\.enabled) {
+                let menuItem = NSMenuItem()
+                menuItem.target = self
+                menuItem.title = item.name
+                menuItem.action = #selector(itemAction(_:))
+                menuItem.toolTip = "\(item.name)"
+                menuItem.tag = 1
+                menuItem.image = item.icon
+                
+                applicationMenu.addItem(menuItem)
+            }
             
         default:
             print("Some other character")
@@ -122,32 +146,61 @@ class FinderSync: FIFinderSync {
         }
     }
 
-    @MainActor @objc func filesAction(_ sender: AnyObject?) {
-        let target = FIFinderSyncController.default().targetedURL()
-        let items = FIFinderSyncController.default().selectedItemURLs()
-        
-        let item = sender as! NSMenuItem
-        NSLog("sampleAction: menu item: %@, target = %@, items = ", item.title as NSString, target!.path as NSString)
-        for obj in items! {
-            NSLog("    %@", obj.path as NSString)
-        }
-    }
-
-    @MainActor @objc func dirAction(_ menuItem: NSMenuItem) {
-        guard let targetURL = FIFinderSyncController.default().targetedURL(),
-              let itemURLs = FIFinderSyncController.default().selectedItemURLs() else { return }
-        logger.notice("Click menu \"\(menuItem.title, privacy: .public)\", index = \(menuItem.tag, privacy: .public), target = \(targetURL, privacy: .public), items = \(itemURLs, privacy: .public)]")
-
-        let urls = itemURLs.isEmpty ? [targetURL] : itemURLs
+    @objc func ContainerAction(_ menuItem: NSMenuItem) {
         switch menuItem.tag {
         case 0:
-            let item = menuStore.getAppItem(name: menuItem.title)
-            item?.menuClick(with: urls)
-        case 1:
-            let item = menuStore.getActionItem(name: menuItem.title)
-            item?.menuClick(with: urls)
+            appOpen(menuItem, isContainer: true)
+    
         default:
             break
+        }
+    }
+    
+    @objc func itemAction(_ menuItem: NSMenuItem) {
+        switch menuItem.tag {
+        case 0:
+            appOpen(menuItem, isContainer: false)
+        case 1:
+            actioning(menuItem, isContainer: false)
+        default:
+            break
+        }
+    }
+    
+    @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
+        let item = menuStore.getActionItem(name: menuItem.title)
+
+        let urls = FIFinderSyncController.default().selectedItemURLs()
+        guard let targetURL = urls?.first
+        else {
+            logger.warning("no url")
+            return
+        }
+        if let actionName = item?.key {
+            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: actionName, target: targetURL.path))
+        } else {
+            logger.warning("######### node key")
+        }
+    }
+    
+    @objc func appOpen(_ menuItem: NSMenuItem, isContainer: Bool) {
+        var target: String
+        if isContainer {
+            guard let targetURL = FIFinderSyncController.default().targetedURL()
+            else { return }
+            target = targetURL.path
+            
+        } else {
+            let urls = FIFinderSyncController.default().selectedItemURLs()
+            guard let targetURL = urls?.first
+            else { return }
+            target = targetURL.path
+        }
+        
+        let item = menuStore.getAppItem(name: menuItem.title)
+        logger.warning("########## start send message,  target\(target)")
+        if let appUrl = item?.url {
+            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, app: appUrl.path))
         }
     }
 }
