@@ -7,10 +7,12 @@
 
 import Foundation
 
-
+import os.log
 
 import OrderedCollections
 import SwiftUI
+
+private let logger = Logger()
 
 @Observable
 class MenuItemStore {
@@ -28,6 +30,7 @@ class MenuItemStore {
     }
 
     func refresh() {
+        logger.warning("MenuItemStore refresh")
         try? load()
     }
 
@@ -128,12 +131,18 @@ class MenuItemStore {
     // MARK: - UserDefaults
 
     private func load() throws {
+        logger.warning("start loading menuitemsstore")
         if let appItemData = UserDefaults.group.data(forKey: "APP_ITEMS"),
            let actionItemData = UserDefaults.group.data(forKey: "ACTION_ITEMS") {
+            logger.warning("app item data: ")
             let decoder = PropertyListDecoder()
             appItems = try decoder.decode([AppMenuItem].self, from: appItemData)
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
+            appItems.forEach { item in
+                logger.warning("loaed apps \(item.appName)")
+            }
         } else {
+            logger.warning("using default menuitemsstore")
             appItems = AppMenuItem.defaultApps
             actionItems = ActionMenuItem.all
         }

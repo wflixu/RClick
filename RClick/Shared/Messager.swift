@@ -48,6 +48,7 @@ class Messager {
     }
 
     func start(name: String) {
+        
         center.addObserver(self, selector: #selector(recievedMessage(_:)), name: NSNotification.Name(name), object: nil)
     }
 
@@ -81,7 +82,7 @@ class Messager {
     }
 
     func copyPath(_ target: String) {
-        logger.warning("startig copy path ... \(target)")
+      
         let pasteboard = NSPasteboard.general
         // must do to fix bug
         pasteboard.clearContents()

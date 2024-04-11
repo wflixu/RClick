@@ -7,19 +7,21 @@
 
 import SwiftUI
 
+enum Tabs: Hashable {
+    case general, folder, actions, about
+}
 struct SettingsView: View {
     @AppStorage("showPreview") private var showPreview = true
     @AppStorage("fontSize") private var fontSize = 12.0
     @State var folderItemStore = FolderItemStore()
     @State var menumItemStore = MenuItemStore()
-
-    private enum Tabs: Hashable {
-        case general, folder, actions, about
-    }
+    @State private var tabIndex:Tabs = Tabs.general
+    
+    
 
     var body: some View {
-        TabView {
-            GeneralSettingsTabView()
+        TabView( selection: $tabIndex) {
+            GeneralSettingsTabView(active: $tabIndex)
                 .tabItem {
                     Label("通用", systemImage: "slider.horizontal.2.square")
                 }

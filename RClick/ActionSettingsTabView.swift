@@ -59,7 +59,7 @@ struct ActionSettingsTabView: View {
 
                             let items = files.map { AppMenuItem(appURL: $0) }
                             store.appendItems(items)
-
+                                channel.send(name: "RefreshMenuItems")
                         case .failure(let error):
                             // handle error
                             print(error)
@@ -98,17 +98,17 @@ struct ActionSettingsTabView: View {
                     }
                 }
             } footer: {
-                Link("有想添加的功能", destination: URL(string: "https://github.com/wflixu/RClick/issues/new/choose")!)
+                Link("想添加功能, 这里反馈", destination: URL(string: "https://github.com/wflixu/RClick/issues/new/choose")!)
             }
         }
         .controlSize(.large)
         .formStyle(.grouped)
-//
     }
 
     private func deleteApp(_ appItem: AppMenuItem) {
         if let index = store.appItems.firstIndex(where: { $0.url == appItem.url }) {
             store.deleteAppItems(offsets: IndexSet(integer: index))
+            channel.send(name: "RefreshMenuItems")
         }
     }
 }

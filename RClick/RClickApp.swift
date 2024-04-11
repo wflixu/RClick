@@ -47,12 +47,7 @@ struct RClickApp: App {
         MenuBarExtra(
             "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
-            
             MenuBarView()
-        }
-        .onChange(of: ScenePhase.active, initial: true) {
-            logger.warning("scenephase is change ")
-           
         }
 
         Settings {
