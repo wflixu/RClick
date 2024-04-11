@@ -154,7 +154,7 @@ class MenuItemStore {
         let actionItemsData = try encoder.encode(OrderedSet(actionItems))
         UserDefaults.group.set(appItemsData, forKey: "APP_ITEMS")
         UserDefaults.group.set(actionItemsData, forKey: "ACTION_ITEMS")
-        channel.send(name: "RefreshMenuItems")
+        self.refresh();
     }
 }
 

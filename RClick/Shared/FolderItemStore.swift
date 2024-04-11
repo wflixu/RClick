@@ -147,6 +147,6 @@ final class FolderItemStore: Sendable {
         let syncItemData = try encoder.encode(OrderedSet(syncItems))
         UserDefaults.group.set(bookmarkItemData, forKey: "BOOKMARK_ITEMS")
         UserDefaults.group.set(syncItemData, forKey: "SYNC_ITEMS")
-        channel.send(name: "RefreshFolderItems")
+        self.refresh();
     }
 }

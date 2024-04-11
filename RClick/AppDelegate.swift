@@ -15,11 +15,14 @@ private let logger = Logger(subsystem: subsystem, category: "main")
 class AppDelegate: NSObject, NSApplicationDelegate {
    
     let messager = Messager()
-    
+   
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
-        print("App -------------------------- 已启动")
+        logger.notice("App -------------------------- 已启动")
         messager.start(name: Key.messageFromFinder)
+//        Task {
+//       //                await channel.setup(store: folderItemStore)
+//       //            }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

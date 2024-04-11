@@ -19,10 +19,9 @@ struct AppMenuItem: MenuItem {
 
     var url: URL
     var itemName: String
-    var enabled = true
     var inheritFromGlobalArguments = true
     var inheritFromGlobalEnvironment = true
-    var arguments: [String] = ["-n", "--args $*"]
+    var arguments: [String] = []
     var environment: [String: String] = [:]
 
     var appName: String {
@@ -32,8 +31,7 @@ struct AppMenuItem: MenuItem {
     var name: String {
         itemName.isEmpty ? appName : itemName
     }
-
-    var icon: NSImage { NSWorkspace.shared.icon(forFile: url.path) }
+//    var icon: NSImage { NSWorkspace.shared.icon(forFile: url.path) }
 }
 
 extension AppMenuItem {

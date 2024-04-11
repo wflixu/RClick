@@ -153,11 +153,7 @@ struct FolderSettingsTabView: View {
                 }
             }
         }
-        .onAppear {
-            Task {
-                await channel.setup(store: store)
-            }
-        }
+        
     }
     
     private func addDir() {

@@ -20,7 +20,7 @@ struct ActionMenuItem: MenuItem {
     var actionIndex: Int
     var iconName: String
 
-    var icon: NSImage {NSImage(systemSymbolName: iconName, accessibilityDescription: iconName)!}
+//    var icon: NSImage {NSImage(systemSymbolName: iconName, accessibilityDescription: iconName)!}
 }
 
 extension ActionMenuItem {

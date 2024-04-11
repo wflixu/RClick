@@ -14,7 +14,11 @@ import os.log
 private let logger = Logger(subsystem: subsystem, category: "app_comm_channel")
 
 class FinderCommChannel {
-    func setup() {
+    var folderItemStore: FolderItemStore?
+    var menuItemStore: MenuItemStore?
+    func setup(_ folderStore:FolderItemStore, _ menuStore: MenuItemStore) {
+        self.folderItemStore = folderStore
+        self.menuItemStore = menuStore
         let center = DistributedNotificationCenter.default()
         center.addObserver(self, selector: #selector(choosePermissionFolder(_:)), name: .init(rawValue: "ChoosePermissionFolder"), object: mainAppBundleID)
         center.addObserver(self, selector: #selector(refreshMenuItems(_:)), name: .init(rawValue: "RefreshMenuItems"), object: mainAppBundleID)
@@ -32,17 +36,17 @@ class FinderCommChannel {
 
     @MainActor @objc func choosePermissionFolder(_ notification: Notification) {
         logger.warning("choosePermissionFolder: \(notification)")
-        folderStore.refresh();
+        folderItemStore?.refresh();
     }
     
     @MainActor @objc func refreshMenuItems(_ notification: Notification) {
         logger.notice("Refresh menu items")
-        menuStore.refresh()
+        menuItemStore?.refresh()
     }
     
     @MainActor @objc func refreshFolderItems(_ notification: Notification) {
         logger.notice("Refresh folder items")
-        folderStore.refresh()
+        folderItemStore?.refresh()
     }
 
     private var mainAppBundleID: String {
