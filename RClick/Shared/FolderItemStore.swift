@@ -130,8 +130,11 @@ final class FolderItemStore: Sendable {
 
             let syncItems = try decoder.decode([SyncFolderItem].self, from: syncItemData)
             self.syncItems = syncItems
-            FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
-            logger.notice("Sync directory set to \(syncItems.map(\.path).joined(separator: "\n"), privacy: .public)")
+//            FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
+            syncItems.forEach { item in
+                logger.notice("Sync directory set to \(item.path)")
+            }
+           
         } else {
             let syncItems = SyncFolderItem.defaultFolders
             self.syncItems = syncItems
@@ -147,6 +150,9 @@ final class FolderItemStore: Sendable {
         let syncItemData = try encoder.encode(OrderedSet(syncItems))
         UserDefaults.group.set(bookmarkItemData, forKey: "BOOKMARK_ITEMS")
         UserDefaults.group.set(syncItemData, forKey: "SYNC_ITEMS")
-        self.refresh();
+        refresh()
     }
 }
+
+
+

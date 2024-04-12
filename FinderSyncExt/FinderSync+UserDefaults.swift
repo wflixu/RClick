@@ -56,6 +56,7 @@ extension UserDefaults {
     }
 
     private func defaults<T>(for key: String) -> T? {
+        logger.warning("UserDefaults defaults: key\(key)")
         if let value = object(forKey: key) as? T {
             return value
         } else {

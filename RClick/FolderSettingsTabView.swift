@@ -137,7 +137,7 @@ struct FolderSettingsTabView: View {
                         }
                         
                     Button {
-                        store.deleteAllBookmarkItems()
+                        store.deleteAllSyncItems()
                     } label: { Label("删除", systemImage: "folder.badge.minus") }
                 }.padding(.top)
                 

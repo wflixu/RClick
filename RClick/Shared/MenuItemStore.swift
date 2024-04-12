@@ -12,7 +12,7 @@ import os.log
 import OrderedCollections
 import SwiftUI
 
-private let logger = Logger()
+private let logger = Logger(subsystem:subsystem,category: "menu_item_store")
 
 @Observable
 class MenuItemStore {
@@ -21,7 +21,7 @@ class MenuItemStore {
 
     // MARK: - Init
 
-    nonisolated init() {
+    init() {
         Task {
             await MainActor.run {
                 try? load()
@@ -29,41 +29,42 @@ class MenuItemStore {
         }
     }
 
-    func refresh() {
+    @MainActor func refresh() {
         logger.warning("MenuItemStore refresh")
         try? load()
     }
 
     // MARK: - Append Item
 
-    func appendItems(_ items: [AppMenuItem]) {
+    @MainActor func appendItems(_ items: [AppMenuItem]) {
         appItems.append(contentsOf: items.filter { !appItems.contains($0) })
+        logger.warning("appitems appendItems: ")
         try? save()
     }
 
-    func appendItems(_ items: [ActionMenuItem]) {
+    @MainActor func appendItems(_ items: [ActionMenuItem]) {
         actionItems.append(contentsOf: items.filter { !actionItems.contains($0) })
         try? save()
     }
 
-    func insertItems(_ items: [AppMenuItem], at index: Int) {
+    @MainActor func insertItems(_ items: [AppMenuItem], at index: Int) {
         appItems.insert(contentsOf: items.filter { !appItems.contains($0) }, at: index)
         try? save()
     }
 
-    func insertItems(_ items: [ActionMenuItem], at index: Int) {
+    @MainActor func insertItems(_ items: [ActionMenuItem], at index: Int) {
         actionItems.insert(contentsOf: items.filter { !actionItems.contains($0) }, at: index)
         try? save()
     }
 
-    func appendItem(_ item: AppMenuItem) {
+    @MainActor func appendItem(_ item: AppMenuItem) {
         if !appItems.contains(item) {
             appItems.append(item)
             try? save()
         }
     }
 
-    func appendItem(_ item: ActionMenuItem) {
+    @MainActor func appendItem(_ item: ActionMenuItem) {
         if !actionItems.contains(item) {
             actionItems.append(item)
             try? save()
@@ -72,35 +73,35 @@ class MenuItemStore {
 
     // MARK: - Delete Items
 
-    func deleteAppItems(offsets: IndexSet) {
+    @MainActor func deleteAppItems(offsets: IndexSet) {
         withAnimation {
             appItems.remove(atOffsets: offsets)
         }
         try? save()
     }
 
-    func deleteActionItems(offsets: IndexSet) {
+    @MainActor func deleteActionItems(offsets: IndexSet) {
         withAnimation {
             actionItems.remove(atOffsets: offsets)
         }
         try? save()
     }
 
-    func resetActionItems() {
+    @MainActor func resetActionItems() {
         actionItems = ActionMenuItem.all
         try? save()
     }
 
     // MARK: - Move Items
 
-    func moveAppItems(from source: IndexSet, to destination: Int) {
+    @MainActor func moveAppItems(from source: IndexSet, to destination: Int) {
         withAnimation {
             appItems.move(fromOffsets: source, toOffset: destination)
         }
         try? save()
     }
 
-    func moveActionItems(from source: IndexSet, to destination: Int) {
+    @MainActor func moveActionItems(from source: IndexSet, to destination: Int) {
         withAnimation {
             actionItems.move(fromOffsets: source, toOffset: destination)
         }
@@ -119,7 +120,7 @@ class MenuItemStore {
 
     // MARK: - Update Item
 
-    func updateAppItem(item: AppMenuItem, index: Int?) {
+    @MainActor func updateAppItem(item: AppMenuItem, index: Int?) {
         if let index = index {
             appItems[index] = item
         } else {
@@ -131,14 +132,15 @@ class MenuItemStore {
     // MARK: - UserDefaults
 
     private func load() throws {
-        logger.warning("start loading menuitemsstore")
+
         if let appItemData = UserDefaults.group.data(forKey: "APP_ITEMS"),
-           let actionItemData = UserDefaults.group.data(forKey: "ACTION_ITEMS") {
+           let actionItemData = UserDefaults.group.data(forKey: "ACTION_ITEMS")
+        {
             logger.warning("app item data: ")
             let decoder = PropertyListDecoder()
             appItems = try decoder.decode([AppMenuItem].self, from: appItemData)
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
-            appItems.forEach { item in
+            for item in appItems {
                 logger.warning("loaed apps \(item.appName)")
             }
         } else {
@@ -146,15 +148,18 @@ class MenuItemStore {
             appItems = AppMenuItem.defaultApps
             actionItems = ActionMenuItem.all
         }
+       
+        
     }
 
+    @MainActor
     private func save() throws {
         let encoder = PropertyListEncoder()
         let appItemsData = try encoder.encode(OrderedSet(appItems))
         let actionItemsData = try encoder.encode(OrderedSet(actionItems))
         UserDefaults.group.set(appItemsData, forKey: "APP_ITEMS")
         UserDefaults.group.set(actionItemsData, forKey: "ACTION_ITEMS")
-        self.refresh();
+        refresh()
     }
 }
 

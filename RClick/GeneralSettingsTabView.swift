@@ -7,6 +7,9 @@
 
 import FinderSync
 import SwiftUI
+import os.log
+
+private let logger = Logger()
 
 struct GeneralSettingsTabView: View {
   
@@ -62,6 +65,13 @@ struct GeneralSettingsTabView: View {
 
           
             Spacer()
+            
+            Button("test") {
+                UserDefaults.group.set("mytest hahhah 1112 22 ", forKey: "test")
+                
+                let res = UserDefaults.group.string(forKey: "test")!
+                logger.warning("res: \(res)")
+            }
     
             
         }

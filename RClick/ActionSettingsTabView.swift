@@ -7,6 +7,10 @@
 
 import AppKit
 import SwiftUI
+import os.log
+
+
+private let logger = Logger();
 
 struct ActionSettingsTabView: View {
     @Bindable var store: MenuItemStore
@@ -63,7 +67,7 @@ struct ActionSettingsTabView: View {
                 ) { result in
                     switch result {
                     case .success(let files):
-
+                            logger.warning("start add AppMenuItem")
                         let items = files.map { AppMenuItem(appURL: $0) }
                         store.appendItems(items)
                         channel.send(name: "RefreshMenuItems")
@@ -110,7 +114,7 @@ struct ActionSettingsTabView: View {
         }
     }
 
-    private func deleteApp(_ appItem: AppMenuItem) {
+    @MainActor private func deleteApp(_ appItem: AppMenuItem) {
         if let index = store.appItems.firstIndex(where: { $0.url == appItem.url }) {
             store.deleteAppItems(offsets: IndexSet(integer: index))
             channel.send(name: "RefreshMenuItems")

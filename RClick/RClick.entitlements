@@ -8,13 +8,14 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>$(TeamIdentifierPrefix)</string>
+		<string>group.cn.wflixu.RClick</string>
+        <string>group.cn.wflixu.RClickDebug</string>
 	</array>
+	<key>com.apple.security.files.bookmarks.app-scope</key>
+	<true/>
 	<key>com.apple.security.files.downloads.read-write</key>
 	<true/>
 	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
-    <key>com.apple.security.files.bookmarks.app-scope</key>
-    <true/>
 </dict>
 </plist>

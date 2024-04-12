@@ -236,11 +236,11 @@
 		5C50D2932BBFD17C00DF31AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */,
 				5C128E5D2BC2D0F0001F73DA /* AppMenuItem.swift */,
 				5C128E602BC2D11E001F73DA /* MenuItem.swift */,
 				5C128E632BC2D17B001F73DA /* ActionMenuItem.swift */,
 				5C128E662BC2D1AF001F73DA /* FolderItem.swift */,
+				5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */,
 				5C128E692BC2D233001F73DA /* SyncFolderItem.swift */,
 			);
 			path = Model;

@@ -12,25 +12,7 @@ import SwiftUI
 
 private let logger = Logger(subsystem: subsystem, category: "app_comm_channel")
 
-//
-//private struct MyEnvironmentKey: EnvironmentKey {
-//    static let defaultValue: String = "Default value"
-//}
-//
-//
-//extension EnvironmentValues {
-//    var myCustomValue: String {
-//        get { self[MyEnvironmentKey.self] }
-//        set { self[MyEnvironmentKey.self] = newValue }
-//    }
-//}
-//
-//
-//extension View {
-//    func myCustomValue(_ myCustomValue: String) -> some View {
-//        environment(\.myCustomValue, myCustomValue)
-//    }
-//}
+
 
 actor AppCommChannel {
     weak var folderItemStore: FolderItemStore?
