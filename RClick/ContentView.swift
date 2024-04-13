@@ -14,15 +14,9 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Text("main window")
             
-            HStack {
-                SettingsLink {
-                     Text("Settings")
-                }
-            }
             
-        }.frame(width: 800, height: 600)
+        }.frame(width: 900,height: 900)
     }
 
     

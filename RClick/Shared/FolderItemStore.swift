@@ -16,7 +16,7 @@ import SwiftUI
 private let logger = Logger(subsystem: subsystem, category: "folder_item_store")
 
 @Observable
-final class FolderItemStore: Sendable {
+final class FolderItemStore {
     private(set) var bookmarkItems: [BookmarkFolderItem] = []
     private(set) var syncItems: [SyncFolderItem] = []
 
@@ -121,23 +121,19 @@ final class FolderItemStore: Sendable {
 
     @MainActor
     private func load() throws {
-        if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS"),
-           let syncItemData = UserDefaults.group.data(forKey: "SYNC_ITEMS")
-        {
+        if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS") {
             logger.warning("------ starting load fodler item store")
             let decoder = PropertyListDecoder()
             bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
 
-            let syncItems = try decoder.decode([SyncFolderItem].self, from: syncItemData)
-            self.syncItems = syncItems
-//            FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
-            syncItems.forEach { item in
-                logger.notice("Sync directory set to \(item.path)")
+            FIFinderSyncController.default().directoryURLs = Set(bookmarkItems.map { URL(fileURLWithPath: $0.path) })
+            for item in bookmarkItems {
+                logger.warning("Sync directory set to \(item.path)")
             }
-           
+
         } else {
-            let syncItems = SyncFolderItem.defaultFolders
-            self.syncItems = syncItems
+            let syncItems = BookmarkFolderItem.defaultFolders
+
             FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
             logger.notice("Sync directory set to \(syncItems.map(\.path).joined(separator: "\n"), privacy: .public)")
         }
@@ -153,6 +149,3 @@ final class FolderItemStore: Sendable {
         refresh()
     }
 }
-
-
-

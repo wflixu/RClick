@@ -11,14 +11,15 @@ import Darwin
 import FinderSync
 import os.log
 
+
 private let logger = Logger(subsystem: subsystem, category: "menu")
-let menuStore = MenuItemStore()
-let folderStore = FolderItemStore()
-let finderChannel = FinderCommChannel()
+
 class FinderSync: FIFinderSync {
     var myFolderURL = URL(fileURLWithPath: "/Users/")
    
-    
+    let menuStore = MenuItemStore()
+    let folderStore = FolderItemStore()
+    let finderChannel = FinderCommChannel()
     let messager = Messager()
     
     override init() {
@@ -28,9 +29,8 @@ class FinderSync: FIFinderSync {
     
         NSLog("FinderSync() launched from %@", Bundle.main.bundlePath as NSString)
        
-       
         // Set up the directory we are syncing.
-        FIFinderSyncController.default().directoryURLs = [myFolderURL]
+//        FIFinderSyncController.default().directoryURLs = [myFolderURL]
         
 //        // Monitor volumes
 //        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { notification in
@@ -92,44 +92,19 @@ class FinderSync: FIFinderSync {
         let applicationMenu = NSMenu(title: "RClick")
         switch menuKind {
         case .contextualMenuForContainer:
-          
-            for item in menuStore.appItems {
-                logger.warning("start build menu ---------path: \(item.appName)")
-                let menuItem = NSMenuItem()
-                menuItem.target = self
-                menuItem.title = String(format: String(localized: "Open in %@", comment: "Open in the given application"), item.name)
-                menuItem.action = #selector(ContainerAction(_:))
-                menuItem.toolTip = "\(item.name)"
-                menuItem.tag = 0
-                menuItem.image = NSWorkspace.shared.icon(forFile: item.url.path)
-                applicationMenu.addItem(menuItem)
+            for nsmenu in createAppItems() {
+                applicationMenu.addItem(nsmenu)
             }
                 
         case .contextualMenuForItems:
             NSLog("contextualMenuForItems")
-                
-            for item in menuStore.appItems {
-                logger.warning("appitems:name: \(item.name)")
-                let menuItem = NSMenuItem()
-                menuItem.target = self
-                menuItem.title = item.name
-                menuItem.action = #selector(itemAction(_:))
-                menuItem.toolTip = "\(item.name)"
-                menuItem.tag = 0
-                menuItem.image = NSWorkspace.shared.icon(forFile: item.url.path)
-                applicationMenu.addItem(menuItem)
+            
+            for nsmenu in createAppItems() {
+                applicationMenu.addItem(nsmenu)
             }
             
-            for item in menuStore.actionItems.filter(\.enabled) {
-                let menuItem = NSMenuItem()
-                menuItem.target = self
-                menuItem.title = item.name
-                menuItem.action = #selector(itemAction(_:))
-                menuItem.toolTip = "\(item.name)"
-                menuItem.tag = 1
-                menuItem.image = NSImage(systemSymbolName: item.iconName, accessibilityDescription: item.iconName)!
-                
-                applicationMenu.addItem(menuItem)
+            for item in createActionMenuItems() {
+                applicationMenu.addItem(item)
             }
             
         default:
@@ -138,6 +113,38 @@ class FinderSync: FIFinderSync {
        
 //        applicationMenu.addItem(withTitle: "Example Menu Item", action: #selector(sampleAction(_:)), keyEquivalent: "")
         return applicationMenu
+    }
+    
+    @objc func createAppItems() -> [NSMenuItem] {
+        var appMenuItems: [NSMenuItem] = []
+        for item in menuStore.appItems {
+            let menuItem = NSMenuItem()
+            menuItem.target = self
+            menuItem.title = "用\(item.name)打开"
+            menuItem.action = #selector(itemAction(_:))
+            menuItem.toolTip = "\(item.name)"
+            menuItem.tag = 0
+            menuItem.image = NSWorkspace.shared.icon(forFile: item.url.path)
+            appMenuItems.append(menuItem)
+        }
+        return appMenuItems
+    }
+
+    @objc func createActionMenuItems() -> [NSMenuItem] {
+        var actionMenuitems: [NSMenuItem] = []
+        
+        for item in menuStore.actionItems.filter(\.enabled) {
+            let menuItem = NSMenuItem()
+            menuItem.target = self
+            menuItem.title = item.name
+            menuItem.action = #selector(itemAction(_:))
+            menuItem.toolTip = "\(item.name)"
+            menuItem.tag = 1
+            menuItem.image = NSImage(systemSymbolName: item.iconName, accessibilityDescription: item.iconName)!
+                    
+            actionMenuitems.append(menuItem)
+        }
+        return actionMenuitems
     }
     
     @MainActor @objc func sampleAction(_ sender: AnyObject?) {
@@ -175,13 +182,12 @@ class FinderSync: FIFinderSync {
         }
     }
    
-   @MainActor @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
+    @MainActor @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
         let item = menuStore.getActionItem(name: menuItem.title)
         let urls = FIFinderSyncController.default().selectedItemURLs()
         if let test = UserDefaults.group.string(forKey: "test") {
-            logger.warning("test: \(test)");
+            logger.warning("test: \(test)")
         }
-        
         
         guard let targetURL = urls?.first
         else {

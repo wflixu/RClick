@@ -31,7 +31,6 @@ struct AppMenuItem: MenuItem {
     var name: String {
         itemName.isEmpty ? appName : itemName
     }
-//    var icon: NSImage { NSWorkspace.shared.icon(forFile: url.path) }
 }
 
 extension AppMenuItem {
@@ -46,8 +45,7 @@ extension AppMenuItem {
     static let vscode = AppMenuItem(bundleIdentifier: "com.microsoft.VSCode")
     static let terminal = AppMenuItem(bundleIdentifier: "com.apple.Terminal")
     static let typora = AppMenuItem(bundleIdentifier: "abnerworks.Typora")
-    static let tower = AppMenuItem(bundleIdentifier: "com.fournova.Tower3")
     static var defaultApps: [AppMenuItem] {
-        [.terminal, .xcode, .vscode, .typora, .tower].compactMap { $0 }
+        [.terminal, .vscode, .typora].compactMap { $0 }
     }
 }

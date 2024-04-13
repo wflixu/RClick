@@ -6,15 +6,16 @@
 //
 
 import FinderSync
-import SwiftUI
 import os.log
+import SwiftUI
 
-private let logger = Logger()
+private let logger = Logger(subsystem: subsystem, category: "GeneralSettingsTabView")
 
 struct GeneralSettingsTabView: View {
-  
-    @Binding  var active:Tabs
-    
+    var store: FolderItemStore
+
+    @State private var showFileImporter = false
+
     var extensionEabled: Bool {
         return FinderSync.FIFinderSyncController.isExtensionEnabled
     }
@@ -28,9 +29,7 @@ struct GeneralSettingsTabView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-           
-            
+        VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom) {
                 Text("启动 Finder Extension").font(.title3).fontWeight(.semibold)
                 Spacer()
@@ -46,40 +45,76 @@ struct GeneralSettingsTabView: View {
                 .foregroundColor(Color.gray)
             Divider()
 
-            HStack {
-                
-            }.frame(height: 20)
-            HStack(alignment: .bottom) {
-                Text("授权文件夹").font(.title3).fontWeight(.semibold)
-                Spacer()
-                Button(action: goSetFolder) {
-                    Label("去授权", systemImage: "checkmark.circle")
+            HStack {}.frame(height: 10)
+
+            VStack(alignment: .leading) {
+                Section {
+                    List {
+                        ForEach(store.bookmarkItems) { item in
+                            HStack {
+                                Image(systemName: "folder")
+                                Text(item.path)
+                                Spacer()
+                                Button {
+                                    removeBookmark(item)
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("授权文件夹").font(.title3).fontWeight(.semibold)
+                        Spacer()
+                        Button {
+                            showFileImporter = true
+                        } label: { Label("添加", systemImage: "folder.badge.plus") }
+                            .fileImporter(
+                                isPresented: $showFileImporter,
+                                allowedContentTypes: [.directory],
+                                allowsMultipleSelection: false
+                            ) { result in
+                                switch result {
+                                case .success(let files):
+
+                                    for file in files {
+                                        // gain access to the directory
+                                        store.appendItem(BookmarkFolderItem(file))
+                                    }
+                                    channel.send(name: "ChoosePermissionFolder", data: nil)
+                                case .failure(let error):
+                                    // handle error
+                                    print(error)
+                                }
+                            }
+
+                        Button {
+                            store.deleteAllBookmarkItems()
+                        } label: { Label("删除", systemImage: "folder.badge.minus") }
+                    }
+
+                } footer: {
+                    VStack {
+                        HStack {
+                            Text("授权的文件夹，才能执行菜单的操作")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                            Spacer()
+                        }
+                    }
                 }
             }
-
-            Text("授权的文件夹，才能能执行菜单的操作")
-                .font(.headline)
-                .fontWeight(.thin)
-                .foregroundColor(Color.gray)
-            Divider()
-
-          
-            Spacer()
-            
-            Button("test") {
-                UserDefaults.group.set("mytest hahhah 1112 22 ", forKey: "test")
-                
-                let res = UserDefaults.group.string(forKey: "test")!
-                logger.warning("res: \(res)")
-            }
-    
-            
         }
+    }
 
+    @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {
+        // 根据item 查找offsets
+        if let index = store.bookmarkItems.firstIndex(of: item) {
+            store.deleteBookmarkItem(index: index)
+        }
     }
-    private func goSetFolder () {
-        self.active = Tabs.folder
-    }
+
     private func openExtensionset() {
         FinderSync.FIFinderSyncController.showExtensionManagementInterface()
     }

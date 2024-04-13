@@ -86,7 +86,7 @@ class Messager {
         let pasteboard = NSPasteboard.general
         // must do to fix bug
         pasteboard.clearContents()
-        let res =  pasteboard.setString(target, forType: .string)
+        pasteboard.setString(target, forType: .string)
     }
 
     func deleteFoldorFile(_ target: String) {

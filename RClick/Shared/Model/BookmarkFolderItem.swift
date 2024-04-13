@@ -21,7 +21,6 @@ struct BookmarkFolderItem: FolderItem {
     init(_ url: URL) {
         self.url = url
         let result = url.startAccessingSecurityScopedResource()
-        logger.warning("the path \(url.path) is in scope \(result)")
         if !result {
             logger.error("Fail to start access security scoped resource on \(url.path)")
         }
@@ -39,7 +38,7 @@ struct BookmarkFolderItem: FolderItem {
     }
 
     init(from decoder: any Decoder) throws {
-        logger.warning("------ init bookmarkitem decoder")
+        
         let values = try decoder.container(keyedBy: CodingKeys.self)
         bookmark = try values.decode(Data.self, forKey: .bookmark)
         var isStale = false
@@ -59,3 +58,30 @@ struct BookmarkFolderItem: FolderItem {
     }
 }
 
+
+
+extension BookmarkFolderItem {
+    static var home: BookmarkFolderItem? {
+        guard let pw = getpwuid(getuid()),
+              let home = pw.pointee.pw_dir
+        else {
+            return nil
+        }
+        let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
+        let url = URL(fileURLWithPath: path)
+        return BookmarkFolderItem(url)
+    }
+
+    static var application: BookmarkFolderItem? {
+        BookmarkFolderItem(URL(fileURLWithPath: "/Applications"))
+    }
+
+    static var volumns: [BookmarkFolderItem] {
+        let volumns = (FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [], options: .skipHiddenVolumes) ?? []).dropFirst()
+        return volumns.compactMap { BookmarkFolderItem($0) }
+    }
+
+    static var defaultFolders: [BookmarkFolderItem] {
+        [.home, .application].compactMap { $0 } 
+    }
+}

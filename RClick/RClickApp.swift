@@ -25,19 +25,27 @@ struct RClickApp: App {
 
     
     var body: some Scene {
-    
-
+        
+        Settings {
+            SettingsView().onAppear {
+                
+                for nswin in NSApplication.shared.windows {
+                    logger.warning("window name: \(nswin.canBecomeMain), \(nswin.title) , \(nswin.dockTile), \(nswin.windowNumber), \(nswin.isMainWindow)")
+                }
+            }
+        }
+        .defaultAppStorage(.group)
+     
         MenuBarExtra(
             "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
             MenuBarView()
         }
-
-        Settings {
-            SettingsView()
-        }
-        .defaultAppStorage(.group)
+   
+        
     }
+    
+    
 }
 
 

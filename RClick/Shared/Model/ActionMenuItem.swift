@@ -20,14 +20,13 @@ struct ActionMenuItem: MenuItem {
     var actionIndex: Int
     var iconName: String
 
-//    var icon: NSImage {NSImage(systemSymbolName: iconName, accessibilityDescription: iconName)!}
 }
 
 extension ActionMenuItem {
     static var all: [ActionMenuItem] = [.copyPath, .deleteDirect]
 
     static let copyPath = ActionMenuItem(key: "Copy Path", name: "拷贝路径", actionIndex: 0, iconName: "doc.on.doc")
-    static let deleteDirect = ActionMenuItem(key: "Delete Direct", name: "删除文件", actionIndex: 1, iconName: "trash")
+    static let deleteDirect = ActionMenuItem(key: "Delete Direct", name: "彻底删除", actionIndex: 1, iconName: "trash")
 
     // MARK: - Making the compiler to extract Localized key
 

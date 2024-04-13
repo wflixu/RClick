@@ -12,7 +12,7 @@ import os.log
 import OrderedCollections
 import SwiftUI
 
-private let logger = Logger(subsystem:subsystem,category: "menu_item_store")
+private let logger = Logger(subsystem: subsystem, category: "menu_item_store")
 
 @Observable
 class MenuItemStore {
@@ -87,6 +87,10 @@ class MenuItemStore {
         try? save()
     }
 
+    @MainActor func toggleActionItem() {
+        try? save()
+    }
+
     @MainActor func resetActionItems() {
         actionItems = ActionMenuItem.all
         try? save()
@@ -132,24 +136,18 @@ class MenuItemStore {
     // MARK: - UserDefaults
 
     private func load() throws {
-
         if let appItemData = UserDefaults.group.data(forKey: "APP_ITEMS"),
            let actionItemData = UserDefaults.group.data(forKey: "ACTION_ITEMS")
         {
-            logger.warning("app item data: ")
             let decoder = PropertyListDecoder()
             appItems = try decoder.decode([AppMenuItem].self, from: appItemData)
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
-            for item in appItems {
-                logger.warning("loaed apps \(item.appName)")
-            }
+
         } else {
             logger.warning("using default menuitemsstore")
             appItems = AppMenuItem.defaultApps
             actionItems = ActionMenuItem.all
         }
-       
-        
     }
 
     @MainActor
