@@ -59,29 +59,3 @@ struct BookmarkFolderItem: FolderItem {
 }
 
 
-
-extension BookmarkFolderItem {
-    static var home: BookmarkFolderItem? {
-        guard let pw = getpwuid(getuid()),
-              let home = pw.pointee.pw_dir
-        else {
-            return nil
-        }
-        let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
-        let url = URL(fileURLWithPath: path)
-        return BookmarkFolderItem(url)
-    }
-
-    static var application: BookmarkFolderItem? {
-        BookmarkFolderItem(URL(fileURLWithPath: "/Applications"))
-    }
-
-    static var volumns: [BookmarkFolderItem] {
-        let volumns = (FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [], options: .skipHiddenVolumes) ?? []).dropFirst()
-        return volumns.compactMap { BookmarkFolderItem($0) }
-    }
-
-    static var defaultFolders: [BookmarkFolderItem] {
-        [.home, .application].compactMap { $0 } 
-    }
-}

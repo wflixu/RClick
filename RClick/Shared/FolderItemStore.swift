@@ -132,7 +132,7 @@ final class FolderItemStore {
             }
 
         } else {
-            let syncItems = BookmarkFolderItem.defaultFolders
+            let syncItems = SyncFolderItem.defaultFolders
 
             FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
             logger.notice("Sync directory set to \(syncItems.map(\.path).joined(separator: "\n"), privacy: .public)")
