@@ -19,6 +19,10 @@ struct MessagePayload: Codable {
     var action: String = ""
     var target: String = ""
     var app: String = ""
+
+    public var description: String {
+        return "MessagePayload(action: \(action), target: \(target), app:\(app) )"
+    }
 }
 
 import os.log
@@ -26,7 +30,11 @@ import os.log
 private let logger = Logger(subsystem: subsystem, category: "messager")
 
 class Messager {
+    static let shared = Messager()
+
     let center: DistributedNotificationCenter = .default()
+    var bus: [String: (_ payload: MessagePayload) -> Void] = [:]
+
     func sendMessage(name: String, data: MessagePayload) {
         let message: String = createMessageData(messsagePayload: data)
         center.postNotificationName(NSNotification.Name(name), object: message, userInfo: nil, deliverImmediately: true)
@@ -48,13 +56,21 @@ class Messager {
     }
 
     func start(name: String) {
-        
         center.addObserver(self, selector: #selector(recievedMessage(_:)), name: NSNotification.Name(name), object: nil)
     }
 
-    @objc func recievedMessage(_ notification: NSNotification) {
-        NSLog("Message Received from Application \(notification.name)")
+    func on(name: String, handler: @escaping (MessagePayload) -> Void) {
+        center.addObserver(self, selector: #selector(recievedMessage(_:)), name: NSNotification.Name(name), object: nil)
+        bus.updateValue(handler, forKey: name)
+    }
 
+    @objc func recievedMessage(_ notification: NSNotification) {
+        logger.warning("Message Received from Application \(notification.name.rawValue)")
+        if let handler = bus[notification.name.rawValue] {
+            handler(reconstructEntry(messagePayload: notification.object as! String))
+        } else {
+            logger.warning("there no handler")
+        }
         if notification.name.rawValue == Key.messageFromFinder {
             NSLog("Message Recieved from Application to set the sync icon")
 
@@ -82,7 +98,6 @@ class Messager {
     }
 
     func copyPath(_ target: String) {
-      
         let pasteboard = NSPasteboard.general
         // must do to fix bug
         pasteboard.clearContents()

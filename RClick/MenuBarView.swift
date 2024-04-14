@@ -5,9 +5,11 @@
 //  Created by 李旭 on 2024/4/4.
 //
 
+import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
+    let messager = Messager.shared
     var body: some View {
         VStack {
             SettingsLink {
@@ -21,9 +23,17 @@ struct MenuBarView: View {
         }
     }
 
+    var setting = SettingsLink()
+
     private func actionQuit() {
         print("action action quirt")
-        NSApplication.shared.terminate(self)
+
+        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
+      
+        Task {
+            try await Task.sleep(nanoseconds:UInt64(1.0 * 1e9))
+            await NSApplication.shared.terminate(self)
+        }
     }
 
     private func actionSettings() {}

@@ -122,20 +122,14 @@ final class FolderItemStore {
     @MainActor
     private func load() throws {
         if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS") {
-            logger.warning("------ starting load fodler item store")
             let decoder = PropertyListDecoder()
             bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
 
             FIFinderSyncController.default().directoryURLs = Set(bookmarkItems.map { URL(fileURLWithPath: $0.path) })
-            for item in bookmarkItems {
-                logger.warning("Sync directory set to \(item.path)")
-            }
 
         } else {
             let syncItems = SyncFolderItem.defaultFolders
-
             FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
-            logger.notice("Sync directory set to \(syncItems.map(\.path).joined(separator: "\n"), privacy: .public)")
         }
     }
 

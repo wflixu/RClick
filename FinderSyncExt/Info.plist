@@ -6,6 +6,8 @@
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict/>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.FinderSync</string>
 		<key>NSExtensionPrincipalClass</key>

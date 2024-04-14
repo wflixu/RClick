@@ -520,7 +520,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4.14.1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -530,6 +530,7 @@
 				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -556,7 +557,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4.14.1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -566,6 +567,7 @@
 				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = NO;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

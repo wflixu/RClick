@@ -11,16 +11,15 @@ import Darwin
 import FinderSync
 import os.log
 
-
 private let logger = Logger(subsystem: subsystem, category: "menu")
 
 class FinderSync: FIFinderSync {
     var myFolderURL = URL(fileURLWithPath: "/Users/")
-   
+    var isHostAppOpen = true
     let menuStore = MenuItemStore()
     let folderStore = FolderItemStore()
     let finderChannel = FinderCommChannel()
-    let messager = Messager()
+    let messager = Messager.shared
     
     override init() {
         super.init()
@@ -28,23 +27,23 @@ class FinderSync: FIFinderSync {
         finderChannel.setup(folderStore, menuStore)
     
         NSLog("FinderSync() launched from %@", Bundle.main.bundlePath as NSString)
-       
+        
+      
+
         // Set up the directory we are syncing.
 //        FIFinderSyncController.default().directoryURLs = [myFolderURL]
         
-//        // Monitor volumes
-//        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { notification in
-//            if let volumeURL = notification.userInfo?[NSWorkspace.volumeURLUserInfoKey] as? URL {
-//                Task {
-//                    await MainActor.run {
-//                        logger.notice("volumeURLUserInfoKey ---")
-//                        folderStore.appendItem(SyncFolderItem(volumeURL))
-//                    }
-//                }
-//            }
-//        }
+        messager.on(name: "quit") { msg in
+            self.isHostAppOpen = false
+        }
+        messager.on(name: "running") { msg in
+            self.isHostAppOpen = true
+        }
+        
     }
     
+
+
     // MARK: - Primary Finder Sync protocol methods
     
     override func beginObservingDirectory(at url: URL) {
@@ -90,6 +89,9 @@ class FinderSync: FIFinderSync {
         // Produce a menu for the extension.
         logger.warning("start build menu ---------")
         let applicationMenu = NSMenu(title: "RClick")
+        guard isHostAppOpen else {
+            return applicationMenu
+        }
         switch menuKind {
         case .contextualMenuForContainer:
             for nsmenu in createAppItems() {
@@ -111,7 +113,6 @@ class FinderSync: FIFinderSync {
             print("Some other character")
         }
        
-//        applicationMenu.addItem(withTitle: "Example Menu Item", action: #selector(sampleAction(_:)), keyEquivalent: "")
         return applicationMenu
     }
     
@@ -147,19 +148,7 @@ class FinderSync: FIFinderSync {
         return actionMenuitems
     }
     
-    @MainActor @objc func sampleAction(_ sender: AnyObject?) {
-        let target = FIFinderSyncController.default().targetedURL()
-        let items = FIFinderSyncController.default().selectedItemURLs()
-        
-        let item = sender as! NSMenuItem
-       
-        logger.info("sampleAction: menu item")
-        NSLog("sampleAction: menu item: %@, target = %@, items = ", item.title as NSString, target!.path as NSString)
-        
-        for obj in items! {
-            NSLog("    %@", obj.path as NSString)
-        }
-    }
+
 
     @MainActor @objc func ContainerAction(_ menuItem: NSMenuItem) {
         switch menuItem.tag {

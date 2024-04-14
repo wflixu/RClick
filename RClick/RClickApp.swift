@@ -9,6 +9,7 @@ import os.log
 import SwiftData
 import SwiftUI
 
+
 private let logger = Logger(subsystem: subsystem, category: "main")
 
 
@@ -24,15 +25,11 @@ struct RClickApp: App {
     @Environment(\.openWindow) var openWindow
 
     
+    
     var body: some Scene {
-        
+       
         Settings {
-            SettingsView().onAppear {
-                
-                for nswin in NSApplication.shared.windows {
-                    logger.warning("window name: \(nswin.canBecomeMain), \(nswin.title) , \(nswin.dockTile), \(nswin.windowNumber), \(nswin.isMainWindow)")
-                }
-            }
+            SettingsView()
         }
         .defaultAppStorage(.group)
      
