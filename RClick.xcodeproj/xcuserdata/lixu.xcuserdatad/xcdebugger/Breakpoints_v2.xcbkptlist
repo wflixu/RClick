@@ -1,70 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "0F2D5079-0DC6-4A9A-9F05-DBAB7185C83D"
+   uuid = "103E1860-08EF-45C4-AA8F-9D388CB92286"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2EE83AF2-CBD4-415B-9240-A25D0C09EBC7"
+            uuid = "15BE87DD-D47A-449C-B57C-1F93BCFDB318"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FinderSyncExt/FinderSync.swift"
+            filePath = "RClick/Shared/MenuItemStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15"
-            endingLineNumber = "15"
-            landmarkName = "init()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2EE83AF2-CBD4-415B-9240-A25D0C09EBC7 - 4386b2c8c35cd06c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FinderSyncExt.FinderSync.__allocating_init() -&gt; FinderSyncExt.FinderSync"
-                  moduleName = "FinderSyncExt"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lixu/code/RClick/FinderSyncExt/FinderSync.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0"
-                  offsetFromSymbolStart = "12">
-               </Location>
-               <Location
-                  uuid = "2EE83AF2-CBD4-415B-9240-A25D0C09EBC7 - da6e1acdcfac41c1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FinderSyncExt.FinderSync.init() -&gt; FinderSyncExt.FinderSync"
-                  moduleName = "FinderSyncExt"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lixu/code/RClick/FinderSyncExt/FinderSync.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "13"
-                  endingLineNumber = "13"
-                  offsetFromSymbolStart = "88">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3A15C522-EB81-47F7-837A-C018D3896F55"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FinderSyncExt/FinderSync.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16"
-            endingLineNumber = "16"
-            landmarkName = "init()"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
+            landmarkName = "load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
