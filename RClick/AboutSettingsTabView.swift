@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import os.log
+
+private let logger = Logger(subsystem: subsystem, category: "AppDelegate")
 
 struct AboutSettingsTabView: View {
     var body: some View {
@@ -33,9 +36,17 @@ struct AboutSettingsTabView: View {
                 Image("github")
                 Text("https://github.com/wflixu/RClick")
                 Spacer()
+                Button("test", action: test)
             }
+            
         }
         
+    }
+    private func test() {
+        for nswin in NSApplication.shared.windows {
+            logger.warning("nswid：\(nswin.windowNumber), \(nswin.title)")
+        }
+    
     }
 }
 
