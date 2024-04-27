@@ -36,7 +36,6 @@ struct AboutSettingsTabView: View {
                 Image("github")
                 Text("https://github.com/wflixu/RClick")
                 Spacer()
-                Button("test", action: test)
             }
             
         }

@@ -31,6 +31,7 @@
 		5C128E712BC2E110001F73DA /* FinderSync+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C128E702BC2E110001F73DA /* FinderSync+UserDefaults.swift */; };
 		5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */; };
 		5C158AAB2BC68B0A006EC625 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AAA2BC68B0A006EC625 /* AppDelegate.swift */; };
+		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
 		5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */; };
 		5C50D2802BBFB24000DF31AA /* AppCommChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D27F2BBFB24000DF31AA /* AppCommChannel.swift */; };
 		5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
@@ -41,6 +42,8 @@
 		5C50D28F2BBFD00500DF31AA /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C50D28E2BBFD00500DF31AA /* OrderedCollections */; };
 		5C50D2912BBFD08C00DF31AA /* BookmarkFolderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */; };
 		5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
+		5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
+		5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
@@ -94,12 +97,14 @@
 		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
 		5C158AAA2BC68B0A006EC625 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsTabView.swift; sourceTree = "<group>"; };
 		5C50D27F2BBFB24000DF31AA /* AppCommChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommChannel.swift; sourceTree = "<group>"; };
 		5C50D2812BBFB33200DF31AA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		5C50D2832BBFB42100DF31AA /* FolderItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderItemStore.swift; sourceTree = "<group>"; };
 		5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFolderItem.swift; sourceTree = "<group>"; };
+		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
 		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
 		5CDE94A82BCADA0500B05814 /* FinderSyncExtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExtRelease.entitlements; sourceTree = "<group>"; };
@@ -161,6 +166,7 @@
 				5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */,
 				5C119D112BBE9B9B00B2D7C4 /* RClick.entitlements */,
 				5C119D0E2BBE9B9B00B2D7C4 /* Preview Content */,
+				5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */,
 			);
 			path = RClick;
 			sourceTree = "<group>";
@@ -194,6 +200,7 @@
 				5C50D2832BBFB42100DF31AA /* FolderItemStore.swift */,
 				5C128E5A2BC2D088001F73DA /* MenuItemStore.swift */,
 				5CC9F0992BC5445C00AF9B81 /* Messager.swift */,
+				5C4288652BDA5536000C0828 /* AppLogger.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -297,6 +304,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 5C119CFA2BBE9B9900B2D7C4;
 			packageReferences = (
@@ -319,6 +327,7 @@
 			files = (
 				5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */,
 				5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */,
+				5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +335,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,6 +357,7 @@
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5C50D2842BBFB42100DF31AA /* FolderItemStore.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
+				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
 				5C128E642BC2D17B001F73DA /* ActionMenuItem.swift in Sources */,
 				5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */,
 				5C128E612BC2D11E001F73DA /* MenuItem.swift in Sources */,

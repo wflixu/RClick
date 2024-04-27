@@ -11,13 +11,16 @@ import SwiftUI
 import AppKit
 
 
-private let logger = Logger(subsystem: subsystem, category: "main")
+
 
 
 let channel = AppCommChannel()
 
 @main
 struct RClickApp: App {
+    
+    
+    
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
@@ -25,6 +28,8 @@ struct RClickApp: App {
     @Environment(\.scenePhase) var scenePhase: ScenePhase
     @Environment(\.openWindow) var openWindow
 
+    
+    private let logger = Logger(subsystem: subsystem, category: "main")
     
     
     var body: some Scene {
@@ -45,6 +50,9 @@ struct RClickApp: App {
     
     
 }
+
+
+
 
 
 

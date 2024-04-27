@@ -116,7 +116,7 @@ class FinderSync: FIFinderSync {
         for item in menuStore.appItems {
             let menuItem = NSMenuItem()
             menuItem.target = self
-            menuItem.title = "用\(item.name)打开"
+            menuItem.title = String(localized: "用\(item.name)打开")
             menuItem.action = #selector(itemAction(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 0
