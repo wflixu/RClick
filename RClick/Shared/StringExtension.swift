@@ -22,7 +22,6 @@ enum Key {
     static let globalApplicationEnvironmentString = "GLOBAL_APPLICATION_ENVIRONMENT_STRING"
 
     static let copySeparator = "COPY_SEPARATOR"
-    static let copyOption = "COPY_OPTION"
     static let newFileName = "NEW_FILE_NAME"
     static let newFileExtension = "NEW_FILE_EXTENSION"
 
@@ -32,19 +31,7 @@ enum Key {
     static let messageFromMain = "RCLICK_MAIN_FINDER"
 }
 
-enum CopyOption: Int, CustomStringConvertible, CaseIterable, Identifiable {
-    var id: Int { rawValue }
 
-    case origin, escape, quoto
-
-    var description: String {
-        switch self {
-        case .origin: return String(localized: "Use origin path")
-        case .escape: return String(localized: "Escape \" \" with \"\\ \" ")
-        case .quoto: return String(localized: "Wrap entire path with \"\"")
-        }
-    }
-}
 
 enum NewFileExtension: String, CaseIterable, Identifiable {
     var id: String { rawValue }

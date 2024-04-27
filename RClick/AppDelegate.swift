@@ -22,19 +22,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
 //        NSApplication.shared.delegate.o
 
-//        for nswin in NSApplication.shared.windows {
-//            nswin.makeKeyAndOrderFront(1)
-//        }
+        for nswin in NSApplication.shared.windows {
+            logger.warning("nswid：\(nswin.windowNumber)")
+        }
     
         Task {
             await channel.setup(store: folderItemStore)
         }
-
+        NSApplication.shared.openSettings()
         messager.start(name: Key.messageFromFinder)
         messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
 //        Task {
 //       //                await channel.setup(store: folderItemStore)
 //       //            }
+    }
+    
+    func applicationDidBecomeActive(_ notification: Notification) {
+        NSApplication.shared.openSettings()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -45,3 +49,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         logger.warning("#### applicationWillTerminate\(notification)")
     }
 }
+

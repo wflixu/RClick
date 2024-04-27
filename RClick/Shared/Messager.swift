@@ -17,7 +17,7 @@ enum ActionType: String {
 
 struct MessagePayload: Codable {
     var action: String = ""
-    var target: String = ""
+    var target: [String] = []
     var app: String = ""
 
     public var description: String {
@@ -78,11 +78,11 @@ class Messager {
             NSLog("Message Recieved from name:\(mp.target) path:\(mp.app)")
             switch mp.action {
                 case "open":
-                    openApp(app: mp.app, target: mp.target)
+                    openApp(app: mp.app, target: mp.target.first!)
                 case "Delete Direct":
                     deleteFoldorFile(mp.target)
                 case "Copy Path":
-                    copyPath(mp.target)
+                    copyPath(mp.target.first!)
                 default:
                     print("no switch")
             }
@@ -104,10 +104,12 @@ class Messager {
         pasteboard.setString(target, forType: .string)
     }
 
-    func deleteFoldorFile(_ target: String) {
+    func deleteFoldorFile(_ target: [String]) {
         let fm = FileManager.default
         do {
-            try fm.removeItem(atPath: target)
+            for item in target {
+                try fm.removeItem(atPath: item)
+            }
         } catch {
             logger.error("delete \(target) file run error \(error)")
         }

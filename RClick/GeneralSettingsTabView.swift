@@ -6,12 +6,16 @@
 //
 
 import FinderSync
-import os.log
+
 import SwiftUI
 
-private let logger = Logger(subsystem: subsystem, category: "GeneralSettingsTabView")
 
 struct GeneralSettingsTabView: View {
+    
+    @AppLog(category: "MyCategory")
+    private var logger
+
+    
     var store: FolderItemStore
 
     @State private var showFileImporter = false
@@ -116,6 +120,7 @@ struct GeneralSettingsTabView: View {
     }
 
     private func openExtensionset() {
+        logger.info("----------------")
         FinderSync.FIFinderSyncController.showExtensionManagementInterface()
     }
 }

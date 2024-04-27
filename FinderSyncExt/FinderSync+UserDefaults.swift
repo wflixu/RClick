@@ -33,10 +33,7 @@ extension UserDefaults {
         return spparator.isEmpty ? " " : spparator
     }
 
-    var copyOption: CopyOption {
-        let optionRaw = defaults(for: Key.copyOption) ?? 0
-        return CopyOption(rawValue: optionRaw) ?? .origin
-    }
+ 
 
     var newFileName: String {
         defaults(for: Key.newFileName) ?? "Untitled"

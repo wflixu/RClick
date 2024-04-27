@@ -28,22 +28,17 @@ class FinderSync: FIFinderSync {
     
         NSLog("FinderSync() launched from %@", Bundle.main.bundlePath as NSString)
         
-      
-
         // Set up the directory we are syncing.
 //        FIFinderSyncController.default().directoryURLs = [myFolderURL]
         
-        messager.on(name: "quit") { msg in
+        messager.on(name: "quit") { _ in
             self.isHostAppOpen = false
         }
-        messager.on(name: "running") { msg in
+        messager.on(name: "running") { _ in
             self.isHostAppOpen = true
         }
-        
     }
     
-
-
     // MARK: - Primary Finder Sync protocol methods
     
     override func beginObservingDirectory(at url: URL) {
@@ -121,7 +116,7 @@ class FinderSync: FIFinderSync {
         for item in menuStore.appItems {
             let menuItem = NSMenuItem()
             menuItem.target = self
-            menuItem.title = "用\(item.name)打开"
+            menuItem.title = String(localized: "用\(item.name)打开")
             menuItem.action = #selector(itemAction(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 0
@@ -148,8 +143,6 @@ class FinderSync: FIFinderSync {
         return actionMenuitems
     }
     
-
-
     @MainActor @objc func ContainerAction(_ menuItem: NSMenuItem) {
         switch menuItem.tag {
         case 0:
@@ -174,17 +167,15 @@ class FinderSync: FIFinderSync {
     @MainActor @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
         let item = menuStore.getActionItem(name: menuItem.title)
         let urls = FIFinderSyncController.default().selectedItemURLs()
-        if let test = UserDefaults.group.string(forKey: "test") {
-            logger.warning("test: \(test)")
-        }
         
-        guard let targetURL = urls?.first
-        else {
-            logger.warning("no url")
+        guard urls != nil  else {
             return
         }
+        
+       
         if let actionName = item?.key {
-            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: actionName, target: targetURL.path))
+            let urlstr = urls!.map { $0.path }
+            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: actionName, target: urlstr))
         } else {}
     }
     
@@ -204,7 +195,7 @@ class FinderSync: FIFinderSync {
         
         let item = menuStore.getAppItem(name: menuItem.title)
         if let appUrl = item?.url {
-            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, app: appUrl.path))
+            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: [target], app: appUrl.path))
         }
     }
 }
