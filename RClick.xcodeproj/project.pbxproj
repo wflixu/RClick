@@ -42,7 +42,6 @@
 		5C50D28F2BBFD00500DF31AA /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C50D28E2BBFD00500DF31AA /* OrderedCollections */; };
 		5C50D2912BBFD08C00DF31AA /* BookmarkFolderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */; };
 		5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
-		5C55A3212BDF5DBD00C47255 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 5C55A3202BDF5DBD00C47255 /* privacy.html */; };
 		5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
 		5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
@@ -105,7 +104,7 @@
 		5C50D2812BBFB33200DF31AA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		5C50D2832BBFB42100DF31AA /* FolderItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderItemStore.swift; sourceTree = "<group>"; };
 		5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkFolderItem.swift; sourceTree = "<group>"; };
-		5C55A3202BDF5DBD00C47255 /* privacy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = privacy.html; path = ../../Desktop/privacy.html; sourceTree = "<group>"; };
+		5C55A3222BDF5E5B00C47255 /* privacy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
 		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
 		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
@@ -135,6 +134,7 @@
 		5C119CFA2BBE9B9900B2D7C4 = {
 			isa = PBXGroup;
 			children = (
+				5C55A3222BDF5E5B00C47255 /* privacy.html */,
 				5C50D2542BBEB27900DF31AA /* README.md */,
 				5C119D052BBE9B9900B2D7C4 /* RClick */,
 				5C119D312BBEA9AC00B2D7C4 /* FinderSyncExt */,
@@ -219,7 +219,6 @@
 		5C50D28B2BBFCFC400DF31AA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5C55A3202BDF5DBD00C47255 /* privacy.html */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -329,7 +328,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */,
-				5C55A3212BDF5DBD00C47255 /* privacy.html in Resources */,
 				5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */,
 				5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
