@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await channel.setup(store: folderItemStore)
         }
-        NSApplication.shared.openSettings()
+//        NSApplication.shared.openSettings()
         messager.start(name: Key.messageFromFinder)
         messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
 //        Task {
