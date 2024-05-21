@@ -44,8 +44,7 @@ extension AppMenuItem {
     static let xcode = AppMenuItem(bundleIdentifier: "com.apple.dt.Xcode")
     static let vscode = AppMenuItem(bundleIdentifier: "com.microsoft.VSCode")
     static let terminal = AppMenuItem(bundleIdentifier: "com.apple.Terminal")
-    static let typora = AppMenuItem(bundleIdentifier: "abnerworks.Typora")
     static var defaultApps: [AppMenuItem] {
-        [.terminal, .vscode, .typora].compactMap { $0 }
+        [.terminal, .vscode].compactMap { $0 }
     }
 }

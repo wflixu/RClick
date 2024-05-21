@@ -25,12 +25,7 @@ class FinderSync: FIFinderSync {
         super.init()
         
         finderChannel.setup(folderStore, menuStore)
-    
-        NSLog("FinderSync() launched from %@", Bundle.main.bundlePath as NSString)
-        
-        // Set up the directory we are syncing.
-//        FIFinderSyncController.default().directoryURLs = [myFolderURL]
-        
+
         messager.on(name: "quit") { _ in
             self.isHostAppOpen = false
         }
@@ -82,7 +77,7 @@ class FinderSync: FIFinderSync {
     
     @MainActor override func menu(for menuKind: FIMenuKind) -> NSMenu {
         // Produce a menu for the extension.
-        logger.warning("start build menu ---------")
+        
         let applicationMenu = NSMenu(title: "RClick")
         guard isHostAppOpen else {
             return applicationMenu
@@ -168,11 +163,10 @@ class FinderSync: FIFinderSync {
         let item = menuStore.getActionItem(name: menuItem.title)
         let urls = FIFinderSyncController.default().selectedItemURLs()
         
-        guard urls != nil  else {
+        guard urls != nil else {
             return
         }
         
-       
         if let actionName = item?.key {
             let urlstr = urls!.map { $0.path }
             messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: actionName, target: urlstr))

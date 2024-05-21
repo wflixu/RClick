@@ -30,7 +30,6 @@ class MenuItemStore {
     }
 
     @MainActor func refresh() {
-        logger.warning("MenuItemStore refresh")
         try? load()
     }
 
@@ -38,7 +37,6 @@ class MenuItemStore {
 
     @MainActor func appendItems(_ items: [AppMenuItem]) {
         appItems.append(contentsOf: items.filter { !appItems.contains($0) })
-        logger.warning("appitems appendItems: ")
         try? save()
     }
 
@@ -144,7 +142,7 @@ class MenuItemStore {
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
 
         } else {
-            logger.warning("using default menuitemsstore")
+            logger.info("using default menuitemsstore")
             appItems = AppMenuItem.defaultApps
             actionItems = ActionMenuItem.all
         }
@@ -161,12 +159,3 @@ class MenuItemStore {
     }
 }
 
-extension UserDefaults {
-    static var group: UserDefaults {
-        #if DEBUG
-        UserDefaults(suiteName: "group.cn.wflixu.RClickDebug")!
-        #else
-        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
-        #endif
-    }
-}

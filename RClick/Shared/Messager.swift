@@ -8,6 +8,7 @@
 import AppKit
 import Foundation
 
+
 enum ActionType: String {
     case open
     case create
@@ -25,12 +26,14 @@ struct MessagePayload: Codable {
     }
 }
 
-import os.log
 
-private let logger = Logger(subsystem: subsystem, category: "messager")
 
 class Messager {
+    
     static let shared = Messager()
+    
+    @AppLog(category: "messager")
+    private var logger
 
     let center: DistributedNotificationCenter = .default()
     var bus: [String: (_ payload: MessagePayload) -> Void] = [:]
@@ -65,17 +68,16 @@ class Messager {
     }
 
     @objc func recievedMessage(_ notification: NSNotification) {
-        logger.warning("Message Received from Application \(notification.name.rawValue)")
+  
         if let handler = bus[notification.name.rawValue] {
             handler(reconstructEntry(messagePayload: notification.object as! String))
         } else {
             logger.warning("there no handler")
         }
         if notification.name.rawValue == Key.messageFromFinder {
-            NSLog("Message Recieved from Application to set the sync icon")
+            
 
             let mp = reconstructEntry(messagePayload: notification.object as! String)
-            NSLog("Message Recieved from name:\(mp.target) path:\(mp.app)")
             switch mp.action {
                 case "open":
                     openApp(app: mp.app, target: mp.target.first!)

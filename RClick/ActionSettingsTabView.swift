@@ -6,10 +6,9 @@
 //
 
 import AppKit
-import os.log
+
 import SwiftUI
 
-private let logger = Logger()
 
 struct ActionSettingsTabView: View {
     @Bindable var store: MenuItemStore
@@ -55,7 +54,6 @@ struct ActionSettingsTabView: View {
                     ) { result in
                         switch result {
                         case .success(let files):
-                            logger.warning("start add AppMenuItem")
                             let items = files.map { AppMenuItem(appURL: $0) }
                             store.appendItems(items)
                             channel.send(name: "RefreshMenuItems")

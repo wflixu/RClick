@@ -12,7 +12,7 @@ import SwiftUI
 
 struct GeneralSettingsTabView: View {
     
-    @AppLog(category: "MyCategory")
+    @AppLog(category: "settings-general")
     private var logger
 
     
@@ -35,15 +35,15 @@ struct GeneralSettingsTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom) {
-                Text("启动 Finder Extension").font(.title3).fontWeight(.semibold)
+                Text("启动扩展").font(.title3).fontWeight(.semibold)
                 Spacer()
                 Button(action: openExtensionset) {
-                    Label("打开Finder 扩展设置", systemImage: enableIcon)
+                    Label("打开扩展设置", systemImage: enableIcon)
                 }
             }
 
             Text(extensionEabled ? "扩展已经启用" : "扩展未启用")
-            Text("需要启用 RClick Finder Extension 以便使其正常工作")
+            Text("需要启用 RClick 扩展以便使其正常工作")
                 .font(.headline)
                 .fontWeight(.thin)
                 .foregroundColor(Color.gray)
@@ -109,6 +109,8 @@ struct GeneralSettingsTabView: View {
                     }
                 }
             }
+        }.onAppear {
+            logger.notice("is extensionEabled  \(extensionEabled)")
         }
     }
 
@@ -120,7 +122,6 @@ struct GeneralSettingsTabView: View {
     }
 
     private func openExtensionset() {
-        logger.info("----------------")
         FinderSync.FIFinderSyncController.showExtensionManagementInterface()
     }
 }
