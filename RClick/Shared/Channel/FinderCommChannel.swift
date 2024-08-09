@@ -35,7 +35,6 @@ class FinderCommChannel {
     }
 
     @MainActor @objc func choosePermissionFolder(_ notification: Notification) {
-        logger.warning("choosePermissionFolder: \(notification)")
         folderItemStore?.refresh();
     }
     

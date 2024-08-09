@@ -6,11 +6,10 @@
 //
 
 import SwiftUI
-import os.log
-
-private let logger = Logger(subsystem: subsystem, category: "AppDelegate")
 
 struct AboutSettingsTabView: View {
+    
+    
     var body: some View {
         VStack {
             HStack {
@@ -27,25 +26,20 @@ struct AboutSettingsTabView: View {
             }
             HStack {
                 Spacer()
-                Text("RClick 是一个Finder 拓展，可以添加打开文件夹的App，可以添加一些常用的操作！").font(.title3)
+                Text("RClick 是一个访达拓展，可以添加打开文件夹的应用，可以添加一些常用的操作！").font(.title3)
                 Spacer()
             }
             Spacer()
             Divider()
             HStack (alignment: .center) {
                 Image("github")
-                Text("https://github.com/wflixu/RClick")
+                
+                Text(verbatim: "https://github.com/wflixu/RClick")
                 Spacer()
             }
             
         }
         
-    }
-    private func test() {
-        for nswin in NSApplication.shared.windows {
-            logger.warning("nswid：\(nswin.windowNumber), \(nswin.title)")
-        }
-    
     }
 }
 

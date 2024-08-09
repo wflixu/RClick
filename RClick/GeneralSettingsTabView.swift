@@ -5,27 +5,25 @@
 //  Created by 李旭 on 2024/4/10.
 //
 
+import AppKit
+import Cocoa
 import FinderSync
-
 import SwiftUI
 
-
 struct GeneralSettingsTabView: View {
-    
-    @AppLog(category: "MyCategory")
+    @AppLog(category: "settings-general")
     private var logger
 
-    
+    @AppStorage("extensionEnabled") private var extensionEnabled = false
+
     var store: FolderItemStore
 
     @State private var showFileImporter = false
 
-    var extensionEabled: Bool {
-        return FinderSync.FIFinderSyncController.isExtensionEnabled
-    }
+    @Environment(\.scenePhase) private var scenePhase
 
     var enableIcon: String {
-        if FinderSync.FIFinderSyncController.isExtensionEnabled {
+        if extensionEnabled {
             return "checkmark.circle.fill"
         } else {
             return "checkmark.circle"
@@ -35,15 +33,17 @@ struct GeneralSettingsTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom) {
-                Text("启动 Finder Extension").font(.title3).fontWeight(.semibold)
+                Text("启动扩展").font(.title3).fontWeight(.semibold)
                 Spacer()
                 Button(action: openExtensionset) {
-                    Label("打开Finder 扩展设置", systemImage: enableIcon)
+                    Label("打开扩展设置", systemImage: enableIcon)
                 }
             }
 
-            Text(extensionEabled ? "扩展已经启用" : "扩展未启用")
-            Text("需要启用 RClick Finder Extension 以便使其正常工作")
+            HStack {
+                Text(extensionEnabled ? "扩展已经启用" : "扩展未启用")
+            }
+            Text("需要启用 RClick 扩展以便使其正常工作")
                 .font(.headline)
                 .fontWeight(.thin)
                 .foregroundColor(Color.gray)
@@ -92,10 +92,6 @@ struct GeneralSettingsTabView: View {
                                     print(error)
                                 }
                             }
-
-                        Button {
-                            store.deleteAllBookmarkItems()
-                        } label: { Label("删除", systemImage: "folder.badge.minus") }
                     }
 
                 } footer: {
@@ -110,6 +106,16 @@ struct GeneralSettingsTabView: View {
                 }
             }
         }
+
+        .onAppear {
+            extensionEnabled = FIFinderSyncController.isExtensionEnabled
+        }.onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification), perform: { _ in
+            updateEnableState()
+        })
+    }
+
+    func updateEnableState() {
+        extensionEnabled = FIFinderSyncController.isExtensionEnabled
     }
 
     @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {
@@ -120,7 +126,6 @@ struct GeneralSettingsTabView: View {
     }
 
     private func openExtensionset() {
-        logger.info("----------------")
         FinderSync.FIFinderSyncController.showExtensionManagementInterface()
     }
 }

@@ -7,37 +7,46 @@
 
 import AppKit
 import Cocoa
+import FinderSync
 import Foundation
 import os.log
+import SwiftUI
 
 private let logger = Logger(subsystem: subsystem, category: "AppDelegate")
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let messager = Messager.shared
     var folderItemStore = FolderItemStore()
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
         logger.notice("App -------------------------- 已启动")
-        
-//        NSApplication.shared.delegate.o
 
-        for nswin in NSApplication.shared.windows {
-            logger.warning("nswid：\(nswin.windowNumber)")
-        }
-    
         Task {
             await channel.setup(store: folderItemStore)
         }
-//        NSApplication.shared.openSettings()
+
         messager.start(name: Key.messageFromFinder)
         messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
-//        Task {
-//       //                await channel.setup(store: folderItemStore)
-//       //            }
     }
-    
+
+    @objc func extensionDidBecomeActive() {
+        print("Finder Sync Extension is active.")
+    }
+
+    @objc func extensionWillResignActive() {
+        print("Finder Sync Extension is inactive.")
+    }
+
+    func applicationWillBecomeActive(_ notification: Notification) {
+        let enable = FIFinderSyncController.isExtensionEnabled
+        print("applicationDidBecomeActive , enable: \(enable)")
+        UserDefaults.group.set(enable, forKey: "enable")
+    }
+
     func applicationDidBecomeActive(_ notification: Notification) {
+        print("applicationDidBecomeActive")
+
         NSApplication.shared.openSettings()
     }
 
@@ -45,8 +54,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    func applicationWillTerminate(_ notification: Notification) {
-        logger.warning("#### applicationWillTerminate\(notification)")
-    }
+    func applicationWillTerminate(_ notification: Notification) {}
 }
-

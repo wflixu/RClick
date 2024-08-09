@@ -31,7 +31,6 @@ final class FolderItemStore {
     }
 
     @MainActor func refresh() {
-        logger.warning("FolderItemStore starting refres")
         try? load()
     }
 

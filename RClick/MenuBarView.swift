@@ -23,11 +23,9 @@ struct MenuBarView: View {
         }
     }
 
-    var setting = SettingsLink()
 
     private func actionQuit() {
-        print("action action quirt")
-
+       
         messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
       
         Task {
@@ -36,7 +34,6 @@ struct MenuBarView: View {
         }
     }
 
-    private func actionSettings() {}
 }
 
 #Preview {

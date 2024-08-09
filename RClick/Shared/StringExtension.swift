@@ -7,10 +7,12 @@
 
 import Foundation
 
-
+import os.log
 
 let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
 var subsystem: String { bundleIdentifier }
+
+private let logger = Logger(subsystem: subsystem, category: "user_defaults")
 
 enum Key {
     static let showContextualMenuForItem = "SHOW_CONTEXTUAL_MENU_FOR_ITEM"
@@ -30,8 +32,6 @@ enum Key {
     static let messageFromFinder = "RCLICK_FINDER_Main"
     static let messageFromMain = "RCLICK_MAIN_FINDER"
 }
-
-
 
 enum NewFileExtension: String, CaseIterable, Identifiable {
     var id: String { rawValue }
@@ -56,5 +56,62 @@ extension String {
 extension Dictionary {
     func toString(separator: String = " ") -> String {
         compactMap { "\($0)=\($1)" }.joined(separator: separator)
+    }
+}
+
+extension UserDefaults {
+    static var group: UserDefaults {
+        #if DEBUG
+        UserDefaults(suiteName: "group.cn.wflixu.RClickDebug")!
+        #else
+        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
+        #endif
+    }
+
+    var showContextualMenuForItem: Bool {
+        defaults(for: Key.showContextualMenuForItem) ?? true
+    }
+
+    var showContextualMenuForContainer: Bool {
+        defaults(for: Key.showContextualMenuForContainer) ?? true
+    }
+
+    var showContextualMenuForSidebar: Bool {
+        defaults(for: Key.showContextualMenuForSidebar) ?? true
+    }
+
+    var showToolbarItemMenu: Bool {
+        defaults(for: Key.showToolbarItemMenu) ?? true
+    }
+
+    var copySeparator: String {
+        let spparator = defaults(for: Key.copySeparator) ?? ""
+        return spparator.isEmpty ? " " : spparator
+    }
+
+    var newFileName: String {
+        defaults(for: Key.newFileName) ?? "Untitled"
+    }
+
+    var newFileExtension: NewFileExtension {
+        let fileExtensionRaw = defaults(for: Key.newFileExtension) ?? ""
+        return NewFileExtension(rawValue: fileExtensionRaw) ?? .none
+    }
+
+    var showSubMenuForApplication: Bool {
+        defaults(for: Key.showSubMenuForApplication) ?? false
+    }
+
+    var showSubMenuForAction: Bool {
+        defaults(for: Key.showSubMenuForAction) ?? false
+    }
+
+    private func defaults<T>(for key: String) -> T? {
+        if let value = object(forKey: key) as? T {
+            return value
+        } else {
+            logger.warning("Missing key for \(key, privacy: .public), using default true value")
+            return nil
+        }
     }
 }

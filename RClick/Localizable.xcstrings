@@ -2,14 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        }
-      }
+
     },
     "Copy Path" : {
       "comment" : "Copy Path",
@@ -41,16 +34,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "彻底删除"
-          }
-        }
-      }
-    },
-    "https://github.com/wflixu/RClick" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/wflixu/RClick"
           }
         }
       }
@@ -87,7 +70,8 @@
         }
       }
     },
-    "RClick 是一个Finder 拓展，可以添加打开文件夹的App，可以添加一些常用的操作！" : {
+    "RClick 是一个访达扩展，可以添加打开文件夹的应用，可以添加一些常用的操作！" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -98,10 +82,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RClick 是一个Finder 拓展，可以添加打开文件夹的App，可以添加一些常用的操作！"
+            "value" : "RClick 是一个访达扩展，可以添加打开文件夹的应用，可以添加一些常用的操作！"
           }
         }
       }
+    },
+    "RClick 是一个访达拓展，可以添加打开文件夹的应用，可以添加一些常用的操作！" : {
+
     },
     "Settings" : {
       "localizations" : {
@@ -136,6 +123,7 @@
       }
     },
     "删除" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -151,18 +139,18 @@
         }
       }
     },
-    "启动 Finder Extension" : {
+    "启动扩展" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enable Finder Extension"
+            "value" : "Enable extension"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启动访达拓展"
+            "value" : "启用扩展"
           }
         }
       }
@@ -183,18 +171,18 @@
         }
       }
     },
-    "打开Finder 扩展设置" : {
+    "打开扩展设置" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open Finder extension Settings"
+            "value" : "Open  extension settings"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开Finder 扩展设置"
+            "value" : "打开扩展设置"
           }
         }
       }
@@ -375,18 +363,18 @@
         }
       }
     },
-    "需要启用 RClick Finder Extension 以便使其正常工作" : {
+    "需要启用 RClick 扩展以便使其正常工作" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The RClick Finder Extension needs to be enabled for it to work properly"
+            "value" : "The RClick  Extension needs to be enabled for it to work properly"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "需要启用 RClick 访达扩展以便使其正常工作"
+            "value" : "需要启用 RClick 扩展以便使其正常工作"
           }
         }
       }
