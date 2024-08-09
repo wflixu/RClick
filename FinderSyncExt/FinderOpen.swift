@@ -13,7 +13,7 @@ import os.log
 
 private let logger = Logger(subsystem: subsystem, category: "menu")
 
-class FinderSync: FIFinderSync {
+class FinderOpen: FIFinderSync {
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = true
     let menuStore = MenuItemStore()

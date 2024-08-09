@@ -17,7 +17,6 @@ struct RClickApp: App {
 
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
 
-    @Environment(\.scenePhase) var scenePhase: ScenePhase
     @Environment(\.openWindow) var openWindow
 
     @AppLog(category: "main")
@@ -27,6 +26,7 @@ struct RClickApp: App {
         Settings {
             SettingsView()
         }
+
         .defaultAppStorage(.group)
 
         MenuBarExtra(

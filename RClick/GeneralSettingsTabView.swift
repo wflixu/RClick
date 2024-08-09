@@ -5,27 +5,25 @@
 //  Created by 李旭 on 2024/4/10.
 //
 
+import AppKit
+import Cocoa
 import FinderSync
-
 import SwiftUI
 
-
 struct GeneralSettingsTabView: View {
-    
     @AppLog(category: "settings-general")
     private var logger
 
-    
+    @AppStorage("extensionEnabled") private var extensionEnabled = false
+
     var store: FolderItemStore
 
     @State private var showFileImporter = false
 
-    var extensionEabled: Bool {
-        return FinderSync.FIFinderSyncController.isExtensionEnabled
-    }
+    @Environment(\.scenePhase) private var scenePhase
 
     var enableIcon: String {
-        if FinderSync.FIFinderSyncController.isExtensionEnabled {
+        if extensionEnabled {
             return "checkmark.circle.fill"
         } else {
             return "checkmark.circle"
@@ -42,7 +40,9 @@ struct GeneralSettingsTabView: View {
                 }
             }
 
-            Text(extensionEabled ? "扩展已经启用" : "扩展未启用")
+            HStack {
+                Text(extensionEnabled ? "扩展已经启用" : "扩展未启用")
+            }
             Text("需要启用 RClick 扩展以便使其正常工作")
                 .font(.headline)
                 .fontWeight(.thin)
@@ -92,10 +92,6 @@ struct GeneralSettingsTabView: View {
                                     print(error)
                                 }
                             }
-
-                        Button {
-                            store.deleteAllBookmarkItems()
-                        } label: { Label("删除", systemImage: "folder.badge.minus") }
                     }
 
                 } footer: {
@@ -109,9 +105,17 @@ struct GeneralSettingsTabView: View {
                     }
                 }
             }
-        }.onAppear {
-            logger.notice("is extensionEabled  \(extensionEabled)")
         }
+
+        .onAppear {
+            extensionEnabled = FIFinderSyncController.isExtensionEnabled
+        }.onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification), perform: { _ in
+            updateEnableState()
+        })
+    }
+
+    func updateEnableState() {
+        extensionEnabled = FIFinderSyncController.isExtensionEnabled
     }
 
     @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {
