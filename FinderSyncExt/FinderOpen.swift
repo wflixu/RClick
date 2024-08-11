@@ -87,6 +87,11 @@ class FinderOpen: FIFinderSync {
             for nsmenu in createAppItems() {
                 applicationMenu.addItem(nsmenu)
             }
+            let fileMenuItem = createFileCreateMenuItem()
+           
+            fileMenuItem.submenu = createFileCreateMenu()
+                
+            applicationMenu.addItem(fileMenuItem)
                 
         case .contextualMenuForItems:
             NSLog("contextualMenuForItems")
@@ -137,6 +142,36 @@ class FinderOpen: FIFinderSync {
         }
         return actionMenuitems
     }
+
+    // 创建文件菜单
+    @objc func createFileCreateMenu() -> NSMenu {
+        let submenu = NSMenu(title: "文件创建菜单")
+        for item in menuStore.filetypeItems.filter(\.enabled) {
+            let menuItem = NSMenuItem()
+            menuItem.target = self
+            menuItem.title = item.name
+            menuItem.action = #selector(itemAction(_:))
+            menuItem.toolTip = "\(item.name)"
+            menuItem.tag = 2
+            if let img = NSImage(named: item.iconName) {
+                menuItem.image = img
+            } else {
+                logger.info("")
+            }
+           
+            submenu.addItem(menuItem)
+        }
+        return submenu
+    }
+    
+    // 创建文件菜单容器
+    @objc func createFileCreateMenuItem() -> NSMenuItem {
+        let menuItem = NSMenuItem()
+        menuItem.title = "创建文件"
+        menuItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "doc.badge.plus")!
+                
+        return menuItem
+    }
     
     @MainActor @objc func ContainerAction(_ menuItem: NSMenuItem) {
         switch menuItem.tag {
@@ -154,11 +189,22 @@ class FinderOpen: FIFinderSync {
             appOpen(menuItem, isContainer: false)
         case 1:
             actioning(menuItem, isContainer: false)
+        case 2:
+            createFile(menuItem, isContainer: false)
         default:
             break
         }
     }
-   
+    
+    @MainActor @objc func createFile(_ menuItem: NSMenuItem, isContainer: Bool) {
+        let item = menuStore.getFileCreateItem(name: menuItem.title)
+        let url = FIFinderSyncController.default().targetedURL()
+        
+        if let target = url?.path(), let ext = item?.ext {
+            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "Create File", target: [target], ext: ext))
+        }
+    }
+    
     @MainActor @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
         let item = menuStore.getActionItem(name: menuItem.title)
         let urls = FIFinderSyncController.default().selectedItemURLs()

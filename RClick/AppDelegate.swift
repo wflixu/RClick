@@ -30,23 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
     }
 
-    @objc func extensionDidBecomeActive() {
-        print("Finder Sync Extension is active.")
-    }
-
-    @objc func extensionWillResignActive() {
-        print("Finder Sync Extension is inactive.")
-    }
-
-    func applicationWillBecomeActive(_ notification: Notification) {
-        let enable = FIFinderSyncController.isExtensionEnabled
-        print("applicationDidBecomeActive , enable: \(enable)")
-        UserDefaults.group.set(enable, forKey: "enable")
-    }
-
     func applicationDidBecomeActive(_ notification: Notification) {
-        print("applicationDidBecomeActive")
-
         NSApplication.shared.openSettings()
     }
 

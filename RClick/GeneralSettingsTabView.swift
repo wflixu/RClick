@@ -109,9 +109,9 @@ struct GeneralSettingsTabView: View {
 
         .onAppear {
             extensionEnabled = FIFinderSyncController.isExtensionEnabled
-        }.onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification), perform: { _ in
+        }.onForeground {
             updateEnableState()
-        })
+        }
     }
 
     func updateEnableState() {
