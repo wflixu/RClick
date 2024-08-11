@@ -22,6 +22,7 @@ struct AboutSettingsTabView: View {
             HStack {
                 Spacer()
                 Text("RClick").font(.title)
+                Text("\(getAppVersion())（\(getBuildVersion())）")
                 Spacer()
             }
             HStack {
@@ -41,6 +42,20 @@ struct AboutSettingsTabView: View {
         }
         
     }
+    
+    func getAppVersion() -> String {
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                return version
+            }
+            return "Unknown"
+        }
+
+        func getBuildVersion() -> String {
+            if let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                return buildVersion
+            }
+            return "Unknown"
+        }
 }
 
 #Preview {

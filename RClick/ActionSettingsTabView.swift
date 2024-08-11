@@ -98,6 +98,40 @@ struct ActionSettingsTabView: View {
                             .font(.body)
                     }
                 }
+            }
+            
+            // Mark
+            Section {
+                List {
+                    ForEach($store.filetypeItems) { $item in
+                        HStack {
+                            Image(item.iconName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20, height: 20)
+                            Text(item.name).font(.title2)
+                            Spacer()
+                            Toggle("", isOn: $item.enabled)
+                                .onChange(of: item.enabled) {
+                                    store.toggleActionItem()
+                                    channel.send(name: "RefreshMenuItems")
+                                }
+                                .toggleStyle(.switch)
+                        }
+                    }
+                }
+
+            } header: {
+                HStack {
+                    Text("新建文件").font(.title2)
+                    Spacer()
+                    Button {
+                        store.resetFiletypeItems()
+                    } label: {
+                        Label("重置", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.body)
+                    }
+                }
             } footer: {
                 Link("想添加功能, 这里反馈", destination: URL(string: "https://github.com/wflixu/RClick/issues/new/choose")!)
             }

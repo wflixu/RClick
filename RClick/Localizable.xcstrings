@@ -4,6 +4,16 @@
     "" : {
 
     },
+    "%@（%@）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@（%2$@）"
+          }
+        }
+      }
+    },
     "Copy Path" : {
       "comment" : "Copy Path",
       "localizations" : {
@@ -282,6 +292,9 @@
           }
         }
       }
+    },
+    "新建文件" : {
+
     },
     "添加" : {
       "localizations" : {

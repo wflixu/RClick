@@ -19,6 +19,8 @@ class MenuItemStore {
     var appItems: [AppMenuItem] = []
     var actionItems: [ActionMenuItem] = []
 
+    var filetypeItems: [FiletypeMenuItem] = []
+
     // MARK: - Init
 
     init() {
@@ -94,6 +96,11 @@ class MenuItemStore {
         try? save()
     }
 
+    @MainActor func resetFiletypeItems() {
+        filetypeItems = FiletypeMenuItem.all
+        try? save()
+    }
+
     // MARK: - Move Items
 
     @MainActor func moveAppItems(from source: IndexSet, to destination: Int) {
@@ -120,6 +127,10 @@ class MenuItemStore {
         actionItems.first { $0.name == name }
     }
 
+    func getFileCreateItem(name: String) -> FiletypeMenuItem? {
+        filetypeItems.first { $0.name == name }
+    }
+
     // MARK: - Update Item
 
     @MainActor func updateAppItem(item: AppMenuItem, index: Int?) {
@@ -134,10 +145,10 @@ class MenuItemStore {
     // MARK: - UserDefaults
 
     private func load() throws {
+        let decoder = PropertyListDecoder()
         if let appItemData = UserDefaults.group.data(forKey: "APP_ITEMS"),
            let actionItemData = UserDefaults.group.data(forKey: "ACTION_ITEMS")
         {
-            let decoder = PropertyListDecoder()
             appItems = try decoder.decode([AppMenuItem].self, from: appItemData)
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
 
@@ -146,6 +157,12 @@ class MenuItemStore {
             appItems = AppMenuItem.defaultApps
             actionItems = ActionMenuItem.all
         }
+
+        if let filetypeItemData = UserDefaults.group.data(forKey: "FILETYPE_ITEMS") {
+            filetypeItems = try decoder.decode([FiletypeMenuItem].self, from: filetypeItemData)
+        } else {
+            filetypeItems = FiletypeMenuItem.all
+        }
     }
 
     @MainActor
@@ -153,9 +170,10 @@ class MenuItemStore {
         let encoder = PropertyListEncoder()
         let appItemsData = try encoder.encode(OrderedSet(appItems))
         let actionItemsData = try encoder.encode(OrderedSet(actionItems))
+        let filetypeItemsData = try encoder.encode(OrderedSet(filetypeItems))
         UserDefaults.group.set(appItemsData, forKey: "APP_ITEMS")
         UserDefaults.group.set(actionItemsData, forKey: "ACTION_ITEMS")
+        UserDefaults.group.set(filetypeItemsData, forKey: "FILETYPE_ITEMS")
         refresh()
     }
 }
-
