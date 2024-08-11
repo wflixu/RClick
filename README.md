@@ -10,14 +10,16 @@ Config you MacOS ContextMenu items, useing Latest Swift and SwiftUI.
 
 
 
-
 ## Feature
+
 - [x] use someApp open path
 - [x] copy path
 - [x] delete dir or file
-- [ ] create file like txt， json
+- [x] create file like txt json markdown docx pptx xlsx etc.
 
+## screenshot
 
+![](./images/screenshot.png)
 
 ## Other similar projects:
 
