@@ -5,11 +5,10 @@
 //  Created by 李旭 on 2024/4/7.
 //
 
-import Foundation
 import AppKit
+import Foundation
 
 import OrderedCollections
-
 
 struct AppMenuItem: MenuItem {
     init(appURL url: URL) {
@@ -45,6 +44,9 @@ extension AppMenuItem {
     static let vscode = AppMenuItem(bundleIdentifier: "com.microsoft.VSCode")
     static let terminal = AppMenuItem(bundleIdentifier: "com.apple.Terminal")
     static var defaultApps: [AppMenuItem] {
-        [.terminal, .vscode].compactMap { $0 }
+        [
+            .terminal,
+//            .vscode
+        ].compactMap { $0 }
     }
 }

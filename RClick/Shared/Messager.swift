@@ -123,7 +123,7 @@ class Messager {
         let fileManager = FileManager.default
 
         // 基础文件名
-        let baseFileName = "新建文件"
+        let baseFileName = String(localized: "Untitled")
 
         // 初始文件路径
         var filePath = "\(dir)\(baseFileName)\(ext)"

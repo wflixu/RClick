@@ -35,7 +35,6 @@ class FinderOpen: FIFinderSync {
     }
     
     // MARK: - Primary Finder Sync protocol methods
-    
     override func beginObservingDirectory(at url: URL) {
         // The user is now seeing the container's contents.
         // If they see it in more than one view at a time, we're only told once.
@@ -116,7 +115,7 @@ class FinderOpen: FIFinderSync {
         for item in menuStore.appItems {
             let menuItem = NSMenuItem()
             menuItem.target = self
-            menuItem.title = String(localized: "用\(item.name)打开")
+            menuItem.title = String(localized: "Open With \(item.name)")
             menuItem.action = #selector(itemAction(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 0
@@ -132,7 +131,7 @@ class FinderOpen: FIFinderSync {
         for item in menuStore.actionItems.filter(\.enabled) {
             let menuItem = NSMenuItem()
             menuItem.target = self
-            menuItem.title = item.name
+            menuItem.title = String(localized: "\(item.name)")
             menuItem.action = #selector(itemAction(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 1
@@ -145,7 +144,7 @@ class FinderOpen: FIFinderSync {
 
     // 创建文件菜单
     @objc func createFileCreateMenu() -> NSMenu {
-        let submenu = NSMenu(title: "文件创建菜单")
+        let submenu = NSMenu(title: "file create menu")
         for item in menuStore.filetypeItems.filter(\.enabled) {
             let menuItem = NSMenuItem()
             menuItem.target = self
@@ -167,7 +166,7 @@ class FinderOpen: FIFinderSync {
     // 创建文件菜单容器
     @objc func createFileCreateMenuItem() -> NSMenuItem {
         let menuItem = NSMenuItem()
-        menuItem.title = "创建文件"
+        menuItem.title = String(localized:"New File" )
         menuItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "doc.badge.plus")!
                 
         return menuItem

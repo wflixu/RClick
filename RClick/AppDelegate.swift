@@ -38,5 +38,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    func applicationWillTerminate(_ notification: Notification) {}
+    func applicationWillTerminate(_ notification: Notification) {
+        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
+        logger.info("applicationWillTerminate")
+    }
 }

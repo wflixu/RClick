@@ -23,6 +23,7 @@ actor AppCommChannel {
     }
 
     nonisolated func send(name: String, data: [AnyHashable: Any]? = nil) {
+        
         logger.notice("appchannel Sending \(name) data: \(data ?? [:])")
         DistributedNotificationCenter.default()
             .postNotificationName(.init(rawValue: name),

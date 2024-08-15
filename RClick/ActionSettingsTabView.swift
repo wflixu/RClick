@@ -9,10 +9,9 @@ import AppKit
 
 import SwiftUI
 
-
 struct ActionSettingsTabView: View {
     @Bindable var store: MenuItemStore
-    
+
     @State var menumItemStore = MenuItemStore()
     @State var showSelectApp = false
 
@@ -38,12 +37,12 @@ struct ActionSettingsTabView: View {
                 }
             } header: {
                 HStack {
-                    Text("菜单应用").font(.title2)
+                    Text("Menu App").font(.title2)
                     Spacer()
                     Button {
                         showSelectApp = true
                     } label: {
-                        Label("添加", systemImage: "plus.app")
+                        Label("Add", systemImage: "plus.app")
                             .font(.body)
                     }
                     .fileImporter(
@@ -75,7 +74,7 @@ struct ActionSettingsTabView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20, height: 20)
-                            Text(item.name).font(.title2)
+                            Text(LocalizedStringKey(item.name)).font(.title2)
                             Spacer()
                             Toggle("", isOn: $item.enabled)
                                 .onChange(of: item.enabled) {
@@ -89,17 +88,17 @@ struct ActionSettingsTabView: View {
 
             } header: {
                 HStack {
-                    Text("操作项").font(.title2)
+                    Text("Action Item").font(.title2)
                     Spacer()
                     Button {
                         store.resetActionItems()
                     } label: {
-                        Label("重置", systemImage: "arrow.triangle.2.circlepath")
+                        Label("Reset", systemImage: "arrow.triangle.2.circlepath")
                             .font(.body)
                     }
                 }
             }
-            
+
             // Mark
             Section {
                 List {
@@ -123,17 +122,17 @@ struct ActionSettingsTabView: View {
 
             } header: {
                 HStack {
-                    Text("新建文件").font(.title2)
+                    Text("New File").font(.title2)
                     Spacer()
                     Button {
                         store.resetFiletypeItems()
                     } label: {
-                        Label("重置", systemImage: "arrow.triangle.2.circlepath")
+                        Label("Reset", systemImage: "arrow.triangle.2.circlepath")
                             .font(.body)
                     }
                 }
             } footer: {
-                Link("想添加功能, 这里反馈", destination: URL(string: "https://github.com/wflixu/RClick/issues/new/choose")!)
+                Link("Want to add a feature? Give feedback here.", destination: URL(string: "https://github.com/wflixu/RClick/issues/new/choose")!)
             }
         }
         .controlSize(.large)

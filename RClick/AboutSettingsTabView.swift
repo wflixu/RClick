@@ -27,7 +27,7 @@ struct AboutSettingsTabView: View {
             }
             HStack {
                 Spacer()
-                Text("RClick 是一个访达拓展，可以添加打开文件夹的应用，可以添加一些常用的操作！").font(.title3)
+                Text("RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions!").font(.title3)
                 Spacer()
             }
             Spacer()

@@ -33,17 +33,14 @@ struct GeneralSettingsTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom) {
-                Text("启动扩展").font(.title3).fontWeight(.semibold)
+                Text("Enable extension").font(.title3).fontWeight(.semibold)
                 Spacer()
                 Button(action: openExtensionset) {
-                    Label("打开扩展设置", systemImage: enableIcon)
+                    Label("Open Settings", systemImage: enableIcon)
                 }
             }
 
-            HStack {
-                Text(extensionEnabled ? "扩展已经启用" : "扩展未启用")
-            }
-            Text("需要启用 RClick 扩展以便使其正常工作")
+            Text("The RClick extension needs to be enabled for it to work properly")
                 .font(.headline)
                 .fontWeight(.thin)
                 .foregroundColor(Color.gray)
@@ -57,7 +54,7 @@ struct GeneralSettingsTabView: View {
                         ForEach(store.bookmarkItems) { item in
                             HStack {
                                 Image(systemName: "folder")
-                                Text(item.path)
+                                Text(verbatim: item.path)
                                 Spacer()
                                 Button {
                                     removeBookmark(item)
@@ -69,11 +66,11 @@ struct GeneralSettingsTabView: View {
                     }
                 } header: {
                     HStack {
-                        Text("授权文件夹").font(.title3).fontWeight(.semibold)
+                        Text("Authorization folder").font(.title3).fontWeight(.semibold)
                         Spacer()
                         Button {
                             showFileImporter = true
-                        } label: { Label("添加", systemImage: "folder.badge.plus") }
+                        } label: { Label("Add", systemImage: "folder.badge.plus") }
                             .fileImporter(
                                 isPresented: $showFileImporter,
                                 allowedContentTypes: [.directory],
@@ -97,7 +94,7 @@ struct GeneralSettingsTabView: View {
                 } footer: {
                     VStack {
                         HStack {
-                            Text("授权的文件夹，才能执行菜单的操作")
+                            Text("The operation of the menu can only be executed in authorized folders")
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                             Spacer()

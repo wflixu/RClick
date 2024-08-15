@@ -61,11 +61,7 @@ extension Dictionary {
 
 extension UserDefaults {
     static var group: UserDefaults {
-        #if DEBUG
-        UserDefaults(suiteName: "group.cn.wflixu.RClickDebug")!
-        #else
         UserDefaults(suiteName: "group.cn.wflixu.RClick")!
-        #endif
     }
 
     var showContextualMenuForItem: Bool {
