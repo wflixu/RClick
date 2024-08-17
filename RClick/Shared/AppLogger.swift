@@ -10,9 +10,10 @@ import OSLog
 
 @propertyWrapper
 struct AppLog {
+
     private let logger: Logger
 
-    init(subsystem: String = subsystem, category: String = "main") {
+    init(subsystem: String = Bundle.main.bundleIdentifier ?? "", category: String = "main") {
         self.logger = Logger(subsystem: subsystem, category: category)
     }
 

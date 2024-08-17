@@ -18,7 +18,10 @@ struct GeneralSettingsTabView: View {
 
     var store: FolderItemStore
 
-    @State private var showFileImporter = false
+    @State private var showAlert = false
+    @State private var wrongFold = false
+
+    @State private var showDirImporter = false
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -69,26 +72,9 @@ struct GeneralSettingsTabView: View {
                         Text("Authorization folder").font(.title3).fontWeight(.semibold)
                         Spacer()
                         Button {
-                            showFileImporter = true
+                            showDirImporter = true
                         } label: { Label("Add", systemImage: "folder.badge.plus") }
-                            .fileImporter(
-                                isPresented: $showFileImporter,
-                                allowedContentTypes: [.directory],
-                                allowsMultipleSelection: false
-                            ) { result in
-                                switch result {
-                                case .success(let files):
-
-                                    for file in files {
-                                        // gain access to the directory
-                                        store.appendItem(BookmarkFolderItem(file))
-                                    }
-                                    channel.send(name: "ChoosePermissionFolder", data: nil)
-                                case .failure(let error):
-                                    // handle error
-                                    print(error)
-                                }
-                            }
+                            
                     }
 
                 } footer: {
@@ -102,17 +88,80 @@ struct GeneralSettingsTabView: View {
                     }
                 }
             }
+            .alert(
+                Text("Invalid Folder Selection"),
+                isPresented: $wrongFold
+            ) {
+                Button("OK") {
+                    showDirImporter = true
+                }
+            } message: {
+                Text("The selected folder is a subdirectory of the previously chosen folder. Please select a different folder.")
+            }
+        }
+        .alert(
+            Text("Not Authorized Folder"),
+            isPresented: $showAlert
+        ) {
+            Button("OK") {
+                showDirImporter = true
+            }
+        } message: {
+            Text("You must grant access to the folder to use this feature.")
+        }
+        .fileImporter(
+            isPresented: $showDirImporter,
+            allowedContentTypes: [.directory],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let dirs):
+                startAddDir(dirs.first!)
+
+            case .failure(let error):
+                // handle error
+                print(error)
+            }
         }
 
         .onAppear {
             extensionEnabled = FIFinderSyncController.isExtensionEnabled
+
         }.onForeground {
             updateEnableState()
+            Task {
+                await checkPermissionFolder()
+            }
+        }
+        .task {
+            await checkPermissionFolder()
         }
     }
 
     func updateEnableState() {
         extensionEnabled = FIFinderSyncController.isExtensionEnabled
+    }
+
+    func checkPermissionFolder() async {
+        let isEmpty = await store.isEmpty()
+        if isEmpty {
+            showAlert = true
+        } else {
+            logger.info("no empty")
+        }
+    }
+
+    @MainActor
+    func startAddDir(_ url: URL) {
+        let hasParentDir = store.hasParentBookmark(of: url)
+        if hasParentDir {
+            wrongFold = true
+//            showAlert = true
+            logger.info("hasParentDir\(hasParentDir)")
+        } else {
+            store.appendItem(BookmarkFolderItem(url))
+            channel.send(name: "ChoosePermissionFolder", data: nil)
+        }
     }
 
     @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {

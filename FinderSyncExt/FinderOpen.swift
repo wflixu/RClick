@@ -21,9 +21,11 @@ class FinderOpen: FIFinderSync {
     let finderChannel = FinderCommChannel()
     let messager = Messager.shared
     
+    var bookmarkItems: [BookmarkFolderItem] = []
+    
     override init() {
         super.init()
-        
+        logger.info("---- finderOpen init")
         finderChannel.setup(folderStore, menuStore)
 
         messager.on(name: "quit") { _ in
@@ -31,19 +33,23 @@ class FinderOpen: FIFinderSync {
         }
         messager.on(name: "running") { _ in
             self.isHostAppOpen = true
+            logger.warning("startt running")
         }
+        
+
     }
     
     // MARK: - Primary Finder Sync protocol methods
+
     override func beginObservingDirectory(at url: URL) {
         // The user is now seeing the container's contents.
         // If they see it in more than one view at a time, we're only told once.
         NSLog("beginObservingDirectoryAtURL: %@", url.path as NSString)
-//        let dirs = FIFinderSyncController.default().directoryURLs.map()
+        let dirs = FIFinderSyncController.default().directoryURLs!
         
-//        for dir in dirs {
-//            logger.notice("Sync directory set to \(dir.path)")
-//        }
+        for dir in dirs {
+            logger.notice("Sync directory set to \(dir.path)")
+        }
     }
     
     override func endObservingDirectory(at url: URL) {
@@ -72,6 +78,23 @@ class FinderOpen: FIFinderSync {
     
     override var toolbarItemImage: NSImage {
         return NSImage(systemSymbolName: "computermouse", accessibilityDescription: "RClick Menu")!
+    }
+    
+    @MainActor func initMenuDirs() throws {
+        do {
+            let bks = try folderStore.getBookmarkItems()
+            logger.warning("start init fifindersync ")
+            if bks.isEmpty {
+                logger.warning("start init fifindersync empty ")
+            } else {
+                logger.warning("start init fifindersync  else")
+                for dir in bks {
+                    logger.warning("Sync directory set to \(dir.path) ")
+                }
+            }
+        } catch {
+            logger.error("Failed to load URLs: \(error)")
+        }
     }
     
     @MainActor override func menu(for menuKind: FIMenuKind) -> NSMenu {
@@ -166,7 +189,7 @@ class FinderOpen: FIFinderSync {
     // 创建文件菜单容器
     @objc func createFileCreateMenuItem() -> NSMenuItem {
         let menuItem = NSMenuItem()
-        menuItem.title = String(localized:"New File" )
+        menuItem.title = String(localized: "New File")
         menuItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "doc.badge.plus")!
                 
         return menuItem

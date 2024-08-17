@@ -38,6 +38,6 @@ extension SyncFolderItem {
     }
 
     static var defaultFolders: [SyncFolderItem] {
-        [.home, .application].compactMap { $0 } + volumns
+        [.home].compactMap { $0 } + volumns
     }
 }
