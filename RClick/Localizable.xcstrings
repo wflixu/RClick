@@ -11,16 +11,6 @@
         }
       }
     },
-    "%@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@"
-          }
-        }
-      }
-    },
     "%@（%@）" : {
       "localizations" : {
         "en" : {
@@ -112,15 +102,7 @@
       }
     },
     "Copy Path" : {
-      "comment" : "Copy Path",
-      "extractionState" : "stale",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copy Path"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -130,19 +112,11 @@
       }
     },
     "Delete Direct" : {
-      "comment" : "Delete Direct",
-      "extractionState" : "stale",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Direct"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "彻底删除"
+            "value" : "直接删除"
           }
         }
       }
@@ -357,6 +331,12 @@
     },
     "You must grant access to the folder to use this feature." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You must grant access to the folder to use this feature."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

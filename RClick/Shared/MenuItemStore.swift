@@ -124,7 +124,7 @@ class MenuItemStore {
     }
 
     func getActionItem(name: String) -> ActionMenuItem? {
-        actionItems.first { $0.name == name }
+        actionItems.first { String(localized: String.LocalizationValue($0.key)) == name }
     }
 
     func getFileCreateItem(name: String) -> FiletypeMenuItem? {
@@ -151,6 +151,8 @@ class MenuItemStore {
         {
             appItems = try decoder.decode([AppMenuItem].self, from: appItemData)
             actionItems = try decoder.decode([ActionMenuItem].self, from: actionItemData)
+            
+            
 
         } else {
             logger.info("using default menuitemsstore")

@@ -26,4 +26,6 @@ extension ActionMenuItem {
 
     static let copyPath = ActionMenuItem(key: "Copy Path", name: "Copy Path", actionIndex: 0, iconName: "doc.on.doc")
     static let deleteDirect = ActionMenuItem(key: "Delete Direct", name: "Delete Direct", actionIndex: 1, iconName: "trash")
+
+    static let displayNames = [String(localized: "Copy Path"), String(localized: "Delete Direct")]
 }

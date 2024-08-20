@@ -19,6 +19,7 @@ enum Key {
     static let showContextualMenuForContainer = "SHOW_CONTEXTUAL_MENU_FOR_CONTAINER"
     static let showContextualMenuForSidebar = "SHOW_CONTEXTUAL_MENU_FOR_SIDEBAR"
     static let showToolbarItemMenu = "SHOW_TOOLBAR_ITEM_MENU"
+    static let showDockIcon = "SHOW_DOCK_ICON"
 
     static let globalApplicationArgumentsString = "GLOBAL_APPLICATION_ARGUMENTS_STRING"
     static let globalApplicationEnvironmentString = "GLOBAL_APPLICATION_ENVIRONMENT_STRING"
@@ -31,6 +32,7 @@ enum Key {
     static let showSubMenuForAction = "SHOW_SUB_MENU_FOR_ACTION"
     static let messageFromFinder = "RCLICK_FINDER_Main"
     static let messageFromMain = "RCLICK_MAIN_FINDER"
+    
 }
 
 enum NewFileExtension: String, CaseIterable, Identifiable {
@@ -58,6 +60,32 @@ extension Dictionary {
         compactMap { "\($0)=\($1)" }.joined(separator: separator)
     }
 }
+
+func loadLocalizationKeys(from tableName: String, bundle: Bundle = .main) -> [String: String] {
+    var keyToLocalizedString = [String: String]()
+    var localizedStringToKey = [String: String]()
+
+    if let path = bundle.path(forResource: tableName, ofType: "strings"),
+       let strings = NSDictionary(contentsOfFile: path) as? [String: String]
+    {
+        for (key, value) in strings {
+            keyToLocalizedString[key] = value
+            localizedStringToKey[value] = key
+        }
+    }
+    return localizedStringToKey
+}
+
+extension String {
+    static func key(forLocalizedString localizedString: String, in tableName: String, bundle: Bundle = .main) -> String? {
+        let localizedStringToKey = loadLocalizationKeys(from: tableName, bundle: bundle)
+        return localizedStringToKey[localizedString]
+    }
+}
+
+// if let key = String.key(forLocalizedString: "Hello", in: "Localizable") {
+//    print("The key for 'Hello' is \(key)")
+// }
 
 extension UserDefaults {
     static var group: UserDefaults {

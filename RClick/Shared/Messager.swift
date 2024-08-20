@@ -67,10 +67,7 @@ class Messager {
     @objc func recievedMessage(_ notification: NSNotification) {
         if let handler = bus[notification.name.rawValue] {
             handler(reconstructEntry(messagePayload: notification.object as! String))
-        } else {
-            logger.warning("there no handler")
-        }
-        if notification.name.rawValue == Key.messageFromFinder {
+        } else if notification.name.rawValue == Key.messageFromFinder {
             let mp = reconstructEntry(messagePayload: notification.object as! String)
             switch mp.action {
             case "open":
@@ -84,6 +81,8 @@ class Messager {
             default:
                 print("no switch")
             }
+        } else {
+            logger.warning("there no handler\(notification.name.rawValue)")
         }
     }
 
@@ -142,7 +141,6 @@ class Messager {
         return filePath
     }
 
-
     func openApp(app: String, target: String) {
         let file = URL(fileURLWithPath: target, isDirectory: true)
         let appUrl = URL(fileURLWithPath: app)
@@ -159,6 +157,7 @@ class Messager {
     }
 
     func deleteFoldorFile(_ target: [String]) {
+        logger.info("---- deleteFoldorFile")
         let fm = FileManager.default
         do {
             for item in target {
