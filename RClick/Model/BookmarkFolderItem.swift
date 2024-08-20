@@ -54,8 +54,34 @@ struct BookmarkFolderItem: FolderItem {
             // Show for the main app
             url = try values.decode(URL.self, forKey: .url)
         }
-        print(url.path)
     }
 }
+
+extension BookmarkFolderItem {
+    static var home: URL? {
+        guard let pw = getpwuid(getuid()),
+              let home = pw.pointee.pw_dir
+        else {
+            return nil
+        }
+        let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
+        return URL(fileURLWithPath: path)
+        
+    }
+
+    static var application: URL? {
+        URL(fileURLWithPath: "/Applications")
+    }
+
+    static var volumns: Array<URL>.SubSequence {
+        let volumns = (FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [], options: .skipHiddenVolumes) ?? []).dropFirst()
+        return volumns
+    }
+
+    static var defaultFolders: [URL] {
+        [BookmarkFolderItem.home!] + volumns
+    }
+}
+
 
 

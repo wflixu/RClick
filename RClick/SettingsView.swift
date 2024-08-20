@@ -20,26 +20,28 @@ struct SettingsView: View {
         TabView(selection: $tabIndex) {
             GeneralSettingsTabView(store: folderItemStore)
                 .tabItem {
-                    Label("通用", systemImage: "slider.horizontal.2.square")
+                    Label(
+                        "General", systemImage: "slider.horizontal.2.square"
+                    )
                 }
                 .tag(Tabs.general)
             ActionSettingsTabView(store: menumItemStore)
                 .tabItem {
-                    Label("操作", systemImage: "ellipsis.rectangle")
+                    Label("Actions", systemImage: "ellipsis.rectangle")
                 }
                 .tag(Tabs.actions)
 
             AboutSettingsTabView()
                 .tabItem {
                     Label(
-                        "关于",
+                        "About",
                         systemImage: "exclamationmark.circle"
                     )
                 }
                 .tag(Tabs.about)
         }
         .padding(20)
-        .frame(width: 600, height: 450)
+        .frame(minWidth: 600, minHeight: 450)
     }
 }
 

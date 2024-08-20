@@ -17,6 +17,7 @@ private let logger = Logger(subsystem: subsystem, category: "AppDelegate")
 class AppDelegate: NSObject, NSApplicationDelegate {
     let messager = Messager.shared
     var folderItemStore = FolderItemStore()
+    var showDockIcon = UserDefaults.group.bool(forKey: Key.showDockIcon)
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
@@ -28,6 +29,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         messager.start(name: Key.messageFromFinder)
         messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
+
+        // 根据某种逻辑设置应用是否显示在 Dock 中
+        if showDockIcon {
+            NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.prohibited)
+        }
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
@@ -38,5 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    func applicationWillTerminate(_ notification: Notification) {}
+    func applicationWillTerminate(_ notification: Notification) {
+        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
+        logger.info("applicationWillTerminate")
+    }
 }

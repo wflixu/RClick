@@ -16,14 +16,18 @@ struct MenuBarView: View {
                 Image(systemName: "gearshape")
                 Text("Settings")
             }
+            
             Button(action: actionQuit) {
                 Image(systemName: "xmark.square")
                 Text("Quit")
             }
+            
         }
     }
 
-
+    func test () {
+        
+    }
     private func actionQuit() {
        
         messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))

@@ -18,7 +18,10 @@ struct GeneralSettingsTabView: View {
 
     var store: FolderItemStore
 
-    @State private var showFileImporter = false
+    @State private var showAlert = false
+    @State private var wrongFold = false
+
+    @State private var showDirImporter = false
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -33,17 +36,14 @@ struct GeneralSettingsTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom) {
-                Text("启动扩展").font(.title3).fontWeight(.semibold)
+                Text("Enable extension").font(.title3).fontWeight(.semibold)
                 Spacer()
                 Button(action: openExtensionset) {
-                    Label("打开扩展设置", systemImage: enableIcon)
+                    Label("Open Settings", systemImage: enableIcon)
                 }
             }
 
-            HStack {
-                Text(extensionEnabled ? "扩展已经启用" : "扩展未启用")
-            }
-            Text("需要启用 RClick 扩展以便使其正常工作")
+            Text("The RClick extension needs to be enabled for it to work properly")
                 .font(.headline)
                 .fontWeight(.thin)
                 .foregroundColor(Color.gray)
@@ -57,7 +57,7 @@ struct GeneralSettingsTabView: View {
                         ForEach(store.bookmarkItems) { item in
                             HStack {
                                 Image(systemName: "folder")
-                                Text(item.path)
+                                Text(verbatim: item.path)
                                 Spacer()
                                 Button {
                                     removeBookmark(item)
@@ -69,35 +69,18 @@ struct GeneralSettingsTabView: View {
                     }
                 } header: {
                     HStack {
-                        Text("授权文件夹").font(.title3).fontWeight(.semibold)
+                        Text("Authorization folder").font(.title3).fontWeight(.semibold)
                         Spacer()
                         Button {
-                            showFileImporter = true
-                        } label: { Label("添加", systemImage: "folder.badge.plus") }
-                            .fileImporter(
-                                isPresented: $showFileImporter,
-                                allowedContentTypes: [.directory],
-                                allowsMultipleSelection: false
-                            ) { result in
-                                switch result {
-                                case .success(let files):
-
-                                    for file in files {
-                                        // gain access to the directory
-                                        store.appendItem(BookmarkFolderItem(file))
-                                    }
-                                    channel.send(name: "ChoosePermissionFolder", data: nil)
-                                case .failure(let error):
-                                    // handle error
-                                    print(error)
-                                }
-                            }
+                            showDirImporter = true
+                        } label: { Label("Add", systemImage: "folder.badge.plus") }
+                            
                     }
 
                 } footer: {
                     VStack {
                         HStack {
-                            Text("授权的文件夹，才能执行菜单的操作")
+                            Text("The operation of the menu can only be executed in authorized folders")
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                             Spacer()
@@ -105,17 +88,80 @@ struct GeneralSettingsTabView: View {
                     }
                 }
             }
+            .alert(
+                Text("Invalid Folder Selection"),
+                isPresented: $wrongFold
+            ) {
+                Button("OK") {
+                    showDirImporter = true
+                }
+            } message: {
+                Text("The selected folder is a subdirectory of the previously chosen folder. Please select a different folder.")
+            }
+        }
+        .alert(
+            Text("Not Authorized Folder"),
+            isPresented: $showAlert
+        ) {
+            Button("OK") {
+                showDirImporter = true
+            }
+        } message: {
+            Text("You must grant access to the folder to use this feature.")
+        }
+        .fileImporter(
+            isPresented: $showDirImporter,
+            allowedContentTypes: [.directory],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let dirs):
+                startAddDir(dirs.first!)
+
+            case .failure(let error):
+                // handle error
+                print(error)
+            }
         }
 
         .onAppear {
             extensionEnabled = FIFinderSyncController.isExtensionEnabled
+
         }.onForeground {
             updateEnableState()
+            Task {
+                await checkPermissionFolder()
+            }
+        }
+        .task {
+            await checkPermissionFolder()
         }
     }
 
     func updateEnableState() {
         extensionEnabled = FIFinderSyncController.isExtensionEnabled
+    }
+
+    func checkPermissionFolder() async {
+        let isEmpty = await store.isEmpty()
+        if isEmpty {
+            showAlert = true
+        } else {
+            logger.info("no empty")
+        }
+    }
+
+    @MainActor
+    func startAddDir(_ url: URL) {
+        let hasParentDir = store.hasParentBookmark(of: url)
+        if hasParentDir {
+            wrongFold = true
+//            showAlert = true
+            logger.info("hasParentDir\(hasParentDir)")
+        } else {
+            store.appendItem(BookmarkFolderItem(url))
+            channel.send(name: "ChoosePermissionFolder", data: nil)
+        }
     }
 
     @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {

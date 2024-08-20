@@ -30,7 +30,6 @@
 		5C128E6C2BC2D3BD001F73DA /* FinderCommChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C128E582BC2CFBB001F73DA /* FinderCommChannel.swift */; };
 		5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */; };
 		5C158AAB2BC68B0A006EC625 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AAA2BC68B0A006EC625 /* AppDelegate.swift */; };
-		5C27D74A2C64E68F003375D3 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27D7492C64E68F003375D3 /* Util.swift */; };
 		5C27D74C2C6524A8003375D3 /*  AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27D74B2C6524A8003375D3 /*  AppStore.swift */; };
 		5C27D74D2C6524A8003375D3 /*  AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C27D74B2C6524A8003375D3 /*  AppStore.swift */; };
 		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
@@ -91,7 +90,6 @@
 		5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C119D322BBEA9AC00B2D7C4 /* FinderOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderOpen.swift; sourceTree = "<group>"; };
 		5C119D342BBEA9AC00B2D7C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C119D352BBEA9AC00B2D7C4 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
 		5C128E582BC2CFBB001F73DA /* FinderCommChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderCommChannel.swift; sourceTree = "<group>"; };
 		5C128E5A2BC2D088001F73DA /* MenuItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemStore.swift; sourceTree = "<group>"; };
 		5C128E5D2BC2D0F0001F73DA /* AppMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuItem.swift; sourceTree = "<group>"; };
@@ -102,7 +100,6 @@
 		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
 		5C158AAA2BC68B0A006EC625 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		5C27D7492C64E68F003375D3 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		5C27D74B2C6524A8003375D3 /*  AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " AppStore.swift"; sourceTree = "<group>"; };
 		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -116,7 +113,7 @@
 		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
 		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
-		5CDE94A82BCADA0500B05814 /* FinderSyncExtRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExtRelease.entitlements; sourceTree = "<group>"; };
+		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +159,8 @@
 		5C119D052BBE9B9900B2D7C4 /* RClick */ = {
 			isa = PBXGroup;
 			children = (
+				5C50D27E2BBFB21A00DF31AA /* Channel */,
+				5C50D2932BBFD17C00DF31AA /* Model */,
 				5C1DA5B02BC59978004F88BC /* Info.plist */,
 				5C50D27D2BBFB1E100DF31AA /* Shared */,
 				5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */,
@@ -190,10 +189,9 @@
 		5C119D312BBEA9AC00B2D7C4 /* FinderSyncExt */ = {
 			isa = PBXGroup;
 			children = (
-				5CDE94A82BCADA0500B05814 /* FinderSyncExtRelease.entitlements */,
+				5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */,
 				5C119D322BBEA9AC00B2D7C4 /* FinderOpen.swift */,
 				5C119D342BBEA9AC00B2D7C4 /* Info.plist */,
-				5C119D352BBEA9AC00B2D7C4 /* FinderSyncExt.entitlements */,
 			);
 			path = FinderSyncExt;
 			sourceTree = "<group>";
@@ -201,14 +199,12 @@
 		5C50D27D2BBFB1E100DF31AA /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				5C50D2932BBFD17C00DF31AA /* Model */,
-				5C50D27E2BBFB21A00DF31AA /* Channel */,
 				5C50D2812BBFB33200DF31AA /* StringExtension.swift */,
+				5C27D74B2C6524A8003375D3 /*  AppStore.swift */,
 				5C50D2832BBFB42100DF31AA /* FolderItemStore.swift */,
 				5C128E5A2BC2D088001F73DA /* MenuItemStore.swift */,
 				5CC9F0992BC5445C00AF9B81 /* Messager.swift */,
 				5C4288652BDA5536000C0828 /* AppLogger.swift */,
-				5C27D7492C64E68F003375D3 /* Util.swift */,
 				5C68BFE02C6651B80011C096 /* Extension+.swift */,
 			);
 			path = Shared;
@@ -219,7 +215,6 @@
 			children = (
 				5C50D27F2BBFB24000DF31AA /* AppCommChannel.swift */,
 				5C128E582BC2CFBB001F73DA /* FinderCommChannel.swift */,
-				5C27D74B2C6524A8003375D3 /*  AppStore.swift */,
 			);
 			path = Channel;
 			sourceTree = "<group>";
@@ -234,13 +229,13 @@
 		5C50D2932BBFD17C00DF31AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5C128E5D2BC2D0F0001F73DA /* AppMenuItem.swift */,
 				5C128E602BC2D11E001F73DA /* MenuItem.swift */,
+				5C128E5D2BC2D0F0001F73DA /* AppMenuItem.swift */,
 				5C128E632BC2D17B001F73DA /* ActionMenuItem.swift */,
+				5C68BFE32C67683E0011C096 /* FiletypeMenuItem.swift */,
 				5C128E662BC2D1AF001F73DA /* FolderItem.swift */,
 				5C50D2862BBFB50C00DF31AA /* BookmarkFolderItem.swift */,
 				5C128E692BC2D233001F73DA /* SyncFolderItem.swift */,
-				5C68BFE32C67683E0011C096 /* FiletypeMenuItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -316,6 +311,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				"en-AU",
 			);
 			mainGroup = 5C119CFA2BBE9B9900B2D7C4;
 			packageReferences = (
@@ -367,7 +363,6 @@
 				5C128E6A2BC2D233001F73DA /* SyncFolderItem.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
 				5C50D2802BBFB24000DF31AA /* AppCommChannel.swift in Sources */,
-				5C27D74A2C64E68F003375D3 /* Util.swift in Sources */,
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5C50D2842BBFB42100DF31AA /* FolderItemStore.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
@@ -552,7 +547,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8.11.1;
+				CURRENT_PROJECT_VERSION = 8.20.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -569,7 +564,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -585,11 +580,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = RClick/RClickRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 8.11.1;
+				CURRENT_PROJECT_VERSION = 8.20.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -606,7 +601,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -622,7 +617,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2.1;
+				CURRENT_PROJECT_VERSION = 8.20.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -637,7 +632,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -649,11 +644,11 @@
 		5C119D3A2BBEA9AC00B2D7C4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExtRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.2.1;
+				CURRENT_PROJECT_VERSION = 8.20.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -668,7 +663,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

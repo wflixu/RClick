@@ -35,6 +35,7 @@ class FinderCommChannel {
     }
 
     @MainActor @objc func choosePermissionFolder(_ notification: Notification) {
+        logger.info("update permisssion folder")
         folderItemStore?.refresh();
     }
     

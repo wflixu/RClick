@@ -18,7 +18,6 @@ private let logger = Logger(subsystem: subsystem, category: "folder_item_store")
 @Observable
 final class FolderItemStore {
     private(set) var bookmarkItems: [BookmarkFolderItem] = []
-    private(set) var syncItems: [SyncFolderItem] = []
 
     // MARK: - Init
 
@@ -31,18 +30,15 @@ final class FolderItemStore {
     }
 
     @MainActor func refresh() {
-        try? load()
+        _ = try? load()
     }
 
-    // MARK: - Append Item
+    @MainActor func isEmpty() -> Bool {
+        return bookmarkItems.isEmpty
+    }
 
     @MainActor func appendItems(_ items: [BookmarkFolderItem]) {
         bookmarkItems.append(contentsOf: items.filter { !bookmarkItems.contains($0) })
-        try? save()
-    }
-
-    @MainActor func appendItems(_ items: [SyncFolderItem]) {
-        syncItems.append(contentsOf: items.filter { !syncItems.contains($0) })
         try? save()
     }
 
@@ -51,23 +47,22 @@ final class FolderItemStore {
         try? save()
     }
 
-    @MainActor func insertItems(_ items: [SyncFolderItem], at index: Int) {
-        syncItems.insert(contentsOf: items.filter { !syncItems.contains($0) }, at: index)
-        try? save()
-    }
-
     @MainActor func appendItem(_ item: BookmarkFolderItem) {
         if !bookmarkItems.contains(item) {
             bookmarkItems.append(item)
-        }
+        } else {}
         try? save()
     }
 
-    @MainActor func appendItem(_ item: SyncFolderItem) {
-        if !syncItems.contains(item) {
-            syncItems.append(item)
+    @MainActor func hasParentBookmark(of url: URL) -> Bool {
+        let storedUrls = bookmarkItems.map({$0.url})
+        for storedURL in  storedUrls {
+            // 确保 storedURL 是一个目录，并且传入的 URL 以 storedURL 的路径为前缀
+            if url.path.hasPrefix(storedURL.path) {
+                return true
+            }
         }
-        try? save()
+        return false
     }
 
     // MARK: - Delete Items
@@ -85,31 +80,9 @@ final class FolderItemStore {
         try? save()
     }
 
-    @MainActor func deleteSyncItems(offsets: IndexSet) {
-        withAnimation {
-            syncItems.remove(atOffsets: offsets)
-        }
-        try? save()
-    }
-
-    @MainActor func deleteSyncItem(index: Int) {
-        syncItems.remove(at: index)
-
-        try? save()
-    }
-
     func deleteAllBookmarkItems() {
         withAnimation {
             bookmarkItems.removeAll()
-        }
-        Task.detached {
-            try await self.save()
-        }
-    }
-
-    func deleteAllSyncItems() {
-        withAnimation {
-            syncItems.removeAll()
         }
         Task.detached {
             try await self.save()
@@ -123,22 +96,30 @@ final class FolderItemStore {
         if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS") {
             let decoder = PropertyListDecoder()
             bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
-
-            FIFinderSyncController.default().directoryURLs = Set(bookmarkItems.map { URL(fileURLWithPath: $0.path) })
-
+           
+            let urls = Set(bookmarkItems.map { bkm in
+                bkm.url
+            })
+            FIFinderSyncController.default().directoryURLs = urls
         } else {
-            let syncItems = SyncFolderItem.defaultFolders
-            FIFinderSyncController.default().directoryURLs = Set(syncItems.map { URL(fileURLWithPath: $0.path) })
+            logger.error("fail load bookmarkData")
         }
+    }
+
+    @MainActor func getBookmarkItems() throws -> [URL] {
+        if let bookmarkItemData = UserDefaults.group.data(forKey: "BOOKMARK_ITEMS") {
+            let decoder = PropertyListDecoder()
+            bookmarkItems = try decoder.decode([BookmarkFolderItem].self, from: bookmarkItemData)
+        }
+        return bookmarkItems.map { $0.url }
     }
 
     @MainActor
     private func save() throws {
         let encoder = PropertyListEncoder()
         let bookmarkItemData = try encoder.encode(OrderedSet(bookmarkItems))
-        let syncItemData = try encoder.encode(OrderedSet(syncItems))
         UserDefaults.group.set(bookmarkItemData, forKey: "BOOKMARK_ITEMS")
-        UserDefaults.group.set(syncItemData, forKey: "SYNC_ITEMS")
+        UserDefaults.group.synchronize()
         refresh()
     }
 }
