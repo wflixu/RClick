@@ -4,9 +4,8 @@
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-✓-orange)](https://developer.apple.com/xcode/swiftui/)
 [![macOS 14](https://img.shields.io/badge/macOS14-Compatible-green)](https://www.apple.com/macos/monterey/)
 
+
 [![](./RClick/Assets.xcassets/AppIcon.appiconset/AppIcon@1x.png)](https://github.com/wflixu/RClick/releases)
-
-
 
 Config you MacOS ContextMenu items, useing Latest Swift and SwiftUI. 
 
@@ -23,6 +22,8 @@ Config you MacOS ContextMenu items, useing Latest Swift and SwiftUI.
 
 ![](./images/screenshot.png)
 
+
+
 ## 📦 Installation
 
 The latest distribution file can be downloaded from [release page](https://github.com/wflixu/RClick/releases)
@@ -34,7 +35,13 @@ The latest distribution file can be downloaded from [release page](https://githu
 - https://github.com/lexrus/SwiftyMenu 
 - https://github.com/Ji4n1ng/OpenInTerminal
 
+##  Support
 
+If you like this project, you can support me  via  app store.
+
+[<img src="https://cloud.githubusercontent.com/assets/219689/5575342/963e0ee8-9013-11e4-8091-7ece67d64729.png" width="135" height="40" alt="AppStore"/>](https://apps.apple.com/cn/app/rclick/id6496849273?mt=12)
+
+![](./images/store-preview.png)
 
 ## 🤝 Report Issue
 
