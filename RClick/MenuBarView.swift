@@ -15,12 +15,13 @@ struct MenuBarView: View {
             SettingsLink {
                 Image(systemName: "gearshape")
                 Text("Settings")
-            }
+            }.keyboardShortcut(",", modifiers: [.command])
             
             Button(action: actionQuit) {
                 Image(systemName: "xmark.square")
                 Text("Quit")
             }
+            .keyboardShortcut("q", modifiers: [.command])
             
         }
     }

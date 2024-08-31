@@ -23,6 +23,8 @@ class FinderOpen: FIFinderSync {
     
     var bookmarkItems: [BookmarkFolderItem] = []
     
+    var triggerManKind = FIMenuKind.contextualMenuForContainer
+    
     override init() {
         super.init()
         logger.info("---- finderOpen init")
@@ -57,11 +59,6 @@ class FinderOpen: FIFinderSync {
     
     override func requestBadgeIdentifier(for url: URL) {
         NSLog("requestBadgeIdentifierForURL: %@", url.path as NSString)
-        
-        // For demonstration purposes, this picks one of our two badges, or no badge at all, based on the filename.
-//        let whichBadge = abs(url.path.hash) % 3
-//        let badgeIdentifier = ["", "One", "Two"][whichBadge]
-//        FIFinderSyncController.default().setBadgeIdentifier(badgeIdentifier, for: url)
     }
     
     // MARK: - Menu and toolbar item support
@@ -75,7 +72,7 @@ class FinderOpen: FIFinderSync {
     }
     
     override var toolbarItemImage: NSImage {
-        return NSImage(systemSymbolName: "computermouse", accessibilityDescription: "RClick Menu")!
+        return NSImage(named: "MenuBarIcon")!
     }
     
     @MainActor func initMenuDirs() throws {
@@ -97,37 +94,62 @@ class FinderOpen: FIFinderSync {
     
     @MainActor override func menu(for menuKind: FIMenuKind) -> NSMenu {
         // Produce a menu for the extension.
+        triggerManKind = menuKind
         
         let applicationMenu = NSMenu(title: "RClick")
         guard isHostAppOpen else {
             return applicationMenu
         }
         switch menuKind {
+        // finder 中my选中文件或文件夹
         case .contextualMenuForContainer:
-            for nsmenu in createAppItems() {
-                applicationMenu.addItem(nsmenu)
-            }
+            createMenuForContainer(applicationMenu)
                 
-            if let fileMenuItem = createFileCreateMenuItem() {
-                applicationMenu.addItem(fileMenuItem)
-            }
-           
+        // finder 中 有选中文件或文件夹
         case .contextualMenuForItems:
             NSLog("contextualMenuForItems")
+        
+            createMenuForItems(applicationMenu)
+           
+        case .toolbarItemMenu:
             
-            for nsmenu in createAppItems() {
-                applicationMenu.addItem(nsmenu)
-            }
-            
-            for item in createActionMenuItems() {
-                applicationMenu.addItem(item)
-            }
-            
+            createMenuForToolbar(applicationMenu)
+        
         default:
             print("Some other character")
         }
        
         return applicationMenu
+    }
+    
+    @objc func createMenuForContainer(_ applicationMenu: NSMenu) {
+        for nsmenu in createAppItems() {
+            applicationMenu.addItem(nsmenu)
+        }
+            
+        if let fileMenuItem = createFileCreateMenuItem() {
+            applicationMenu.addItem(fileMenuItem)
+        }
+    }
+    
+    @objc func createMenuForItems(_ applicationMenu: NSMenu) {
+        for nsmenu in createAppItems() {
+            applicationMenu.addItem(nsmenu)
+        }
+        
+        for item in createActionMenuItems() {
+            applicationMenu.addItem(item)
+        }
+    }
+    
+    @objc func createMenuForToolbar(_ applicationMenu: NSMenu) {
+        for nsmenu in createAppItems() {
+            applicationMenu.addItem(nsmenu)
+        }
+            
+        if let fileMenuItem = createFileCreateMenuItem() {
+            applicationMenu.addItem(fileMenuItem)
+        }
     }
     
     @objc func createAppItems() -> [NSMenuItem] {
@@ -136,7 +158,7 @@ class FinderOpen: FIFinderSync {
             let menuItem = NSMenuItem()
             menuItem.target = self
             menuItem.title = String(localized: "Open With \(item.name)")
-            menuItem.action = #selector(itemAction(_:))
+            menuItem.action = #selector(appOpen(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 0
             menuItem.image = NSWorkspace.shared.icon(forFile: item.url.path)
@@ -152,7 +174,7 @@ class FinderOpen: FIFinderSync {
             let menuItem = NSMenuItem()
             menuItem.target = self
             menuItem.title = String(localized: String.LocalizationValue(item.key))
-            menuItem.action = #selector(itemAction(_:))
+            menuItem.action = #selector(actioning(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 1
             menuItem.image = NSImage(systemSymbolName: item.iconName, accessibilityDescription: item.iconName)!
@@ -162,22 +184,10 @@ class FinderOpen: FIFinderSync {
         return actionMenuitems
     }
     
-    @MainActor @objc func itemAction(_ menuItem: NSMenuItem) {
-        switch menuItem.tag {
-        case 0:
-            appOpen(menuItem, isContainer: false)
-        case 1:
-            actioning(menuItem, isContainer: false)
-        case 2:
-            createFile(menuItem, isContainer: false)
-        default:
-            break
-        }
-    }
 
     // 创建文件菜单容器
     @objc func createFileCreateMenuItem() -> NSMenuItem? {
-        let enabledFiletypeItems =  menuStore.filetypeItems.filter(\.enabled)
+        let enabledFiletypeItems = menuStore.filetypeItems.filter(\.enabled)
         if enabledFiletypeItems.isEmpty {
             return nil
         }
@@ -189,7 +199,7 @@ class FinderOpen: FIFinderSync {
             let menuItem = NSMenuItem()
             menuItem.target = self
             menuItem.title = item.name
-            menuItem.action = #selector(itemAction(_:))
+            menuItem.action = #selector(createFile(_:))
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = 2
            
@@ -205,17 +215,7 @@ class FinderOpen: FIFinderSync {
         return menuItem
     }
     
-    @MainActor @objc func ContainerAction(_ menuItem: NSMenuItem) {
-        switch menuItem.tag {
-        case 0:
-            appOpen(menuItem, isContainer: true)
-    
-        default:
-            break
-        }
-    }
-    
-    @MainActor @objc func createFile(_ menuItem: NSMenuItem, isContainer: Bool) {
+    @MainActor @objc func createFile(_ menuItem: NSMenuItem) {
         let item = menuStore.getFileCreateItem(name: menuItem.title)
         let url = FIFinderSyncController.default().targetedURL()
         
@@ -224,7 +224,7 @@ class FinderOpen: FIFinderSync {
         }
     }
     
-    @MainActor @objc func actioning(_ menuItem: NSMenuItem, isContainer: Bool) {
+    @MainActor @objc func actioning(_ menuItem: NSMenuItem) {
         guard let item = menuStore.getActionItem(name: menuItem.title) else {
             logger.info("not item ad ")
             return
@@ -236,23 +236,40 @@ class FinderOpen: FIFinderSync {
         }
         
         let urlstr = urls.map { $0.path }
-        logger.info("test \(String(localized: String.LocalizationValue(item.key)))")
         messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: item.key, target: urlstr))
     }
     
-    @objc func appOpen(_ menuItem: NSMenuItem, isContainer: Bool) {
+    @objc func appOpen(_ menuItem: NSMenuItem) {
+       
         var target: String
-        if isContainer {
-            guard let targetURL = FIFinderSyncController.default().targetedURL()
-            else { return }
-            target = targetURL.path
-            
-        } else {
+        switch triggerManKind {
+        case FIMenuKind.contextualMenuForItems:
             let urls = FIFinderSyncController.default().selectedItemURLs()
             guard let targetURL = urls?.first
             else { return }
             target = targetURL.path
+        case FIMenuKind.toolbarItemMenu:
+            let selectedURLs = FIFinderSyncController.default().selectedItemURLs()
+                
+            if let targetURL = selectedURLs?.first {
+                target = targetURL.path
+            } else {
+                
+                if let targetURL2 = FIFinderSyncController.default().targetedURL() {
+                    target = targetURL2.path
+                } else {
+                    logger.info("nothion -------- ")
+                    return
+                }
+            }
+                
+        default:
+            guard let targetURL = FIFinderSyncController.default().targetedURL()
+            else { return }
+            target = targetURL.path
         }
+        
+       
         
         let item = menuStore.getAppItem(name: menuItem.title)
         if let appUrl = item?.url {

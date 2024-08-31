@@ -26,7 +26,6 @@ struct RClickApp: App {
         Settings {
             SettingsView()
         }
-
         .defaultAppStorage(.group)
 
         MenuBarExtra(
@@ -36,10 +35,6 @@ struct RClickApp: App {
         }
     }
 }
-
-
-
-
 
 // https://stackoverflow.com/a/76714125/19625526
 private let kAppMenuInternalIdentifier = "app"
