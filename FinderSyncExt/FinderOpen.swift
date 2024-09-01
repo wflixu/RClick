@@ -258,7 +258,7 @@ class FinderOpen: FIFinderSync {
                 if let targetURL2 = FIFinderSyncController.default().targetedURL() {
                     target = targetURL2.path
                 } else {
-                    logger.info("nothion -------- ")
+                    logger.warning("no target URL")
                     return
                 }
             }
