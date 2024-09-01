@@ -41,7 +41,7 @@ struct SettingsView: View {
                 .tag(Tabs.about)
         }
         .padding(20)
-        .frame(minWidth: 600, minHeight: 450)
+        .frame(width: 600, height:  450)
     }
 }
 
