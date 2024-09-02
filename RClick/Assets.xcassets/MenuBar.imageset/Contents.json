@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "menu-bar@1x 1.png",
+      "filename" : "menu-bar@1x.png",
       "idiom" : "mac",
       "scale" : "1x"
     },
@@ -17,7 +17,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "menu-bar@2x 1.png",
+      "filename" : "menu-bar@2x.png",
       "idiom" : "mac",
       "scale" : "2x"
     },

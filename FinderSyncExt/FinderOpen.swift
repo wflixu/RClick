@@ -72,7 +72,7 @@ class FinderOpen: FIFinderSync {
     }
     
     override var toolbarItemImage: NSImage {
-        return NSImage(named: "MenuBarIcon")!
+        return NSImage(named: "toolbar")!
     }
     
     @MainActor func initMenuDirs() throws {
