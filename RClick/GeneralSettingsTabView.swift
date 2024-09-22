@@ -10,11 +10,15 @@ import Cocoa
 import FinderSync
 import SwiftUI
 
+import LaunchAtLogin
+
 struct GeneralSettingsTabView: View {
     @AppLog(category: "settings-general")
     private var logger
 
     @AppStorage("extensionEnabled") private var extensionEnabled = false
+    
+    @Environment(\.openWindow) private var openWindow
 
     var store: FolderItemStore
 
@@ -49,8 +53,12 @@ struct GeneralSettingsTabView: View {
                 .foregroundColor(Color.gray)
             Divider()
 
+            Form {
+                launchAtLogin
+            }
+            Divider()
             HStack {}.frame(height: 10)
-
+   
             VStack(alignment: .leading) {
                 Section {
                     List {
@@ -74,7 +82,6 @@ struct GeneralSettingsTabView: View {
                         Button {
                             showDirImporter = true
                         } label: { Label("Add", systemImage: "folder.badge.plus") }
-                            
                     }
 
                 } footer: {
@@ -138,6 +145,19 @@ struct GeneralSettingsTabView: View {
         }
     }
 
+    @ViewBuilder
+    private var launchAtLogin: some View {
+        
+        Section {
+            LaunchAtLogin.Toggle {
+                Text("Launch at login")
+            }
+        } header: {
+            Text("Launch at login").font(.title)
+        }
+        
+    }
+
     func updateEnableState() {
         extensionEnabled = FIFinderSyncController.isExtensionEnabled
     }
@@ -172,6 +192,7 @@ struct GeneralSettingsTabView: View {
     }
 
     private func openExtensionset() {
-        FinderSync.FIFinderSyncController.showExtensionManagementInterface()
+        openWindow(id: "finder-sync-ext-config")
+//        FinderSync.FIFinderSyncController.showExtensionManagementInterface()
     }
 }

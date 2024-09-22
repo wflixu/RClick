@@ -47,3 +47,8 @@ If you like this project, you can support me  via  app store.
 
 For developer and user, if you find any bug or have any suggestion, please report issue on [RClick repo](https://github.com/wflixu/RClick/issues)
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=wflixu/RClick&type=Date)](https://star-history.com/#wflixu/RClick&Date)
+

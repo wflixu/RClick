@@ -56,3 +56,4 @@ playground.xcworkspace
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
 output/*
+Products/RClick.app

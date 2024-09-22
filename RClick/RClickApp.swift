@@ -27,6 +27,9 @@ struct RClickApp: App {
             SettingsView()
         }
         .defaultAppStorage(.group)
+        Window("RClick Finder sync extension config", id: "finder-sync-ext-config") {
+            FinderSyncExtConfig()
+        }
 
         MenuBarExtra(
             "RClick", image: "MenuBar", isInserted: self.$showMenuBarExtra

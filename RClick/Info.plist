@@ -4,6 +4,8 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+    <key>NSFileSystemUsageDescription</key>
+    <string>App needs access to the file system to manage plugins.</string>
 	<key>NSServices</key>
 	<array>
 		<dict/>

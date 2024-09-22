@@ -151,6 +151,9 @@
         }
       }
     },
+    "Launch at login" : {
+
+    },
     "Menu App" : {
       "localizations" : {
         "zh-Hans" : {
@@ -243,6 +246,9 @@
         }
       }
     },
+    "RClick Finder sync extension config" : {
+
+    },
     "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -278,6 +284,9 @@
           }
         }
       }
+    },
+    "test" : {
+
     },
     "The operation of the menu can only be executed in authorized folders" : {
       "localizations" : {
