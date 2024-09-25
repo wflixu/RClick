@@ -7,6 +7,7 @@
 
 import AppKit
 import Foundation
+import ScriptingBridge
 
 enum ActionType: String {
     case open
@@ -146,8 +147,17 @@ class Messager {
         let appUrl = URL(fileURLWithPath: app)
         let config = NSWorkspace.OpenConfiguration()
         config.promptsUserIfNeeded = true
-        NSWorkspace.shared.open([file], withApplicationAt: appUrl, configuration: config)
+
+        logger.info("appurl\(app)")
+        if app.hasSuffix("WezTerm.app") {
+            config.arguments = ["--cwd", file.path()]
+            NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
+        } else {
+            NSWorkspace.shared.open([file], withApplicationAt: appUrl, configuration: config)
+        }
     }
+
+
 
     func copyPath(_ target: String) {
         let pasteboard = NSPasteboard.general

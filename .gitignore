@@ -56,3 +56,5 @@ playground.xcworkspace
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
 output/*
+Build/
+DerivedData/
