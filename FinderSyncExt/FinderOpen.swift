@@ -14,8 +14,11 @@ import os.log
 private let logger = Logger(subsystem: subsystem, category: "menu")
 
 class FinderOpen: FIFinderSync {
+    @AppLog(category: "FinderOpen")
+    private var logger
+    
     var myFolderURL = URL(fileURLWithPath: "/Users/")
-    var isHostAppOpen = true
+    var isHostAppOpen = false
     let menuStore = MenuItemStore()
     let folderStore = FolderItemStore()
     let finderChannel = FinderCommChannel()
@@ -28,15 +31,15 @@ class FinderOpen: FIFinderSync {
     override init() {
         super.init()
         logger.info("---- finderOpen init")
-        finderChannel.setup(folderStore, menuStore)
-
-        messager.on(name: "quit") { _ in
-            self.isHostAppOpen = false
-        }
-        messager.on(name: "running") { _ in
-            self.isHostAppOpen = true
-            logger.warning("startt running")
-        }
+//        finderChannel.setup(folderStore, menuStore)
+//
+//        messager.on(name: "quit") { _ in
+//            self.isHostAppOpen = false
+//        }
+//        messager.on(name: "running") { _ in
+//            self.isHostAppOpen = true
+//            logger.warning("startt running")
+//        }
     }
     
     // MARK: - Primary Finder Sync protocol methods
@@ -100,24 +103,24 @@ class FinderOpen: FIFinderSync {
         guard isHostAppOpen else {
             return applicationMenu
         }
-        switch menuKind {
-        // finder 中my选中文件或文件夹
-        case .contextualMenuForContainer:
-            createMenuForContainer(applicationMenu)
-                
-        // finder 中 有选中文件或文件夹
-        case .contextualMenuForItems:
-            NSLog("contextualMenuForItems")
-        
-            createMenuForItems(applicationMenu)
-           
-        case .toolbarItemMenu:
-            
-            createMenuForToolbar(applicationMenu)
-        
-        default:
-            print("Some other character")
-        }
+//        switch menuKind {
+//        // finder 中my选中文件或文件夹
+//        case .contextualMenuForContainer:
+//            createMenuForContainer(applicationMenu)
+//                
+//        // finder 中 有选中文件或文件夹
+//        case .contextualMenuForItems:
+//            NSLog("contextualMenuForItems")
+//        
+//            createMenuForItems(applicationMenu)
+//           
+//        case .toolbarItemMenu:
+//            
+//            createMenuForToolbar(applicationMenu)
+//        
+//        default:
+//            print("Some other character")
+//        }
        
         return applicationMenu
     }

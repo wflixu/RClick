@@ -49,6 +49,10 @@
 		5C68BFE62C67707D0011C096 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */; };
 		5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
 		5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
+		5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D012CA50AAC00DABD2C /* RCBase.swift */; };
+		5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D012CA50AAC00DABD2C /* RCBase.swift */; };
+		5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
+		5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
@@ -112,6 +116,8 @@
 		5C68BFE02C6651B80011C096 /* Extension+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+.swift"; sourceTree = "<group>"; };
 		5C68BFE32C67683E0011C096 /* FiletypeMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiletypeMenuItem.swift; sourceTree = "<group>"; };
 		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		5C945D012CA50AAC00DABD2C /* RCBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCBase.swift; sourceTree = "<group>"; };
+		5C945D052CA51B8F00DABD2C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
 		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
 		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
@@ -162,12 +168,14 @@
 		5C119D052BBE9B9900B2D7C4 /* RClick */ = {
 			isa = PBXGroup;
 			children = (
+				5C945D042CA51B7A00DABD2C /* Main */,
 				5CDFE3142CA3D5FB00AE6C95 /* Settings */,
 				5C50D27E2BBFB21A00DF31AA /* Channel */,
 				5C50D2932BBFD17C00DF31AA /* Model */,
 				5C1DA5B02BC59978004F88BC /* Info.plist */,
 				5C50D27D2BBFB1E100DF31AA /* Shared */,
 				5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */,
+				5C945D052CA51B8F00DABD2C /* AppState.swift */,
 				5C119D172BBE9C8F00B2D7C4 /* MenuBarView.swift */,
 				5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */,
 				5C119D112BBE9B9B00B2D7C4 /* RClick.entitlements */,
@@ -229,6 +237,7 @@
 		5C50D2932BBFD17C00DF31AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5C945D012CA50AAC00DABD2C /* RCBase.swift */,
 				5C128E602BC2D11E001F73DA /* MenuItem.swift */,
 				5C128E5D2BC2D0F0001F73DA /* AppMenuItem.swift */,
 				5C128E632BC2D17B001F73DA /* ActionMenuItem.swift */,
@@ -238,6 +247,13 @@
 				5C128E692BC2D233001F73DA /* SyncFolderItem.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		5C945D042CA51B7A00DABD2C /* Main */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Main;
 			sourceTree = "<group>";
 		};
 		5CDFE3142CA3D5FB00AE6C95 /* Settings */ = {
@@ -366,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */,
 				5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */,
 				5C27D74C2C6524A8003375D3 /*  AppStore.swift in Sources */,
 				5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */,
@@ -373,6 +390,7 @@
 				5C50D2872BBFB50C00DF31AA /* BookmarkFolderItem.swift in Sources */,
 				5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */,
 				5C68BFE42C67683E0011C096 /* FiletypeMenuItem.swift in Sources */,
+				5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5C128E6A2BC2D233001F73DA /* SyncFolderItem.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
 				5C50D2802BBFB24000DF31AA /* AppCommChannel.swift in Sources */,
@@ -397,6 +415,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C119D332BBEA9AC00B2D7C4 /* FinderOpen.swift in Sources */,
+				5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */,
 				5C128E5F2BC2D0F0001F73DA /* AppMenuItem.swift in Sources */,
 				5C128E6C2BC2D3BD001F73DA /* FinderCommChannel.swift in Sources */,
@@ -412,6 +431,7 @@
 				5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */,
 				5C128E5C2BC2D0A3001F73DA /* MenuItemStore.swift in Sources */,
 				5C128E682BC2D1AF001F73DA /* FolderItem.swift in Sources */,
+				5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */,
 				5C128E652BC2D17B001F73DA /* ActionMenuItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

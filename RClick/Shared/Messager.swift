@@ -150,6 +150,7 @@ class Messager {
 
         logger.info("appurl\(app)")
         if app.hasSuffix("WezTerm.app") {
+            
             config.arguments = ["--cwd", file.path()]
             NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
         } else {

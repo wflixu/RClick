@@ -33,6 +33,10 @@ enum Key {
     static let messageFromFinder = "RCLICK_FINDER_Main"
     static let messageFromMain = "RCLICK_MAIN_FINDER"
     
+    static let apps = "RCLICK_APPs"
+    static let actions = "RCLICK_ACTIONS"
+    static let fileTypes = "RCLICK_FILE_TYPES"
+    static let permDirs = "RCLICK_PERMISSIVE_DIRS"   
 }
 
 enum NewFileExtension: String, CaseIterable, Identifiable {

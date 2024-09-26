@@ -12,14 +12,12 @@ enum Tabs: Hashable {
 }
 
 struct SettingsView: View {
-    @State var folderItemStore = FolderItemStore()
-    @State var menumItemStore = MenuItemStore()
     @State private var tabIndex: Tabs = .general
 
     var body: some View {
         VStack {
             TabView(selection: $tabIndex) {
-                GeneralSettingsTabView(store: folderItemStore)
+                GeneralSettingsTabView()
                     .tabItem {
                         Label(
                             "General", systemImage: "slider.horizontal.2.square"
@@ -27,22 +25,22 @@ struct SettingsView: View {
                     }
                     .tag(Tabs.general)
 
-                ActionSettingsTabView(store: menumItemStore)
+                ActionSettingsTabView()
                     .tabItem {
                         Label("Actions", systemImage: "ellipsis.rectangle")
                     }
                     .tag(Tabs.actions)
-
+//
                 AboutSettingsTabView()
                     .tabItem {
                         HStack {
                             Text("About")
                             Image(systemName: "exclamationmark.circle")
                         }
-                        //                    Label(
-                        //                        "About",
-                        //                        systemImage: "exclamationmark.circle"
-                        //                    )
+                        Label(
+                            "About",
+                            systemImage: "exclamationmark.circle"
+                        )
                     }
                     .tag(Tabs.about)
             }
