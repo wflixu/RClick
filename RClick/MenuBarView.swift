@@ -40,7 +40,7 @@ struct MenuBarView: View {
       
         Task {
             try await Task.sleep(nanoseconds:UInt64(1.0 * 1e9))
-            await NSApplication.shared.terminate(self)
+             NSApplication.shared.terminate(self)
         }
     }
 

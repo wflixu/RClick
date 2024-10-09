@@ -11,7 +11,6 @@ import Combine
 import OrderedCollections
 import SwiftUI
 
-@MainActor
 class AppState: ObservableObject {
     @AppLog(category: "AppState")
     private var logger
@@ -32,14 +31,26 @@ class AppState: ObservableObject {
     // Apps
     @MainActor func deleteApp(index: Int) {
         apps.remove(at: index)
-
-        try? save()
+        do {
+            try save()
+            // 使用 result
+        } catch {
+            // 处理错误
+            logger.info("save error: \(error.localizedDescription)")
+        }
     }
 
     @MainActor func addApp(item: OpenWithApp) {
+        logger.info("start add app")
         apps.append(item)
         
-        try? save()
+        do {
+             try save()
+            // 使用 result
+        } catch {
+            // 处理错误
+            logger.info("save error: \(error.localizedDescription)")
+        }
     }
     
     // Action
@@ -104,13 +115,15 @@ class AppState: ObservableObject {
         let decoder = PropertyListDecoder()
         if let appItemData = UserDefaults.group.data(forKey: Key.apps) {
             apps = try decoder.decode([OpenWithApp].self, from: appItemData)
+            logger.info("load apps success")
         } else {
             logger.warning("load apps failed")
             apps = OpenWithApp.defaultApps
         }
         
-        if let appItemData = UserDefaults.group.data(forKey: Key.actions) {
-            apps = try decoder.decode([OpenWithApp].self, from: appItemData)
+        if let actionData = UserDefaults.group.data(forKey: Key.actions) {
+            actions = try decoder.decode([RCAction].self, from: actionData)
+            logger.info("load actions success")
         } else {
             logger.warning("load actions failed")
             actions = RCAction.all
@@ -118,6 +131,7 @@ class AppState: ObservableObject {
         
         if let filetypeItemData = UserDefaults.group.data(forKey: Key.fileTypes) {
             newFiles = try decoder.decode([NewFile].self, from: filetypeItemData)
+            logger.info("load filetype success")
         } else {
             logger.warning("load  new file type failed")
             newFiles = NewFile.all
@@ -125,9 +139,10 @@ class AppState: ObservableObject {
         
         if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
             dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
+            logger.info("load permDir success")
         } else {
-            logger.warning("load  new file type failed")
-            dirs = []
+            logger.warning("load permission dirfailed")
+            dirs = [PermissiveDir(permUrl: URL.homeDirectory)]
         }
     }
 }
