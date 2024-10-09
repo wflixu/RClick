@@ -46,6 +46,7 @@ extension OpenWithApp {
         }
         self.init(appURL: url)
     }
+
     static let vscode = OpenWithApp(bundleIdentifier: "com.microsoft.VSCode")
     static let terminal = OpenWithApp(bundleIdentifier: "com.apple.Terminal")
     static var defaultApps: [OpenWithApp] {
@@ -65,12 +66,14 @@ struct PermissiveDir: RCBase {
         self.id = id
         self.url = url
         let result = url.startAccessingSecurityScopedResource()
+        logger.info("start init PermissiveDir------------------------")
         if !result {
             logger.error("Fail to start access security scoped resource on \(url.path)")
         }
         do {
             bookmark = try url.bookmarkData(options: .withSecurityScope)
-            url.stopAccessingSecurityScopedResource()
+
+//            url.stopAccessingSecurityScopedResource()
         } catch {
             logger.warning("\(error.localizedDescription)")
             fatalError()

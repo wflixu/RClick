@@ -10,12 +10,17 @@ import SwiftUI
 struct SettingsWindow: Scene {
     @ObservedObject var appState: AppState
     
+    
+    
     let onAppear: () -> Void
 
     var body: some Scene {
         Window("Settings", id: Constants.settingsWindowID) {
             SettingsView()
                 .environmentObject(appState)
+                .onAppear {
+                    onAppear()
+                }
                 
         }
         

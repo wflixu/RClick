@@ -201,6 +201,9 @@
         }
       }
     },
+    "Open With %@" : {
+
+    },
     "Quit" : {
       "localizations" : {
         "en" : {

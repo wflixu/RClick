@@ -45,12 +45,24 @@ class AppState: ObservableObject {
         apps.append(item)
         
         do {
-             try save()
+            try save()
             // 使用 result
         } catch {
             // 处理错误
             logger.info("save error: \(error.localizedDescription)")
         }
+    }
+    
+    func getAppItem(rid: String) -> OpenWithApp? {
+        apps.first { rid.contains($0.id) }
+    }
+    
+    func getFileType(rid: String) -> NewFile? {
+        newFiles.first { rid.contains($0.id) }
+    }
+    
+    func getActionItem(rid: String) -> RCAction? {
+        actions.first { rid.contains($0.id) }
     }
     
     // Action
@@ -76,14 +88,15 @@ class AppState: ObservableObject {
     }
 
     @MainActor func hasParentBookmark(of url: URL) -> Bool {
-        let storedUrls = dirs.map { $0.url }
-        for storedURL in storedUrls {
-            // 确保 storedURL 是一个目录，并且传入的 URL 以 storedURL 的路径为前缀
-            if url.path.hasPrefix(storedURL.path) {
-                return true
-            }
-        }
         return false
+//        let storedUrls = dirs.map { $0.url }
+//        for storedURL in storedUrls {
+//            // 确保 storedURL 是一个目录，并且传入的 URL 以 storedURL 的路径为前缀
+//            if url.path.hasPrefix(storedURL.path) {
+//                return true
+//            }
+//        }
+//        return false
     }
     
     @MainActor
@@ -113,14 +126,15 @@ class AppState: ObservableObject {
     @MainActor
     private func load() throws {
         let decoder = PropertyListDecoder()
-        if let appItemData = UserDefaults.group.data(forKey: Key.apps) {
-            apps = try decoder.decode([OpenWithApp].self, from: appItemData)
-            logger.info("load apps success")
-        } else {
-            logger.warning("load apps failed")
-            apps = OpenWithApp.defaultApps
-        }
         
+        if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
+            dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
+            logger.info("load permDir success")
+        } else {
+            logger.warning("load permission dirfailed")
+            dirs = [PermissiveDir(permUrl: URL.homeDirectory)]
+        }
+   
         if let actionData = UserDefaults.group.data(forKey: Key.actions) {
             actions = try decoder.decode([RCAction].self, from: actionData)
             logger.info("load actions success")
@@ -137,12 +151,12 @@ class AppState: ObservableObject {
             newFiles = NewFile.all
         }
         
-        if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
-            dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
-            logger.info("load permDir success")
+        if let appItemData = UserDefaults.group.data(forKey: Key.apps) {
+            apps = try decoder.decode([OpenWithApp].self, from: appItemData)
+            logger.info("load apps success")
         } else {
-            logger.warning("load permission dirfailed")
-            dirs = [PermissiveDir(permUrl: URL.homeDirectory)]
+            logger.warning("load apps failed")
+            apps = OpenWithApp.defaultApps
         }
     }
 }
