@@ -11,8 +11,6 @@ import SwiftUI
 import FinderSync
 import os.log
 
-//
-// let channel = AppCommChannel()
 
 @main
 struct RClickApp: App {
@@ -57,12 +55,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 在 app 启动后执行的函数
         logger.notice("App -------------------------- 已启动")
 
-//        Task {
-//            await channel.setup(store: folderItemStore)
-//        }
-//
-        // 通知扩展主app已经启动了
-        messager.sendMessage(name: "running", data: MessagePayload(action: "test", target: ["/test"], rid: "test"))
+
+
         messager.on(name: Key.messageFromFinder) { payload in
 
             self.logger.info("recive mess from finder by app \(payload.description)")
@@ -81,7 +75,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             var target: [String] = []
             if let dirs = self.appState?.dirs {
-                target = dirs.map {  $0.url.path() }
+                target = dirs.map { $0.url.path() }
             }
             self.messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
         }
@@ -151,13 +145,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
-        let fm = FileManager.default
-        do {
-            for item in target {
-                try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+        if let dir = appState?.dirs.first {
+            var isStale = false
+            do {
+                let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+
+                if isStale {
+                    // 重新创建 bookmarkData
+                    // createBookmark(for: folderURL) // 这里可以调用之前的函数
+                }
+
+                // 进入安全范围
+                let success = folderURL.startAccessingSecurityScopedResource()
+                if success {
+                    let fm = FileManager.default
+
+                    do {
+                        for item in target {
+                            try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+                        }
+                    } catch {
+                        logger.error("delete \(target) file run error \(error)")
+                    }
+                    // 完成后释放资源
+                    folderURL.stopAccessingSecurityScopedResource()
+                } else {
+                    logger.warning("fail access scope \(dir.url.path)")
+                }
+            } catch {
+                print("解析 bookmark 失败：\(error)")
             }
-        } catch {
-            logger.error("delete \(target) file run error \(error)")
         }
     }
 

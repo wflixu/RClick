@@ -25,6 +25,8 @@ struct GeneralSettingsTabView: View {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    let messager = Messager.shared
+
     var enableIcon: String {
         if extensionEnabled {
             return "checkmark.circle.fill"
@@ -142,7 +144,7 @@ struct GeneralSettingsTabView: View {
     }
 
     func checkPermissionFolder() async {
-        let isEmpty =  store.dirs.isEmpty
+        let isEmpty = store.dirs.isEmpty
         if isEmpty {
             showAlert = true
         } else {
@@ -158,17 +160,14 @@ struct GeneralSettingsTabView: View {
 //            showAlert = true
             logger.info("hasParentDir\(hasParentDir)")
         } else {
-            let result = url.startAccessingSecurityScopedResource()
-            logger.info("start init PermissiveDir------------------------")
-            if !result {
-                logger.error("Fail to start access security scoped resource on \(url.path)")
-            }
             store.dirs.append(PermissiveDir(permUrl: url))
             try? store.savePermissiveDir()
-//            channel.send(name: "ChoosePermissionFolder", data: nil)
+
+            let observeDirs = store.dirs.map { $0.url.path }
+            messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: observeDirs))
         }
     }
-    
+
     @MainActor private func removeBookmark(_ item: PermissiveDir) {
         // 根据item 查找offsets
         if let index = store.dirs.firstIndex(of: item) {

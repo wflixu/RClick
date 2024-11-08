@@ -102,6 +102,7 @@
       }
     },
     "Copy Path" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -112,6 +113,7 @@
       }
     },
     "Delete Direct" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

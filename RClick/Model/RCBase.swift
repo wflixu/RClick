@@ -60,24 +60,22 @@ extension OpenWithApp {
 struct PermissiveDir: RCBase {
     var id: String
     var url: URL
-//    var bookmark: Data
+    var bookmark: Data
 
     init(id: String = UUID().uuidString, permUrl url: URL) {
         self.id = id
         self.url = url
-//        let result = url.startAccessingSecurityScopedResource()
+        let result = url.startAccessingSecurityScopedResource()
         logger.info("start init PermissiveDir------------------------")
-//        if !result {
-//            logger.error("Fail to start access security scoped resource on \(url.path)")
-//        }
-//        do {
-//            bookmark = try url.bookmarkData(options: .withSecurityScope)
-//
-//            url.stopAccessingSecurityScopedResource()
-//        } catch {
-//            logger.warning("\(error.localizedDescription)")
-//            fatalError()
-//        }
+        if !result {
+            logger.error("Fail to start access security scoped resource on \(url.path)")
+        }
+        do {
+            bookmark = try url.bookmarkData(options: .withSecurityScope)
+        } catch {
+            logger.warning("\(error.localizedDescription)")
+            fatalError()
+        }
     }
 
 //    enum CodingKeys: String, CodingKey {
@@ -91,8 +89,7 @@ struct PermissiveDir: RCBase {
 //        do {
 //            url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
 //            let result = url.startAccessingSecurityScopedResource()
-//            let path = url.path
-// 
+//          
 //            if !result {
 //                logger.error("Fail to start access security scoped resource on \(path)")
 //            }
@@ -116,16 +113,16 @@ extension PermissiveDir {
         return PermissiveDir(permUrl: url)
     }
 
-    static var application: SyncFolderItem? {
-        SyncFolderItem(URL(fileURLWithPath: "/Applications"))
+    static var application: PermissiveDir? {
+        PermissiveDir(permUrl:URL(fileURLWithPath: "/Applications"))
     }
 
-    static var volumns: [SyncFolderItem] {
+    static var volumns: [PermissiveDir] {
         let volumns = (FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [], options: .skipHiddenVolumes) ?? []).dropFirst()
-        return volumns.compactMap { SyncFolderItem($0) }
+        return volumns.compactMap { PermissiveDir(permUrl: $0) }
     }
 
-    static var defaultFolders: [SyncFolderItem] {
+    static var defaultFolders: [PermissiveDir] {
         [.home].compactMap { $0 } + volumns
     }
 }

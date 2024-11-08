@@ -12,7 +12,6 @@ import SwiftUI
 struct ActionSettingsTabView: View {
     @EnvironmentObject var appState: AppState
 
-    @State var menumItemStore = MenuItemStore()
     @State var showSelectApp = false
 
     var body: some View {
