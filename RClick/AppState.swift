@@ -23,6 +23,7 @@ class AppState: ObservableObject {
     init() {
         Task {
             await MainActor.run {
+                logger.info("start load")
                 try? load()
             }
         }
@@ -132,7 +133,10 @@ class AppState: ObservableObject {
             logger.info("load permDir success")
         } else {
             logger.warning("load permission dirfailed")
-            dirs = [PermissiveDir(permUrl: URL.homeDirectory)]
+           
+            dirs = []
+            
+                  
         }
    
         if let actionData = UserDefaults.group.data(forKey: Key.actions) {

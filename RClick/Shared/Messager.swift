@@ -37,6 +37,7 @@ class Messager {
 
     func sendMessage(name: String, data: MessagePayload) {
         let message: String = createMessageData(messsagePayload: data)
+        logger.warning("start sendMessage ... to \(name)")
         center.postNotificationName(NSNotification.Name(name), object: message, userInfo: nil, deliverImmediately: true)
     }
 

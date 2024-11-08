@@ -24,6 +24,7 @@ struct RClickApp: App {
 
     @AppLog(category: "main")
     private var logger
+    let messager = Messager.shared
 
     @StateObject var appState = AppState()
 
@@ -76,7 +77,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.logger.warning("actioning payload no matched")
             }
         }
-//        messager.sendMessage(name: "running", data: MessagePayload(action: "running"))
+        // 拓展还没有启动，接收不到消息，所以要等一会
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            var target: [String] = []
+            if let dirs = self.appState?.dirs {
+                target = dirs.map {  $0.url.path() }
+            }
+            self.messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
+        }
 
 //        // 根据某种逻辑设置应用是否显示在 Dock 中
 //        if showDockIcon {
@@ -140,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             pasteboard.setString(dirPath.removingPercentEncoding ?? dirPath, forType: .string)
         }
     }
-    
+
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
         let fm = FileManager.default

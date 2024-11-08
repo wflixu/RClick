@@ -60,29 +60,52 @@ extension OpenWithApp {
 struct PermissiveDir: RCBase {
     var id: String
     var url: URL
-    var bookmark: Data
+//    var bookmark: Data
 
     init(id: String = UUID().uuidString, permUrl url: URL) {
         self.id = id
         self.url = url
-        let result = url.startAccessingSecurityScopedResource()
+//        let result = url.startAccessingSecurityScopedResource()
         logger.info("start init PermissiveDir------------------------")
-        if !result {
-            logger.error("Fail to start access security scoped resource on \(url.path)")
-        }
-        do {
-            bookmark = try url.bookmarkData(options: .withSecurityScope)
-
+//        if !result {
+//            logger.error("Fail to start access security scoped resource on \(url.path)")
+//        }
+//        do {
+//            bookmark = try url.bookmarkData(options: .withSecurityScope)
+//
 //            url.stopAccessingSecurityScopedResource()
-        } catch {
-            logger.warning("\(error.localizedDescription)")
-            fatalError()
-        }
+//        } catch {
+//            logger.warning("\(error.localizedDescription)")
+//            fatalError()
+//        }
     }
+
+//    enum CodingKeys: String, CodingKey {
+//        case url, bookmark
+//    }
+//
+//    init(from decoder: any Decoder) throws {
+//        let values = try decoder.container(keyedBy: CodingKeys.self)
+//        bookmark = try values.decode(Data.self, forKey: .bookmark)
+//        var isStale = false
+//        do {
+//            url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+//            let result = url.startAccessingSecurityScopedResource()
+//            let path = url.path
+// 
+//            if !result {
+//                logger.error("Fail to start access security scoped resource on \(path)")
+//            }
+//        } catch {
+//            // Show for the main app
+//            url = try values.decode(URL.self, forKey: .url)
+//        }
+//        id = UUID().uuidString
+//    }
 }
 
 extension PermissiveDir {
-    static var home: SyncFolderItem? {
+    static var home: PermissiveDir? {
         guard let pw = getpwuid(getuid()),
               let home = pw.pointee.pw_dir
         else {
@@ -90,7 +113,7 @@ extension PermissiveDir {
         }
         let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
         let url = URL(fileURLWithPath: path)
-        return SyncFolderItem(url)
+        return PermissiveDir(permUrl: url)
     }
 
     static var application: SyncFolderItem? {

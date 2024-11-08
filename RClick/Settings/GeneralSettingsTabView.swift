@@ -158,11 +158,11 @@ struct GeneralSettingsTabView: View {
 //            showAlert = true
             logger.info("hasParentDir\(hasParentDir)")
         } else {
-//            let result = url.startAccessingSecurityScopedResource()
-//            logger.info("start init PermissiveDir------------------------")
-//            if !result {
-//                logger.error("Fail to start access security scoped resource on \(url.path)")
-//            }
+            let result = url.startAccessingSecurityScopedResource()
+            logger.info("start init PermissiveDir------------------------")
+            if !result {
+                logger.error("Fail to start access security scoped resource on \(url.path)")
+            }
             store.dirs.append(PermissiveDir(permUrl: url))
             try? store.savePermissiveDir()
 //            channel.send(name: "ChoosePermissionFolder", data: nil)

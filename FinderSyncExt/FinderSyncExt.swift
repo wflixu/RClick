@@ -34,11 +34,7 @@ class FinderSyncExt: FIFinderSync {
         FIFinderSyncController.default().directoryURLs = [myFolderURL]
         logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
         
-        let dirs = appState.dirs
-        let urls = Set(dirs.map { bkm in
-            bkm.url
-        })
-        FIFinderSyncController.default().directoryURLs = urls
+
         
         logger.info("end ..... directoryURLS ...")
         
@@ -51,6 +47,9 @@ class FinderSyncExt: FIFinderSync {
         messager.on(name: "running") { payload in
             self.isHostAppOpen = true
             self.logger.info("main app  running\(payload.description)")
+            if payload.target.count > 0 {
+                FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
+            }
         }
     }
     
@@ -94,7 +93,7 @@ class FinderSyncExt: FIFinderSync {
         // Produce a menu for the extension.
         logger.info("mak menddd .....")
         triggerManKind = menuKind
-        self.logger.info("start build menu ....")
+        logger.info("start build menu ....")
         let applicationMenu = NSMenu(title: "RClick")
         guard isHostAppOpen else {
             return applicationMenu
