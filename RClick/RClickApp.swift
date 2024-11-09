@@ -11,7 +11,6 @@ import SwiftUI
 import FinderSync
 import os.log
 
-
 @main
 struct RClickApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
@@ -54,8 +53,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
         logger.notice("App -------------------------- 已启动")
-
-
 
         messager.on(name: Key.messageFromFinder) { payload in
 
@@ -145,35 +142,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
-        if let dir = appState?.dirs.first {
-            var isStale = false
-            do {
-                let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+        guard let appState = appState else {
+            logger.warning("when creatFile,but appState is not ready")
+            return
+        }
+        let fm = FileManager.default
 
-                if isStale {
-                    // 重新创建 bookmarkData
-                    // createBookmark(for: folderURL) // 这里可以调用之前的函数
-                }
+        for item in target {
+            if let permDir = appState.dirs.first(where: { permd in
+                item.contains(permd.url.path())
+            }) {
+                var isStale = false
+                do {
+                    let folderURL = try URL(resolvingBookmarkData: permDir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
 
-                // 进入安全范围
-                let success = folderURL.startAccessingSecurityScopedResource()
-                if success {
-                    let fm = FileManager.default
-
-                    do {
-                        for item in target {
-                            try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
-                        }
-                    } catch {
-                        logger.error("delete \(target) file run error \(error)")
+                    if isStale {
+                        // 重新创建 bookmarkData
+                        // createBookmark(for: folderURL) // 这里可以调用之前的函数
                     }
-                    // 完成后释放资源
-                    folderURL.stopAccessingSecurityScopedResource()
-                } else {
-                    logger.warning("fail access scope \(dir.url.path)")
+
+                    // 进入安全范围
+                    let success = folderURL.startAccessingSecurityScopedResource()
+                    if success {
+                        try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+                        // 完成后释放资源
+                        folderURL.stopAccessingSecurityScopedResource()
+                    } else {
+                        logger.warning("fail access scope \(permDir.url.path)")
+                    }
+                } catch {
+                    logger.error("delete \(target) file run error \(error)")
                 }
-            } catch {
-                print("解析 bookmark 失败：\(error)")
             }
         }
     }
@@ -184,7 +183,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         guard let rcitem = appState.getFileType(rid: rid), let dirPath = target.first else {
-            logger.warning("when createFile,but not have fileType ")
+            logger.warning("when createFile,but not have fileType \(rid) ")
             return
         }
 
@@ -197,24 +196,48 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let emptyDocxData = Data()
         let fileURL = URL(fileURLWithPath: filePath)
 
-        do {
-            try emptyDocxData.write(to: fileURL)
-            print("Empty DOCX file created successfully at \(filePath)")
-        } catch let error as NSError {
-            switch error.domain {
-            case NSCocoaErrorDomain:
-                switch error.code {
-                case NSFileNoSuchFileError:
-                    print("Error: No such file exists at \(filePath)")
-                case NSFileWriteOutOfSpaceError:
-                    print("Error: Not enough disk space to write the file")
-                case NSFileWriteNoPermissionError:
-                    print("Error: No permission to write the file at \(filePath)")
-                default:
-                    print("Error: \(error.localizedDescription) (\(error.code))")
+        if let dir = appState.dirs.first(where: {
+            dirPath.contains($0.url.path)
+        }) {
+            var isStale = false
+            do {
+                let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+
+                if isStale {
+                    // 重新创建 bookmarkData
+                    // createBookmark(for: folderURL) // 这里可以调用之前的函数
                 }
-            default:
-                print("Unhandled error: \(error.localizedDescription) (\(error.code))")
+
+                // 进入安全范围
+                let success = folderURL.startAccessingSecurityScopedResource()
+                if success {
+                    do {
+                        try emptyDocxData.write(to: fileURL)
+                        print("Empty DOCX file created successfully at \(filePath)")
+                    } catch let error as NSError {
+                        switch error.domain {
+                        case NSCocoaErrorDomain:
+                            switch error.code {
+                            case NSFileNoSuchFileError:
+                                print("Error: No such file exists at \(filePath)")
+                            case NSFileWriteOutOfSpaceError:
+                                print("Error: Not enough disk space to write the file")
+                            case NSFileWriteNoPermissionError:
+                                print("Error: No permission to write the file at \(filePath)")
+                            default:
+                                print("Error: \(error.localizedDescription) (\(error.code))")
+                            }
+                        default:
+                            print("Unhandled error: \(error.localizedDescription) (\(error.code))")
+                        }
+                    }
+                    // 完成后释放资源
+                    folderURL.stopAccessingSecurityScopedResource()
+                } else {
+                    logger.warning("fail access scope \(dir.url.path)")
+                }
+            } catch {
+                print("解析 bookmark 失败：\(error)")
             }
         }
     }
@@ -225,7 +248,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         guard let rcitem = appState.getAppItem(rid: rid) else {
-            logger.warning("when openapp,but not have app ")
+            logger.warning("when openapp,but not have app \(rid)")
             return
         }
 
@@ -242,6 +265,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 logger.info("starting open dir .........")
                 NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config)
             }
+           
         }
     }
 

@@ -20,7 +20,7 @@ class FinderSyncExt: FIFinderSync {
      
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = false
-    let appState = AppState()
+    lazy var appState: AppState = { AppState(inExt: true) }()
     
     private var tagRidDict: [Int: String] = [:]
     
@@ -33,8 +33,6 @@ class FinderSyncExt: FIFinderSync {
         
         FIFinderSyncController.default().directoryURLs = [myFolderURL]
         logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
-        
-
         
         logger.info("end ..... directoryURLS ...")
         
@@ -49,6 +47,9 @@ class FinderSyncExt: FIFinderSync {
             self.logger.info("main app  running\(payload.description)")
             if payload.target.count > 0 {
                 FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
+            }
+            Task {
+                await self.appState.refresh()
             }
         }
     }

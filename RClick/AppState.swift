@@ -19,8 +19,10 @@ class AppState: ObservableObject {
     @Published var dirs: [PermissiveDir] = []
     @Published var actions: [RCAction] = []
     @Published var newFiles: [NewFile] = []
+    @Published var inExt: Bool
     
-    init() {
+    init(inExt:Bool = false) {
+        self.inExt = inExt
         Task {
             await MainActor.run {
                 logger.info("start load")
@@ -55,15 +57,21 @@ class AppState: ObservableObject {
     }
     
     func getAppItem(rid: String) -> OpenWithApp? {
-        apps.first { rid.contains($0.id) }
+        return apps.first { rid.contains($0.id) }
     }
     
     func getFileType(rid: String) -> NewFile? {
-        newFiles.first { rid.contains($0.id) }
+        logger.info("rid: \(rid) ..77273772377 77777&&&&&&&&&")
+        return newFiles.first(where:  { nf in
+            self.logger.info("@#### item id: \(nf.id)")
+            return rid == nf.id
+        })
     }
     
     func getActionItem(rid: String) -> RCAction? {
-        actions.first { rid.contains($0.id) }
+        actions.first( where: { rcAtion in
+            rcAtion.id == rid
+        })
     }
     
     // Action
@@ -127,17 +135,19 @@ class AppState: ObservableObject {
     @MainActor
     private func load() throws {
         let decoder = PropertyListDecoder()
-        
-        if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
-            dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
-            logger.info("load permDir success")
-        } else {
-            logger.warning("load permission dirfailed")
-           
-            dirs = []
-            
-                  
+        if(!self.inExt) {
+            if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
+                dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
+                logger.info("load permDir success")
+            } else {
+                logger.warning("load permission dirfailed")
+               
+                dirs = []
+                
+                      
+            }
         }
+        
    
         if let actionData = UserDefaults.group.data(forKey: Key.actions) {
             actions = try decoder.decode([RCAction].self, from: actionData)

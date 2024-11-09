@@ -42,14 +42,6 @@ struct AboutSettingsTabView: View {
                 Text(verbatim: "https://github.com/wflixu/RClick")
                 Spacer()
             }
-            HStack {
-                Button {
-                    messager.sendMessage(name: "running", data: MessagePayload(action: "test", target: ["/test"], rid: "test"))
-                } label: {
-                    Text("runing")
-                }
-
-            }
         }
     }
 
