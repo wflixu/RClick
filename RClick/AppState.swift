@@ -11,6 +11,7 @@ import Combine
 import OrderedCollections
 import SwiftUI
 
+@MainActor
 class AppState: ObservableObject {
     @AppLog(category: "AppState")
     private var logger

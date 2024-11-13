@@ -40,6 +40,7 @@ struct RClickApp: App {
     }
 }
 
+@MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
     @AppLog(category: "AppDelegate")
     private var logger
@@ -254,18 +255,54 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let appUrl = rcitem.url
         let config = NSWorkspace.OpenConfiguration()
-        config.promptsUserIfNeeded = true
+        config.promptsUserIfNeeded = false
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath, isDirectory: true)
+            
+            logger.warning("starting open .....")
             if appUrl.path.hasSuffix("WezTerm.app") {
                 config.arguments = ["--cwd", dirPath]
                 NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
             } else {
-                logger.info("starting open dir .........")
-                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config)
+                logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")
+                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
+                    if let error = error {
+                        print("Error opening application: \(error.localizedDescription)")
+                    } else if let runningApp = runningApp {
+                        print("Successfully opened application: \(runningApp.localizedName ?? "Unknown")")
+                    }
+                }
             }
-           
+            
+//            if let permDir = appState.dirs.first(where: {
+//                dir.path().contains($0.url.path)
+//            }) {
+//                var isStale = false
+//                do {
+//                    let folderURL = try URL(resolvingBookmarkData: permDir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+//
+//                    if isStale {
+//                        // 重新创建 bookmarkData
+//                        // createBookmark(for: folderURL) // 这里可以调用之前的函数
+//                        logger.warning("folder  is stale \(folderURL.path())")
+//                    }
+//
+//                    // 进入安全范围
+//                    let success = folderURL.startAccessingSecurityScopedResource()
+//                    if success {
+//                        
+//                        
+//                        // 完成后释放资源
+//                        folderURL.stopAccessingSecurityScopedResource()
+//                    } else {
+//                        logger.warning("fail access scope \(permDir.url.path)")
+//                    }
+//                } catch {
+//                    print("解析 bookmark 失败：\(error)")
+//                }
+//            }
+            
         }
     }
 
