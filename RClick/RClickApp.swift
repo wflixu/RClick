@@ -260,9 +260,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath, isDirectory: true)
             
-            logger.warning("starting open .....")
+            logger.warning("starting open .....\(appUrl.path) -- \(dirPath)")
             if appUrl.path.hasSuffix("WezTerm.app") {
+                config.arguments = ["start", ""]
                 config.arguments = ["--cwd", dirPath]
+                
                 NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
             } else {
                 logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")

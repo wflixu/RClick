@@ -22,7 +22,7 @@ class AppState: ObservableObject {
     @Published var newFiles: [NewFile] = []
     @Published var inExt: Bool
     
-    init(inExt:Bool = false) {
+    init(inExt: Bool = false) {
         self.inExt = inExt
         Task {
             await MainActor.run {
@@ -63,14 +63,14 @@ class AppState: ObservableObject {
     
     func getFileType(rid: String) -> NewFile? {
         logger.info("rid: \(rid) ..77273772377 77777&&&&&&&&&")
-        return newFiles.first(where:  { nf in
+        return newFiles.first(where: { nf in
             self.logger.info("@#### item id: \(nf.id)")
             return rid == nf.id
         })
     }
     
     func getActionItem(rid: String) -> RCAction? {
-        actions.first( where: { rcAtion in
+        actions.first(where: { rcAtion in
             rcAtion.id == rid
         })
     }
@@ -136,20 +136,42 @@ class AppState: ObservableObject {
     @MainActor
     private func load() throws {
         let decoder = PropertyListDecoder()
-        if(!self.inExt) {
+        if !inExt {
             if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
                 dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
                 logger.info("load permDir success")
+                
+                for dir in dirs {
+                    var isStale = false
+                    do {
+                        let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+
+                        if isStale {
+                            // 重新创建 bookmarkData
+                            // createBookmark(for: folderURL) // 这里可以调用之前的函数
+                        }
+
+                        // 进入安全范围
+                        let success = folderURL.startAccessingSecurityScopedResource()
+                        if success {
+                            // 完成后释放资源
+                            logger.info("startAccessingSecurityScopedResource success")
+//                            folderURL.stopAccessingSecurityScopedResource()
+                        } else {
+                            logger.warning("fail access scope \(dir.url.path)")
+                        }
+                    } catch {
+                        print("解析 bookmark 失败：\(error)")
+                    }
+                }
+                 
             } else {
                 logger.warning("load permission dirfailed")
                
                 dirs = []
-                
-                      
             }
         }
         
-   
         if let actionData = UserDefaults.group.data(forKey: Key.actions) {
             actions = try decoder.decode([RCAction].self, from: actionData)
             logger.info("load actions success")

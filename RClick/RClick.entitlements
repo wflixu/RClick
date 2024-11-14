@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.cn.wflixu.RClick</string>
+		<string>$(TeamIdentifierPrefix)cn.wflixu.RClick</string>
 	</array>
 	<key>com.apple.security.files.bookmarks.app-scope</key>
 	<true/>
