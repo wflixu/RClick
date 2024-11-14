@@ -16,7 +16,7 @@ struct GeneralSettingsTabView: View {
 
     @AppStorage("extensionEnabled") private var extensionEnabled = false
 
-    var store: FolderItemStore
+    @EnvironmentObject var store: AppState
 
     @State private var showAlert = false
     @State private var wrongFold = false
@@ -24,6 +24,8 @@ struct GeneralSettingsTabView: View {
     @State private var showDirImporter = false
 
     @Environment(\.scenePhase) private var scenePhase
+
+    let messager = Messager.shared
 
     var enableIcon: String {
         if extensionEnabled {
@@ -54,10 +56,10 @@ struct GeneralSettingsTabView: View {
             VStack(alignment: .leading) {
                 Section {
                     List {
-                        ForEach(store.bookmarkItems) { item in
+                        ForEach(store.dirs) { item in
                             HStack {
                                 Image(systemName: "folder")
-                                Text(verbatim: item.path)
+                                Text(verbatim: item.url.path)
                                 Spacer()
                                 Button {
                                     removeBookmark(item)
@@ -74,7 +76,6 @@ struct GeneralSettingsTabView: View {
                         Button {
                             showDirImporter = true
                         } label: { Label("Add", systemImage: "folder.badge.plus") }
-                            
                     }
 
                 } footer: {
@@ -129,12 +130,12 @@ struct GeneralSettingsTabView: View {
 
         }.onForeground {
             updateEnableState()
-            Task {
-                await checkPermissionFolder()
-            }
+//            Task {
+//                await checkPermissionFolder()
+//            }
         }
         .task {
-            await checkPermissionFolder()
+//            await checkPermissionFolder()
         }
     }
 
@@ -143,7 +144,7 @@ struct GeneralSettingsTabView: View {
     }
 
     func checkPermissionFolder() async {
-        let isEmpty = await store.isEmpty()
+        let isEmpty = store.dirs.isEmpty
         if isEmpty {
             showAlert = true
         } else {
@@ -159,15 +160,18 @@ struct GeneralSettingsTabView: View {
 //            showAlert = true
             logger.info("hasParentDir\(hasParentDir)")
         } else {
-            store.appendItem(BookmarkFolderItem(url))
-            channel.send(name: "ChoosePermissionFolder", data: nil)
+            store.dirs.append(PermissiveDir(permUrl: url))
+            try? store.savePermissiveDir()
+
+            let observeDirs = store.dirs.map { $0.url.path }
+            messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: observeDirs))
         }
     }
 
-    @MainActor private func removeBookmark(_ item: BookmarkFolderItem) {
+    @MainActor private func removeBookmark(_ item: PermissiveDir) {
         // 根据item 查找offsets
-        if let index = store.bookmarkItems.firstIndex(of: item) {
-            store.deleteBookmarkItem(index: index)
+        if let index = store.dirs.firstIndex(of: item) {
+            store.deletePermissiveDir(index: index)
         }
     }
 

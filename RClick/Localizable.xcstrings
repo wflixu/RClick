@@ -102,17 +102,31 @@
       }
     },
     "Copy Path" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Path"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拷贝路径"
+            "value" : "复制路径"
           }
         }
       }
     },
     "Delete Direct" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Direct"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

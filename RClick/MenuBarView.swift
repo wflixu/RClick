@@ -9,36 +9,39 @@ import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
+    @Environment(\.openWindow) var openWindow: OpenWindowAction
+
     let messager = Messager.shared
+
     var body: some View {
         VStack {
-            SettingsLink {
+            Button(action: actionSettings) {
                 Image(systemName: "gearshape")
                 Text("Settings")
-            }.keyboardShortcut(",", modifiers: [.command])
-            
+            }
+            .keyboardShortcut(",", modifiers: [.command])
+
             Button(action: actionQuit) {
                 Image(systemName: "xmark.square")
                 Text("Quit")
             }
             .keyboardShortcut("q", modifiers: [.command])
-            
         }
     }
 
-    func test () {
-        
+    private func actionSettings() {
+        openWindow(id: Constants.settingsWindowID)
     }
+
     private func actionQuit() {
-       
         messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
-      
+
         Task {
-            try await Task.sleep(nanoseconds:UInt64(1.0 * 1e9))
+            try await Task.sleep(nanoseconds: UInt64(1.0 * 1e9))
+
             NSApplication.shared.terminate(self)
         }
     }
-
 }
 
 #Preview {

@@ -10,16 +10,15 @@ import AppKit
 import SwiftUI
 
 struct ActionSettingsTabView: View {
-    @Bindable var store: MenuItemStore
+    @EnvironmentObject var appState: AppState
 
-    @State var menumItemStore = MenuItemStore()
     @State var showSelectApp = false
 
     var body: some View {
         Form {
             Section {
                 List {
-                    ForEach(store.appItems) { item in
+                    ForEach(appState.apps) { item in
                         HStack {
                             Image(nsImage: NSWorkspace.shared.icon(forFile: item.url.path))
                                 .resizable()
@@ -53,9 +52,11 @@ struct ActionSettingsTabView: View {
                     ) { result in
                         switch result {
                         case .success(let files):
-                            let items = files.map { AppMenuItem(appURL: $0) }
-                            store.appendItems(items)
-                            channel.send(name: "RefreshMenuItems")
+                            if let url = files.first {
+                                appState.addApp(item: OpenWithApp(appURL: url))
+                            }
+
+//                            channel.send(name: "RefreshMenuItems")
                         case .failure(let error):
                             // handle error
                             print(error)
@@ -68,9 +69,9 @@ struct ActionSettingsTabView: View {
 
             Section {
                 List {
-                    ForEach($store.actionItems) { $item in
+                    ForEach($appState.actions) { $item in
                         HStack {
-                            Image(systemName: item.iconName)
+                            Image(systemName: item.icon)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20, height: 20)
@@ -78,8 +79,8 @@ struct ActionSettingsTabView: View {
                             Spacer()
                             Toggle("", isOn: $item.enabled)
                                 .onChange(of: item.enabled) {
-                                    store.toggleActionItem()
-                                    channel.send(name: "RefreshMenuItems")
+                                    appState.toggleActionItem()
+//                                    channel.send(name: "RefreshMenuItems")
                                 }
                                 .toggleStyle(.switch)
                         }
@@ -91,7 +92,7 @@ struct ActionSettingsTabView: View {
                     Text("Action Item").font(.title2)
                     Spacer()
                     Button {
-                        store.resetActionItems()
+                        appState.resetActionItems()
                     } label: {
                         Label("Reset", systemImage: "arrow.triangle.2.circlepath")
                             .font(.body)
@@ -102,9 +103,9 @@ struct ActionSettingsTabView: View {
             // Mark
             Section {
                 List {
-                    ForEach($store.filetypeItems) { $item in
+                    ForEach($appState.newFiles) { $item in
                         HStack {
-                            Image(item.iconName)
+                            Image(item.icon)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 20, height: 20)
@@ -112,8 +113,8 @@ struct ActionSettingsTabView: View {
                             Spacer()
                             Toggle("", isOn: $item.enabled)
                                 .onChange(of: item.enabled) {
-                                    store.toggleActionItem()
-                                    channel.send(name: "RefreshMenuItems")
+                                    appState.toggleActionItem()
+//                                    channel.send(name: "RefreshMenuItems")
                                 }
                                 .toggleStyle(.switch)
                         }
@@ -125,7 +126,7 @@ struct ActionSettingsTabView: View {
                     Text("New File").font(.title2)
                     Spacer()
                     Button {
-                        store.resetFiletypeItems()
+                        appState.resetFiletypeItems()
                     } label: {
                         Label("Reset", systemImage: "arrow.triangle.2.circlepath")
                             .font(.body)
@@ -139,14 +140,9 @@ struct ActionSettingsTabView: View {
         .formStyle(.grouped)
     }
 
-    @MainActor private func deleteApp(_ appItem: AppMenuItem) {
-        if let index = store.appItems.firstIndex(where: { $0.url == appItem.url }) {
-            store.deleteAppItems(offsets: IndexSet(integer: index))
-            channel.send(name: "RefreshMenuItems")
+    @MainActor private func deleteApp(_ appItem: OpenWithApp) {
+        if let index = appState.apps.firstIndex(where: { $0.id == appItem.id }) {
+            appState.deleteApp(index: index)
         }
     }
-}
-
-#Preview {
-    ActionSettingsTabView(store: MenuItemStore())
 }

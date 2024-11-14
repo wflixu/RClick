@@ -5,11 +5,15 @@
 //  Created by 李旭 on 2024/4/4.
 //
 
+import FinderSync
 import SwiftUI
+import AppKit
+import ExtensionKit
+import ExtensionFoundation
+
 
 struct AboutSettingsTabView: View {
-    
-    
+    let messager = Messager.shared
     var body: some View {
         VStack {
             HStack {
@@ -32,30 +36,28 @@ struct AboutSettingsTabView: View {
             }
             Spacer()
             Divider()
-            HStack (alignment: .center) {
+            HStack(alignment: .center) {
                 Image("github")
-                
+
                 Text(verbatim: "https://github.com/wflixu/RClick")
                 Spacer()
             }
-            
         }
-        
     }
-    
-    func getAppVersion() -> String {
-            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                return version
-            }
-            return "Unknown"
-        }
 
-        func getBuildVersion() -> String {
-            if let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                return buildVersion
-            }
-            return "Unknown"
+    func getAppVersion() -> String {
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            return version
         }
+        return "Unknown"
+    }
+
+    func getBuildVersion() -> String {
+        if let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            return buildVersion
+        }
+        return "Unknown"
+    }
 }
 
 #Preview {
