@@ -4,18 +4,18 @@
 <dict>
 	<key>NSExtension</key>
 	<dict>
-		<key>NSExtensionAttributes</key>
-		<dict/>
-		<key>ITSAppUsesNonExemptEncryption</key>
-		<false/>
-		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.FinderSync</string>
-		<key>NSExtensionPrincipalClass</key>
-		<string>$(PRODUCT_MODULE_NAME).FinderSyncExt</string>
 		<key>CFBundleShortVersionString</key>
 		<string>$(MARKETING_VERSION)</string>
 		<key>CFBundleVersion</key>
 		<string>$(CURRENT_PROJECT_VERSION)</string>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
+		<key>NSExtensionAttributes</key>
+		<dict/>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.FinderSync</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>$(PRODUCT_MODULE_NAME).FinderSyncExt</string>
 	</dict>
 </dict>
 </plist>

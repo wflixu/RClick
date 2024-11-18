@@ -258,7 +258,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         config.promptsUserIfNeeded = false
 
         for dirPath in target {
-            let dir = URL(fileURLWithPath: dirPath, isDirectory: true)
+            let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
             
             logger.warning("starting open .....\(appUrl.path) -- \(dirPath)")
             if appUrl.path.hasSuffix("WezTerm.app") {
@@ -277,40 +277,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
             
-//            if let permDir = appState.dirs.first(where: {
-//                dir.path().contains($0.url.path)
-//            }) {
-//                var isStale = false
-//                do {
-//                    let folderURL = try URL(resolvingBookmarkData: permDir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-//
-//                    if isStale {
-//                        // 重新创建 bookmarkData
-//                        // createBookmark(for: folderURL) // 这里可以调用之前的函数
-//                        logger.warning("folder  is stale \(folderURL.path())")
-//                    }
-//
-//                    // 进入安全范围
-//                    let success = folderURL.startAccessingSecurityScopedResource()
-//                    if success {
-//                        
-//                        
-//                        // 完成后释放资源
-//                        folderURL.stopAccessingSecurityScopedResource()
-//                    } else {
-//                        logger.warning("fail access scope \(permDir.url.path)")
-//                    }
-//                } catch {
-//                    print("解析 bookmark 失败：\(error)")
-//                }
-//            }
-            
         }
     }
 
-//    func applicationDidBecomeActive(_ notification: Notification) {
-//        NSApplication.shared.openSettings()
-//    }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
