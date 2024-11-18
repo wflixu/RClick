@@ -21,11 +21,11 @@ struct SettingsWindow: Scene {
                 .onAppear {
                     onAppear()
                 }
-                
+                .frame(minWidth: 800, minHeight: 500)
         }
-        
+        .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
-        .defaultSize(width: 900, height: 615)
+        .defaultSize(width: 800, height: 500)
     }
     
 }
