@@ -11,6 +11,9 @@
         }
       }
     },
+    "%@" : {
+
+    },
     "%@（%@）" : {
       "localizations" : {
         "en" : {
@@ -27,7 +30,18 @@
         }
       }
     },
+    "%@=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@=%2$@"
+          }
+        }
+      }
+    },
     "About" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44,6 +58,7 @@
       }
     },
     "Action Item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -59,7 +74,11 @@
         }
       }
     },
+    "Action Items" : {
+
+    },
     "Actions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -91,6 +110,12 @@
         }
       }
     },
+    "Arguments" : {
+
+    },
+    "Arguments:" : {
+
+    },
     "Authorization folder" : {
       "localizations" : {
         "zh-Hans" : {
@@ -100,6 +125,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
     },
     "Copy Path" : {
       "extractionState" : "manual",
@@ -135,6 +163,12 @@
         }
       }
     },
+    "Display Name" : {
+
+    },
+    "Edit App Properties" : {
+
+    },
     "Enable extension" : {
       "localizations" : {
         "zh-Hans" : {
@@ -145,7 +179,17 @@
         }
       }
     },
+    "Environment Variables" : {
+
+    },
+    "Environment:" : {
+
+    },
+    "Format: KEY=VALUE, one per line" : {
+
+    },
     "General" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -165,12 +209,12 @@
         }
       }
     },
-    "Menu App" : {
+    "Menu Apps" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单 App"
+            "value" : "菜单应用"
           }
         }
       }
@@ -184,6 +228,9 @@
           }
         }
       }
+    },
+    "New File Type" : {
+
     },
     "Not Authorized Folder" : {
       "localizations" : {
@@ -204,6 +251,9 @@
           }
         }
       }
+    },
+    "One argument per semicolon (;)" : {
+
     },
     "Open Settings" : {
       "localizations" : {
@@ -277,6 +327,9 @@
         }
       }
     },
+    "Save" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "en" : {
@@ -334,6 +387,7 @@
       }
     },
     "Want to add a feature? Give feedback here." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

@@ -56,6 +56,19 @@ class AppState: ObservableObject {
             logger.info("save error: \(error.localizedDescription)")
         }
     }
+
+    @MainActor
+    func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
+        if let index = apps.firstIndex(where: { $0.id == id }) {
+            var updatedApp = apps[index]
+            updatedApp.itemName = itemName
+            updatedApp.arguments = arguments
+            updatedApp.environment = environment
+            apps[index] = updatedApp
+            try? save()
+            
+        }
+    }
     
     func getAppItem(rid: String) -> OpenWithApp? {
         return apps.first { rid.contains($0.id) }
