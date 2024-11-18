@@ -260,10 +260,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
             
+            config.arguments = rcitem.arguments
+            config.environment = rcitem.environment
             logger.warning("starting open .....\(appUrl.path) -- \(dirPath)")
             if appUrl.path.hasSuffix("WezTerm.app") {
-                config.arguments = ["start", ""]
-                config.arguments = ["--cwd", dirPath]
+               
                 
                 NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
             } else {
