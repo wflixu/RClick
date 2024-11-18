@@ -48,6 +48,7 @@
       }
     },
     "Action Item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -62,6 +63,9 @@
           }
         }
       }
+    },
+    "Action Items" : {
+
     },
     "Actions" : {
       "extractionState" : "stale",
@@ -171,12 +175,12 @@
         }
       }
     },
-    "Menu App" : {
+    "Menu Apps" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "菜单 App"
+            "value" : "菜单应用"
           }
         }
       }
@@ -190,6 +194,9 @@
           }
         }
       }
+    },
+    "New File Type" : {
+
     },
     "Not Authorized Folder" : {
       "localizations" : {
@@ -340,6 +347,7 @@
       }
     },
     "Want to add a feature? Give feedback here." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

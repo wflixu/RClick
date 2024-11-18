@@ -9,7 +9,9 @@ import SwiftUI
 
 enum Tabs: String, CaseIterable, Identifiable {
     case general = "General"
+    case apps = "Apps"
     case actions = "Actions"
+    case newFile = "New File"
     case about = "About"
     
     var id: String { self.rawValue }
@@ -17,7 +19,9 @@ enum Tabs: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .general: "slider.horizontal.2.square"
+        case .apps: "apps.ipad.landscape"
         case .actions: "ellipsis.rectangle"
+        case .newFile: "doc.badge.plus"
         case .about: "exclamationmark.circle"
         }
     }
@@ -25,6 +29,8 @@ enum Tabs: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @State private var selectedTab: Tabs = .general
+    @EnvironmentObject var appState: AppState
+    @State var showSelectApp = false
     
     var body: some View {
         HStack(spacing: 0) {
@@ -45,7 +51,6 @@ struct SettingsView: View {
                         Text("\(getAppVersion())")
                         Spacer()
                     }
-                    
                 }
                 .padding(.vertical)
                 
@@ -55,12 +60,13 @@ struct SettingsView: View {
                         Label(tab.rawValue, systemImage: tab.icon)
                             .font(.title2)
                             .padding(.all, 8)
+                            .padding(.leading, 16)
                         Spacer(minLength: 0)
                     }
                     .listRowInsets(.init(top: 0,
-                                         leading: -16,
-                                         bottom: 0,
-                                         trailing: -16))
+                                       leading: -16,
+                                       bottom: 0,
+                                       trailing: -16))
                     .background(tab == selectedTab ? Color.accentColor.opacity(0.3) : Color.clear)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -82,8 +88,12 @@ struct SettingsView: View {
                 switch selectedTab {
                 case .general:
                     GeneralSettingsTabView()
+                case .apps:
+                    AppsSettingsTabView()
                 case .actions:
-                    ActionSettingsTabView()
+                    actionsSection
+                case .newFile:
+                    NewFileSettingsTabView()
                 case .about:
                     AboutSettingsTabView()
                 }
@@ -92,6 +102,40 @@ struct SettingsView: View {
             .padding()
         }
         .frame(width: 800, height: 500)
+    }
+    
+    // Actions 部分
+    private var actionsSection: some View {
+        VStack {
+            HStack {
+                Text("Action Items").font(.title2)
+                Spacer()
+                Button {
+                    appState.resetActionItems()
+                } label: {
+                    Label("Reset", systemImage: "arrow.triangle.2.circlepath")
+                        .font(.body)
+                }
+            }
+            
+            List {
+                ForEach($appState.actions) { $item in
+                    HStack {
+                        Image(systemName: item.icon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                        Text(LocalizedStringKey(item.name)).font(.title2)
+                        Spacer()
+                        Toggle("", isOn: $item.enabled)
+                            .onChange(of: item.enabled) {
+                                appState.toggleActionItem()
+                            }
+                            .toggleStyle(.switch)
+                    }
+                }
+            }
+        }
     }
     
     func getAppVersion() -> String {

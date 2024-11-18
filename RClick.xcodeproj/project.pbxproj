@@ -31,6 +31,8 @@
 		5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
 		5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
 		5CAF679F2CA68C8900B0AFD2 /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */; };
+		5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */; };
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
@@ -84,6 +86,8 @@
 		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5C945D012CA50AAC00DABD2C /* RCBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCBase.swift; sourceTree = "<group>"; };
 		5C945D052CA51B8F00DABD2C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFileSettingsTabView.swift; sourceTree = "<group>"; };
+		5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsSettingsTabView.swift; sourceTree = "<group>"; };
 		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
 		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
 		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
@@ -210,6 +214,8 @@
 				5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */,
 				5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */,
 				5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */,
+				5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */,
+				5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -331,12 +337,14 @@
 				5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */,
 				5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */,
 				5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */,
+				5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */,
 				5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
 				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
 				5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */,
+				5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */,
 				5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */,
 				5C68BFE12C6651B80011C096 /* Extension+.swift in Sources */,
 				5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */,

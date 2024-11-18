@@ -1,22 +1,23 @@
 //
-//  ActionSettingsView.swift
+//  NewFileSettingsTabView.swift
 //  RClick
 //
-//  Created by 李旭 on 2024/4/9.
+//  Created by 李旭 on 2024/11/18.
 //
 
 import SwiftUI
 
-struct ActionSettingsTabView: View {
+
+struct NewFileSettingsTabView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
         VStack {
             HStack {
-                Text("Action Items").font(.title2)
+                Text("New File Type").font(.title2)
                 Spacer()
                 Button {
-                    appState.resetActionItems()
+                    appState.resetFiletypeItems()
                 } label: {
                     Label("Reset", systemImage: "arrow.triangle.2.circlepath")
                         .font(.body)
@@ -24,13 +25,13 @@ struct ActionSettingsTabView: View {
             }
             
             List {
-                ForEach($appState.actions) { $item in
+                ForEach($appState.newFiles) { $item in
                     HStack {
-                        Image(systemName: item.icon)
+                        Image(item.icon)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 20, height: 20)
-                        Text(LocalizedStringKey(item.name)).font(.title2)
+                        Text(item.name).font(.title2)
                         Spacer()
                         Toggle("", isOn: $item.enabled)
                             .onChange(of: item.enabled) {
