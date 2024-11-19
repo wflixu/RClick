@@ -155,6 +155,8 @@ extension RCAction {
     static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", idx: 1, icon: "trash")
 }
 
+
+// New File Type 
 struct NewFile: RCBase {
     static func == (lhs: NewFile, rhs: NewFile) -> Bool {
         lhs.id == rhs.id
@@ -166,8 +168,9 @@ struct NewFile: RCBase {
     var idx: Int
     var icon: String
     var id: String
+    var openApp: URL?
 
-    init(ext: String, name: String, enabled: Bool = true, idx: Int, icon: String, id: String = UUID().uuidString) {
+    init(ext: String, name: String, enabled: Bool = true, idx: Int, icon: String = "document", id: String = UUID().uuidString) {
         self.ext = ext
         self.name = name
         self.enabled = enabled

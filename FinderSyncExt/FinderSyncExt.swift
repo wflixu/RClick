@@ -193,11 +193,19 @@ class FinderSyncExt: FIFinderSync {
             menuItem.toolTip = "\(item.name)"
             menuItem.tag = getUniqueTag(for: item.id)
 
-            if let img = NSImage(named: item.icon) {
-                menuItem.image = img
+            if let app = item.openApp {
+                menuItem.image = NSWorkspace.shared.icon(forFile: app.path)
             } else {
-                logger.info("")
+                if !item.icon.starts(with: "icon-") {
+                    menuItem.image = NSImage(systemSymbolName: item.icon, accessibilityDescription: item.icon)!
+                } else {
+                    if let img = NSImage(named: item.icon) {
+                        menuItem.image = img
+                    }
+                }
+                 
             }
+            
 
             submenu.addItem(menuItem)
         }

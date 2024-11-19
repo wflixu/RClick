@@ -17,6 +17,8 @@ struct AppsSettingsTabView: View {
     @State private var editingArguments: String = ""
     @State private var editingEnvironment: String = ""
     
+    let messager = Messager.shared
+    
     var body: some View {
         ZStack {
             VStack {
@@ -224,6 +226,7 @@ struct AppsSettingsTabView: View {
             arguments: editingArguments.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty },
             environment: parseEnvironmentVariables(editingEnvironment)
         )
+        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
     }
     
     @MainActor private func deleteApp(_ appItem: OpenWithApp) {
@@ -233,5 +236,6 @@ struct AppsSettingsTabView: View {
                 expandedAppId = nil
             }
         }
+        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
     }
 }

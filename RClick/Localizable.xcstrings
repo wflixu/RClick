@@ -110,6 +110,9 @@
         }
       }
     },
+    "Add New File Type" : {
+
+    },
     "Arguments" : {
 
     },
@@ -129,6 +132,9 @@
     "Cancel" : {
 
     },
+    "Change App" : {
+
+    },
     "Copy Path" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -145,6 +151,9 @@
           }
         }
       }
+    },
+    "Default Open App" : {
+
     },
     "Delete Direct" : {
       "extractionState" : "manual",
@@ -169,6 +178,9 @@
     "Edit App Properties" : {
 
     },
+    "Edit File Type" : {
+
+    },
     "Enable extension" : {
       "localizations" : {
         "zh-Hans" : {
@@ -185,6 +197,12 @@
     "Environment:" : {
 
     },
+    "Extension" : {
+
+    },
+    "File Extension (e.g., .txt)" : {
+
+    },
     "Format: KEY=VALUE, one per line" : {
 
     },
@@ -198,6 +216,9 @@
           }
         }
       }
+    },
+    "Icon" : {
+
     },
     "Invalid Folder Selection" : {
       "localizations" : {
@@ -218,6 +239,9 @@
           }
         }
       }
+    },
+    "Name" : {
+
     },
     "New File" : {
       "localizations" : {
@@ -275,6 +299,9 @@
         }
       }
     },
+    "Preview:" : {
+
+    },
     "Quit" : {
       "localizations" : {
         "en" : {
@@ -330,6 +357,9 @@
     "Save" : {
 
     },
+    "Select App" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "en" : {
@@ -345,6 +375,9 @@
           }
         }
       }
+    },
+    "SF Symbol name or custom icon" : {
+
     },
     "The operation of the menu can only be executed in authorized folders" : {
       "localizations" : {
