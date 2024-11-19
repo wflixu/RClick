@@ -48,14 +48,14 @@ struct SettingsView: View {
                     HStack {
                         Spacer()
                         Text("RClick").font(.title)
-                        Text("\(getAppVersion())")
+                        Text("\(self.getAppVersion())")
                         Spacer()
                     }
                 }
                 .padding(.vertical)
                 
                 // 导航列表
-                List(Tabs.allCases, selection: $selectedTab) { tab in
+                List(Tabs.allCases, selection: self.$selectedTab) { tab in
                     HStack {
                         Label(tab.rawValue, systemImage: tab.icon)
                             .font(.title2)
@@ -64,13 +64,13 @@ struct SettingsView: View {
                         Spacer(minLength: 0)
                     }
                     .listRowInsets(.init(top: 0,
-                                       leading: -16,
-                                       bottom: 0,
-                                       trailing: -16))
-                    .background(tab == selectedTab ? Color.accentColor.opacity(0.3) : Color.clear)
+                                         leading: -16,
+                                         bottom: 0,
+                                         trailing: -16))
+                    .background(tab == self.selectedTab ? Color.accentColor.opacity(0.3) : Color.clear)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        selectedTab = tab
+                        self.selectedTab = tab
                     }
                 }
                 .listStyle(.sidebar)
@@ -85,13 +85,13 @@ struct SettingsView: View {
             
             // 右侧内容
             Group {
-                switch selectedTab {
+                switch self.selectedTab {
                 case .general:
                     GeneralSettingsTabView()
                 case .apps:
                     AppsSettingsTabView()
                 case .actions:
-                    actionsSection
+                    ActionSettingsTabView()
                 case .newFile:
                     NewFileSettingsTabView()
                 case .about:
@@ -104,39 +104,7 @@ struct SettingsView: View {
         .frame(width: 800, height: 500)
     }
     
-    // Actions 部分
-    private var actionsSection: some View {
-        VStack {
-            HStack {
-                Text("Action Items").font(.title2)
-                Spacer()
-                Button {
-                    appState.resetActionItems()
-                } label: {
-                    Label("Reset", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.body)
-                }
-            }
-            
-            List {
-                ForEach($appState.actions) { $item in
-                    HStack {
-                        Image(systemName: item.icon)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
-                        Text(LocalizedStringKey(item.name)).font(.title2)
-                        Spacer()
-                        Toggle("", isOn: $item.enabled)
-                            .onChange(of: item.enabled) {
-                                appState.toggleActionItem()
-                            }
-                            .toggleStyle(.switch)
-                    }
-                }
-            }
-        }
-    }
+   
     
     func getAppVersion() -> String {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {

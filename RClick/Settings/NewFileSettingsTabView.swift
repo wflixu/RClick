@@ -27,10 +27,25 @@ struct NewFileSettingsTabView: View {
             List {
                 ForEach($appState.newFiles) { $item in
                     HStack {
-                        Image(item.icon)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
+                        if let appUrl = item.openApp {
+                            Image(nsImage: NSWorkspace.shared.icon(forFile: appUrl.path()))
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 32, height: 32)
+                        } else  {
+                            if item.icon.starts(with: "icon-") {
+                                Image(item.icon)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                            } else {
+                                Image(systemName: item.icon)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                            }
+                        }
+                       
                         Text(item.name).font(.title2)
                         Spacer()
                         Toggle("", isOn: $item.enabled)
@@ -38,9 +53,12 @@ struct NewFileSettingsTabView: View {
                                 appState.toggleActionItem()
                             }
                             .toggleStyle(.switch)
-                    }
+                    }.padding(.vertical, 8)
                 }
             }
         }
     }
+
+    
+    
 }

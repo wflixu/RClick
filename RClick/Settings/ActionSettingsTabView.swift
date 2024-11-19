@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActionSettingsTabView: View {
     @EnvironmentObject var appState: AppState
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -22,7 +22,7 @@ struct ActionSettingsTabView: View {
                         .font(.body)
                 }
             }
-            
+
             List {
                 ForEach($appState.actions) { $item in
                     HStack {
@@ -38,6 +38,8 @@ struct ActionSettingsTabView: View {
                             }
                             .toggleStyle(.switch)
                     }
+                    .padding(.top, 12)
+                    .padding(.bottom, 4)
                 }
             }
         }
