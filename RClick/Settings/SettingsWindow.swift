@@ -24,6 +24,7 @@ struct SettingsWindow: Scene {
                 .frame(minWidth: 800, minHeight: 500)
         }
         .windowStyle(.hiddenTitleBar)
+        
         .windowResizability(.contentSize)
         .defaultSize(width: 800, height: 500)
     }

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ActionSettingsTabView: View {
     @EnvironmentObject var appState: AppState
+    
+    let messager = Messager.shared
 
     var body: some View {
         VStack {
@@ -35,6 +37,7 @@ struct ActionSettingsTabView: View {
                         Toggle("", isOn: $item.enabled)
                             .onChange(of: item.enabled) {
                                 appState.toggleActionItem()
+                                messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
                             }
                             .toggleStyle(.switch)
                     }

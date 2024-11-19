@@ -56,6 +56,9 @@ class AppState: ObservableObject {
             logger.info("save error: \(error.localizedDescription)")
         }
     }
+    
+  
+
 
     @MainActor
     func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
@@ -80,6 +83,19 @@ class AppState: ObservableObject {
             self.logger.info("@#### item id: \(nf.id)")
             return rid == nf.id
         })
+    }
+    
+    @MainActor func addNewFile(_ item: NewFile) {
+        logger.info("start add new file type")
+        newFiles.append(item)
+        
+        do {
+            try save()
+            // 使用 result
+        } catch {
+            // 处理错误
+            logger.info("save error: \(error.localizedDescription)")
+        }
     }
     
     func getActionItem(rid: String) -> RCAction? {
