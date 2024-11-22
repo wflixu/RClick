@@ -41,7 +41,7 @@
       }
     },
     "About" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -57,35 +57,9 @@
         }
       }
     },
-    "Action Item" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Action Item"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "操作菜单"
-          }
-        }
-      }
-    },
-    "Action Items" : {
-
-    },
     "Actions" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actions"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -111,10 +85,35 @@
       }
     },
     "Add New File Type" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加新建文件类型"
+          }
+        }
+      }
+    },
+    "Apps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单App"
+          }
+        }
+      }
     },
     "Arguments" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参数"
+          }
+        }
+      }
     },
     "Arguments:" : {
 
@@ -130,7 +129,14 @@
       }
     },
     "Cancel" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
     },
     "Change App" : {
 
@@ -173,10 +179,24 @@
       }
     },
     "Display Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示名称"
+          }
+        }
+      }
     },
     "Edit App Properties" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑App 属性"
+          }
+        }
+      }
     },
     "Edit File Type" : {
 
@@ -192,7 +212,14 @@
       }
     },
     "Environment Variables" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环境变量"
+          }
+        }
+      }
     },
     "Environment:" : {
 
@@ -207,7 +234,7 @@
 
     },
     "General" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -230,16 +257,6 @@
         }
       }
     },
-    "Menu Apps" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单应用"
-          }
-        }
-      }
-    },
     "Name" : {
 
     },
@@ -248,13 +265,10 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新建文件"
+            "value" : "文件类型"
           }
         }
       }
-    },
-    "New File Type" : {
-
     },
     "Not Authorized Folder" : {
       "localizations" : {
@@ -355,7 +369,14 @@
       }
     },
     "Save" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
     },
     "Select App" : {
 
@@ -420,7 +441,7 @@
       }
     },
     "Want to add a feature? Give feedback here." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

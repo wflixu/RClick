@@ -15,7 +15,7 @@ struct ActionSettingsTabView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Action Items").font(.title2)
+                
                 Spacer()
                 Button {
                     appState.resetActionItems()

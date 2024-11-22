@@ -23,7 +23,7 @@ struct AppsSettingsTabView: View {
         ZStack {
             VStack {
                 HStack {
-                    Text("Menu Apps").font(.title2)
+                   
                     Spacer()
                     Button {
                         showSelectApp = true

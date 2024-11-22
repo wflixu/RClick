@@ -31,6 +31,14 @@ struct MenuBarView: View {
 
     private func actionSettings() {
         openWindow(id: Constants.settingsWindowID)
+
+        let windows = NSApplication.shared.windows
+
+        // 查找已存在的目标窗口
+        if let existingWindow = windows.first(where: { $0.identifier?.rawValue == Constants.settingsWindowID }) {
+            existingWindow.makeKeyAndOrderFront(nil) // 将窗口置于最前
+            NSApplication.shared.activate(ignoringOtherApps: true) // 激活应用
+        }
     }
 
     private func actionQuit() {
