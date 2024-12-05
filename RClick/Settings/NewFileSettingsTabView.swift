@@ -28,7 +28,7 @@ struct NewFileSettingsTabView: View {
         ZStack {
             VStack {
                 HStack {
-                    Text("New File Type").font(.title2)
+                
                     Spacer()
                     Button {
                         isAddingNew = true
