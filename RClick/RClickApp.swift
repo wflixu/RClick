@@ -14,6 +14,8 @@ import os.log
 @main
 struct RClickApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
 
@@ -23,12 +25,13 @@ struct RClickApp: App {
     private var logger
     let messager = Messager.shared
 
-    @StateObject var appState = AppState()
+    @StateObject var appState = AppState.shared
+
 
     var body: some Scene {
         SettingsWindow(appState: appState, onAppear: {
             self.logger.info("settings window is appear")
-            appDelegate.appState = appState
+//             appDelegate.appState = appState
         })
         .defaultAppStorage(.group)
 
@@ -37,6 +40,26 @@ struct RClickApp: App {
         ) {
             MenuBarView()
         }
+//        .onChange(of: scenePhase) { newPhase,oldPhase in
+//            switch newPhase {
+//            case .active:
+//                // 应用进入前台时执行的操作
+//                print("App is active.")
+//            case .inactive:
+//                // 应用进入非活动状态时执行的操作
+//                print("App is inactive.")
+//                    
+//            case .background:
+//                // 应用进入后台时执行的操作
+//                print("App is in background.")
+//                    appDelegate.appState = appState
+//            @unknown default:
+//                break
+//            }
+//        }
+        
+      
+                    
     }
 }
 
@@ -45,7 +68,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @AppLog(category: "AppDelegate")
     private var logger
 
-    var appState: AppState?
+    var appState: AppState = AppState.shared
+    var pluginRunning: Bool = false
+    var heartBeatCount = 0
 
     let messager = Messager.shared
     var showDockIcon = UserDefaults.group.bool(forKey: Key.showDockIcon)
@@ -65,18 +90,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.actionHandler(rid: payload.rid, target: payload.target)
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
+            case "heartbeat":
+                self.logger.warning("message from finder plugin heartbeat")
+                self.pluginRunning = true
             default:
                 self.logger.warning("actioning payload no matched")
             }
         }
-        // 拓展还没有启动，接收不到消息，所以要等一会
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            var target: [String] = []
-            if let dirs = self.appState?.dirs {
-                target = dirs.map { $0.url.path() }
-            }
-            self.messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
-        }
+
+        sendObserveDirMessage()
+        
+  
 
 //        // 根据某种逻辑设置应用是否显示在 Dock 中
 //        if showDockIcon {
@@ -84,6 +108,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //        } else {
 //            NSApp.setActivationPolicy(.prohibited)
 //        }
+    }
+
+    func sendObserveDirMessage() {
+        logger.info("sendObserveDirMessage")
+        var target: [String] = appState.dirs.map { $0.url.path() }
+        
+        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
+        if !pluginRunning {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.sendObserveDirMessage()
+            }
+        }
     }
 
     // 创建一个当前文件夹下的不存在的新建文件名
@@ -112,10 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func actionHandler(rid: String, target: [String]) {
-        guard let appState = appState else {
-            logger.warning("when creatFile,but appState is not ready")
-            return
-        }
+       
         guard let rcitem = appState.getActionItem(rid: rid) else {
             logger.warning("when createFile,but not have fileType ")
             return
@@ -143,10 +176,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
-        guard let appState = appState else {
-            logger.warning("when creatFile,but appState is not ready")
-            return
-        }
+        
         let fm = FileManager.default
 
         for item in target {
@@ -179,10 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func createFile(rid: String, target: [String]) {
-        guard let appState = appState else {
-            logger.warning("when creatFile,but appState is not ready")
-            return
-        }
+        
         guard let rcitem = appState.getFileType(rid: rid), let dirPath = target.first else {
             logger.warning("when createFile,but not have fileType \(rid) ")
             return
@@ -244,10 +271,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func openApp(rid: String, target: [String]) {
-        guard let appState = appState else {
-            logger.warning("when openapp,but appState is not ready")
-            return
-        }
+       
         guard let rcitem = appState.getAppItem(rid: rid) else {
             logger.warning("when openapp,but not have app \(rid)")
             return
@@ -259,14 +283,51 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
-            
+
             config.arguments = rcitem.arguments
             config.environment = rcitem.environment
             logger.warning("starting open .....\(appUrl.path) -- \(dirPath)")
+            logger.warning("starting open .....\(rcitem.arguments) ")
             if appUrl.path.hasSuffix("WezTerm.app") {
-               
-                
-                NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
+//
+//
+//                NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
+//                let process = Process()
+//                process.launchPath = "/usr/bin/open"
+//                let last_args = ["-n", "wezterm", "--args", "start", "--env", "--cwd=/Users/lixu/code", "/Users/lixu/code"]
+//                process.arguments = last_args
+//
+//                process.launch()
+
+                // 创建一个 Process 实例
+                let process = Process()
+
+                // 设置要运行的二进制文件路径
+                process.executableURL = URL(fileURLWithPath: "/Users/lixu/play/rpm/target/debug/rpm")
+
+                // 设置命令行参数（如果有）
+                process.arguments = ["--name", "arg2"]
+
+                // 设置标准输出和标准错误
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+
+                do {
+                    // 启动进程
+                    try process.run()
+
+                    // 等待进程完成
+                    process.waitUntilExit()
+
+                    // 读取输出
+                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                    if let output = String(data: data, encoding: .utf8) {
+                        print("Output: \(output)")
+                    }
+                } catch {
+                    print("Error: \(error)")
+                }
             } else {
                 logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")
                 NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
@@ -277,10 +338,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
             }
-            
         }
     }
-
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false

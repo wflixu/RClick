@@ -11,8 +11,9 @@ import FinderSync
 
 // MARK: DELETE
 
- import OSLog
- private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "FinderOpen")
+import OSLog
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "FinderOpen")
 
 @MainActor
 class FinderSyncExt: FIFinderSync {
@@ -21,7 +22,7 @@ class FinderSyncExt: FIFinderSync {
      
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = false
-    lazy var appState: AppState = { AppState(inExt: true) }()
+    lazy var appState: AppState = .init(inExt: true)
     
     private var tagRidDict: [Int: String] = [:]
     
@@ -35,26 +36,32 @@ class FinderSyncExt: FIFinderSync {
         FIFinderSyncController.default().directoryURLs = [myFolderURL]
         logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
         
-        logger.info("end ..... directoryURLS ...")
-        
-        logger.info("---- finderOpen init")
-
         messager.on(name: "quit") { _ in
-//            self.
+            //            self.
             logger.info("main app quited 。。。")
             self.isHostAppOpen = false
         }
         messager.on(name: "running") { payload in
+            
             self.isHostAppOpen = true
+            
 //            self.
             logger.info("main app  running\(payload.description)")
             if payload.target.count > 0 {
                 FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
             }
             Task {
-                 self.appState.refresh()
+                self.appState.refresh()
+                self.heartBeat()
             }
         }
+        
+        self.heartBeat()
+    }
+    
+    func heartBeat() {
+        logger.warning("start send message -- heartbeat")
+        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "heartbeat", target: [], rid: ""))
     }
     
     // MARK: - Primary Finder Sync protocol methods
@@ -203,10 +210,8 @@ class FinderSyncExt: FIFinderSync {
                         menuItem.image = img
                     }
                 }
-                 
             }
             
-
             submenu.addItem(menuItem)
         }
         menuItem.submenu = submenu

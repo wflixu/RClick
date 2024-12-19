@@ -46,7 +46,7 @@ class Messager {
         let data = try! encoder.encode(messsagePayload)
         let messsagePayloadString = String(data: data, encoding: .utf8)!
 
-        return String(messsagePayloadString)
+        return messsagePayloadString
     }
 
     func reconstructEntry(messagePayload: String) -> MessagePayload {
