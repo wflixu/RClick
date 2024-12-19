@@ -13,8 +13,12 @@ import SwiftUI
 
 @MainActor
 class AppState: ObservableObject {
+    static let shared = AppState()
+    
     @AppLog(category: "AppState")
     private var logger
+    
+
     
     @Published var apps: [OpenWithApp] = []
     @Published var dirs: [PermissiveDir] = []
@@ -78,9 +82,7 @@ class AppState: ObservableObject {
     }
     
     func getFileType(rid: String) -> NewFile? {
-        logger.info("rid: \(rid) ..77273772377 77777&&&&&&&&&")
         return newFiles.first(where: { nf in
-            self.logger.info("@#### item id: \(nf.id)")
             return rid == nf.id
         })
     }

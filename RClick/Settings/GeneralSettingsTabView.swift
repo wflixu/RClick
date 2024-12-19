@@ -51,6 +51,12 @@ struct GeneralSettingsTabView: View {
                 .foregroundColor(Color.gray)
             Divider()
 
+            HStack {
+                LaunchAtLogin.Toggle(
+                    "Launch at login"
+                )
+            }
+            Divider()
             HStack {}.frame(height: 10)
 
             VStack(alignment: .leading) {

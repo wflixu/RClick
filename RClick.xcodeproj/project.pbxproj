@@ -39,6 +39,7 @@
 		5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */; };
 		5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
 		5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
+		5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
 		5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		5CDFE3172CA3D66000AE6C95 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 				5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */,
 				5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */,
 				5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */,
+				5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */,
 				5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */,
 				5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */,
+				5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
@@ -513,7 +517,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024120501;
+				CURRENT_PROJECT_VERSION = 2024121901;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -530,7 +534,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.4.7;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -549,7 +553,7 @@
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024120501;
+				CURRENT_PROJECT_VERSION = 2024121901;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -567,7 +571,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.4.7;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = mac_app_rclick_distribution_store;
@@ -584,7 +588,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024120501;
+				CURRENT_PROJECT_VERSION = 2024121901;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -599,7 +603,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.4.7;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -616,7 +620,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024120501;
+				CURRENT_PROJECT_VERSION = 2024121901;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -632,7 +636,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.4.7;
+				MARKETING_VERSION = 1.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
