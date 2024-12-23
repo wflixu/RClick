@@ -14,7 +14,7 @@ import os.log
 @main
 struct RClickApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    
+
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
@@ -27,39 +27,15 @@ struct RClickApp: App {
 
     @StateObject var appState = AppState.shared
 
-
     var body: some Scene {
-        SettingsWindow(appState: appState, onAppear: {
-            self.logger.info("settings window is appear")
-//             appDelegate.appState = appState
-        })
-        .defaultAppStorage(.group)
+        SettingsWindow(appState: appState, onAppear: {})
+            .defaultAppStorage(.group)
 
         MenuBarExtra(
             "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
             MenuBarView()
         }
-//        .onChange(of: scenePhase) { newPhase,oldPhase in
-//            switch newPhase {
-//            case .active:
-//                // 应用进入前台时执行的操作
-//                print("App is active.")
-//            case .inactive:
-//                // 应用进入非活动状态时执行的操作
-//                print("App is inactive.")
-//                    
-//            case .background:
-//                // 应用进入后台时执行的操作
-//                print("App is in background.")
-//                    appDelegate.appState = appState
-//            @unknown default:
-//                break
-//            }
-//        }
-        
-      
-                    
     }
 }
 
@@ -68,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @AppLog(category: "AppDelegate")
     private var logger
 
-    var appState: AppState = AppState.shared
+    var appState: AppState = .shared
     var pluginRunning: Bool = false
     var heartBeatCount = 0
 
@@ -78,7 +54,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
-        logger.notice("App -------------------------- 已启动")
 
         messager.on(name: Key.messageFromFinder) { payload in
 
@@ -99,21 +74,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         sendObserveDirMessage()
-        
-  
-
-//        // 根据某种逻辑设置应用是否显示在 Dock 中
-//        if showDockIcon {
-//            NSApp.setActivationPolicy(.regular)
-//        } else {
-//            NSApp.setActivationPolicy(.prohibited)
-//        }
     }
 
     func sendObserveDirMessage() {
-        logger.info("sendObserveDirMessage")
-        var target: [String] = appState.dirs.map { $0.url.path() }
-        
+        let target: [String] = appState.dirs.map { $0.url.path() }
+
         messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
         if !pluginRunning {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -148,7 +113,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func actionHandler(rid: String, target: [String]) {
-       
         guard let rcitem = appState.getActionItem(rid: rid) else {
             logger.warning("when createFile,but not have fileType ")
             return
@@ -176,7 +140,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
-        
+
         let fm = FileManager.default
 
         for item in target {
@@ -209,7 +173,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func createFile(rid: String, target: [String]) {
-        
         guard let rcitem = appState.getFileType(rid: rid), let dirPath = target.first else {
             logger.warning("when createFile,but not have fileType \(rid) ")
             return
@@ -221,7 +184,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 完整的文件路径
         let filePath = getUniqueFilePath(dir: dirPath.removingPercentEncoding ?? dirPath, ext: ext)
 
-        let emptyDocxData = Data()
         let fileURL = URL(fileURLWithPath: filePath)
 
         if let dir = appState.dirs.first(where: {
@@ -231,16 +193,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             do {
                 let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
 
-                if isStale {
-                    // 重新创建 bookmarkData
-                    // createBookmark(for: folderURL) // 这里可以调用之前的函数
-                }
-
                 // 进入安全范围
                 let success = folderURL.startAccessingSecurityScopedResource()
                 if success {
                     do {
-                        try emptyDocxData.write(to: fileURL)
+                        if ext == ".xlsx" {
+                            let _ = try XLSXFile(filepath: filePath)
+                        } else {
+                            let emptyDocxData = Data()
+                            try emptyDocxData.write(to: fileURL)
+                        }
+
                         print("Empty DOCX file created successfully at \(filePath)")
                     } catch let error as NSError {
                         switch error.domain {
@@ -271,7 +234,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func openApp(rid: String, target: [String]) {
-       
         guard let rcitem = appState.getAppItem(rid: rid) else {
             logger.warning("when openapp,but not have app \(rid)")
             return
@@ -286,18 +248,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             config.arguments = rcitem.arguments
             config.environment = rcitem.environment
-            logger.warning("starting open .....\(appUrl.path) -- \(dirPath)")
-            logger.warning("starting open .....\(rcitem.arguments) ")
+
             if appUrl.path.hasSuffix("WezTerm.app") {
-//
-//
-//                NSWorkspace.shared.openApplication(at: appUrl, configuration: config)
-//                let process = Process()
-//                process.launchPath = "/usr/bin/open"
-//                let last_args = ["-n", "wezterm", "--args", "start", "--env", "--cwd=/Users/lixu/code", "/Users/lixu/code"]
-//                process.arguments = last_args
-//
-//                process.launch()
+
 
                 // 创建一个 Process 实例
                 let process = Process()

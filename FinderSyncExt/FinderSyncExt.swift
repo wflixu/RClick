@@ -17,8 +17,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick",
 
 @MainActor
 class FinderSyncExt: FIFinderSync {
-//    @AppLog(category: "AppState")
-//    private var logger
+
      
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = false
@@ -37,16 +36,13 @@ class FinderSyncExt: FIFinderSync {
         logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
         
         messager.on(name: "quit") { _ in
-            //            self.
-            logger.info("main app quited 。。。")
+           
             self.isHostAppOpen = false
         }
         messager.on(name: "running") { payload in
             
             self.isHostAppOpen = true
             
-//            self.
-            logger.info("main app  running\(payload.description)")
             if payload.target.count > 0 {
                 FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
             }

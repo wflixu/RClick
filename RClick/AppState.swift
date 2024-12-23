@@ -6,9 +6,8 @@
 //
 
 import Foundation
-
-import Combine
 import OrderedCollections
+import Combine
 import SwiftUI
 
 @MainActor
