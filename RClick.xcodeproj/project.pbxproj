@@ -21,6 +21,8 @@
 		5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */; };
 		5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7342D190F5800A9F4C1 /* OrderedCollections */; };
 		5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7362D190F6300A9F4C1 /* OrderedCollections */; };
+		5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
+		5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
 		5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */; };
 		5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
@@ -84,6 +86,7 @@
 		5C119D342BBEA9AC00B2D7C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
 		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5C34BAA42D943AF100CF8128 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsTabView.swift; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		5C50D27D2BBFB1E100DF31AA /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				5C34BAA42D943AF100CF8128 /* Utils.swift */,
 				5CDFE3172CA3D66000AE6C95 /* Constants.swift */,
 				5C50D2812BBFB33200DF31AA /* StringExtension.swift */,
 				5CC9F0992BC5445C00AF9B81 /* Messager.swift */,
@@ -364,6 +368,7 @@
 				5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */,
 				5C68BFE12C6651B80011C096 /* Extension+.swift in Sources */,
 				5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */,
+				5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */,
 				5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,6 +382,7 @@
 				5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */,
 				5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */,
 				5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */,
+				5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */,
 				5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */,
 				5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */,
 				5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */,
@@ -530,7 +536,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024122101;
+				CURRENT_PROJECT_VERSION = 20250325002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -547,7 +553,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -566,7 +572,7 @@
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024122101;
+				CURRENT_PROJECT_VERSION = 20250325002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -584,7 +590,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = mac_app_rclick_distribution_store;
@@ -601,7 +607,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024122101;
+				CURRENT_PROJECT_VERSION = 20250325002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -616,7 +622,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -633,7 +639,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2024122101;
+				CURRENT_PROJECT_VERSION = 20250325002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -649,7 +655,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.5.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -140,10 +140,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func deleteFoldorFile(_ target: [String]) {
         logger.info("---- deleteFoldorFile")
-
         let fm = FileManager.default
-
+        
         for item in target {
+            let decodedPath = item.removingPercentEncoding ?? item
+            
+            if Utils.isProtectedFolder(decodedPath) {
+                // 显示警告对话框
+                let alert = NSAlert()
+                alert.messageText = "警告"
+                alert.informativeText = "无法删除系统保护文件夹：\(decodedPath)"
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "确定")
+                alert.runModal()
+                
+                logger.warning("试图删除受保护的系统文件夹，操作已被阻止: \(decodedPath)")
+                continue
+            }
+            
             if let permDir = appState.dirs.first(where: { permd in
                 item.contains(permd.url.path())
             }) {
