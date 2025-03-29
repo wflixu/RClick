@@ -37,6 +37,7 @@ enum Key {
     static let actions = "RCLICK_ACTIONS"
     static let fileTypes = "RCLICK_FILE_TYPES"
     static let permDirs = "RCLICK_PERMISSIVE_DIRS"   
+    static let commonDirs = "RCLICK_COMMON_DIRS"
 }
 
 enum NewFileExtension: String, CaseIterable, Identifiable {

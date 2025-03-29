@@ -141,6 +141,9 @@
     "Change App" : {
 
     },
+    "Common Folders" : {
+
+    },
     "Copy Path" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -316,6 +319,9 @@
     "Preview:" : {
 
     },
+    "Quick access to frequently used folders" : {
+
+    },
     "Quit" : {
       "localizations" : {
         "en" : {
@@ -466,6 +472,9 @@
           }
         }
       }
+    },
+    "常用文件夹" : {
+
     }
   },
   "version" : "1.0"

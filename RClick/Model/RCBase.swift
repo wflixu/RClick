@@ -127,6 +127,20 @@ extension PermissiveDir {
     }
 }
 
+// 常用目录
+struct CommonDir: RCBase {
+    var id: String
+    var name: String
+    var url: URL
+    var icon: String
+    init(id: String, name: String, url: URL, icon: String) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.icon = icon
+    }
+}
+
 struct RCAction: RCBase {
     static func == (lhs: RCAction, rhs: RCAction) -> Bool {
         lhs.id == rhs.id
@@ -149,10 +163,12 @@ struct RCAction: RCBase {
 }
 
 extension RCAction {
-    static var all: [RCAction] = [.copyPath, .deleteDirect]
+    static var all: [RCAction] = [.copyPath, .deleteDirect, .hideFileDir, .unhideFileDir]
 
     static let copyPath = RCAction(id: "copy-path", name: "Copy Path", idx: 0, icon: "doc.on.doc")
     static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", idx: 1, icon: "trash")
+    static let hideFileDir = RCAction(id: "hide", name: "Hide", idx: 2, icon: "eye.slash")
+    static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
 }
 
 

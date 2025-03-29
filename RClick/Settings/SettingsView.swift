@@ -12,16 +12,18 @@ enum Tabs: String, CaseIterable, Identifiable {
     case apps = "Apps"
     case actions = "Actions"
     case newFile = "New File"
+    case cdirs = "Common Dir"
     case about = "About"
-    
+
     var id: String { self.rawValue }
-    
+
     var icon: String {
         switch self {
         case .general: "slider.horizontal.2.square"
         case .apps: "apps.ipad.landscape"
         case .actions: "bolt.square"
         case .newFile: "doc.badge.plus"
+        case .cdirs: "folder.badge.gearshape"
         case .about: "exclamationmark.circle"
         }
     }
@@ -31,7 +33,7 @@ struct SettingsView: View {
     @State private var selectedTab: Tabs = .general
     @EnvironmentObject var appState: AppState
     @State var showSelectApp = false
-     
+
     @ViewBuilder
     private var sidebar: some View {
         Section {
@@ -53,7 +55,7 @@ struct SettingsView: View {
             .scrollDisabled(true)
             .navigationSplitViewColumnWidth(210)
         } header: {
-           //  App Icon 部分
+            //  App Icon 部分
             VStack {
                 HStack {
                     Spacer()
@@ -74,7 +76,7 @@ struct SettingsView: View {
         }
         .removeSidebarToggle()
     }
-    
+
     @ViewBuilder var detailView: some View {
         // 右侧内容
         Group {
@@ -87,6 +89,8 @@ struct SettingsView: View {
                 ActionSettingsTabView()
             case .newFile:
                 NewFileSettingsTabView()
+            case .cdirs:
+                CommonDirsSettingTabView()
             case .about:
                 AboutSettingsTabView()
             }
@@ -94,16 +98,15 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
     }
-    
+
     var body: some View {
         NavigationSplitView {
             self.sidebar
         } detail: {
             self.detailView
         }
-        
     }
-    
+
     func getAppVersion() -> String {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             return version

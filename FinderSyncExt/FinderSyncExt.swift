@@ -17,8 +17,6 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick",
 
 @MainActor
 class FinderSyncExt: FIFinderSync {
-
-     
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = false
     lazy var appState: AppState = .init(inExt: true)
@@ -52,7 +50,7 @@ class FinderSyncExt: FIFinderSync {
             }
         }
         
-        self.heartBeat()
+        heartBeat()
     }
     
     func heartBeat() {
@@ -129,6 +127,10 @@ class FinderSyncExt: FIFinderSync {
             applicationMenu.addItem(fileMenuItem)
         }
         
+        if let commonDirMenuItem = createCommonDirMenuItem() {
+            applicationMenu.addItem(commonDirMenuItem)
+        }
+        
         for item in createActionMenuItems() {
             applicationMenu.addItem(item)
         }
@@ -179,6 +181,51 @@ class FinderSyncExt: FIFinderSync {
     }
     
     // 创建文件菜单容器
+    @objc func createCommonDirMenuItem() -> NSMenuItem? {
+        let commonDirs = appState.cdirs
+        if commonDirs.isEmpty {
+            logger.warning("没有启用的常用文件夹")
+            return nil
+        }
+        logger.info("开始创建常用文件夹菜单项")
+        
+        let menuItem = NSMenuItem()
+        menuItem.title = String(localized: "常用文件夹")
+        menuItem.image = NSImage(systemSymbolName: "folder.fill", accessibilityDescription: "folder.fill")!
+        let submenu = NSMenu(title: "常用文件夹菜单")
+        
+        for dir in commonDirs {
+            let menuItem = NSMenuItem()
+            menuItem.target = self
+            menuItem.title = dir.name
+            menuItem.action = #selector(openCommonDir(_:))
+            menuItem.toolTip = dir.url.path
+            menuItem.tag = getUniqueTag(for: dir.id)
+            menuItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: "folder")!
+            
+            submenu.addItem(menuItem)
+            logger.info("添加常用文件夹菜单项: \(dir.name)")
+        }
+        
+        menuItem.submenu = submenu
+        logger.info("常用文件夹菜单创建完成")
+        return menuItem
+    }
+    
+    @MainActor @objc func openCommonDir(_ menuItem: NSMenuItem) {
+        guard let rid = tagRidDict[menuItem.tag] else {
+            logger.warning("未获取到rid")
+            return
+        }
+        guard let dirItem = appState.cdirs.first(where: { $0.id == rid }) else {
+            logger.warning("未找到对应的常用文件夹配置，rid: \(rid)")
+            return
+        }
+        
+        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "common-dirs", target: [dirItem.url.path], rid: dirItem.id))
+        logger.info("已发送打开常用文件夹消息: \(dirItem.name), 路径: \(dirItem.url.path)")
+    }
+    
     @objc func createFileCreateMenuItem() -> NSMenuItem? {
         let enabledFiletypeItems = appState.newFiles.filter(\.enabled)
         if enabledFiletypeItems.isEmpty {
