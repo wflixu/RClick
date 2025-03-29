@@ -41,9 +41,17 @@ struct SettingsView: View {
             List(selection: self.$selectedTab) {
                 ForEach(Tabs.allCases, id: \.self) { tab in
                     HStack {
-                        Label(LocalizedStringKey(tab.rawValue), systemImage: tab.icon)
-                            .font(.title2)
-                            .padding(.all, 8)
+                        // 使用固定大小的frame来确保图标大小一致
+                        Label {
+                            Text(LocalizedStringKey(tab.rawValue))
+                                .font(.title2)
+                        } icon: {
+                            Image(systemName: tab.icon)
+                                .font(.title2)
+                                .frame(width: 24, height: 24)
+                        }
+                        .padding(.all, 8)
+                        .labelStyle(.titleAndIcon)
                         Spacer(minLength: 0)
                     }
                     .onTapGesture {

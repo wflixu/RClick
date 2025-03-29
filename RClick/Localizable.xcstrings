@@ -141,8 +141,26 @@
     "Change App" : {
 
     },
+    "Common Dir" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
     "Common Folders" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
     },
     "Copy Path" : {
       "extractionState" : "manual",
@@ -230,6 +248,16 @@
     "Extension" : {
 
     },
+    "Favorite Folders" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
     "File Extension (e.g., .txt)" : {
 
     },
@@ -243,6 +271,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "Hide" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏"
           }
         }
       }
@@ -436,6 +475,17 @@
         }
       }
     },
+    "Unhide" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示"
+          }
+        }
+      }
+    },
     "Untitled" : {
       "localizations" : {
         "zh-Hans" : {
@@ -472,9 +522,6 @@
           }
         }
       }
-    },
-    "常用文件夹" : {
-
     }
   },
   "version" : "1.0"

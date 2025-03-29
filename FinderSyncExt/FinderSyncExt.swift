@@ -190,9 +190,9 @@ class FinderSyncExt: FIFinderSync {
         logger.info("开始创建常用文件夹菜单项")
         
         let menuItem = NSMenuItem()
-        menuItem.title = String(localized: "常用文件夹")
-        menuItem.image = NSImage(systemSymbolName: "folder.fill", accessibilityDescription: "folder.fill")!
-        let submenu = NSMenu(title: "常用文件夹菜单")
+        menuItem.title = String(localized: "Favorite Folders")
+        menuItem.image = NSImage(systemSymbolName: "folder.badge.questionmark", accessibilityDescription: "folder.badge.questionmark")!
+        let submenu = NSMenu(title: "Favorite Folders submenu")
         
         for dir in commonDirs {
             let menuItem = NSMenuItem()
