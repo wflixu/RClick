@@ -65,6 +65,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.actionHandler(rid: payload.rid, target: payload.target)
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
+            case "common-dirs":
+                self.openCommonDirs(target: payload.target)
             case "heartbeat":
                 self.logger.warning("message from finder plugin heartbeat")
                 self.pluginRunning = true
@@ -74,6 +76,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         sendObserveDirMessage()
+    }
+
+    func openCommonDirs(target: [String]) {
+        logger.info("开始打开常用目录，目标路径: \(target)")
+        
+        for dirPath in target {
+            let path = dirPath.removingPercentEncoding ?? dirPath
+            let url = URL(fileURLWithPath: path, isDirectory: true)
+            
+            logger.info("正在打开目录: \(path)")
+            NSWorkspace.shared.open(url)
+        }
+        
+        logger.info("常用目录打开操作完成")
     }
 
     func sendObserveDirMessage() {
@@ -123,8 +139,90 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             copyPath(target)
         case "delete-direct":
             deleteFoldorFile(target)
+        case "unhide":
+            unhideFilesAndDirs(target)
+        case "hide":
+            hideFilesAndDirs(target)
         default:
             logger.warning("no action id matched")
+        }
+    }
+    // 显示目标文件夹下的隐藏的所有文件和文件夹
+    func unhideFilesAndDirs(_ target:[String]) {
+        logger.info("开始取消隐藏文件和目录，目标路径: \(target)")
+        if let dirPath = target.first {
+            let fileManager = FileManager.default
+            let path = dirPath.removingPercentEncoding ?? dirPath
+            logger.info("处理主目录: \(path)")
+            var url = URL(fileURLWithPath: path)
+            
+            // 仅处理目录下一级的内容
+            do {
+                let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsPackageDescendants])
+                for case var fileURL in contents {
+                    do {
+                        var resourceValues = URLResourceValues()
+                        resourceValues.isHidden = false
+                        try fileURL.setResourceValues(resourceValues)
+                        logger.info("成功取消隐藏: \(fileURL.path)")
+                    } catch {
+                        logger.error("取消隐藏失败: \(fileURL.path): \(error)")
+                    }
+                }
+            } catch {
+                logger.error("获取目录内容失败: \(error)")
+            }
+            
+            // 处理目录本身
+            do {
+                var resourceValues = URLResourceValues()
+                resourceValues.isHidden = false
+                try url.setResourceValues(resourceValues)
+                logger.info("成功取消隐藏主目录: \(path)")
+            } catch {
+                logger.error("取消隐藏主目录失败: \(path): \(error)")
+            }
+            logger.info("取消隐藏操作完成，共处理目录: \(path)")
+        }
+    }
+    // 隐藏目标文件或文件夹
+    func hideFilesAndDirs(_ target:[String]) {
+        logger.info("开始隐藏文件和目录，目标路径: \(target)")
+        if let dirPath = target.first {
+            let fileManager = FileManager.default
+            let path = dirPath.removingPercentEncoding ?? dirPath
+            logger.info("处理主目录: \(path)")
+            var url = URL(fileURLWithPath: path)
+            
+            // 递归处理目录下的所有内容
+            if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
+                for case var fileURL as URL in enumerator {
+                    // 如果是受保护的文件路径，跳过 
+                    if Utils.isProtectedFolder(fileURL.path) {
+                        logger.warning("跳过受保护的文件路径: \(fileURL.path)")
+                        continue
+                    }
+                    do {
+                        var resourceValues = URLResourceValues()
+                        resourceValues.isHidden = true
+                        try fileURL.setResourceValues(resourceValues)
+                        logger.info("成功隐藏: \(fileURL.path)")
+                    } catch {
+                        logger.error("隐藏失败: \(fileURL.path): \(error)")
+                    }
+                }
+            }
+            
+            // 处理目录本身
+            do {
+                var resourceValues = URLResourceValues()
+                resourceValues.isHidden = true
+                try url.setResourceValues(resourceValues)
+                logger.info("成功隐藏主目录: \(path)")
+            } catch {
+                logger.error("隐藏主目录失败: \(path): \(error)")
+            }
+            logger.info("隐藏操作完成，共处理目录: \(path)")
         }
     }
 

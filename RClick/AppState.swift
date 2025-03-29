@@ -5,9 +5,9 @@
 //  Created by 李旭 on 2024/9/26.
 //
 
+import Combine
 import Foundation
 import OrderedCollections
-import Combine
 import SwiftUI
 
 @MainActor
@@ -17,12 +17,11 @@ class AppState: ObservableObject {
     @AppLog(category: "AppState")
     private var logger
     
-
-    
     @Published var apps: [OpenWithApp] = []
     @Published var dirs: [PermissiveDir] = []
     @Published var actions: [RCAction] = []
     @Published var newFiles: [NewFile] = []
+    @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
     
     init(inExt: Bool = false) {
@@ -60,9 +59,6 @@ class AppState: ObservableObject {
         }
     }
     
-  
-
-
     @MainActor
     func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
         if let index = apps.firstIndex(where: { $0.id == id }) {
@@ -72,7 +68,6 @@ class AppState: ObservableObject {
             updatedApp.environment = environment
             apps[index] = updatedApp
             try? save()
-            
         }
     }
     
@@ -82,7 +77,7 @@ class AppState: ObservableObject {
     
     func getFileType(rid: String) -> NewFile? {
         return newFiles.first(where: { nf in
-            return rid == nf.id
+            rid == nf.id
         })
     }
     
@@ -146,10 +141,12 @@ class AppState: ObservableObject {
         let actionItemsData = try encoder.encode(OrderedSet(actions))
         let filetypeItemsData = try encoder.encode(OrderedSet(newFiles))
         let permDirsData = try encoder.encode(OrderedSet(dirs))
+        let commonDirsData = try encoder.encode(OrderedSet(cdirs))
         UserDefaults.group.set(appItemsData, forKey: Key.apps)
         UserDefaults.group.set(actionItemsData, forKey: Key.actions)
         UserDefaults.group.set(filetypeItemsData, forKey: Key.fileTypes)
         UserDefaults.group.set(permDirsData, forKey: Key.permDirs)
+        UserDefaults.group.set(commonDirsData, forKey: Key.commonDirs)
     }
     
     @MainActor
@@ -157,6 +154,15 @@ class AppState: ObservableObject {
         let encoder = PropertyListEncoder()
         let permDirsData = try encoder.encode(OrderedSet(dirs))
         UserDefaults.group.set(permDirsData, forKey: Key.permDirs)
+    }
+
+    //  保存常用文件夹
+    @MainActor
+    func saveCommonDir() throws {
+        let encoder = PropertyListEncoder()
+        let commonDirsData = try encoder.encode(OrderedSet(cdirs))
+        UserDefaults.group.set(commonDirsData, forKey: Key.commonDirs)
+        logger.info("save common dirs success")
     }
     
     @MainActor func refresh() {
@@ -200,6 +206,15 @@ class AppState: ObservableObject {
                
                 dirs = []
             }
+        }
+
+        if let commonDirsData = UserDefaults.group.data(forKey: Key.commonDirs) {
+            cdirs = try decoder.decode([CommonDir].self, from: commonDirsData)
+                
+            logger.info("load common dirs success")
+        } else {
+            logger.warning("load common dirs failed")
+            cdirs = []
         }
         
         if let actionData = UserDefaults.group.data(forKey: Key.actions) {

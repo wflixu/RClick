@@ -141,6 +141,27 @@
     "Change App" : {
 
     },
+    "Common Dir" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
+    "Common Folders" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
     "Copy Path" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -227,6 +248,16 @@
     "Extension" : {
 
     },
+    "Favorite Folders" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
     "File Extension (e.g., .txt)" : {
 
     },
@@ -240,6 +271,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        }
+      }
+    },
+    "Hide" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏"
           }
         }
       }
@@ -314,6 +356,9 @@
       }
     },
     "Preview:" : {
+
+    },
+    "Quick access to frequently used folders" : {
 
     },
     "Quit" : {
@@ -426,6 +471,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择的文件夹已经包含在已授权的文件夹中"
+          }
+        }
+      }
+    },
+    "Unhide" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示"
           }
         }
       }
