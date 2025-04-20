@@ -16,9 +16,6 @@ public struct XLSXFile {
     // 用于生成 XLSX 文件
     private let archive: Archive
     
- 
-
-    
     // 初始化时打开一个文件的 ZIP 归档（也就是一个 XLSX 文件）
     public init?(filepath: String) throws {
         self.filepath = filepath
@@ -39,6 +36,10 @@ public struct XLSXFile {
             workbookXML.data(using: .utf8)!
         })
         
+        try archive.addEntry(with: "xl/_rels/workbook.xml.rels", type: .file, uncompressedSize: Int64(workbookRelsXML.count), provider: { _, _ in
+            workbookRelsXML.data(using: .utf8)!
+        })
+                  
         try archive.addEntry(with: "xl/styles.xml", type: .file, uncompressedSize: Int64(stylesXML.count), provider: { _, _ in
             stylesXML.data(using: .utf8)!
         })
@@ -47,10 +48,17 @@ public struct XLSXFile {
             sheetXML.data(using: .utf8)!
         })
         
-       
         print("Empty Excel file created successfully at \(filepath)")
     }
     
+    let workbookRelsXML = """
+    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+      <Relationship Id="rId1"
+        Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"
+        Target="worksheets/sheet1.xml"/>
+    </Relationships>
+    """
     
     // 创建 `[Content_Types].xml` 文件
     let contentTypesXML = """
@@ -154,7 +162,7 @@ public struct XLSXFile {
     <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="xr9"
         xmlns:xr9="http://schemas.microsoft.com/office/spreadsheetml/2016/revision9">
-     
+    
         <fonts count="20">
             <font>
                 <sz val="11" />
@@ -1089,5 +1097,3 @@ public struct XLSXFile {
     </styleSheet>
     """
 }
-
-
