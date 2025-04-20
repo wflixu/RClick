@@ -80,7 +80,7 @@
          <EnvironmentVariable
             key = "IDEPreferLogStreaming"
             value = "YES"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>

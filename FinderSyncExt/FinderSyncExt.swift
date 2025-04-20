@@ -279,11 +279,13 @@ class FinderSyncExt: FIFinderSync {
             return
         }
         let target = getTargets(triggerManKind)
+        let trigger = getTriggerKind(triggerManKind)
         if target.isEmpty {
             logger.warning("not dir when actioning")
             return
         }
-        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "actioning", target: target, rid: rid))
+        logger.info("actioning \(rid) , trigger:\(trigger)")
+        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "actioning", target: target, rid: rid, trigger: trigger))
     }
     
     func getTargets(_ kind: FIMenuKind) -> [String] {
@@ -331,6 +333,21 @@ class FinderSyncExt: FIFinderSync {
             messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, rid: rid))
         } else {
             logger.warning("not get target")
+        }
+    }
+    
+    @objc func getTriggerKind(_ kind: FIMenuKind) -> String {
+        switch kind {
+        case .contextualMenuForItems:
+            return "ctx-items"
+        case .contextualMenuForContainer:
+            return "ctx-container"
+        case .contextualMenuForSidebar:
+            return "ctx-sidebar"
+        case .toolbarItemMenu:
+            return "toolbar"
+        default:
+            return "unknown"
         }
     }
 }

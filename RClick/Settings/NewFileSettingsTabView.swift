@@ -5,8 +5,8 @@
 //  Created by 李旭 on 2024/11/18.
 //
 
-import SwiftUI
 import AppKit
+import SwiftUI
 
 struct NewFileSettingsTabView: View {
     @EnvironmentObject var appState: AppState
@@ -28,7 +28,6 @@ struct NewFileSettingsTabView: View {
         ZStack {
             VStack {
                 HStack {
-                
                     Spacer()
                     Button {
                         isAddingNew = true
@@ -45,7 +44,7 @@ struct NewFileSettingsTabView: View {
                             .font(.body)
                     }
                 }
-                // TODO 编辑 Button 和 Toggle 放在列表的右边
+                // TODO: 编辑 Button 和 Toggle 放在列表的右边
                 List {
                     ForEach($appState.newFiles) { $item in
                         HStack(spacing: 12) {
@@ -249,7 +248,8 @@ struct NewFileSettingsTabView: View {
             }
             appState.addNewFile(newFile)
         } else if let file = editingFile,
-                  let index = appState.newFiles.firstIndex(where: { $0.id == file.id }) {
+                  let index = appState.newFiles.firstIndex(where: { $0.id == file.id })
+        {
             var updatedFile = file
             updatedFile.name = editingName
             updatedFile.ext = editingExt
