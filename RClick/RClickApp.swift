@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             case "open":
                 self.openApp(rid: payload.rid, target: payload.target)
             case "actioning":
-                self.actionHandler(rid: payload.rid, target: payload.target)
+                self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger ?? "unknown")
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
             case "common-dirs":
@@ -80,15 +80,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func openCommonDirs(target: [String]) {
         logger.info("开始打开常用目录，目标路径: \(target)")
-        
+
         for dirPath in target {
             let path = dirPath.removingPercentEncoding ?? dirPath
             let url = URL(fileURLWithPath: path, isDirectory: true)
-            
+
             logger.info("正在打开目录: \(path)")
             NSWorkspace.shared.open(url)
         }
-        
+
         logger.info("常用目录打开操作完成")
     }
 
@@ -128,7 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return filePath
     }
 
-    func actionHandler(rid: String, target: [String]) {
+    func actionHandler(rid: String, target: [String], trigger: String) {
         guard let rcitem = appState.getActionItem(rid: rid) else {
             logger.warning("when createFile,but not have fileType ")
             return
@@ -138,24 +138,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         case "copy-path":
             copyPath(target)
         case "delete-direct":
-            deleteFoldorFile(target)
+            deleteFoldorFile(target, trigger)
         case "unhide":
-            unhideFilesAndDirs(target)
+            unhideFilesAndDirs(target, trigger)
         case "hide":
-            hideFilesAndDirs(target)
+            hideFilesAndDirs(target, trigger)
         default:
             logger.warning("no action id matched")
         }
     }
+
     // 显示目标文件夹下的隐藏的所有文件和文件夹
-    func unhideFilesAndDirs(_ target:[String]) {
+    func unhideFilesAndDirs(_ target: [String], _ trigger: String) {
         logger.info("开始取消隐藏文件和目录，目标路径: \(target)")
         if let dirPath = target.first {
             let fileManager = FileManager.default
             let path = dirPath.removingPercentEncoding ?? dirPath
             logger.info("处理主目录: \(path)")
             var url = URL(fileURLWithPath: path)
-            
+
             // 仅处理目录下一级的内容
             do {
                 let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsPackageDescendants])
@@ -172,7 +173,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             } catch {
                 logger.error("获取目录内容失败: \(error)")
             }
-            
+
             // 处理目录本身
             do {
                 var resourceValues = URLResourceValues()
@@ -185,19 +186,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             logger.info("取消隐藏操作完成，共处理目录: \(path)")
         }
     }
+
     // 隐藏目标文件或文件夹
-    func hideFilesAndDirs(_ target:[String]) {
-        logger.info("开始隐藏文件和目录，目标路径: \(target)")
-        if let dirPath = target.first {
-            let fileManager = FileManager.default
+    func hideFilesAndDirs(_ target: [String], _ trigger: String) {
+        logger.info("开始隐藏文件和目录，目标路径: \(target), 触发器: \(trigger)")
+        let fileManager = FileManager.default
+
+        if trigger == "ctx-container", let dirPath = target.first {
             let path = dirPath.removingPercentEncoding ?? dirPath
             logger.info("处理主目录: \(path)")
             var url = URL(fileURLWithPath: path)
-            
-            // 递归处理目录下的所有内容
-            if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) {
-                for case var fileURL as URL in enumerator {
-                    // 如果是受保护的文件路径，跳过 
+
+            // 仅处理目录下一级的内容
+            do {
+                let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsPackageDescendants])
+                for case var fileURL in contents {
+                    // 如果是受保护的文件路径，跳过
                     if Utils.isProtectedFolder(fileURL.path) {
                         logger.warning("跳过受保护的文件路径: \(fileURL.path)")
                         continue
@@ -211,19 +215,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         logger.error("隐藏失败: \(fileURL.path): \(error)")
                     }
                 }
-            }
-            
-            // 处理目录本身
-            do {
-                var resourceValues = URLResourceValues()
-                resourceValues.isHidden = true
-                try url.setResourceValues(resourceValues)
-                logger.info("成功隐藏主目录: \(path)")
             } catch {
-                logger.error("隐藏主目录失败: \(path): \(error)")
+                logger.error("获取目录内容失败: \(error)")
             }
-            logger.info("隐藏操作完成，共处理目录: \(path)")
+        } else if trigger == "ctx-items" {
+            for dirPath in target {
+                let path = dirPath.removingPercentEncoding ?? dirPath
+                logger.info("处理路径: \(path)")
+                var url = URL(fileURLWithPath: path)
+
+                // 处理单个文件或目录
+                if Utils.isProtectedFolder(path) {
+                    logger.warning("跳过受保护的文件路径: \(path)")
+                    continue
+                }
+                do {
+                    var resourceValues = URLResourceValues()
+                    resourceValues.isHidden = true
+                    try url.setResourceValues(resourceValues)
+                    logger.info("成功隐藏: \(path)")
+                } catch {
+                    logger.error("隐藏失败: \(path): \(error)")
+                }
+            }
         }
+        logger.info("隐藏操作完成")
     }
 
     func copyPath(_ target: [String]) {
@@ -236,13 +252,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func deleteFoldorFile(_ target: [String]) {
-        logger.info("---- deleteFoldorFile")
+    func deleteFoldorFile(_ target: [String], _ trigger: String) {
+        logger.info("---- deleteFoldorFile  trigger:\( trigger)")
         let fm = FileManager.default
+        // 如果是容器，无法删除
+        if trigger == "ctx-container" {
+            // 显示警告对话框
+            let alert = NSAlert()
+            alert.messageText = "警告"
+            alert.informativeText = "无法删除当前文件夹，请选择文件或子文件夹进行删除。"
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "确定")
+            alert.runModal()
+            return
+        }
         
         for item in target {
             let decodedPath = item.removingPercentEncoding ?? item
-            
+
             if Utils.isProtectedFolder(decodedPath) {
                 // 显示警告对话框
                 let alert = NSAlert()
@@ -251,11 +278,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 alert.alertStyle = .warning
                 alert.addButton(withTitle: "确定")
                 alert.runModal()
-                
+
                 logger.warning("试图删除受保护的系统文件夹，操作已被阻止: \(decodedPath)")
                 continue
             }
-            
+
             if let permDir = appState.dirs.first(where: { permd in
                 item.contains(permd.url.path())
             }) {
@@ -362,8 +389,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             config.environment = rcitem.environment
 
             if appUrl.path.hasSuffix("WezTerm.app") {
-
-
                 // 创建一个 Process 实例
                 let process = Process()
 
@@ -411,7 +436,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
+        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit", target: [], trigger: "unknown"))
         logger.info("applicationWillTerminate")
     }
 }

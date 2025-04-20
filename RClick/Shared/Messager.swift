@@ -20,9 +20,11 @@ struct MessagePayload: Codable {
     var action: String = ""
     var target: [String] = []
     var rid: String = ""
+    // ctx-items ctx-container ctx-sidebar toolbar
+    var trigger: String = "" // 改为可选类型，避免解码失败
 
     public var description: String {
-        return "MessagePayload(action: \(action), target: \(target), rid:\(rid) )"
+        return "MessagePayload(action: \(action), target: \(target), rid:\(rid), trigger: \(trigger))"
     }
 }
 
@@ -51,9 +53,13 @@ class Messager {
 
     func reconstructEntry(messagePayload: String) -> MessagePayload {
         let jsonData = messagePayload.data(using: .utf8)!
-        let messsagePayloadCacheEntry = try! JSONDecoder().decode(MessagePayload.self, from: jsonData)
-
-        return messsagePayloadCacheEntry
+        do {
+            let messsagePayloadCacheEntry = try JSONDecoder().decode(MessagePayload.self, from: jsonData)
+            return messsagePayloadCacheEntry
+        } catch {
+            logger.warning("Failed to decode MessagePayload: \(error)， jsondata:\(jsonData)")
+            return MessagePayload() // Return a default instance to handle errors gracefully
+        }
     }
 
 
