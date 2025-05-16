@@ -17,7 +17,7 @@ struct RClickApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
-    @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
+    @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
 
     @Environment(\.openWindow) var openWindow
 
@@ -31,11 +31,12 @@ struct RClickApp: App {
         SettingsWindow(appState: appState, onAppear: {})
             .defaultAppStorage(.group)
 
+        // showMenuBarExtra 为 true 时显示菜单条
         MenuBarExtra(
             "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
             MenuBarView()
-        }
+        }.defaultAppStorage(.group)
     }
 }
 
@@ -49,11 +50,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var heartBeatCount = 0
 
     let messager = Messager.shared
-    var showDockIcon = UserDefaults.group.bool(forKey: Key.showDockIcon)
+    var showMenuBarExtra = UserDefaults.group.bool(forKey: Key.showMenuBarExtra)
     var settingsWindow: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
+
+        if showMenuBarExtra {
+            NSApp.setActivationPolicy(.accessory)
+        } else {
+            NSApp.setActivationPolicy(.regular)
+        }
 
         messager.on(name: Key.messageFromFinder) { payload in
 
@@ -253,7 +260,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func deleteFoldorFile(_ target: [String], _ trigger: String) {
-        logger.info("---- deleteFoldorFile  trigger:\( trigger)")
+        logger.info("---- deleteFoldorFile  trigger:\(trigger)")
         let fm = FileManager.default
         // 如果是容器，无法删除
         if trigger == "ctx-container" {
@@ -266,7 +273,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             alert.runModal()
             return
         }
-        
+
         for item in target {
             let decodedPath = item.removingPercentEncoding ?? item
 

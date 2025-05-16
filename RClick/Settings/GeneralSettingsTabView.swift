@@ -15,6 +15,7 @@ struct GeneralSettingsTabView: View {
     private var logger
 
     @AppStorage("extensionEnabled") private var extensionEnabled = false
+    @AppStorage(Key.showMenuBarExtra) private var showMenuBarExtra = true
 
     @EnvironmentObject var store: AppState
 
@@ -56,6 +57,22 @@ struct GeneralSettingsTabView: View {
                     "Launch at login"
                 )
             }
+            Divider()
+            HStack {}.frame(height: 10)
+            // 设置 showMenuBarExtra 的开关
+            Toggle("Show in menu bar", isOn: $showMenuBarExtra)
+                .toggleStyle(SwitchToggleStyle(tint: Color.accentColor))
+                .onChange(of: showMenuBarExtra) { newValue, _ in
+                    logger.debug("the hcnage --- a kjd \(newValue)")
+                    // 在这里处理开关状态的变化
+                    if newValue {
+                        // 显示菜单栏图标
+                        NSApp.setActivationPolicy(.regular)
+                    } else {
+                        // 隐藏菜单栏图标
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+                }
             Divider()
             HStack {}.frame(height: 10)
 
