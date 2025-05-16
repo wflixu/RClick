@@ -445,6 +445,9 @@
     "SF Symbol name or custom icon" : {
 
     },
+    "Show in menu bar" : {
+
+    },
     "The operation of the menu can only be executed in authorized folders" : {
       "localizations" : {
         "zh-Hans" : {

@@ -82,6 +82,7 @@ struct SettingsView: View {
             .padding(.horizontal)
             .padding(.vertical, 24)
         }
+        .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
         .removeSidebarToggle()
     }
 
@@ -104,6 +105,7 @@ struct SettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(minWidth: 450,idealWidth: 600, maxWidth: 800)
         .padding()
     }
 

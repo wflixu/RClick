@@ -24,6 +24,9 @@ class AppState: ObservableObject {
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
     
+    @Published var showMenuBar: Bool = true;
+    
+    
     init(inExt: Bool = false) {
         self.inExt = inExt
         Task {
