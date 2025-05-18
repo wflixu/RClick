@@ -94,6 +94,16 @@
         }
       }
     },
+    "App Icon Show" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 图标展示"
+          }
+        }
+      }
+    },
     "Apps" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -180,7 +190,14 @@
       }
     },
     "Default Open App" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认打开 App"
+          }
+        }
+      }
     },
     "Delete Direct" : {
       "extractionState" : "manual",
@@ -295,6 +312,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无效的文件夹选择"
+          }
+        }
+      }
+    },
+    "Launch at login" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登陆时启动"
           }
         }
       }
@@ -424,7 +451,14 @@
       }
     },
     "Select App" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择App"
+          }
+        }
+      }
     },
     "Settings" : {
       "localizations" : {
@@ -445,8 +479,25 @@
     "SF Symbol name or custom icon" : {
 
     },
+    "Show in dock" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Dock 栏显示"
+          }
+        }
+      }
+    },
     "Show in menu bar" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在菜单栏显示"
+          }
+        }
+      }
     },
     "The operation of the menu can only be executed in authorized folders" : {
       "localizations" : {
