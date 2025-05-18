@@ -16,6 +16,7 @@ struct GeneralSettingsTabView: View {
 
     @AppStorage("extensionEnabled") private var extensionEnabled = false
     @AppStorage(Key.showMenuBarExtra) private var showMenuBarExtra = true
+    @AppStorage(Key.showInDock) private var showInDock = false
 
     @EnvironmentObject var store: AppState
 
@@ -54,25 +55,33 @@ struct GeneralSettingsTabView: View {
 
             HStack {
                 LaunchAtLogin.Toggle(
-                    "Launch at login"
+                    LocalizedStringKey("Launch at login")
                 )
             }
             Divider()
-            HStack {}.frame(height: 10)
-            // 设置 showMenuBarExtra 的开关
-            Toggle("Show in menu bar", isOn: $showMenuBarExtra)
-                .toggleStyle(SwitchToggleStyle(tint: Color.accentColor))
-                .onChange(of: showMenuBarExtra) { newValue, _ in
-                    logger.debug("the hcnage --- a kjd \(newValue)")
-                    // 在这里处理开关状态的变化
-                    if newValue {
-                        // 显示菜单栏图标
-                        NSApp.setActivationPolicy(.regular)
-                    } else {
-                        // 隐藏菜单栏图标
-                        NSApp.setActivationPolicy(.accessory)
+            Text("App Icon Show").font(.title2)
+
+            HStack {
+                Toggle("Show in menu bar", isOn: $showMenuBarExtra)
+                    .toggleStyle(.checkbox)
+                Spacer()
+                // 设置 showMenuBarExtra 的开关
+                Toggle("Show in dock", isOn: $showInDock)
+                    .toggleStyle(.checkbox)
+                    .onChange(of: showInDock) { _, newValue in
+                        logger.debug("the hcnage --- a kjd \(newValue)")
+                        // 在这里处理开关状态的变化
+                        if newValue {
+                            // 显示菜单栏图标
+                            NSApp.setActivationPolicy(.regular)
+                        } else {
+                            // 隐藏菜单栏图标
+                            NSApp.setActivationPolicy(.accessory)
+                        }
                     }
-                }
+            }
+            // 设置 showMenuBarExtra 的开关
+
             Divider()
             HStack {}.frame(height: 10)
 

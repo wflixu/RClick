@@ -39,6 +39,8 @@ enum Key {
     static let permDirs = "RCLICK_PERMISSIVE_DIRS"   
     static let commonDirs = "RCLICK_COMMON_DIRS"
     static let showMenuBarExtra = "showMenuBarExtra"
+    static let showInDock = "SHOW_IN_DOCK"
+    
 }
 
 enum NewFileExtension: String, CaseIterable, Identifiable {

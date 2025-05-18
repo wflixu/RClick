@@ -51,15 +51,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     let messager = Messager.shared
     var showMenuBarExtra = UserDefaults.group.bool(forKey: Key.showMenuBarExtra)
+    var showInDock = UserDefaults.group.bool(forKey: Key.showInDock)
     var settingsWindow: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
 
-        if showMenuBarExtra {
-            NSApp.setActivationPolicy(.accessory)
-        } else {
+        if showInDock {
             NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.accessory)
         }
 
         messager.on(name: Key.messageFromFinder) { payload in
@@ -69,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             case "open":
                 self.openApp(rid: payload.rid, target: payload.target)
             case "actioning":
-                self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger ?? "unknown")
+                    self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
             case "common-dirs":
@@ -202,7 +203,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if trigger == "ctx-container", let dirPath = target.first {
             let path = dirPath.removingPercentEncoding ?? dirPath
             logger.info("处理主目录: \(path)")
-            var url = URL(fileURLWithPath: path)
+            let url = URL(fileURLWithPath: path)
 
             // 仅处理目录下一级的内容
             do {
