@@ -21,6 +21,7 @@
 		5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */; };
 		5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7342D190F5800A9F4C1 /* OrderedCollections */; };
 		5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7362D190F6300A9F4C1 /* OrderedCollections */; };
+		5C2E56412DE2DE3400ED66C8 /* template.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 5C2E56402DE2DE3400ED66C8 /* template.xlsx */; };
 		5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
@@ -87,6 +88,7 @@
 		5C119D342BBEA9AC00B2D7C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
 		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5C2E56402DE2DE3400ED66C8 /* template.xlsx */ = {isa = PBXFileReference; lastKnownFileType = file; name = template.xlsx; path = RClick/Resources/template.xlsx; sourceTree = SOURCE_ROOT; };
 		5C34BAA42D943AF100CF8128 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		5C119D052BBE9B9900B2D7C4 /* RClick */ = {
 			isa = PBXGroup;
 			children = (
+				5C2E563F2DE2DE0200ED66C8 /* Resources */,
 				5C945D042CA51B7A00DABD2C /* Main */,
 				5CDFE3142CA3D5FB00AE6C95 /* Settings */,
 				5C50D2932BBFD17C00DF31AA /* Model */,
@@ -184,6 +187,14 @@
 				5C119D342BBEA9AC00B2D7C4 /* Info.plist */,
 			);
 			path = FinderSyncExt;
+			sourceTree = "<group>";
+		};
+		5C2E563F2DE2DE0200ED66C8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5C2E56402DE2DE3400ED66C8 /* template.xlsx */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		5C50D27D2BBFB1E100DF31AA /* Shared */ = {
@@ -334,6 +345,7 @@
 			files = (
 				5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */,
 				5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */,
+				5C2E56412DE2DE3400ED66C8 /* template.xlsx in Resources */,
 				5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -541,7 +553,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250517008;
+				CURRENT_PROJECT_VERSION = 20250524003;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -560,7 +572,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6.4;
+				MARKETING_VERSION = 1.6.5;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -582,7 +594,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250517008;
+				CURRENT_PROJECT_VERSION = 20250524003;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -601,7 +613,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6.4;
+				MARKETING_VERSION = 1.6.5;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -619,7 +631,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250517008;
+				CURRENT_PROJECT_VERSION = 20250524003;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -635,7 +647,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6.4;
+				MARKETING_VERSION = 1.6.5;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -655,7 +667,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250517008;
+				CURRENT_PROJECT_VERSION = 20250524003;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -671,7 +683,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6.4;
+				MARKETING_VERSION = 1.6.5;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

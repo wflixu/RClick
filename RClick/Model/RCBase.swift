@@ -89,7 +89,7 @@ struct PermissiveDir: RCBase {
 //        do {
 //            url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
 //            let result = url.startAccessingSecurityScopedResource()
-//          
+//
 //            if !result {
 //                logger.error("Fail to start access security scoped resource on \(path)")
 //            }
@@ -114,7 +114,7 @@ extension PermissiveDir {
     }
 
     static var application: PermissiveDir? {
-        PermissiveDir(permUrl:URL(fileURLWithPath: "/Applications"))
+        PermissiveDir(permUrl: URL(fileURLWithPath: "/Applications"))
     }
 
     static var volumns: [PermissiveDir] {
@@ -171,8 +171,7 @@ extension RCAction {
     static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
 }
 
-
-// New File Type 
+// New File Type
 struct NewFile: RCBase {
     static func == (lhs: NewFile, rhs: NewFile) -> Bool {
         lhs.id == rhs.id
@@ -185,6 +184,7 @@ struct NewFile: RCBase {
     var icon: String
     var id: String
     var openApp: URL?
+    var template: URL?
 
     init(ext: String, name: String, enabled: Bool = true, idx: Int, icon: String = "document", id: String = UUID().uuidString) {
         self.ext = ext

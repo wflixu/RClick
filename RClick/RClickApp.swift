@@ -70,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             case "open":
                 self.openApp(rid: payload.rid, target: payload.target)
             case "actioning":
-                    self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
+                self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
             case "common-dirs":
@@ -345,7 +345,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if success {
                     do {
                         if ext == ".xlsx" {
-                            let _ = try XLSXFile(filepath: filePath)
+                            if let templateURL = Bundle.main.url(forResource: "template", withExtension: "xlsx") {
+                                print("模板路径: \(templateURL.path)")
+                                // 复制 到 filePath
+                                let fileManager = FileManager.default
+                                do {
+                                    try fileManager.copyItem(at: templateURL, to: fileURL)
+                                    print("已复制模板到用户目录: \(fileURL.path)")
+                                } catch {
+                                    logger.warning("复制失败: \(error)")
+                                }
+                            } else {
+                                logger.warning("模板文件不存在")
+                            }
                         } else {
                             let emptyDocxData = Data()
                             try emptyDocxData.write(to: fileURL)

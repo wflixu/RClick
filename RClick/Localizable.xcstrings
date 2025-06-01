@@ -151,6 +151,9 @@
     "Change App" : {
 
     },
+    "Change Template" : {
+
+    },
     "Common Dir" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -460,6 +463,9 @@
         }
       }
     },
+    "Select Template" : {
+
+    },
     "Settings" : {
       "localizations" : {
         "en" : {
@@ -498,6 +504,9 @@
           }
         }
       }
+    },
+    "Template" : {
+
     },
     "The operation of the menu can only be executed in authorized folders" : {
       "localizations" : {
