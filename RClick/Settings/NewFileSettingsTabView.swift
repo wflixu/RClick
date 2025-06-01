@@ -7,8 +7,12 @@
 
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct NewFileSettingsTabView: View {
+    @AppLog(category: "NewFileSettingsTabView")
+    private var logger
+    
     @EnvironmentObject var appState: AppState
     @State private var editingFile: NewFile?
     @State private var showSelectApp = false
@@ -18,11 +22,18 @@ struct NewFileSettingsTabView: View {
     @State private var editingExt: String = ""
     @State private var editingIcon: String = "document"
     @State private var editingOpenApp: URL?
+    // 添加状态变量
+    @State private var editingTemplate: URL?
+    @State private var showSelectTemplate = false
     
     // 新建状态
     @State private var isAddingNew = false
     
     let messager = Messager.shared
+    // 优化后的存储路径选择
+    let templatesDir: URL? = // 选项1: 应用程序支持目录（推荐）
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+        .appendingPathComponent("RClick/Templates")
     
     var body: some View {
         ZStack {
@@ -75,6 +86,11 @@ struct NewFileSettingsTabView: View {
                                     Text(item.ext)
                                         .font(.caption)
                                         .foregroundColor(.secondary)
+                                    if let templateUrl = item.template {
+                                        Text(templateUrl.path)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
                             
@@ -88,6 +104,7 @@ struct NewFileSettingsTabView: View {
                                     editingExt = item.ext
                                     editingIcon = item.icon
                                     editingOpenApp = item.openApp
+                                    editingTemplate = item.template
                                 } label: {
                                     Image(systemName: "pencil")
                                         .frame(width: 24, height: 24)
@@ -98,7 +115,6 @@ struct NewFileSettingsTabView: View {
                                     .onChange(of: item.enabled) {
                                         appState.toggleActionItem()
                                         messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
-                                        
                                     }
                                     .toggleStyle(.switch)
                                     .frame(width: 50)
@@ -134,6 +150,46 @@ struct NewFileSettingsTabView: View {
                             Text("Extension").font(.headline)
                             TextField("File Extension (e.g., .txt)", text: $editingExt)
                                 .textFieldStyle(.roundedBorder)
+                        }
+
+                        // 在编辑浮层中添加模板选择部分
+                        VStack(alignment: .leading) {
+                            Text("Template").font(.headline)
+                            HStack {
+                                if let templateUrl = editingTemplate {
+                                    Text(templateUrl.lastPathComponent)
+                                    Button {
+                                        editingTemplate = nil
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                Button {
+                                    self.showSelectTemplate = true
+                                    self.logger.info("click.. sleect tele")
+                                } label: {
+                                    Text(editingTemplate == nil ? "Select Template" : "Change Template")
+                                }
+                                .fileImporter(
+                                    isPresented: $showSelectTemplate,
+                                    allowedContentTypes: [
+                                        .content
+                                    ],
+                                    allowsMultipleSelection: false
+                                ) { result in
+                                    logger.warning("start select template result")
+                                    switch result {
+                                    case .success(let files):
+                                        if let url = files.first {
+                                            editingTemplate = url
+                                        }
+                                    case .failure:
+                                        logger.warning("error when import template file")
+                                    }
+                                }
+                                .zIndex(1)
+                            }
                         }
                         
                         VStack(alignment: .leading) {
@@ -172,6 +228,21 @@ struct NewFileSettingsTabView: View {
                                 } label: {
                                     Text(editingOpenApp == nil ? "Select App" : "Change App")
                                 }
+                                .fileImporter(
+                                    isPresented: $showSelectApp,
+                                    allowedContentTypes: [.application],
+                                    allowsMultipleSelection: false
+                                ) { result in
+                                    switch result {
+                                    case .success(let files):
+                                        if let url = files.first {
+                                            editingOpenApp = url
+                                        }
+                                    case .failure(let error):
+                                        print(error)
+                                    }
+                                }
+                                .zIndex(1)
                                 
                                 if editingOpenApp != nil {
                                     Button {
@@ -206,22 +277,8 @@ struct NewFileSettingsTabView: View {
                 .shadow(radius: 10)
             }
         }
-        .fileImporter(
-            isPresented: $showSelectApp,
-            allowedContentTypes: [.application],
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case .success(let files):
-                if let url = files.first {
-                    editingOpenApp = url
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
     }
-    
+
     private func resetEditingFields() {
         editingName = ""
         editingExt = ""
@@ -255,10 +312,20 @@ struct NewFileSettingsTabView: View {
             updatedFile.ext = editingExt
             updatedFile.icon = editingIcon
             updatedFile.openApp = editingOpenApp
+            if let templateUrl = editingTemplate {
+                // 创建目录并复制模板
+                if let templateDir = templatesDir {
+                    try? FileManager.default.createDirectory(at: templateDir, withIntermediateDirectories: true)
+                    let destUrl = templateDir.appendingPathComponent(templateUrl.lastPathComponent)
+                    try? FileManager.default.copyItem(at: templateUrl, to: destUrl)
+                    updatedFile.template = destUrl
+                }
+            }
             appState.newFiles[index] = updatedFile
         }
-        
-//        try? appState.save()
+        Task {
+             appState.sync();
+        }
         messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
         cancelEditing()
     }

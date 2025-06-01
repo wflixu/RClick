@@ -97,7 +97,7 @@ extension String {
 
 extension UserDefaults {
     static var group: UserDefaults {
-        UserDefaults(suiteName: "4L3563XCBN.cn.wflixu.RClick")!
+        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
     }
 
     var showContextualMenuForItem: Bool {

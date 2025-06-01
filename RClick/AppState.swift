@@ -172,6 +172,10 @@ class AppState: ObservableObject {
         _ = try? load()
     }
     
+    @MainActor func sync() {
+        _ = try? save()
+    }
+    
     @MainActor
     private func load() throws {
         let decoder = PropertyListDecoder()

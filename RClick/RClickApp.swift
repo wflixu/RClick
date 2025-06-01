@@ -70,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             case "open":
                 self.openApp(rid: payload.rid, target: payload.target)
             case "actioning":
-                    self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
+                self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
             case "Create File":
                 self.createFile(rid: payload.rid, target: payload.target)
             case "common-dirs":
@@ -326,7 +326,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let ext = rcitem.ext
-
         logger.info("create file dir:\(dirPath) -- ext \(ext)")
         // 完整的文件路径
         let filePath = getUniqueFilePath(dir: dirPath.removingPercentEncoding ?? dirPath, ext: ext)
@@ -344,29 +343,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let success = folderURL.startAccessingSecurityScopedResource()
                 if success {
                     do {
-                        if ext == ".xlsx" {
-                            let _ = try XLSXFile(filepath: filePath)
-                        } else {
-                            let emptyDocxData = Data()
-                            try emptyDocxData.write(to: fileURL)
-                        }
+                        let fileManager = FileManager.default
 
-                        print("Empty DOCX file created successfully at \(filePath)")
+                        // 检查是否有有效的模板URL
+                        if let templateUrl = rcitem.template {
+                            try fileManager.copyItem(at: templateUrl, to: fileURL)
+                            logger.info("已成功复制模板到目标路径: \(fileURL.path)")
+
+                        } else {
+                            // 从Bundle中获取模板文件
+                            if let defaultTemplateURL = Bundle.main.url(forResource: "template", withExtension: ext.replacingOccurrences(of: ".", with: "")) {
+                                logger.info("使用模板创建文件，模板路径: \(defaultTemplateURL.path)")
+                                try fileManager.copyItem(at: defaultTemplateURL, to: fileURL)
+                                logger.info("已成功复制模板到目标路径: \(fileURL.path)")
+                            } else {
+                                logger.warning("模板文件不存在: \(ext)")
+                                // 模板不存在时创建空文件
+                                try Data().write(to: fileURL)
+                            }
+                        }
                     } catch let error as NSError {
                         switch error.domain {
                         case NSCocoaErrorDomain:
                             switch error.code {
                             case NSFileNoSuchFileError:
-                                print("Error: No such file exists at \(filePath)")
+                                logger.error("文件不存在: \(filePath)")
                             case NSFileWriteOutOfSpaceError:
-                                print("Error: Not enough disk space to write the file")
+                                logger.error("磁盘空间不足")
                             case NSFileWriteNoPermissionError:
-                                print("Error: No permission to write the file at \(filePath)")
+                                logger.error("没有写入权限: \(filePath)")
                             default:
-                                print("Error: \(error.localizedDescription) (\(error.code))")
+                                logger.error("创建文件错误: \(error.localizedDescription) (错误码: \(error.code))")
                             }
                         default:
-                            print("Unhandled error: \(error.localizedDescription) (\(error.code))")
+                            logger.error("未处理的错误: \(error.localizedDescription) (错误码: \(error.code))")
                         }
                     }
                     // 完成后释放资源
