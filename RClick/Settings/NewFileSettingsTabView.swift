@@ -30,6 +30,10 @@ struct NewFileSettingsTabView: View {
     @State private var isAddingNew = false
     
     let messager = Messager.shared
+    // 优化后的存储路径选择
+    let templatesDir: URL? = // 选项1: 应用程序支持目录（推荐）
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+        .appendingPathComponent("RClick/Templates")
     
     var body: some View {
         ZStack {
@@ -100,6 +104,7 @@ struct NewFileSettingsTabView: View {
                                     editingExt = item.ext
                                     editingIcon = item.icon
                                     editingOpenApp = item.openApp
+                                    editingTemplate = item.template
                                 } label: {
                                     Image(systemName: "pencil")
                                         .frame(width: 24, height: 24)
@@ -179,11 +184,11 @@ struct NewFileSettingsTabView: View {
                                         if let url = files.first {
                                             editingTemplate = url
                                         }
-                                    case .failure(let error):
-                                            logger.warning("Error: %{public}@", error.localizedDescription)
+                                    case .failure:
+                                        logger.warning("error when import template file")
                                     }
                                 }
-                                .zIndex(1) 
+                                .zIndex(1)
                             }
                         }
                         
@@ -237,7 +242,7 @@ struct NewFileSettingsTabView: View {
                                         print(error)
                                     }
                                 }
-                                .zIndex(1) 
+                                .zIndex(1)
                                 
                                 if editingOpenApp != nil {
                                     Button {
@@ -308,15 +313,19 @@ struct NewFileSettingsTabView: View {
             updatedFile.icon = editingIcon
             updatedFile.openApp = editingOpenApp
             if let templateUrl = editingTemplate {
-                // 复制模板到Resources目录
-                let destUrl = Bundle.main.resourceURL?.appendingPathComponent(templateUrl.lastPathComponent)
-                try? FileManager.default.copyItem(at: templateUrl, to: destUrl!)
-                updatedFile.template = destUrl
+                // 创建目录并复制模板
+                if let templateDir = templatesDir {
+                    try? FileManager.default.createDirectory(at: templateDir, withIntermediateDirectories: true)
+                    let destUrl = templateDir.appendingPathComponent(templateUrl.lastPathComponent)
+                    try? FileManager.default.copyItem(at: templateUrl, to: destUrl)
+                    updatedFile.template = destUrl
+                }
             }
             appState.newFiles[index] = updatedFile
         }
-        
-//        try? appState.save()
+        Task {
+             appState.sync();
+        }
         messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
         cancelEditing()
     }
