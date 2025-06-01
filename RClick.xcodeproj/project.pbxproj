@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
-		5C0D89652D180B6200EC50E8 /* XLSXFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0D89642D180B6200EC50E8 /* XLSXFile.swift */; };
-		5C0D89662D180B6200EC50E8 /* XLSXFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0D89642D180B6200EC50E8 /* XLSXFile.swift */; };
 		5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */; };
 		5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */; };
 		5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0F2BBE9B9B00B2D7C4 /* Preview Assets.xcassets */; };
@@ -75,7 +73,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5C0D89642D180B6200EC50E8 /* XLSXFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXFile.swift; sourceTree = "<group>"; };
 		5C119D032BBE9B9900B2D7C4 /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RClickApp.swift; sourceTree = "<group>"; };
 		5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -206,7 +203,7 @@
 				5CC9F0992BC5445C00AF9B81 /* Messager.swift */,
 				5C4288652BDA5536000C0828 /* AppLogger.swift */,
 				5C68BFE02C6651B80011C096 /* Extension+.swift */,
-				5C0D89642D180B6200EC50E8 /* XLSXFile.swift */,
+				5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -244,7 +241,6 @@
 				5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */,
 				5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */,
 				5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */,
-				5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -375,7 +371,6 @@
 				5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
-				5C0D89662D180B6200EC50E8 /* XLSXFile.swift in Sources */,
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
 				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
@@ -402,7 +397,6 @@
 				5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */,
 				5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */,
 				5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */,
-				5C0D89652D180B6200EC50E8 /* XLSXFile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
