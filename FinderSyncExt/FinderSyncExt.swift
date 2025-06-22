@@ -245,12 +245,14 @@ class FinderSyncExt: FIFinderSync {
 
             if let app = item.openApp {
                 menuItem.image = NSWorkspace.shared.icon(forFile: app.path)
+                menuItem.image?.isTemplate = true
             } else {
                 if !item.icon.starts(with: "icon-") {
                     menuItem.image = NSImage(systemSymbolName: item.icon, accessibilityDescription: item.icon)!
                 } else {
                     if let img = NSImage(named: item.icon) {
                         menuItem.image = img
+                        menuItem.image?.isTemplate = true
                     }
                 }
             }
