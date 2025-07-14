@@ -60,7 +60,7 @@ struct NewFileSettingsTabView: View {
                     ForEach($appState.newFiles) { $item in
                         HStack(spacing: 12) {
                             // 左侧图标和名称
-                            HStack {
+                            HStack(spacing: 8) {
                                 // 图标显示逻辑
                                 if let appUrl = item.openApp {
                                     Image(nsImage: NSWorkspace.shared.icon(forFile: appUrl.path()))
@@ -83,15 +83,26 @@ struct NewFileSettingsTabView: View {
                                 
                                 HStack(alignment: .center) {
                                     Text(item.name).font(.title3)
-                                    Text(item.ext)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                                }
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text("后缀：")
+                                        Text(item.ext)
+                                    }
+                                        
                                     if let templateUrl = item.template {
-                                        Text(templateUrl.path)
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
+                                        HStack(spacing: 4) {
+                                            Text("模版：")
+                                            Text(templateUrl.lastPathComponent) // 文件名
+                                            Image(systemName: "info.circle") // 提示图标
+                                                .foregroundColor(.secondary)
+                                                .font(.system(size: 12))
+                                                .help("模板路径：\(templateUrl.path)") // 图标悬停提示
+                                        }
                                     }
                                 }
+                                .font(.system(size: 14))
+                                .foregroundColor(.secondary)
                             }
                             
                             Spacer()
@@ -107,6 +118,7 @@ struct NewFileSettingsTabView: View {
                                     editingTemplate = item.template
                                 } label: {
                                     Image(systemName: "pencil")
+                                        .font(.system(size: 14))
                                         .frame(width: 24, height: 24)
                                 }
                                 .buttonStyle(.plain)
@@ -324,7 +336,7 @@ struct NewFileSettingsTabView: View {
             appState.newFiles[index] = updatedFile
         }
         Task {
-             appState.sync();
+            appState.sync()
         }
         messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
         cancelEditing()

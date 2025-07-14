@@ -151,8 +151,70 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             unhideFilesAndDirs(target, trigger)
         case "hide":
             hideFilesAndDirs(target, trigger)
+        case "airdrop":
+            showAirDrop(target, trigger)
         default:
             logger.warning("no action id matched")
+        }
+    }
+
+    func showAirDrop(_ target: [String], _ trigger: String) {
+        logger.info("---- showAirDrop  trigger:\(trigger)")
+        let fm = FileManager.default
+        var fileURLs: [URL] = []
+
+        if trigger == "ctx-container" {
+            // 显示警告对话框
+            let alert = NSAlert()
+            alert.messageText = "警告"
+            alert.informativeText = "无法共享当前文件夹，请选择文件或子文件夹进行共享。"
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "确定")
+            alert.runModal()
+            return
+        }
+
+        for item in target {
+            let decodedPath = item.removingPercentEncoding ?? item
+            logger.info("airdrop path \(decodedPath)")
+
+            if Utils.isProtectedFolder(decodedPath) {
+                // 显示警告对话框
+                let alert = NSAlert()
+                alert.messageText = "警告"
+                alert.informativeText = "无法分享系统保护文件夹：\(decodedPath)"
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "确定")
+                alert.runModal()
+
+                logger.warning("试图分享受保护的系统文件夹，操作已被阻止: \(decodedPath)")
+                continue
+            }
+
+            var isDir: ObjCBool = false
+            if fm.fileExists(atPath: decodedPath, isDirectory: &isDir) {
+                if isDir.boolValue {
+                    logger.warning("不能通过 AirDrop 分享文件夹: \(decodedPath)")
+                    let alert = NSAlert()
+                    alert.messageText = "提示"
+                    alert.informativeText = "不能通过 AirDrop 分享文件夹：\(decodedPath)"
+                    alert.alertStyle = .informational
+                    alert.addButton(withTitle: "确定")
+                    alert.runModal()
+                    continue
+                } else {
+                    fileURLs.append(URL(fileURLWithPath: decodedPath))
+                }
+            }
+        }
+
+        if !fileURLs.isEmpty {
+            if let airDropService = NSSharingService(named: .sendViaAirDrop) {
+                airDropService.perform(withItems: fileURLs)
+                logger.info("已通过 AirDrop 分享文件: \(fileURLs.map { $0.path }.joined(separator: ", "))")
+            } else {
+                logger.warning("无法获取 AirDrop 服务")
+            }
         }
     }
 

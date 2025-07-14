@@ -163,12 +163,14 @@ struct RCAction: RCBase {
 }
 
 extension RCAction {
-    static var all: [RCAction] = [.copyPath, .deleteDirect, .hideFileDir, .unhideFileDir]
 
     static let copyPath = RCAction(id: "copy-path", name: "Copy Path", idx: 0, icon: "doc.on.doc")
     static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", idx: 1, icon: "trash")
     static let hideFileDir = RCAction(id: "hide", name: "Hide", idx: 2, icon: "eye.slash")
     static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
+    static let airdrop = RCAction(id: "airdrop", name: "AirDrop", idx: 4, icon: "paperplane")
+    
+    static var all: [RCAction] = [.copyPath, .deleteDirect,.airdrop, .hideFileDir, .unhideFileDir]
 }
 
 // New File Type
