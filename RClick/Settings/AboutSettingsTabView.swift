@@ -5,15 +5,16 @@
 //  Created by 李旭 on 2024/4/4.
 //
 
+import AppKit
+import ExtensionFoundation
+import ExtensionKit
 import FinderSync
 import SwiftUI
-import AppKit
-import ExtensionKit
-import ExtensionFoundation
-
 
 struct AboutSettingsTabView: View {
     let messager = Messager.shared
+    @EnvironmentObject var updateManager: UpdateManager
+
     var body: some View {
         VStack {
             HStack {
@@ -35,9 +36,30 @@ struct AboutSettingsTabView: View {
                 Spacer()
             }
             Spacer()
+            // 添加一个按钮，点击后检查更新
+            VStack {
+                // 检查更新按钮
+                Button(action: {
+                    Task {
+                        await updateManager.checkForUpdates(force: true)
+                    }
+                }) {
+                    if updateManager.isChecking {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    } else {
+                        Text("检查更新")
+                    }
+                }
+            }
+            Spacer()
             Divider()
             HStack(alignment: .center) {
-                Image("github")
+                Button {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/wflixu/RClick")!)
+                } label: {
+                    Image("github")
+                }
 
                 Text(verbatim: "https://github.com/wflixu/RClick")
                 Spacer()

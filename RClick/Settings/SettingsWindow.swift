@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsWindow: Scene {
     @ObservedObject var appState: AppState
     
-    
+    @EnvironmentObject var updateManager: UpdateManager
     
     let onAppear: () -> Void
 
@@ -22,6 +22,9 @@ struct SettingsWindow: Scene {
                     onAppear()
                 }
                 .frame(minWidth: 800, minHeight: 500)
+                .sheet(isPresented: $updateManager.showUpdateSheet) {
+                    UpdateView(updateManager: updateManager)
+                }
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)

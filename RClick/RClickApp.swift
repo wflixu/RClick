@@ -27,9 +27,16 @@ struct RClickApp: App {
 
     @StateObject var appState = AppState.shared
 
+    @StateObject private var updateManager = UpdateManager(
+        owner: "wflixu",
+        repo: "RClick",
+        currentVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0"
+    )
+
     var body: some Scene {
         SettingsWindow(appState: appState, onAppear: {})
             .defaultAppStorage(.group)
+            .environmentObject(updateManager)
 
         // showMenuBarExtra 为 true 时显示菜单条
         MenuBarExtra(
