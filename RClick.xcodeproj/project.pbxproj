@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,10 +15,9 @@
 		5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D192BBE9D5700B2D7C4 /* SettingsView.swift */; };
 		5C119D332BBEA9AC00B2D7C4 /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D322BBEA9AC00B2D7C4 /* FinderSyncExt.swift */; };
 		5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */; };
-		5C28E72E2D1900CB00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */; };
-		5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */; };
-		5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7342D190F5800A9F4C1 /* OrderedCollections */; };
-		5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7362D190F6300A9F4C1 /* OrderedCollections */; };
+		5C28E72E2D1900CB00A9F4C1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		5C28E7302D19018D00A9F4C1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		5C28E7372D190F6300A9F4C1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
@@ -47,6 +46,10 @@
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
+		5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */; };
+		5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */; };
+		5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A722E8EEC7D00271E8D /* OrderedCollections */; };
+		5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A742E8EEC8500271E8D /* ZIPFoundation */; };
 		5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */; };
 		5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
 		5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
@@ -118,8 +121,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C28E72E2D1900CB00A9F4C1 /* ZIPFoundation in Frameworks */,
-				5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */,
+				5C28E72E2D1900CB00A9F4C1 /* (null) in Frameworks */,
+				5C28E7372D190F6300A9F4C1 /* (null) in Frameworks */,
+				5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */,
+				5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,8 +132,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */,
-				5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */,
+				5C28E7302D19018D00A9F4C1 /* (null) in Frameworks */,
+				5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */,
+				5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,8 +279,8 @@
 			);
 			name = RClick;
 			packageProductDependencies = (
-				5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */,
-				5C28E7362D190F6300A9F4C1 /* OrderedCollections */,
+				5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */,
+				5CDD4A742E8EEC8500271E8D /* ZIPFoundation */,
 			);
 			productName = RClick;
 			productReference = 5C119D032BBE9B9900B2D7C4 /* RClick.app */;
@@ -294,8 +300,8 @@
 			);
 			name = FinderSyncExt;
 			packageProductDependencies = (
-				5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */,
-				5C28E7342D190F5800A9F4C1 /* OrderedCollections */,
+				5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */,
+				5CDD4A722E8EEC7D00271E8D /* OrderedCollections */,
 			);
 			productName = FinderSyncExt;
 			productReference = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */;
@@ -331,7 +337,7 @@
 			mainGroup = 5C119CFA2BBE9B9900B2D7C4;
 			packageReferences = (
 				5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */,
+				5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			productRefGroup = 5C119D042BBE9B9900B2D7C4 /* Products */;
 			projectDirPath = "";
@@ -768,13 +774,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../repos/swift-collections";
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -784,28 +783,36 @@
 				minimumVersion = 0.9.19;
 			};
 		};
+		5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */ = {
+		5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
-		5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */ = {
+		5CDD4A722E8EEC7D00271E8D /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		5CDD4A742E8EEC8500271E8D /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
-		};
-		5C28E7342D190F5800A9F4C1 /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */;
-			productName = OrderedCollections;
-		};
-		5C28E7362D190F6300A9F4C1 /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */;
-			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
