@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>FileProviderExt.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
 		<key>FinderSyncExt.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>isShown</key>
@@ -24,11 +19,6 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>5C119D022BBE9B9900B2D7C4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>5C119D2F2BBEA9AC00B2D7C4</key>
 		<dict>
 			<key>primary</key>

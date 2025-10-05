@@ -25,5 +25,6 @@ public enum Constants {
         "/sbin/",
         "/var/"
     ]
+    static let suitName = "group.cn.wflixu.RClick"
 
 }

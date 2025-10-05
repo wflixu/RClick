@@ -7,6 +7,7 @@
 import AppKit
 import Foundation
 import SwiftUI
+import SwiftData
 
 import FinderSync
 import os.log
@@ -37,6 +38,7 @@ struct RClickApp: App {
         SettingsWindow(appState: appState, onAppear: {})
             .defaultAppStorage(.group)
             .environmentObject(updateManager)
+            .modelContainer(SharedDataManager.sharedModelContainer)
 
         // showMenuBarExtra 为 true 时显示菜单条
         MenuBarExtra(
@@ -89,10 +91,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.logger.warning("actioning payload no matched")
             }
         }
-
         sendObserveDirMessage()
+        
     }
-
+    
     func openCommonDirs(target: [String]) {
         logger.info("开始打开常用目录，目标路径: \(target)")
 
