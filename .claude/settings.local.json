@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(log show:*)",
+      "Bash(otool:*)",
+      "Bash(codesign:*)"
     ]
   }
 }

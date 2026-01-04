@@ -1,5 +1,7 @@
 # Tasks: SwiftData Transformation
 
+**Version**: 1.7.2 (Build 20260104001)
+**Updated**: 2026-01-04
 **Input**: Design documents for SwiftData migration of PermissiveDir model
 **Prerequisites**: Existing SwiftData setup in RClick app, including shared ModelContainer
 
