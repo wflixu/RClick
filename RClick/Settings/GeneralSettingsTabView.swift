@@ -26,6 +26,7 @@ struct GeneralSettingsTabView: View {
     @State private var showDirImporter = false
 
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var modelContext
 
     let messager = Messager.shared
 
@@ -148,10 +149,10 @@ struct GeneralSettingsTabView: View {
             allowsMultipleSelection: false
         ) { result in
             switch result {
-            case .success(let dirs):
+            case let .success(dirs):
                 startAddDir(dirs.first!)
 
-            case .failure(let error):
+            case let .failure(error):
                 // handle error
                 print(error)
             }
@@ -184,6 +185,37 @@ struct GeneralSettingsTabView: View {
         }
     }
 
+    private func insertNewPermDir(url: URL) {
+        // 2. 创建唯一的ID
+        let newId = UUID().uuidString
+
+        // 3. 创建Bookmark Data (这里你需要根据实际情况提供)
+        // 例如，你可以尝试从URL创建bookmark data，或者根据你的应用逻辑提供相应的数据。
+        // 如果暂时没有实际数据，可以使用空Data()，但不建议长期这样。
+        let bookmarkData: Data
+        do {
+            bookmarkData = try url.bookmarkData(options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: nil)
+        } catch {
+            print("Failed to create bookmark data: \(error)")
+            // 根据你的需求决定错误处理方式，这里使用空Data
+            bookmarkData = Data()
+        }
+
+        // 4. 创建新的PermDir实例
+        let newPermDir = PermDir(id: newId, url: url, bookmark: bookmarkData)
+
+        // 5. 插入到模型上下文:cite[1]
+        modelContext.insert(newPermDir)
+
+        // 6. 保存上下文（SwiftData有时会自动保存，但显式保存是个好习惯，尤其是在重要操作后）
+        do {
+            try modelContext.save()
+            print("PermDir inserted successfully.")
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+    }
+
     @MainActor
     func startAddDir(_ url: URL) {
         let hasParentDir = store.hasParentBookmark(of: url)
@@ -193,6 +225,8 @@ struct GeneralSettingsTabView: View {
             logger.info("hasParentDir\(hasParentDir)")
         } else {
             store.dirs.append(PermissiveDir(permUrl: url))
+            // 声明一个PermDir 实体，并插入到 modelContext 中
+            insertNewPermDir(url: url)
             try? store.savePermissiveDir()
 
             let observeDirs = store.dirs.map { $0.url.path }

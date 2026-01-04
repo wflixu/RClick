@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,16 +15,17 @@
 		5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D192BBE9D5700B2D7C4 /* SettingsView.swift */; };
 		5C119D332BBEA9AC00B2D7C4 /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D322BBEA9AC00B2D7C4 /* FinderSyncExt.swift */; };
 		5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */; };
-		5C28E72E2D1900CB00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */; };
-		5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */; };
-		5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7342D190F5800A9F4C1 /* OrderedCollections */; };
-		5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5C28E7362D190F6300A9F4C1 /* OrderedCollections */; };
 		5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
 		5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
+		5C4039F42E8F717A00AE4091 /* ModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F32E8F716F00AE4091 /* ModelContainer.swift */; };
+		5C4039F52E8F717A00AE4091 /* ModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F32E8F716F00AE4091 /* ModelContainer.swift */; };
+		5C4039F72E8F723200AE4091 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F62E8F722E00AE4091 /* Models.swift */; };
+		5C4039F82E8F723200AE4091 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F62E8F722E00AE4091 /* Models.swift */; };
 		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
 		5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */; };
 		5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
 		5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
+		5C55BF1E2E902CF200943825 /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5C5CAB8B2E7FAF22001C5D58 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */; };
 		5C5CAB8C2E7FAF22001C5D58 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */; };
 		5C5CAB8E2E7FE631001C5D58 /* UpdaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */; };
@@ -41,12 +42,15 @@
 		5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D012CA50AAC00DABD2C /* RCBase.swift */; };
 		5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
 		5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
-		5CAF679F2CA68C8900B0AFD2 /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */; };
 		5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */; };
 		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
 		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
+		5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */; };
+		5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */; };
+		5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A722E8EEC7D00271E8D /* OrderedCollections */; };
+		5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A742E8EEC8500271E8D /* ZIPFoundation */; };
 		5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */; };
 		5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
 		5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
@@ -54,7 +58,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5CAF67A02CA68C8900B0AFD2 /* PBXContainerItemProxy */ = {
+		5C55BF1C2E902C9200943825 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C119CFB2BBE9B9900B2D7C4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C119D2F2BBEA9AC00B2D7C4;
+			remoteInfo = FinderSyncExt;
+		};
+		5CC1A00C2E90CDAD0048BBFB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C119CFB2BBE9B9900B2D7C4 /* Project object */;
 			proxyType = 1;
@@ -66,14 +77,12 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		5CAF67A22CA68C8900B0AFD2 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolder = PlugIns;
 			files = (
-				5CAF679F2CA68C8900B0AFD2 /* FinderSyncExt.appex in Embed Foundation Extensions */,
+				5C55BF1E2E902CF200943825 /* FinderSyncExt.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -91,6 +100,8 @@
 		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
 		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5C34BAA42D943AF100CF8128 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		5C4039F32E8F716F00AE4091 /* ModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainer.swift; sourceTree = "<group>"; };
+		5C4039F62E8F722E00AE4091 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsTabView.swift; sourceTree = "<group>"; };
@@ -116,21 +127,17 @@
 /* Begin PBXFrameworksBuildPhase section */
 		5C119D002BBE9B9900B2D7C4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				5C28E72E2D1900CB00A9F4C1 /* ZIPFoundation in Frameworks */,
-				5C28E7372D190F6300A9F4C1 /* OrderedCollections in Frameworks */,
+				5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */,
+				5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C119D2D2BBEA9AC00B2D7C4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				5C28E7352D190F5800A9F4C1 /* OrderedCollections in Frameworks */,
-				5C28E7302D19018D00A9F4C1 /* ZIPFoundation in Frameworks */,
+				5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */,
+				5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -227,6 +234,8 @@
 		5C50D2932BBFD17C00DF31AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5C4039F62E8F722E00AE4091 /* Models.swift */,
+				5C4039F32E8F716F00AE4091 /* ModelContainer.swift */,
 				5C945D012CA50AAC00DABD2C /* RCBase.swift */,
 			);
 			path = Model;
@@ -269,12 +278,13 @@
 			buildRules = (
 			);
 			dependencies = (
-				5CAF67A12CA68C8900B0AFD2 /* PBXTargetDependency */,
+				5C55BF1D2E902C9200943825 /* PBXTargetDependency */,
+				5CC1A00D2E90CDAD0048BBFB /* PBXTargetDependency */,
 			);
 			name = RClick;
 			packageProductDependencies = (
-				5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */,
-				5C28E7362D190F6300A9F4C1 /* OrderedCollections */,
+				5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */,
+				5CDD4A742E8EEC8500271E8D /* ZIPFoundation */,
 			);
 			productName = RClick;
 			productReference = 5C119D032BBE9B9900B2D7C4 /* RClick.app */;
@@ -290,12 +300,10 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = FinderSyncExt;
 			packageProductDependencies = (
-				5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */,
-				5C28E7342D190F5800A9F4C1 /* OrderedCollections */,
+				5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */,
+				5CDD4A722E8EEC7D00271E8D /* OrderedCollections */,
 			);
 			productName = FinderSyncExt;
 			productReference = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */;
@@ -309,7 +317,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					5C119D022BBE9B9900B2D7C4 = {
 						CreatedOnToolsVersion = 15.2;
@@ -320,7 +328,6 @@
 				};
 			};
 			buildConfigurationList = 5C119CFE2BBE9B9900B2D7C4 /* Build configuration list for PBXProject "RClick" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -331,8 +338,9 @@
 			mainGroup = 5C119CFA2BBE9B9900B2D7C4;
 			packageReferences = (
 				5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */,
+				5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
+			preferredProjectObjectVersion = 90;
 			productRefGroup = 5C119D042BBE9B9900B2D7C4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -346,31 +354,26 @@
 /* Begin PBXResourcesBuildPhase section */
 		5C119D012BBE9B9900B2D7C4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */,
 				5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */,
 				5C8E8C1C2E254B1500572EDB /* template.xlsx in Resources */,
 				5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C119D2E2BBEA9AC00B2D7C4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				5C68BFE62C67707D0011C096 /* Assets.xcassets in Resources */,
 				5C8E8C1B2E254B1500572EDB /* template.xlsx in Resources */,
 				5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5C119CFF2BBE9B9900B2D7C4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				5C74BA712D977DCD005673DB /* CommonDirsSettingTabView.swift in Sources */,
 				5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */,
@@ -383,6 +386,7 @@
 				5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */,
 				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
 				5C5CAB8B2E7FAF22001C5D58 /* Updater.swift in Sources */,
+				5C4039F82E8F723200AE4091 /* Models.swift in Sources */,
 				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
 				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
@@ -391,41 +395,46 @@
 				5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */,
 				5C68BFE12C6651B80011C096 /* Extension+.swift in Sources */,
 				5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */,
+				5C4039F52E8F717A00AE4091 /* ModelContainer.swift in Sources */,
 				5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */,
 				5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C119D2C2BBEA9AC00B2D7C4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				5C119D332BBEA9AC00B2D7C4 /* FinderSyncExt.swift in Sources */,
+				5C4039F72E8F723200AE4091 /* Models.swift in Sources */,
 				5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */,
 				5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */,
 				5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */,
 				5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */,
 				5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */,
+				5C4039F42E8F717A00AE4091 /* ModelContainer.swift in Sources */,
 				5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */,
 				5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */,
 				5C5CAB8F2E7FE631001C5D58 /* UpdaterView.swift in Sources */,
 				5C5CAB8C2E7FAF22001C5D58 /* Updater.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5CAF67A12CA68C8900B0AFD2 /* PBXTargetDependency */ = {
+		5C55BF1D2E902C9200943825 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */;
-			targetProxy = 5CAF67A02CA68C8900B0AFD2 /* PBXContainerItemProxy */;
+			targetProxy = 5C55BF1C2E902C9200943825 /* PBXContainerItemProxy */;
+		};
+		5CC1A00D2E90CDAD0048BBFB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */;
+			targetProxy = 5CC1A00C2E90CDAD0048BBFB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		5C119D122BBE9B9B00B2D7C4 /* Debug */ = {
+		5C119D122BBE9B9B00B2D7C4 /* Debug configuration for PBXProject "RClick" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -473,6 +482,10 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				"GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*]" = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -485,12 +498,14 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
-		5C119D132BBE9B9B00B2D7C4 /* Release */ = {
+		5C119D132BBE9B9B00B2D7C4 /* Release configuration for PBXProject "RClick" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -546,22 +561,25 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
-		5C119D152BBE9B9B00B2D7C4 /* Debug */ = {
+		5C119D152BBE9B9B00B2D7C4 /* Debug configuration for PBXNativeTarget "RClick" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250927002;
+				CURRENT_PROJECT_VERSION = 20260104001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -577,8 +595,10 @@
 				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
@@ -591,29 +611,36 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.0;
+				MARKETING_VERSION = 1.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = devid_rclick;
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		5C119D162BBE9B9B00B2D7C4 /* Release */ = {
+		5C119D162BBE9B9B00B2D7C4 /* Release configuration for PBXNativeTarget "RClick" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250927002;
+				CURRENT_PROJECT_VERSION = 20260104001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -629,8 +656,10 @@
 				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
@@ -643,25 +672,32 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.0;
+				MARKETING_VERSION = 1.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = devid_rclick;
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		5C119D392BBEA9AC00B2D7C4 /* Debug */ = {
+		5C119D392BBEA9AC00B2D7C4 /* Debug configuration for PBXNativeTarget "FinderSyncExt" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250927002;
+				CURRENT_PROJECT_VERSION = 20260104001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -675,8 +711,10 @@
 				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinderSyncExt/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
@@ -688,31 +726,46 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.0;
+				MARKETING_VERSION = 1.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = devid_rclick_finderext;
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		5C119D3A2BBEA9AC00B2D7C4 /* Release */ = {
+		5C119D3A2BBEA9AC00B2D7C4 /* Release configuration for PBXNativeTarget "FinderSyncExt" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20250927002;
+				CURRENT_PROJECT_VERSION = 20260104001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinderSyncExt/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
@@ -724,12 +777,18 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.0;
+				MARKETING_VERSION = 1.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = devid_rclick_finderext;
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -742,38 +801,28 @@
 		5C119CFE2BBE9B9900B2D7C4 /* Build configuration list for PBXProject "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D122BBE9B9B00B2D7C4 /* Debug */,
-				5C119D132BBE9B9B00B2D7C4 /* Release */,
+				5C119D122BBE9B9B00B2D7C4 /* Debug configuration for PBXProject "RClick" */,
+				5C119D132BBE9B9B00B2D7C4 /* Release configuration for PBXProject "RClick" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		5C119D142BBE9B9B00B2D7C4 /* Build configuration list for PBXNativeTarget "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D152BBE9B9B00B2D7C4 /* Debug */,
-				5C119D162BBE9B9B00B2D7C4 /* Release */,
+				5C119D152BBE9B9B00B2D7C4 /* Debug configuration for PBXNativeTarget "RClick" */,
+				5C119D162BBE9B9B00B2D7C4 /* Release configuration for PBXNativeTarget "RClick" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		5C119D3B2BBEA9AC00B2D7C4 /* Build configuration list for PBXNativeTarget "FinderSyncExt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D392BBEA9AC00B2D7C4 /* Debug */,
-				5C119D3A2BBEA9AC00B2D7C4 /* Release */,
+				5C119D392BBEA9AC00B2D7C4 /* Debug configuration for PBXNativeTarget "FinderSyncExt" */,
+				5C119D3A2BBEA9AC00B2D7C4 /* Release configuration for PBXNativeTarget "FinderSyncExt" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../repos/swift-collections";
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
@@ -784,28 +833,36 @@
 				minimumVersion = 0.9.19;
 			};
 		};
+		5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5C28E72D2D1900CB00A9F4C1 /* ZIPFoundation */ = {
+		5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
-		5C28E72F2D19018D00A9F4C1 /* ZIPFoundation */ = {
+		5CDD4A722E8EEC7D00271E8D /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		5CDD4A742E8EEC8500271E8D /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
-		};
-		5C28E7342D190F5800A9F4C1 /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */;
-			productName = OrderedCollections;
-		};
-		5C28E7362D190F6300A9F4C1 /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E7312D190EDB00A9F4C1 /* XCLocalSwiftPackageReference "../../repos/swift-collections" */;
-			productName = OrderedCollections;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

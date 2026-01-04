@@ -347,13 +347,41 @@ class UpdateManager: ObservableObject {
         return appURL
     }
 
-    // MARK: - 安装应用到应用程序目录
+    // MARK: - 请求文件夹权限
+    @MainActor
+    private func requestApplicationsFolderAccess() async throws {
+        let openPanel = NSOpenPanel()
+        openPanel.message = "RClick 需要权限以将更新安装到您的“应用程序”文件夹中。"
+        openPanel.prompt = "授予权限"
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.directoryURL = FileManager.default.urls(for: .applicationDirectory, in: .localDomainMask).first
 
+        let response = await openPanel.begin()
+        
+        guard response == .OK, let selectedURL = openPanel.url else {
+            throw InstallationError.permissionDenied("用户取消了授权。")
+        }
+
+        // 验证用户是否选择了正确的文件夹
+        let applicationsURL = FileManager.default.urls(for: .applicationDirectory, in: .localDomainMask).first!
+        guard selectedURL.path == applicationsURL.path else {
+            throw InstallationError.permissionDenied("请选择正确的‘应用程序’文件夹。")
+        }
+    }
+    // MARK: - 安装应用到应用程序目录
     private func installApplication(appURL: URL) async throws {
         let fileManager = FileManager.default
         let applicationsURL = fileManager.urls(for: .applicationDirectory, in: .localDomainMask).first!
         let destinationAppURL = applicationsURL.appendingPathComponent(appURL.lastPathComponent)
         print("start install \(appURL.path) --- \(destinationAppURL.path)")
+        // 安装之前，先检查一下destinationAppURL 是否有权限读写，如果没有权限，请求权限
+         // 检查对应用程序文件夹的写入权限
+        if !fileManager.isWritableFile(atPath: applicationsURL.path) {
+            print("没有应用程序文件夹的写入权限，正在请求权限...")
+            try await requestApplicationsFolderAccess()
+        }
         do {
             // 检查目标位置是否已存在应用
             if fileManager.fileExists(atPath: destinationAppURL.path) {
@@ -441,6 +469,7 @@ class UpdateManager: ObservableObject {
         case zipExtractionFailed(String)
         case noAppFound(String)
         case invalidAppBundle(String)
+        case permissionDenied(String)
         
         var errorDescription: String? {
             switch self {
@@ -449,6 +478,8 @@ class UpdateManager: ObservableObject {
             case .noAppFound(let message):
                 return message
             case .invalidAppBundle(let message):
+                return message
+            case .permissionDenied(let message):
                 return message
             }
         }
