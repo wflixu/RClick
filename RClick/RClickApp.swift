@@ -72,6 +72,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.setActivationPolicy(.accessory)
         }
 
+        // 执行数据迁移
+        Task { @MainActor in
+            do {
+                if DataMigrationManager.shared.needsMigration() {
+                    logger.info("检测到旧数据，开始迁移...")
+
+                    // 备份现有数据
+                    if let backupURL = DataMigrationManager.shared.backupUserDefaults() {
+                        logger.info("数据已备份到: \(backupURL.path)")
+                    }
+
+                    // 执行迁移
+                    let context = ModelContext(SharedDataManager.sharedModelContainer)
+                    try await DataMigrationManager.shared.migrateFromUserDefaults(context: context)
+
+                    logger.info("数据迁移成功完成")
+                } else {
+                    logger.info("无需数据迁移")
+                }
+
+                // 初始化默认数据
+                let context = ModelContext(SharedDataManager.sharedModelContainer)
+                await SharedDataManager.initializeDefaultData(context: context)
+            } catch {
+                logger.error("数据迁移失败: \(error.localizedDescription)")
+                // 可以选择显示错误对话框给用户
+            }
+        }
+
         // Preload icons for all apps to improve performance
         Task {
             IconCacheManager.shared.preloadIcons(for: appState.apps.map { $0.url })

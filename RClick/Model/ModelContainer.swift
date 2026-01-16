@@ -38,7 +38,7 @@ class SharedDataManager {
                      ActionEntity.self,
                      NewFileTypeEntity.self,
                      CommonDirEntity.self,
-                     PermDir.self,
+                     PermissiveDirEntity.self,
                      DataVersion.self,
                 configurations: configuration
             )

@@ -12,7 +12,9 @@
       "Bash(killall:*)",
       "Bash(find:*)",
       "Bash(git ls-tree:*)",
-      "Bash(swiftc:*)"
+      "Bash(swiftc:*)",
+      "Bash(git commit:*)",
+      "Bash(git add:*)"
     ]
   }
 }
