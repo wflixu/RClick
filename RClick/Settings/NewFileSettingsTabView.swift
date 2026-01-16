@@ -63,7 +63,7 @@ struct NewFileSettingsTabView: View {
                             HStack(spacing: 8) {
                                 // 图标显示逻辑
                                 if let appUrl = item.openApp {
-                                    Image(nsImage: NSWorkspace.shared.icon(forFile: appUrl.path()))
+                                    Image(nsImage: IconCacheManager.shared.icon(for: appUrl))
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 32, height: 32)
@@ -229,7 +229,7 @@ struct NewFileSettingsTabView: View {
                             Text("Default Open App").font(.headline)
                             HStack {
                                 if let appUrl = editingOpenApp {
-                                    Image(nsImage: NSWorkspace.shared.icon(forFile: appUrl.path()))
+                                    Image(nsImage: IconCacheManager.shared.icon(for: appUrl))
                                         .resizable()
                                         .frame(width: 20, height: 20)
                                     Text(appUrl.lastPathComponent)

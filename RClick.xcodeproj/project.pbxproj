@@ -579,7 +579,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260104001;
+				CURRENT_PROJECT_VERSION = 20260115001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -611,7 +611,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -640,7 +640,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260104001;
+				CURRENT_PROJECT_VERSION = 20260115001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -672,7 +672,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -697,7 +697,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260104001;
+				CURRENT_PROJECT_VERSION = 20260115001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -726,7 +726,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -753,7 +753,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260104001;
+				CURRENT_PROJECT_VERSION = 20260115001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 4L3563XCBN;
@@ -777,7 +777,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.2;
+				MARKETING_VERSION = 1.7.3;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

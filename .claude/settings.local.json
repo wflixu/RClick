@@ -5,7 +5,14 @@
       "Bash(xcodebuild:*)",
       "Bash(log show:*)",
       "Bash(otool:*)",
-      "Bash(codesign:*)"
+      "Bash(codesign:*)",
+      "Bash(pluginkit:*)",
+      "Bash(defaults read:*)",
+      "Bash(open:*)",
+      "Bash(killall:*)",
+      "Bash(find:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(swiftc:*)"
     ]
   }
 }

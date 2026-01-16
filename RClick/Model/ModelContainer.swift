@@ -7,6 +7,9 @@
 
 import Foundation
 import SwiftData
+import OSLog
+
+let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "ModelContainer")
 
 // 共享 ModelContainer 配置工具类
 class SharedDataManager {
@@ -29,15 +32,60 @@ class SharedDataManager {
                 cloudKitDatabase: .none
             )
 
-            // 创建 ModelContainer
+            // 创建 ModelContainer，注册所有模型
             let container = try ModelContainer(
-                for: PermDir.self, // 你的模型类型
+                for: AppEntity.self,
+                     ActionEntity.self,
+                     NewFileTypeEntity.self,
+                     CommonDirEntity.self,
+                     PermDir.self,
+                     DataVersion.self,
                 configurations: configuration
             )
 
             return container
         } catch {
-            fatalError("Failed to create shared model container: \(error)")
+            fatalError("创建共享 ModelContainer 失败: \(error)")
         }
     }()
+
+    /// 初始化默认数据
+    @MainActor
+    static func initializeDefaultData(context: ModelContext) async {
+        // 检查是否已有数据
+        let actionDescriptor = FetchDescriptor<ActionEntity>()
+        let actionCount = try? context.fetchCount(actionDescriptor) ?? 0
+
+        if actionCount == 0 {
+            // 插入默认动作
+            for action in ActionEntity.createDefaultActions() {
+                context.insert(action)
+            }
+            logger.info("已初始化默认动作")
+        }
+
+        let fileTypeDescriptor = FetchDescriptor<NewFileTypeEntity>()
+        let fileTypeCount = try? context.fetchCount(fileTypeDescriptor) ?? 0
+
+        if fileTypeCount == 0 {
+            // 插入默认文件类型
+            for fileType in NewFileTypeEntity.createDefaultFileTypes() {
+                context.insert(fileType)
+            }
+            logger.info("已初始化默认文件类型")
+        }
+
+        let commonDirDescriptor = FetchDescriptor<CommonDirEntity>()
+        let commonDirCount = try? context.fetchCount(commonDirDescriptor) ?? 0
+
+        if commonDirCount == 0 {
+            // 插入默认常用目录
+            for dir in CommonDirEntity.createDefaultCommonDirs() {
+                context.insert(dir)
+            }
+            logger.info("已初始化默认常用目录")
+        }
+
+        try? context.save()
+    }
 }

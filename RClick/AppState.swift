@@ -42,6 +42,7 @@ class AppState: ObservableObject {
         apps.remove(at: index)
         do {
             try save()
+            notifyExtensionMenuUpdate()
             // 使用 result
         } catch {
             // 处理错误
@@ -52,9 +53,10 @@ class AppState: ObservableObject {
     @MainActor func addApp(item: OpenWithApp) {
         logger.info("start add app")
         apps.append(item)
-        
+
         do {
             try save()
+            notifyExtensionMenuUpdate()
             // 使用 result
         } catch {
             // 处理错误
@@ -71,6 +73,7 @@ class AppState: ObservableObject {
             updatedApp.environment = environment
             apps[index] = updatedApp
             try? save()
+            notifyExtensionMenuUpdate()
         }
     }
     
@@ -106,16 +109,19 @@ class AppState: ObservableObject {
     // Action
     @MainActor func toggleActionItem() {
         try? save()
+        notifyExtensionMenuUpdate()
     }
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
         try? save()
+        notifyExtensionMenuUpdate()
     }
-    
+
     @MainActor func resetFiletypeItems() {
         newFiles = NewFile.all
         try? save()
+        notifyExtensionMenuUpdate()
     }
     
     // Permission
@@ -247,5 +253,31 @@ class AppState: ObservableObject {
             logger.warning("load apps failed")
             apps = OpenWithApp.defaultApps
         }
+    }
+
+    // MARK: - Extension Communication
+
+    /// Notify the extension that menu configuration has changed
+    @MainActor func notifyExtensionMenuUpdate() {
+        logger.info("Notifying extension of menu configuration update")
+
+        // Convert actions and apps to menu items and store in UserDefaults
+        let actionMenuItems = actions.map { $0.toActionMenuItem() }
+        let appMenuItems = apps.map { $0.toAppMenuItem() }
+
+        // Store in UserDefaults for extension to access
+        if let actionData = try? JSONEncoder().encode(actionMenuItems) {
+            UserDefaults.group.set(actionData, forKey: Key.actionMenuItems)
+            logger.info("Updated \(actionMenuItems.count) action menu items in UserDefaults")
+        }
+
+        if let appData = try? JSONEncoder().encode(appMenuItems) {
+            UserDefaults.group.set(appData, forKey: Key.appMenuItems)
+            logger.info("Updated \(appMenuItems.count) app menu items in UserDefaults")
+        }
+
+        // Notify extension to reload menu configuration
+        Messager.shared.sendMessage(name: Key.messageFromMain, data: MessagePayload(action: "update-menu", target: [], rid: ""))
+        logger.info("Sent update-menu message to extension")
     }
 }

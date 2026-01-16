@@ -16,20 +16,97 @@ import OSLog
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "FinderOpen")
 
+// MARK: - Extension State Management
+
+extension FinderSyncExt {
+    /// Current action menu items received from main app
+    var actionMenuItems: [ActionMenuItem] {
+        get {
+            guard let data = UserDefaults.group.data(forKey: Key.actionMenuItems),
+                  let items = try? JSONDecoder().decode([ActionMenuItem].self, from: data) else {
+                return []
+            }
+            return items
+        }
+        set {
+            guard let data = try? JSONEncoder().encode(newValue) else { return }
+            UserDefaults.group.set(data, forKey: Key.actionMenuItems)
+        }
+    }
+
+    /// Current app menu items received from main app
+    var appMenuItems: [AppMenuItem] {
+        get {
+            guard let data = UserDefaults.group.data(forKey: Key.appMenuItems),
+                  let items = try? JSONDecoder().decode([AppMenuItem].self, from: data) else {
+                return []
+            }
+            return items
+        }
+        set {
+            guard let data = try? JSONEncoder().encode(newValue) else { return }
+            UserDefaults.group.set(data, forKey: Key.appMenuItems)
+        }
+    }
+}
+
+// MARK: - Icon Cache
+
+@MainActor
+class IconCache {
+    static let shared = IconCache()
+
+    // Memory cache: URL -> NSImage
+    private var memoryCache: [String: NSImage] = [:]
+
+    // Icon size for caching (standard 32x32 for menu items)
+    private let iconSize = CGSize(width: 32, height: 32)
+
+    private init() {}
+
+    /// Get icon with caching
+    /// - Parameter url: The file URL to get icon for
+    /// - Returns: Cached or newly loaded icon
+    func icon(for url: URL) -> NSImage {
+        let cacheKey = url.path
+
+        // Check memory cache first
+        if let cached = memoryCache[cacheKey] {
+            return cached
+        }
+
+        // Load icon
+        let icon = NSWorkspace.shared.icon(forFile: url.path)
+        icon.size = iconSize
+
+        // Store in memory cache
+        memoryCache[cacheKey] = icon
+
+        return icon
+    }
+
+    /// Clear memory cache (call on memory warning)
+    func clearMemoryCache() {
+        memoryCache.removeAll()
+    }
+
+    /// Preload icons for array of URLs
+    /// - Parameter urls: Array of URLs to preload icons for
+    func preloadIcons(for urls: [URL]) {
+        for url in urls {
+            _ = icon(for: url)
+        }
+    }
+}
+
 @MainActor
 class FinderSyncExt: FIFinderSync {
     var myFolderURL = URL(fileURLWithPath: "/Users/")
     var isHostAppOpen = false
-    lazy var appState: AppState = .init(inExt: true)
 
     private var tagRidDict: [Int: String] = [:]
 
-    let messager = Messager.shared
-
     var triggerManKind = FIMenuKind.contextualMenuForContainer
-
-    // swiftdata
-    private var modelContext: ModelContext?
 
     override init() {
         super.init()
@@ -37,69 +114,45 @@ class FinderSyncExt: FIFinderSync {
         FIFinderSyncController.default().directoryURLs = [myFolderURL]
         logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
 
-        messager.on(name: "quit") { _ in
-
+        // Register message handlers
+        Messager.shared.on(name: "quit") { _ in
+            logger.info("Extension received quit message")
             self.isHostAppOpen = false
         }
-        messager.on(name: "running") { payload in
 
+        Messager.shared.on(name: "running") { payload in
+            logger.info("Extension received running message")
             self.isHostAppOpen = true
 
             if payload.target.count > 0 {
                 FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
+                logger.info("Updated directory URLs from main app")
             }
             Task {
-                self.appState.refresh()
                 self.heartBeat()
             }
         }
 
-        // 初始化共享模型上下文
-        setupModelContext()
+        // Handler for receiving updated menu configurations from main app
+        Messager.shared.on(name: Key.messageFromMain) { payload in
+            logger.info("Extension received config update from main app: \(payload.action)")
+
+            switch payload.action {
+            case "update-menu":
+                logger.info("Menu configuration updated, will reload on next menu build")
+                // Menu items are stored in UserDefaults, so they'll be automatically available
+                // on the next menu creation via createActionMenuItems() and createAppItems()
+            default:
+                logger.warning("Unknown config action: \(payload.action)")
+            }
+        }
 
         heartBeat()
     }
 
-    private func setupModelContext() {
-        logger.info("start setup model context")
-        let container = SharedDataManager.sharedModelContainer
-        modelContext = ModelContext(container)
-
-        // 可选：立即查询一次，验证连接
-        let _ = fetchAllPermDirs()
-    }
-
-    // 修正后的查询方法
-    func fetchAllPermDirs() -> [PermDir] {
-        guard let modelContext = modelContext else {
-            logger.warning("模型上下文未初始化")
-            return []
-        }
-
-        do {
-            // 方法1：使用 id 进行排序（因为 id 是 String，遵循 Comparable）
-            let descriptor = FetchDescriptor<PermDir>(
-                sortBy: [SortDescriptor(\.id)] // 使用 id 排序
-            )
-
-            let permDirs = try modelContext.fetch(descriptor)
-            logger.info("找到 \(permDirs.count) 个 PermDir 记录")
-
-            // 打印所有记录用于调试
-            for permDir in permDirs {
-                logger.info("ID: \(permDir.id), URL: \(permDir.url.path())")
-            }
-
-            return permDirs
-        } catch {
-            logger.warning("查询 PermDir 失败: \(error)")
-            return []
-        }
-    }
-
     func heartBeat() {
-        logger.warning("start send message -- heartbeat")
-        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "heartbeat", target: [], rid: ""))
+        logger.info("Extension heartbeat")
+        Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "heartbeat", target: [], rid: ""))
     }
 
     // MARK: - Primary Finder Sync protocol methods
@@ -145,6 +198,7 @@ class FinderSyncExt: FIFinderSync {
         logger.info("start build menu ....")
         let applicationMenu = NSMenu(title: "RClick")
         guard isHostAppOpen else {
+            logger.warning("host app is not open , return empty menu")
             return applicationMenu
         }
 
@@ -152,7 +206,7 @@ class FinderSyncExt: FIFinderSync {
         //  finder 中没有选中文件或文件夹
 
         case .toolbarItemMenu, .contextualMenuForItems, .contextualMenuForContainer:
-            logger.info("mak menddd .....")
+            logger.info(" create menu for toolbar or contextual")
             createMenuForToolbar(applicationMenu)
 
         default:
@@ -164,36 +218,50 @@ class FinderSyncExt: FIFinderSync {
 
     @objc func createMenuForToolbar(_ applicationMenu: NSMenu) {
         for nsmenu in createAppItems() {
+            logger.info("add app menu item \(nsmenu.title)")
             applicationMenu.addItem(nsmenu)
         }
 
         if let fileMenuItem = createFileCreateMenuItem() {
+            logger.info("add file create menu item \(fileMenuItem.title)")
             applicationMenu.addItem(fileMenuItem)
         }
 
         if let commonDirMenuItem = createCommonDirMenuItem() {
+            logger.info("add common dir menu item \(commonDirMenuItem.title)")
             applicationMenu.addItem(commonDirMenuItem)
         }
 
         for item in createActionMenuItems() {
+            logger.info("add action menu item \(item.title)")
             applicationMenu.addItem(item)
         }
     }
 
     @objc func createAppItems() -> [NSMenuItem] {
-        var appMenuItems: [NSMenuItem] = []
-//
-        for item in appState.apps {
-            let menuItem = NSMenuItem()
-            menuItem.target = self
-            menuItem.title = String(localized: "Open With \(item.name)")
-            menuItem.action = #selector(appOpen(_:))
-            menuItem.toolTip = "\(item.name)"
-            menuItem.tag = getUniqueTag(for: item.id)
-            menuItem.image = NSWorkspace.shared.icon(forFile: item.url.path)
-            appMenuItems.append(menuItem)
-        }
-        return appMenuItems
+        return []
+        // guard isHostAppOpen else {
+        //     logger.warning("Host app is not open, returning empty app menu")
+        //     return []
+        // }
+
+        // let apps = appMenuItems
+        // logger.info("Creating \(apps.count) app menu items")
+
+        // return apps.map { app in
+        //     let menuItem = NSMenuItem(title: app.name, action: #selector(appOpen(_:)), keyEquivalent: "")
+
+        //     // Load app icon from cache
+        //     let appIcon = IconCache.shared.icon(for: app.url)
+        //     menuItem.image = appIcon
+
+        //     // Assign unique tag for identifying the app
+        //     let tag = getUniqueTag(for: app.id)
+        //     menuItem.tag = tag
+
+        //     logger.debug("Created app menu item: \(app.name) with tag \(tag)")
+        //     return menuItem
+        // }
     }
 
     private func getUniqueTag(for rid: String) -> Int {
@@ -208,103 +276,48 @@ class FinderSyncExt: FIFinderSync {
     }
 
     @objc func createActionMenuItems() -> [NSMenuItem] {
-        var actionMenuitems: [NSMenuItem] = []
-
-        for item in appState.actions.filter(\.enabled) {
-            let menuItem = NSMenuItem()
-            menuItem.target = self
-            menuItem.title = String(localized: String.LocalizationValue(item.name))
-            menuItem.action = #selector(actioning(_:))
-            menuItem.toolTip = "\(item.name)"
-            menuItem.tag = getUniqueTag(for: item.id)
-            menuItem.image = NSImage(systemSymbolName: item.icon, accessibilityDescription: item.name)!
-
-            actionMenuitems.append(menuItem)
+        guard isHostAppOpen else {
+            logger.warning("Host app is not open, returning empty action menu")
+            return []
         }
-        return actionMenuitems
+
+        let actions = actionMenuItems
+        logger.info("Creating \(actions.count) action menu items")
+
+        return actions.map { action in
+            let menuItem = NSMenuItem(title: action.name, action: #selector(actioning(_:)), keyEquivalent: "")
+
+            // Set icon if available
+            if let icon = NSImage(systemSymbolName: action.icon, accessibilityDescription: action.name) {
+                icon.size = NSSize(width: 16, height: 16)
+                menuItem.image = icon
+            }
+
+            // Assign unique tag for identifying the action
+            let tag = getUniqueTag(for: action.id)
+            menuItem.tag = tag
+
+            // Enable/disable based on configuration
+            menuItem.isEnabled = action.enabled
+
+            logger.debug("Created action menu item: \(action.name) with tag \(tag)")
+            return menuItem
+        }
     }
 
     // 创建文件菜单容器
     @objc func createCommonDirMenuItem() -> NSMenuItem? {
-        let commonDirs = appState.cdirs
-        if commonDirs.isEmpty {
-            logger.warning("没有启用的常用文件夹")
-            return nil
-        }
-        logger.info("开始创建常用文件夹菜单项")
-
-        let menuItem = NSMenuItem()
-        menuItem.title = String(localized: "Favorite Folders")
-        menuItem.image = NSImage(systemSymbolName: "folder.badge.questionmark", accessibilityDescription: "folder.badge.questionmark")!
-        let submenu = NSMenu(title: "Favorite Folders submenu")
-
-        for dir in commonDirs {
-            let menuItem = NSMenuItem()
-            menuItem.target = self
-            menuItem.title = dir.name
-            menuItem.action = #selector(openCommonDir(_:))
-            menuItem.toolTip = dir.url.path
-            menuItem.tag = getUniqueTag(for: dir.id)
-            menuItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: "folder")!
-
-            submenu.addItem(menuItem)
-            logger.info("添加常用文件夹菜单项: \(dir.name)")
-        }
-
-        menuItem.submenu = submenu
-        logger.info("常用文件夹菜单创建完成")
-        return menuItem
+        // TODO: Extension will receive menu config from main app in future
+        return nil
     }
 
     @MainActor @objc func openCommonDir(_ menuItem: NSMenuItem) {
-        guard let rid = tagRidDict[menuItem.tag] else {
-            logger.warning("未获取到rid")
-            return
-        }
-        guard let dirItem = appState.cdirs.first(where: { $0.id == rid }) else {
-            logger.warning("未找到对应的常用文件夹配置，rid: \(rid)")
-            return
-        }
-
-        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "common-dirs", target: [dirItem.url.path], rid: dirItem.id))
-        logger.info("已发送打开常用文件夹消息: \(dirItem.name), 路径: \(dirItem.url.path)")
+        // TODO: Implement when extension receives menu config
     }
 
     @objc func createFileCreateMenuItem() -> NSMenuItem? {
-        let enabledFiletypeItems = appState.newFiles.filter(\.enabled)
-        if enabledFiletypeItems.isEmpty {
-            return nil
-        }
-        let menuItem = NSMenuItem()
-        menuItem.title = String(localized: "New File")
-        menuItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "doc.badge.plus")!
-        let submenu = NSMenu(title: "file create menu")
-        for item in enabledFiletypeItems {
-            let menuItem = NSMenuItem()
-            menuItem.target = self
-            menuItem.title = item.name
-            menuItem.action = #selector(createFile(_:))
-            menuItem.toolTip = "\(item.name)"
-            menuItem.tag = getUniqueTag(for: item.id)
-
-            if let app = item.openApp {
-                menuItem.image = NSWorkspace.shared.icon(forFile: app.path)
-                menuItem.image?.isTemplate = true
-            } else {
-                if !item.icon.starts(with: "icon-") {
-                    menuItem.image = NSImage(systemSymbolName: item.icon, accessibilityDescription: item.icon)!
-                } else {
-                    if let img = NSImage(named: item.icon) {
-                        menuItem.image = img
-                        menuItem.image?.isTemplate = true
-                    }
-                }
-            }
-
-            submenu.addItem(menuItem)
-        }
-        menuItem.submenu = submenu
-        return menuItem
+        // TODO: Extension will receive menu config from main app in future
+        return nil
     }
 
     @MainActor @objc func createFile(_ menuItem: NSMenuItem) {
@@ -315,7 +328,7 @@ class FinderSyncExt: FIFinderSync {
         let url = FIFinderSyncController.default().targetedURL()
 
         if let target = url?.path() {
-            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "Create File", target: [target], rid: rid))
+            Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "Create File", target: [target], rid: rid))
         }
     }
 
@@ -324,7 +337,6 @@ class FinderSyncExt: FIFinderSync {
             logger.warning("not get rid")
             return
         }
-        let _ = fetchAllPermDirs()
         let target = getTargets(triggerManKind)
         let trigger = getTriggerKind(triggerManKind)
         if target.isEmpty {
@@ -332,7 +344,7 @@ class FinderSyncExt: FIFinderSync {
             return
         }
         logger.info("actioning \(rid) , trigger:\(trigger)")
-        messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "actioning", target: target, rid: rid, trigger: trigger))
+        Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "actioning", target: target, rid: rid, trigger: trigger))
     }
 
     func getTargets(_: FIMenuKind) -> [String] {
@@ -377,7 +389,7 @@ class FinderSyncExt: FIFinderSync {
 
         let target: [String] = getTargets(triggerManKind)
         if !target.isEmpty {
-            messager.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, rid: rid))
+            Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, rid: rid))
         } else {
             logger.warning("not get target")
         }

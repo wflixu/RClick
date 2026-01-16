@@ -38,7 +38,7 @@ struct AppsSettingsTabView: View {
                         VStack {
                             // App 基本信息行
                             HStack {
-                                Image(nsImage: NSWorkspace.shared.icon(forFile: item.url.path))
+                                Image(nsImage: IconCacheManager.shared.icon(for: item.url))
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 32, height: 32)

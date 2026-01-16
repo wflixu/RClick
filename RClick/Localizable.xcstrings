@@ -353,6 +353,7 @@
 
     },
     "Favorite Folders" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -447,6 +448,7 @@
 
     },
     "New File" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -514,6 +516,7 @@
       }
     },
     "Open With %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

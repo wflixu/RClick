@@ -77,3 +77,65 @@ class Messager {
         }
     }
 }
+
+// MARK: - Icon Cache Manager
+
+@MainActor
+class IconCacheManager: ObservableObject {
+    static let shared = IconCacheManager()
+
+    // Memory cache: URL -> NSImage
+    private var memoryCache: [String: NSImage] = [:]
+
+    // Icon size for caching (standard 32x32 for menu items)
+    private let iconSize = CGSize(width: 32, height: 32)
+
+    @AppLog(category: "IconCache")
+    private var logger
+
+    private init() {}
+
+    /// Get icon with caching
+    /// - Parameter url: The file URL to get icon for
+    /// - Returns: Cached or newly loaded icon
+    func icon(for url: URL) -> NSImage {
+        let cacheKey = url.path
+
+        // Check memory cache first
+        if let cached = memoryCache[cacheKey] {
+            logger.debug("Icon cache hit for: \(url.path)")
+            return cached
+        }
+
+        // Load icon
+        logger.debug("Icon cache miss, loading: \(url.path)")
+        let icon = NSWorkspace.shared.icon(forFile: url.path)
+        icon.size = iconSize
+
+        // Store in memory cache
+        memoryCache[cacheKey] = icon
+
+        return icon
+    }
+
+    /// Clear memory cache (call on memory warning)
+    func clearMemoryCache() {
+        logger.info("Clearing icon cache, \(self.memoryCache.count) items removed")
+        self.memoryCache.removeAll()
+    }
+
+    /// Preload icons for array of URLs
+    /// - Parameter urls: Array of URLs to preload icons for
+    func preloadIcons(for urls: [URL]) {
+        logger.info("Preloading \(urls.count) icons...")
+        for url in urls {
+            _ = icon(for: url)
+        }
+        logger.info("Icon preloading complete, cache size: \(self.memoryCache.count)")
+    }
+
+    /// Get current cache size
+    var cacheSize: Int {
+        memoryCache.count
+    }
+}

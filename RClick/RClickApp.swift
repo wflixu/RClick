@@ -72,6 +72,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.setActivationPolicy(.accessory)
         }
 
+        // Preload icons for all apps to improve performance
+        Task {
+            IconCacheManager.shared.preloadIcons(for: appState.apps.map { $0.url })
+        }
+
         messager.on(name: Key.messageFromFinder) { payload in
 
             self.logger.info("recive mess from finder by app \(payload.description)")
@@ -87,12 +92,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             case "heartbeat":
                 self.logger.warning("message from finder plugin heartbeat")
                 self.pluginRunning = true
+                // Send menu configuration when extension connects
+                self.sendMenuConfigurationUpdate()
             default:
                 self.logger.warning("actioning payload no matched")
             }
         }
         sendObserveDirMessage()
-        
+
     }
     
     func openCommonDirs(target: [String]) {
@@ -118,6 +125,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.sendObserveDirMessage()
             }
         }
+    }
+
+    func sendMenuConfigurationUpdate() {
+        // Convert actions and apps to menu items and store in UserDefaults
+        let actionMenuItems = appState.actions.map { $0.toActionMenuItem() }
+        let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
+
+        // Store in UserDefaults for extension to access
+        if let actionData = try? JSONEncoder().encode(actionMenuItems) {
+            UserDefaults.group.set(actionData, forKey: Key.actionMenuItems)
+            logger.info("Sent \(actionMenuItems.count) action menu items to extension")
+        }
+
+        if let appData = try? JSONEncoder().encode(appMenuItems) {
+            UserDefaults.group.set(appData, forKey: Key.appMenuItems)
+            logger.info("Sent \(appMenuItems.count) app menu items to extension")
+        }
+
+        // Notify extension to reload menu configuration
+        messager.sendMessage(name: Key.messageFromMain, data: MessagePayload(action: "update-menu", target: [], rid: ""))
+        logger.info("Notified extension of menu configuration update")
     }
 
     // 创建一个当前文件夹下的不存在的新建文件名

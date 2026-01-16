@@ -169,7 +169,7 @@ extension RCAction {
     static let hideFileDir = RCAction(id: "hide", name: "Hide", idx: 2, icon: "eye.slash")
     static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
     static let airdrop = RCAction(id: "airdrop", name: "AirDrop", idx: 4, icon: "paperplane")
-    
+
     static var all: [RCAction] = [.copyPath, .deleteDirect,.airdrop, .hideFileDir, .unhideFileDir]
 }
 
@@ -207,4 +207,71 @@ extension NewFile {
     static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "icon-file-docx")
     static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "icon-file-pptx")
     static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "icon-file-xlsx")
+}
+
+// MARK: - Menu Item Models for Extension Communication
+
+/// Menu item for opening files with external applications
+struct AppMenuItem: Codable {
+    let id: String
+    let name: String
+    let url: URL
+    let icon: String?
+    let arguments: [String]
+    let environment: [String: String]
+
+    init(id: String, name: String, url: URL, icon: String? = nil, arguments: [String] = [], environment: [String: String] = [:]) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.icon = icon
+        self.arguments = arguments
+        self.environment = environment
+    }
+}
+
+/// Menu item for custom actions (copy path, delete, etc.)
+struct ActionMenuItem: Codable {
+    let id: String
+    let name: String
+    let idx: Int
+    let icon: String
+    let enabled: Bool
+
+    init(id: String, name: String, idx: Int, icon: String, enabled: Bool = true) {
+        self.id = id
+        self.name = name
+        self.idx = idx
+        self.icon = icon
+        self.enabled = enabled
+    }
+}
+
+// MARK: - Conversion Extensions
+
+extension RCAction {
+    /// Convert RCAction to ActionMenuItem for the extension
+    func toActionMenuItem() -> ActionMenuItem {
+        return ActionMenuItem(
+            id: id,
+            name: name,
+            idx: idx,
+            icon: icon,
+            enabled: enabled
+        )
+    }
+}
+
+extension OpenWithApp {
+    /// Convert OpenWithApp to AppMenuItem for the extension
+    func toAppMenuItem() -> AppMenuItem {
+        return AppMenuItem(
+            id: id,
+            name: name,
+            url: url,
+            icon: nil,
+            arguments: arguments,
+            environment: environment
+        )
+    }
 }

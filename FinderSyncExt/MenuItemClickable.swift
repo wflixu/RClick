@@ -9,7 +9,7 @@ import AppKit
 import Foundation
 import os.log
 
-private let logger = Logger(subsystem: subsystem, category: "menu_click")
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "menu_click")
 
 protocol MenuItemClickable {
     func menuClick(with urls: [URL])
@@ -17,71 +17,15 @@ protocol MenuItemClickable {
 
 extension AppMenuItem: MenuItemClickable {
     func menuClick(with urls: [URL]) {
-        
-//        Task {
-//            
-//            do {
-//                let config = NSWorkspace.OpenConfiguration()
-//                config.promptsUserIfNeeded = true
-//                config.arguments = arguments
-//                config.environment = environment
-//                
-//                logger.warning("app:\(url) is opening \(urls)")
-//                urls.forEach { url in
-//                    let result = url.startAccessingSecurityScopedResource()
-//                    if !result {
-//                        logger.error("Fail to start access security scoped resource on \(url.path)")
-//                    }
-//                }
-//                let application = try await NSWorkspace.shared.open(urls, withApplicationAt: url, configuration: config)
-//                if let path = application.bundleURL?.path,
-//                   let identifier = application.bundleIdentifier,
-//                   let date = application.launchDate
-//                {
-//                    logger.notice("Success: open \(identifier, privacy: .public) app at \(path, privacy: .public) in \(date, privacy: .public)")
-//                }
-//            } catch {
-//                guard let error = error as? CocoaError,
-//                      let underlyingError = error.userInfo["NSUnderlyingError"] as? NSError else { return }
-//                logger.error("Error---: \(error.localizedDescription)")
-//                Task { @MainActor in
-//                    if underlyingError.code == -10820 {
-//                        let alert = NSAlert(error: error)
-//                        alert.addButton(withTitle: String(localized: "OK", comment: "OK button"))
-//                        alert.addButton(withTitle: String(localized: "Remove", comment: "Remove app button"))
-//                        let response = alert.runModal()
-//                        logger.notice("NSAlert response result \(response.rawValue)")
-//                        switch response {
-//                        case .alertFirstButtonReturn:
-//                            logger.notice("Dismiss error with OK")
-//                        case .alertSecondButtonReturn:
-//                            logger.notice("Dismiss error with Remove app")
-//                            if let index = menuStore.appItems.firstIndex(of: self) {
-//                                menuStore.deleteAppItems(offsets: IndexSet(integer: index))
-//                            }
-//                        default:
-//                            break
-//                        }
-//                    } else {
-//                        let panel = NSOpenPanel()
-//                        panel.allowsMultipleSelection = true
-//                        panel.allowedContentTypes = [.folder]
-//                        panel.canChooseDirectories = true
-//                        panel.directoryURL = URL(fileURLWithPath: urls[0].path)
-//                        let response = await panel.begin()
-//                        logger.notice("NSOpenPanel response result \(response.rawValue)")
-//                        if response == .OK {
-//                            folderStore.appendItems(panel.urls.map { BookmarkFolderItem($0) })
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        // This method is no longer used directly in the extension
+        // App opening is now handled by sending messages to the main app
+        logger.info("AppMenuItem click: \(name) for \(urls.count) files")
     }
 }
 
 extension ActionMenuItem: MenuItemClickable {
     static let actions: [([URL]) -> ActionMenuResult] = [
+        // Copy Path
         { urls in
             let board = NSPasteboard.general
             board.clearContents()
@@ -103,6 +47,7 @@ extension ActionMenuItem: MenuItemClickable {
 
             return ActionMenuResult(success: success, message: "Pasteboard setString to \(string)")
         },
+        // Copy Filename
         { urls in
             let board = NSPasteboard.general
             board.clearContents()
@@ -123,6 +68,7 @@ extension ActionMenuItem: MenuItemClickable {
             let success = board.setString(string, forType: .string)
             return ActionMenuResult(success: success, message: "Pasteboard setString to \(string)")
         },
+        // Reveal in Finder
         { urls in
             let subResults = urls.map { url in
                 let success = NSWorkspace.shared.selectFile(url.deletingLastPathComponent().path, inFileViewerRootedAtPath: "")
@@ -130,6 +76,7 @@ extension ActionMenuItem: MenuItemClickable {
             }
             return ActionMenuResult(success: subResults.allSatisfy(\.success), subResults: subResults)
         },
+        // Create New File
         { urls in
             let subResults = urls.map { url in
                 let name = UserDefaults.group.newFileName
@@ -155,7 +102,7 @@ extension ActionMenuItem: MenuItemClickable {
     ]
 
     func menuClick(with urls: [URL]) {
-        let result = ActionMenuItem.actions[actionIndex](urls)
+        let result = ActionMenuItem.actions[idx](urls)
         if result.success {
             logger.notice("\(result.description, privacy: .public)")
         } else {
