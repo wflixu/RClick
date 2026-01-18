@@ -185,7 +185,7 @@ struct GeneralSettingsTabView: View {
         }
     }
 
-    private func insertNewPermDir(url: URL) {
+    private func insertNewPermissiveDirEntity(url: URL) {
         // 2. 创建唯一的ID
         let newId = UUID().uuidString
 
@@ -201,8 +201,12 @@ struct GeneralSettingsTabView: View {
             bookmarkData = Data()
         }
 
-        // 4. 创建新的PermDir实例
-        let newPermDir = PermDir(id: newId, url: url, bookmark: bookmarkData)
+        // 4. 创建新的PermissiveDirEntity实例
+        let newPermDir = PermissiveDirEntity(
+            id: newId,
+            url: url,
+            bookmark: bookmarkData
+        )
 
         // 5. 插入到模型上下文:cite[1]
         modelContext.insert(newPermDir)
@@ -210,7 +214,7 @@ struct GeneralSettingsTabView: View {
         // 6. 保存上下文（SwiftData有时会自动保存，但显式保存是个好习惯，尤其是在重要操作后）
         do {
             try modelContext.save()
-            print("PermDir inserted successfully.")
+            print("PermissiveDirEntity inserted successfully.")
         } catch {
             print("Failed to save context: \(error)")
         }
@@ -225,8 +229,8 @@ struct GeneralSettingsTabView: View {
             logger.info("hasParentDir\(hasParentDir)")
         } else {
             store.dirs.append(PermissiveDir(permUrl: url))
-            // 声明一个PermDir 实体，并插入到 modelContext 中
-            insertNewPermDir(url: url)
+            // 声明一个PermissiveDirEntity 实体，并插入到 modelContext 中
+            insertNewPermissiveDirEntity(url: url)
             try? store.savePermissiveDir()
 
             let observeDirs = store.dirs.map { $0.url.path }

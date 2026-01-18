@@ -9,6 +9,17 @@ import SwiftData
 import Foundation
 import OSLog
 
+/// Logger for PermissiveDirEntity operations
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "RClick",
+    category: "PermissiveDirEntity"
+)
+
+/// PermissiveDir related errors
+enum PermissiveDirError: Error {
+    case failedToAccessSecurityScopedResource
+}
+
 /// 许可目录实体 - 用于存储需要安全作用域访问权限的目录
 @Model
 final class PermissiveDirEntity {
@@ -57,15 +68,15 @@ final class PermissiveDirEntity {
             )
 
             if isStale {
-                logger.warning("Bookmark is stale for \(urlString)")
+                logger.warning("Bookmark is stale for \(self.urlString)")
                 return false
             }
 
             let result = url.startAccessingSecurityScopedResource()
             if result {
-                logger.info("Successfully accessed security scoped resource: \(urlString)")
+                logger.info("Successfully accessed security scoped resource: \(self.urlString)")
             } else {
-                logger.error("Failed to access security scoped resource: \(urlString)")
+                logger.error("Failed to access security scoped resource: \(self.urlString)")
             }
 
             return result
@@ -77,9 +88,9 @@ final class PermissiveDirEntity {
 
     /// 停止访问安全作用域资源
     func stopAccessingSecurityScopedResource() {
-        let url = URL(fileURLWithPath: urlString)
+        let url = URL(fileURLWithPath: self.urlString)
         url.stopAccessingSecurityScopedResource()
-        logger.debug("Stopped accessing security scoped resource: \(urlString)")
+        logger.debug("Stopped accessing security scoped resource: \(self.urlString)")
     }
 
     /// 从 PermissiveDir 结构体转换
@@ -98,6 +109,7 @@ final class PermissiveDirEntity {
         let result = url.startAccessingSecurityScopedResource()
         guard result else {
             logger.error("Failed to access security scoped resource during creation")
+            throw PermissiveDirError.failedToAccessSecurityScopedResource
         }
 
         // 创建bookmark

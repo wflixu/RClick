@@ -8,7 +8,11 @@ import AppKit
 import Foundation
 import OSLog
 
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "folder_item")
+/// Logger for RCBase model operations
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "RClick",
+    category: "RCBase"
+)
 
 protocol RCBase: Hashable, Identifiable, Codable {
     var id: String { get }
