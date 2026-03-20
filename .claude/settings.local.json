@@ -14,7 +14,8 @@
       "Bash(git ls-tree:*)",
       "Bash(swiftc:*)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(tee:*)"
     ]
   }
 }

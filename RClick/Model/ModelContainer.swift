@@ -9,11 +9,15 @@ import Foundation
 import SwiftData
 import OSLog
 
-let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "ModelContainer")
-
 // 共享 ModelContainer 配置工具类
+@MainActor
 class SharedDataManager {
     static let appGroupIdentifier = Constants.suitName
+
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "RClick",
+        category: "ModelContainer"
+    )
 
     static var sharedModelContainer: ModelContainer = {
         do {
@@ -50,7 +54,6 @@ class SharedDataManager {
     }()
 
     /// 初始化默认数据
-    @MainActor
     static func initializeDefaultData(context: ModelContext) async {
         // 检查是否已有数据
         let actionDescriptor = FetchDescriptor<ActionEntity>()
@@ -61,7 +64,7 @@ class SharedDataManager {
             for action in ActionEntity.createDefaultActions() {
                 context.insert(action)
             }
-            logger.info("已初始化默认动作")
+            Self.logger.info("已初始化默认动作")
         }
 
         let fileTypeDescriptor = FetchDescriptor<NewFileTypeEntity>()
@@ -72,7 +75,7 @@ class SharedDataManager {
             for fileType in NewFileTypeEntity.createDefaultFileTypes() {
                 context.insert(fileType)
             }
-            logger.info("已初始化默认文件类型")
+            Self.logger.info("已初始化默认文件类型")
         }
 
         let commonDirDescriptor = FetchDescriptor<CommonDirEntity>()
@@ -83,7 +86,7 @@ class SharedDataManager {
             for dir in CommonDirEntity.createDefaultCommonDirs() {
                 context.insert(dir)
             }
-            logger.info("已初始化默认常用目录")
+            Self.logger.info("已初始化默认常用目录")
         }
 
         try? context.save()
