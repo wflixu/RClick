@@ -92,6 +92,10 @@ class FinderSyncExt: FIFinderSync {
                 FIFinderSyncController.default().directoryURLs = urls
                 logger.info("Updated directory URLs: \(payload.directories)")
             }
+
+            // 主动请求菜单配置
+            Messager.shared.requestMenuConfig()
+            logger.info("Requested menu config from host app")
         }
 
         // 处理菜单配置更新

@@ -9,13 +9,15 @@ import SwiftUI
 
 struct ActionSettingsTabView: View {
     @EnvironmentObject var appState: AppState
-    
+
     let messager = Messager.shared
 
     var body: some View {
         VStack {
             HStack {
-                
+                // 折叠开关
+                Toggle("折叠动作菜单", isOn: $appState.foldActionsMenu)
+                    .toggleStyle(.switch)
                 Spacer()
                 Button {
                     appState.resetActionItems()
@@ -24,6 +26,7 @@ struct ActionSettingsTabView: View {
                         .font(.body)
                 }
             }
+            .padding(.bottom, 8)
 
             List {
                 ForEach($appState.actions) { $item in

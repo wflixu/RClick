@@ -42,7 +42,6 @@ class SharedDataManager {
                      ActionEntity.self,
                      NewFileTypeEntity.self,
                      CommonDirEntity.self,
-                     PermissiveDirEntity.self,
                      DataVersion.self,
                 configurations: configuration
             )
@@ -57,7 +56,7 @@ class SharedDataManager {
     static func initializeDefaultData(context: ModelContext) async {
         // 检查是否已有数据
         let actionDescriptor = FetchDescriptor<ActionEntity>()
-        let actionCount = try? context.fetchCount(actionDescriptor) ?? 0
+        let actionCount = try? context.fetchCount(actionDescriptor)
 
         if actionCount == 0 {
             // 插入默认动作
@@ -68,7 +67,7 @@ class SharedDataManager {
         }
 
         let fileTypeDescriptor = FetchDescriptor<NewFileTypeEntity>()
-        let fileTypeCount = try? context.fetchCount(fileTypeDescriptor) ?? 0
+        let fileTypeCount = try? context.fetchCount(fileTypeDescriptor)
 
         if fileTypeCount == 0 {
             // 插入默认文件类型
@@ -79,7 +78,7 @@ class SharedDataManager {
         }
 
         let commonDirDescriptor = FetchDescriptor<CommonDirEntity>()
-        let commonDirCount = try? context.fetchCount(commonDirDescriptor) ?? 0
+        let commonDirCount = try? context.fetchCount(commonDirDescriptor)
 
         if commonDirCount == 0 {
             // 插入默认常用目录

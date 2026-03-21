@@ -96,9 +96,12 @@ extension String {
 // }
 
 extension UserDefaults {
-    static var group: UserDefaults {
-        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
-    }
+    static let group: UserDefaults = {
+        if let suite = UserDefaults(suiteName: "group.cn.wflixu.RClick") {
+            return suite
+        }
+        return .standard
+    }()
 
     var showContextualMenuForItem: Bool {
         defaults(for: Key.showContextualMenuForItem) ?? true

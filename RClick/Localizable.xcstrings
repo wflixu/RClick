@@ -107,6 +107,7 @@
       }
     },
     "App Icon Show" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -159,6 +160,7 @@
 
     },
     "Authorization folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -214,6 +216,7 @@
       }
     },
     "Common Folders" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -315,6 +318,7 @@
 
     },
     "Enable extension" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -372,6 +376,9 @@
     "File Extension (e.g., .txt)" : {
 
     },
+    "Finder 扩展" : {
+
+    },
     "Format: KEY=VALUE, one per line" : {
 
     },
@@ -413,6 +420,7 @@
 
     },
     "Invalid Folder Selection" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -429,6 +437,7 @@
       }
     },
     "Launch at login" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -465,6 +474,7 @@
       }
     },
     "Not Authorized Folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -481,6 +491,7 @@
       }
     },
     "OK" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -500,6 +511,7 @@
 
     },
     "Open Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -657,6 +669,7 @@
 
     },
     "Show in dock" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -673,6 +686,7 @@
       }
     },
     "Show in menu bar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -692,6 +706,7 @@
 
     },
     "The operation of the menu can only be executed in authorized folders" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -708,6 +723,7 @@
       }
     },
     "The RClick extension needs to be enabled for it to work properly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -724,6 +740,7 @@
       }
     },
     "The selected folder is a subdirectory of the previously chosen folder. Please select a different folder." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -790,6 +807,7 @@
       }
     },
     "You must grant access to the folder to use this feature." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -808,10 +826,37 @@
     "下载并安装" : {
 
     },
+    "主要控制" : {
+
+    },
     "发现新版本" : {
 
     },
     "后缀：" : {
+
+    },
+    "启用 RClick" : {
+
+    },
+    "在文件提供程序中启用 RClick 以在右键菜单中显示功能" : {
+
+    },
+    "备份" : {
+
+    },
+    "完全磁盘访问权限" : {
+
+    },
+    "完全磁盘访问权限：用于在受保护目录中创建和删除文件" : {
+
+    },
+    "导入…" : {
+
+    },
+    "导出…" : {
+
+    },
+    "导出日志…" : {
 
     },
     "已是最新版本" : {
@@ -820,10 +865,43 @@
     "当前版本已是最新，无需更新。" : {
 
     },
+    "必须授予文件夹访问权限才能使用此功能。" : {
+
+    },
     "忽略此版本" : {
 
     },
+    "所选文件夹是已选文件夹的子目录，请选择其他文件夹。" : {
+
+    },
     "手动下载" : {
+
+    },
+    "折叠动作菜单" : {
+
+    },
+    "折叠常用文件夹菜单" : {
+
+    },
+    "折叠应用菜单" : {
+
+    },
+    "折叠新建文件菜单" : {
+
+    },
+    "文件提供程序：在列表中选择「RClick」以启用 Finder 右键菜单" : {
+
+    },
+    "无效文件夹" : {
+
+    },
+    "日志" : {
+
+    },
+    "未授权文件夹" : {
+
+    },
+    "权限" : {
 
     },
     "检查更新" : {
@@ -841,10 +919,31 @@
     "正在检查更新..." : {
 
     },
+    "添加 RClick 到列表：点击「+」→ 前往「应用程序」→ 选择「RClick.app」" : {
+
+    },
     "版本 %@" : {
 
     },
+    "登录时启动" : {
+
+    },
     "确定" : {
+
+    },
+    "设置…" : {
+
+    },
+    "设置管理" : {
+
+    },
+    "辅助功能" : {
+
+    },
+    "重置所有设置…" : {
+
+    },
+    "重置所有设置将恢复默认配置，此操作不可逆" : {
 
     }
   },

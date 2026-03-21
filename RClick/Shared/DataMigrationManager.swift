@@ -71,7 +71,7 @@ class DataMigrationManager {
             do {
                 let actions = try JSONDecoder().decode([RCAction].self, from: actionData)
 
-                for (index, action) in actions.enumerated() {
+                for (_, action) in actions.enumerated() {
                     let entity = ActionEntity(
                         id: action.id,
                         name: action.name,
@@ -138,29 +138,7 @@ class DataMigrationManager {
             }
         }
 
-        // 5. 迁移 PermissiveDir -> PermissiveDirEntity
-        if let permDirData = UserDefaults.group.data(forKey: Key.permDirs) {
-            do {
-                let dirs = try JSONDecoder().decode([PermissiveDir].self, from: permDirData)
-
-                for dir in dirs {
-                    // 创建新的entity，使用已有的bookmark
-                    let entity = PermissiveDirEntity(
-                        id: dir.id,
-                        url: dir.url,
-                        bookmark: dir.bookmark,
-                        sortOrder: 0
-                    )
-                    context.insert(entity)
-                }
-
-                logger.info("已迁移 \(dirs.count) 个许可目录")
-                migrationCount += dirs.count
-            } catch {
-                logger.error("迁移许可目录数据失败: \(error)")
-                throw error
-            }
-        }
+        // 5. PermissiveDir 已删除，不再需要迁移
 
         // 保存所有更改
         try context.save()

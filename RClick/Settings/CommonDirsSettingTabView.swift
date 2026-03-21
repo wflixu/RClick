@@ -37,7 +37,8 @@ struct CommonDirsSettingTabView: View {
                 }
             } header: {
                 HStack {
-                    Text("Common Folders").font(.title3).fontWeight(.semibold)
+                    Toggle("折叠常用文件夹菜单", isOn: $store.foldCommonDirMenu)
+                        .toggleStyle(.switch)
                     Spacer()
                     Button {
                         showCommonDirImporter = true
@@ -59,7 +60,7 @@ struct CommonDirsSettingTabView: View {
                             let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: "folder")
                             if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
                                 store.cdirs.append(commonDir)
-                                try? store.saveCommonDir()
+                                store.sync()
                             }
                         }
                     case .failure(let error):
@@ -72,7 +73,7 @@ struct CommonDirsSettingTabView: View {
     @MainActor private func removeCommonDir(_ item: CommonDir) {
         if let index = store.cdirs.firstIndex(of: item) {
             store.cdirs.remove(at: index)
-            try? store.saveCommonDir()
+            store.sync()
         }
     }
 }

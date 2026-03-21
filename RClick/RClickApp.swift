@@ -133,6 +133,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 sendMenuConfigurationUpdate()
             }
 
+            // 处理 Extension 请求菜单配置
+            messager.onExtensionMessage(.requestConfig) { [weak self] _ in
+                guard let self = self else { return }
+                logger.info("Received menu config request from extension")
+                self.sendMenuConfigurationUpdate()
+            }
+
             // 启动心跳超时检测
             startHeartbeatMonitoring()
             // 启动 running 消息重试机制
@@ -154,8 +161,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Message Handlers
 
     func sendObserveDirMessage() {
-        let directories: [String] = appState.dirs.map { $0.url.path() }
-
+        // 使用完全磁盘访问权限，不需要特定目录
+        let directories: [String] = []
         messager.sendRunningNotification(directories: directories)
         if !pluginRunning {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -238,7 +245,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         self.runningMessageRetryCount += 1
-        let directories: [String] = appState.dirs.map { $0.url.path() }
+        // 使用完全磁盘访问权限，不需要特定目录
+        let directories: [String] = []
         messager.sendRunningNotification(directories: directories)
         logger.info("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
 
@@ -279,9 +287,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let appUrl = rcitem.url
+        logger.info("openApp: rid=\(rid)")
+        logger.info("appUrl=\(appUrl)")
+        logger.info("appUrl.path=\(appUrl.path)")
+        logger.info("appUrl.isFileURL=\(appUrl.isFileURL)")
+        logger.info("appUrl.scheme=\(appUrl.scheme ?? "nil")")
+        logger.info("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
+            logger.info("dir=\(dir)")
+            logger.info("dir.path=\(dir.path)")
+            logger.info("dir.isFileURL=\(dir.isFileURL)")
+            logger.info("FileManager.fileExists(atPath: dir.path)=\(FileManager.default.fileExists(atPath: dir.path))")
+            logger.info("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
 
             // 特殊处理：WezTerm
             if appUrl.path.hasSuffix("WezTerm.app") {
@@ -305,20 +324,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     print("Error: \(error)")
                 }
             }
-            // 通用处理：使用 macOS open -a 命令打开应用和目录
+            // 通用处理：使用 NSWorkspace 打开目录
             else {
-                let appName = appUrl.deletingLastPathComponent().lastPathComponent
-                logger.info("starting open dir: \(dir.path), app: \(appName)")
+                logger.info("starting open dir: \(dir.path), app: \(appUrl.path)")
 
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-                process.arguments = ["-a", appName, dir.path]
-
-                do {
-                    try process.run()
-                    logger.info("Opened directory in \(appName): \(dir.path)")
-                } catch {
-                    logger.error("Failed to open \(appName): \(error)")
+                // 方法 1：直接使用 NSWorkspace.open(_:withApplicationAt:configuration:completionHandler:)
+                let config = NSWorkspace.OpenConfiguration()
+                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
+                    if let error = error {
+                        self.logger.error("Error opening with application: \(error.localizedDescription)")
+                        self.logger.error("Error code: \((error as NSError).code), domain: \((error as NSError).domain)")
+                    } else if let runningApp = runningApp {
+                        self.logger.info("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
+                    }
                 }
             }
         }
@@ -543,27 +561,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 continue
             }
 
-            if let permDir = appState.dirs.first(where: { permd in
-                item.contains(permd.url.path())
-            }) {
-                var isStale = false
-                do {
-                    let folderURL = try URL(resolvingBookmarkData: permDir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-
-                    if isStale {
-                        // 重新创建 bookmarkData
-                    }
-
-                    let success = folderURL.startAccessingSecurityScopedResource()
-                    if success {
-                        try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
-                        folderURL.stopAccessingSecurityScopedResource()
-                    } else {
-                        logger.warning("fail access scope \(permDir.url.path)")
-                    }
-                } catch {
-                    logger.error("delete \(target) file run error \(error)")
-                }
+            // 使用完全磁盘访问权限，直接删除
+            do {
+                try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+            } catch {
+                logger.error("delete \(target) file run error \(error)")
             }
         }
     }
@@ -579,54 +581,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let filePath = getUniqueFilePath(dir: dirPath.removingPercentEncoding ?? dirPath, ext: ext)
         let fileURL = URL(fileURLWithPath: filePath)
 
-        if let dir = appState.dirs.first(where: {
-            dirPath.contains($0.url.path)
-        }) {
-            var isStale = false
-            do {
-                let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+        // 使用完全磁盘访问权限，直接创建文件
+        do {
+            let fileManager = FileManager.default
 
-                let success = folderURL.startAccessingSecurityScopedResource()
-                if success {
-                    do {
-                        let fileManager = FileManager.default
-
-                        if let templateUrl = rcitem.template {
-                            try fileManager.copyItem(at: templateUrl, to: fileURL)
-                            logger.info("已成功复制模板到目标路径：\(fileURL.path)")
-                        } else {
-                            if let defaultTemplateURL = Bundle.main.url(forResource: "template", withExtension: ext.replacingOccurrences(of: ".", with: "")) {
-                                logger.info("使用模板创建文件，模板路径：\(defaultTemplateURL.path)")
-                                try fileManager.copyItem(at: defaultTemplateURL, to: fileURL)
-                                logger.info("已成功复制模板到目标路径：\(fileURL.path)")
-                            } else {
-                                logger.warning("模板文件不存在：\(ext)")
-                                try Data().write(to: fileURL)
-                            }
-                        }
-                    } catch let error as NSError {
-                        switch error.domain {
-                        case NSCocoaErrorDomain:
-                            switch error.code {
-                            case NSFileNoSuchFileError:
-                                logger.error("文件不存在：\(filePath)")
-                            case NSFileWriteOutOfSpaceError:
-                                logger.error("磁盘空间不足")
-                            case NSFileWriteNoPermissionError:
-                                logger.error("没有写入权限：\(filePath)")
-                            default:
-                                logger.error("创建文件错误：\(error.localizedDescription) (错误码：\(error.code))")
-                            }
-                        default:
-                            logger.error("未处理的错误：\(error.localizedDescription) (错误码：\(error.code))")
-                        }
-                    }
-                    folderURL.stopAccessingSecurityScopedResource()
+            if let templateUrl = rcitem.template {
+                try fileManager.copyItem(at: templateUrl, to: fileURL)
+                logger.info("已成功复制模板到目标路径：\(fileURL.path)")
+            } else {
+                if let defaultTemplateURL = Bundle.main.url(forResource: "template", withExtension: ext.replacingOccurrences(of: ".", with: "")) {
+                    logger.info("使用模板创建文件，模板路径：\(defaultTemplateURL.path)")
+                    try fileManager.copyItem(at: defaultTemplateURL, to: fileURL)
+                    logger.info("已成功复制模板到目标路径：\(fileURL.path)")
                 } else {
-                    logger.warning("fail access scope \(dir.url.path)")
+                    logger.warning("模板文件不存在：\(ext)")
+                    try Data().write(to: fileURL)
                 }
-            } catch {
-                print("解析 bookmark 失败：\(error)")
+            }
+        } catch let error as NSError {
+            switch error.domain {
+            case NSCocoaErrorDomain:
+                switch error.code {
+                case NSFileNoSuchFileError:
+                    logger.error("文件不存在：\(filePath)")
+                case NSFileWriteOutOfSpaceError:
+                    logger.error("磁盘空间不足")
+                case NSFileWriteNoPermissionError:
+                    logger.error("没有写入权限：\(filePath)")
+                default:
+                    logger.error("创建文件错误：\(error.localizedDescription) (错误码：\(error.code))")
+                }
+            default:
+                logger.error("未处理的错误：\(error.localizedDescription) (错误码：\(error.code))")
             }
         }
     }

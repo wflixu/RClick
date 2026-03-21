@@ -39,6 +39,9 @@ struct NewFileSettingsTabView: View {
         ZStack {
             VStack {
                 HStack {
+                    // 折叠开关
+                    Toggle("折叠新建文件菜单", isOn: $appState.foldNewFileMenu)
+                        .toggleStyle(.switch)
                     Spacer()
                     Button {
                         isAddingNew = true

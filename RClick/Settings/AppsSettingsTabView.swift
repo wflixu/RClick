@@ -16,14 +16,16 @@ struct AppsSettingsTabView: View {
     @State private var editingItemName: String = ""
     @State private var editingArguments: String = ""
     @State private var editingEnvironment: String = ""
-    
+
     let messager = Messager.shared
-    
+
     var body: some View {
         ZStack {
             VStack {
                 HStack {
-                   
+                    // 折叠开关
+                    Toggle("折叠应用菜单", isOn: $appState.foldAppsMenu)
+                        .toggleStyle(.switch)
                     Spacer()
                     Button {
                         showSelectApp = true
@@ -32,7 +34,8 @@ struct AppsSettingsTabView: View {
                             .font(.body)
                     }
                 }
-                
+                .padding(.bottom, 8)
+
                 List {
                     ForEach(appState.apps) { item in
                         VStack {
