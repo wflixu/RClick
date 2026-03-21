@@ -279,14 +279,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let appUrl = rcitem.url
-        let config = NSWorkspace.OpenConfiguration()
-        config.promptsUserIfNeeded = false
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
-
-            config.arguments = rcitem.arguments
-            config.environment = rcitem.environment
 
             // 特殊处理：WezTerm
             if appUrl.path.hasSuffix("WezTerm.app") {
@@ -310,30 +305,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     print("Error: \(error)")
                 }
             }
-            // 特殊处理：VSCode (通过命令行参数打开目录)
-            else if appUrl.deletingLastPathComponent().lastPathComponent == "Visual Studio Code.app"
-                || appUrl.path.contains("Visual Studio Code") {
-                // 使用 macOS open 命令启动 VSCode
+            // 通用处理：使用 macOS open -a 命令打开应用和目录
+            else {
+                let appName = appUrl.deletingLastPathComponent().lastPathComponent
+                logger.info("starting open dir: \(dir.path), app: \(appName)")
+
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-                process.arguments = ["-a", "Visual Studio Code", dir.path]
+                process.arguments = ["-a", appName, dir.path]
 
                 do {
                     try process.run()
-                    logger.info("Opened directory in VSCode: \(dir.path)")
+                    logger.info("Opened directory in \(appName): \(dir.path)")
                 } catch {
-                    logger.error("Failed to open VSCode: \(error)")
-                }
-            }
-            // 通用处理：使用 NSWorkspace 打开目录
-            else {
-                logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")
-                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { [logger] runningApp, error in
-                    if let error = error {
-                        logger.error("Error opening application: \(error.localizedDescription)")
-                    } else if let runningApp = runningApp {
-                        logger.info("Successfully opened application: \(runningApp.localizedName ?? "Unknown")")
-                    }
+                    logger.error("Failed to open \(appName): \(error)")
                 }
             }
         }
