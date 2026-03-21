@@ -226,9 +226,9 @@ struct AppsSettingsTabView: View {
             arguments: editingArguments.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty },
             environment: parseEnvironmentVariables(editingEnvironment)
         )
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+        messager.sendRunningNotification()
     }
-    
+
     @MainActor private func deleteApp(_ appItem: OpenWithApp) {
         if let index = appState.apps.firstIndex(where: { $0.id == appItem.id }) {
             appState.deleteApp(index: index)
@@ -236,6 +236,6 @@ struct AppsSettingsTabView: View {
                 expandedAppId = nil
             }
         }
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+        messager.sendRunningNotification()
     }
 }

@@ -84,11 +84,11 @@ class FinderSyncExt: FIFinderSync {
             self?.isHostAppOpen = true
             logger.info("Host app running")
 
-            if let payload: MessagePayload = Messager.shared.decode(data),
-               !payload.target.isEmpty {
-                let urls = Set(payload.target.map { URL(fileURLWithPath: $0) })
+            if let payload: RunningPayload = Messager.shared.decode(data),
+               !payload.directories.isEmpty {
+                let urls = Set(payload.directories.map { URL(fileURLWithPath: $0) })
                 FIFinderSyncController.default().directoryURLs = urls
-                logger.info("Updated directory URLs: \(payload.target)")
+                logger.info("Updated directory URLs: \(payload.directories)")
             }
         }
 

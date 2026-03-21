@@ -126,7 +126,7 @@ struct NewFileSettingsTabView: View {
                                 Toggle("", isOn: $item.enabled)
                                     .onChange(of: item.enabled) {
                                         appState.toggleActionItem()
-                                        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+                                        messager.sendRunningNotification()
                                     }
                                     .toggleStyle(.switch)
                                     .frame(width: 50)
@@ -338,7 +338,7 @@ struct NewFileSettingsTabView: View {
         Task {
             appState.sync()
         }
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+        messager.sendRunningNotification()
         cancelEditing()
     }
 }

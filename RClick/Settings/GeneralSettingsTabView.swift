@@ -234,7 +234,7 @@ struct GeneralSettingsTabView: View {
             try? store.savePermissiveDir()
 
             let observeDirs = store.dirs.map { $0.url.path }
-            messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: observeDirs))
+            messager.sendRunningNotification(directories: observeDirs)
         }
     }
 

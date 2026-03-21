@@ -42,7 +42,7 @@ struct MenuBarView: View {
     }
 
     private func actionQuit() {
-        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit"))
+        messager.sendQuitNotification()
 
         Task {
             try await Task.sleep(nanoseconds: UInt64(1.0 * 1e9))

@@ -107,12 +107,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             messager.onExtensionMessage(.click) { [weak self] data in
                 guard let self = self else { return }
                 if let event: ClickEventPayload = messager.decode(data) {
-                    // New type-safe ClickEventPayload
                     self.handleClickEvent(event)
-                } else if let payload: MessagePayload = messager.decode(data),
-                          payload.action == "click" {
-                    // Legacy MessagePayload compatibility
-                    self.handleClickEvent(payload)
                 } else {
                     logger.warning("Invalid click event data")
                 }
@@ -134,16 +129,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit", target: [], trigger: "unknown"))
+        messager.sendQuitNotification()
         logger.info("applicationWillTerminate")
     }
 
     // MARK: - Message Handlers
 
     func sendObserveDirMessage() {
-        let target: [String] = appState.dirs.map { $0.url.path() }
+        let directories: [String] = appState.dirs.map { $0.url.path() }
 
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
+        messager.sendRunningNotification(directories: directories)
         if !pluginRunning {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 self.sendObserveDirMessage()
@@ -168,23 +163,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Send using type-safe API
         messager.sendMenuConfig(config)
         logger.info("Sent menu configuration to extension: \(actionMenuItems.count) actions, \(appMenuItems.count) apps")
-    }
-
-    func handleClickEvent(_ payload: MessagePayload) {
-        logger.info("Handling click event: \(payload.action)")
-
-        switch payload.action {
-        case "open":
-            self.openApp(rid: payload.rid, target: payload.target)
-        case "actioning":
-            self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
-        case "Create File":
-            self.createFile(rid: payload.rid, target: payload.target)
-        case "common-dirs":
-            self.openCommonDirs(target: payload.target)
-        default:
-            self.logger.warning("Unknown click event action: \(payload.action)")
-        }
     }
 
     func handleClickEvent(_ event: ClickEventPayload) {

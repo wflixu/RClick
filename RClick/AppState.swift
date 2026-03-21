@@ -254,30 +254,4 @@ class AppState: ObservableObject {
             apps = OpenWithApp.defaultApps
         }
     }
-
-    // MARK: - Extension Communication
-
-    /// Notify the extension that menu configuration has changed
-    @MainActor func notifyExtensionMenuUpdate() {
-        logger.info("Notifying extension of menu configuration update")
-
-        // Convert actions and apps to menu items and store in UserDefaults
-        let actionMenuItems = actions.map { $0.toActionMenuItem() }
-        let appMenuItems = apps.map { $0.toAppMenuItem() }
-
-        // Store in UserDefaults for extension to access
-        if let actionData = try? JSONEncoder().encode(actionMenuItems) {
-            UserDefaults.group.set(actionData, forKey: Key.actionMenuItems)
-            logger.info("Updated \(actionMenuItems.count) action menu items in UserDefaults")
-        }
-
-        if let appData = try? JSONEncoder().encode(appMenuItems) {
-            UserDefaults.group.set(appData, forKey: Key.appMenuItems)
-            logger.info("Updated \(appMenuItems.count) app menu items in UserDefaults")
-        }
-
-        // Notify extension to reload menu configuration
-        Messager.shared.sendMessage(name: Key.messageFromMain, data: MessagePayload(action: "update-menu", target: [], rid: ""))
-        logger.info("Sent update-menu message to extension")
-    }
 }

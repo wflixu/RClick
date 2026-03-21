@@ -30,8 +30,6 @@ enum Key {
 
     static let showSubMenuForApplication = "SHOW_SUB_MENU_FOR_APPLICATION"
     static let showSubMenuForAction = "SHOW_SUB_MENU_FOR_ACTION"
-    static let messageFromFinder = "RCLICK_FINDER_Main"
-    static let messageFromMain = "RCLICK_MAIN_FINDER"
     
     static let apps = "RCLICK_APPs"
     static let actions = "RCLICK_ACTIONS"

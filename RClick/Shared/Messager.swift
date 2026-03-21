@@ -86,6 +86,16 @@ struct ClickEventPayload: Codable {
 
 // MARK: - 辅助类型
 
+/// 运行状态消息载荷（用于通知 Extension 主程序运行状态）
+struct RunningPayload: Codable {
+    /// 监听目录列表
+    let directories: [String]
+
+    init(directories: [String] = []) {
+        self.directories = directories
+    }
+}
+
 /// 菜单项类型
 enum MenuItemType: String, Codable {
     case action = "action"  // 动作菜单
@@ -208,9 +218,6 @@ class Messager {
     // 通知名称
     static let mainToExtensionNotification = "RClick.MainToExtension"
     static let extensionToMainNotification = "RClick.ExtensionToMain"
-
-    // 兼容旧 API 的存储
-    private var legacyBus: [String: (MessagePayload) -> Void] = [:]
 
     private init() {
         setupNotificationObservers()
@@ -336,7 +343,7 @@ class Messager {
 
     /// 发送主程序启动通知
     func sendRunningNotification(directories: [String] = []) {
-        let payload = MessagePayload(action: "running", target: directories, rid: "", trigger: "")
+        let payload = RunningPayload(directories: directories)
         sendToExtension(.running, data: payload)
     }
 
@@ -366,62 +373,5 @@ class Messager {
     func decode<T: Codable>(_ data: Data?) -> T? {
         guard let data = data else { return nil }
         return try? JSONDecoder().decode(T.self, from: data)
-    }
-}
-
-// MARK: - 兼容旧的 API
-
-extension Messager {
-    /// 兼容旧的 sendMessage 方法
-    func sendMessage(name: String, data: MessagePayload) {
-        let notificationName = name == Key.messageFromFinder
-            ? Self.extensionToMainNotification
-            : Self.mainToExtensionNotification
-        let message = ExtensionToMainMessage(action: .click, data: data)
-        sendMessage(message, via: notificationName)
-    }
-
-    /// 兼容旧的 on 方法
-    func on(name: String, handler: @escaping (MessagePayload) -> Void) {
-        center.addObserver(
-            self,
-            selector: #selector(legacyRecievedMessage(_:)),
-            name: NSNotification.Name(name),
-            object: nil
-        )
-        legacyBus[name] = handler
-    }
-
-    @objc private func legacyRecievedMessage(_ notification: NSNotification) {
-        guard let jsonString = notification.object as? String,
-              let jsonData = jsonString.data(using: .utf8) else {
-            return
-        }
-
-        if let payload = try? JSONDecoder().decode(MessagePayload.self, from: jsonData) {
-            if let handler = legacyBus[notification.name.rawValue] {
-                handler(payload)
-            }
-        }
-    }
-}
-
-/// 兼容旧版本的消息载荷
-struct MessagePayload: Codable {
-    var action: String = ""
-    var target: [String] = []
-    var rid: String = ""
-    /// ctx-items, ctx-container, ctx-sidebar, toolbar
-    var trigger: String = ""
-
-    var description: String {
-        "MessagePayload(action: \(action), target: \(target), rid: \(rid), trigger: \(trigger))"
-    }
-
-    init(action: String = "", target: [String] = [], rid: String = "", trigger: String = "") {
-        self.action = action
-        self.target = target
-        self.rid = rid
-        self.trigger = trigger
     }
 }
