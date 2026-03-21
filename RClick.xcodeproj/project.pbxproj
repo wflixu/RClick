@@ -187,7 +187,6 @@
 			isa = PBXGroup;
 			children = (
 				5C2E563F2DE2DE0200ED66C8 /* Resources */,
-				5C945D042CA51B7A00DABD2C /* Main */,
 				5CDFE3142CA3D5FB00AE6C95 /* Settings */,
 				5C50D2932BBFD17C00DF31AA /* Model */,
 				5C1DA5B02BC59978004F88BC /* Info.plist */,
@@ -267,13 +266,6 @@
 				5C945D012CA50AAC00DABD2C /* RCBase.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		5C945D042CA51B7A00DABD2C /* Main */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Main;
 			sourceTree = "<group>";
 		};
 		5CDFE3142CA3D5FB00AE6C95 /* Settings */ = {

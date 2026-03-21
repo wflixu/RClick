@@ -326,6 +326,13 @@ class FinderSyncExt: FIFinderSync {
         for newFile in config.newFiles {
             let item = NSMenuItem(title: newFile.name, action: #selector(createFile(_:)), keyEquivalent: "")
             item.tag = getUniqueTag(for: newFile.id)
+
+            // 设置图标：使用 SF Symbol 或文件扩展名图标
+            if let icon = NSImage(systemSymbolName: newFile.icon, accessibilityDescription: newFile.name) {
+                icon.size = NSSize(width: 16, height: 16)
+                item.image = icon
+            }
+
             submenu.addItem(item)
         }
 

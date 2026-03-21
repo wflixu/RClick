@@ -288,6 +288,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             config.arguments = rcitem.arguments
             config.environment = rcitem.environment
 
+            // 特殊处理：WezTerm
             if appUrl.path.hasSuffix("WezTerm.app") {
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: "/Users/lixu/play/rpm/target/debug/rpm")
@@ -308,13 +309,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 } catch {
                     print("Error: \(error)")
                 }
-            } else {
+            }
+            // 特殊处理：VSCode (通过命令行参数打开目录)
+            else if appUrl.deletingLastPathComponent().lastPathComponent == "Visual Studio Code.app"
+                || appUrl.path.contains("Visual Studio Code") {
+                // 使用 macOS open 命令启动 VSCode
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+                process.arguments = ["-a", "Visual Studio Code", dir.path]
+
+                do {
+                    try process.run()
+                    logger.info("Opened directory in VSCode: \(dir.path)")
+                } catch {
+                    logger.error("Failed to open VSCode: \(error)")
+                }
+            }
+            // 通用处理：使用 NSWorkspace 打开目录
+            else {
                 logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")
-                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
+                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { [logger] runningApp, error in
                     if let error = error {
-                        print("Error opening application: \(error.localizedDescription)")
+                        logger.error("Error opening application: \(error.localizedDescription)")
                     } else if let runningApp = runningApp {
-                        print("Successfully opened application: \(runningApp.localizedName ?? "Unknown")")
+                        logger.info("Successfully opened application: \(runningApp.localizedName ?? "Unknown")")
                     }
                 }
             }

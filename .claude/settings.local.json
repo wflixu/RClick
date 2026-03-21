@@ -15,7 +15,8 @@
       "Bash(swiftc:*)",
       "Bash(git commit:*)",
       "Bash(git add:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(python3 -c \":*)"
     ]
   }
 }
