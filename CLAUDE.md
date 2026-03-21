@@ -178,7 +178,5 @@ RClick/
 
 ## Documentation References
 
-- **Feature Specifications**: [specs/001-macos-app-macos/](specs/001-macos-app-macos/)
-- **Development Guidelines**: [QWEN.md](QWEN.md)
-- **Communication Protocol**: [specs/001-macos-app-macos/contracts/app-extension-communication.md](specs/001-macos-app-macos/contracts/app-extension-communication.md)
-- **Data Model**: [specs/001-macos-app-macos/data-model.md](specs/001-macos-app-macos/data-model.md)
+- **Feature Specifications**: [specs/](specs/)
+- **Git Branch Strategy**: [specs/contracts/git-branch-strategy.md](specs/contracts/git-branch-strategy.md)
