@@ -42,10 +42,7 @@ class AppState: ObservableObject {
         apps.remove(at: index)
         do {
             try save()
-            notifyExtensionMenuUpdate()
-            // 使用 result
         } catch {
-            // 处理错误
             logger.info("save error: \(error.localizedDescription)")
         }
     }
@@ -56,14 +53,11 @@ class AppState: ObservableObject {
 
         do {
             try save()
-            notifyExtensionMenuUpdate()
-            // 使用 result
         } catch {
-            // 处理错误
             logger.info("save error: \(error.localizedDescription)")
         }
     }
-    
+
     @MainActor
     func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
         if let index = apps.firstIndex(where: { $0.id == id }) {
@@ -73,7 +67,6 @@ class AppState: ObservableObject {
             updatedApp.environment = environment
             apps[index] = updatedApp
             try? save()
-            notifyExtensionMenuUpdate()
         }
     }
     
@@ -109,19 +102,16 @@ class AppState: ObservableObject {
     // Action
     @MainActor func toggleActionItem() {
         try? save()
-        notifyExtensionMenuUpdate()
     }
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
         try? save()
-        notifyExtensionMenuUpdate()
     }
 
     @MainActor func resetFiletypeItems() {
         newFiles = NewFile.all
         try? save()
-        notifyExtensionMenuUpdate()
     }
     
     // Permission
