@@ -20,7 +20,7 @@ enum MainToExtensionAction: String, Codable {
     case running = "running"
     /// 主程序退出通知
     case quit = "quit"
-    /// 请求菜单配置（Extension 主动请求）
+    /// 响应菜单配置请求（携带菜单配置）
     case requestConfig = "request-config"
 }
 
@@ -38,6 +38,8 @@ enum ExtensionToMainAction: String, Codable {
 
 /// 菜单配置消息载荷
 struct MenuConfigPayload: Codable {
+    /// 菜单版本号，用于防重复和防乱序
+    let version: Int
     /// 动作菜单项列表
     let actions: [ActionMenuItem]
     /// 应用菜单项列表
@@ -48,11 +50,13 @@ struct MenuConfigPayload: Codable {
     let commonDirs: [CommonDirMenuItem]
 
     init(
+        version: Int = 1,
         actions: [ActionMenuItem] = [],
         apps: [AppMenuItem] = [],
         newFiles: [NewFileMenuItem] = [],
         commonDirs: [CommonDirMenuItem] = []
     ) {
+        self.version = version
         self.actions = actions
         self.apps = apps
         self.newFiles = newFiles
@@ -365,6 +369,11 @@ class Messager {
     /// Extension 发送点击事件
     func sendClickEvent(_ event: ClickEventPayload) {
         sendToMain(.click, data: event)
+    }
+
+    /// 主程序响应菜单配置请求
+    func respondMenuConfigRequest(_ config: MenuConfigPayload) {
+        sendToExtension(.requestConfig, data: config)
     }
 
     // MARK: - 解码辅助

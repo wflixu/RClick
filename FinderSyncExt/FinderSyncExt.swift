@@ -30,6 +30,8 @@ class FinderSyncExt: FIFinderSync {
 
     /// 内存缓存：菜单配置
     private var cachedMenuConfig: MenuConfigPayload?
+    /// 当前菜单版本号，用于防重复和防乱序
+    private var currentVersion: Int = 0
 
     /// 当前菜单触发类型
     private var triggerManKind: FIMenuKind = .contextualMenuForContainer
@@ -100,6 +102,19 @@ class FinderSyncExt: FIFinderSync {
             }
             self?.cachedMenuConfig = config
             logger.info("Menu config updated: \(config.actions.count) actions, \(config.apps.count) apps")
+        }
+
+        // 处理菜单配置请求响应（主程序响应 Extension 的请求）
+        Messager.shared.onMainMessage(.requestConfig) { [weak self] data in
+            guard let config: MenuConfigPayload = Messager.shared.decode(data) else {
+                logger.warning("Failed to decode menu config from request response")
+                return
+            }
+            // 版本检查：只接受更新的版本
+            guard self?.currentVersion ?? 0 < config.version else { return }
+            self?.currentVersion = config.version
+            self?.cachedMenuConfig = config
+            logger.info("Menu config received via request: version \(config.version)")
         }
     }
 

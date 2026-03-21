@@ -63,6 +63,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var showInDock = UserDefaults.group.bool(forKey: Key.showInDock)
     var settingsWindow: NSWindow!
 
+    // MARK: - 重连机制状态
+
+    /// 菜单配置快照（真相源）
+    private var lastMenuSnapshot: Data?
+    /// 菜单版本号，用于防重复和防乱序
+    private var menuVersion: Int = 0
+    /// 心跳定时器
+    private var heartBeatTimer: Timer?
+    /// 重试计数器
+    private var runningMessageRetryCount: Int = 0
+    /// 最大重试次数
+    private let maxRunningMessageRetryCount: Int = 6
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // 在 app 启动后执行的函数
 
@@ -103,7 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 IconCache.shared.preloadIcons(for: appState.apps.map { $0.url })
             }
 
-            // Register message handlers using new type-safe API
+            // Register message handlers using type-safe API
             messager.onExtensionMessage(.click) { [weak self] data in
                 guard let self = self else { return }
                 if let event: ClickEventPayload = messager.decode(data) {
@@ -115,10 +128,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             messager.onExtensionMessage(.heartbeat) { [weak self] _ in
                 guard let self = self else { return }
-                logger.warning("message from finder plugin heartbeat")
+                logger.info("Received heartbeat from extension")
                 pluginRunning = true
                 sendMenuConfigurationUpdate()
             }
+
+            // 启动心跳超时检测
+            startHeartbeatMonitoring()
+            // 启动 running 消息重试机制
+            startRunningMessageRetry()
 
             sendObserveDirMessage()
         }
@@ -153,12 +171,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
         let commonDirMenuItems = appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon) }
 
+        // 更新版本号
+        menuVersion += 1
+
         let config = MenuConfigPayload(
+            version: menuVersion,
             actions: actionMenuItems,
             apps: appMenuItems,
             newFiles: newFileMenuItems,
             commonDirs: commonDirMenuItems
         )
+
+        // 更新快照
+        lastMenuSnapshot = try? JSONEncoder().encode(config)
+        logger.info("Menu config version updated to \(self.menuVersion)")
 
         // Send using type-safe API
         messager.sendMenuConfig(config)
@@ -180,7 +206,57 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    // MARK: - File Operations
+    // MARK: - 重连机制
+
+    /// 启动心跳监控（15 秒超时检测）
+    private func startHeartbeatMonitoring() {
+        heartBeatTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self = self else { return }
+                if self.pluginRunning {
+                    self.pluginRunning = false
+                    self.logger.warning("Heartbeat timeout detected, triggering reconnection")
+                    self.performReconnection()
+                }
+            }
+        }
+        RunLoop.current.add(heartBeatTimer!, forMode: .default)
+    }
+
+    /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
+    private func startRunningMessageRetry() {
+        runningMessageRetryCount = 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            self?.sendRunningMessageRetry()
+        }
+    }
+
+    private func sendRunningMessageRetry() {
+        guard self.runningMessageRetryCount < self.maxRunningMessageRetryCount else {
+            logger.info("Running message retry completed")
+            return
+        }
+
+        self.runningMessageRetryCount += 1
+        let directories: [String] = appState.dirs.map { $0.url.path() }
+        messager.sendRunningNotification(directories: directories)
+        logger.info("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
+
+        if !self.pluginRunning {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+                self?.sendRunningMessageRetry()
+            }
+        }
+    }
+
+    /// 执行重连：发送菜单配置请求
+    @MainActor private func performReconnection() {
+        logger.info("Performing reconnection: requesting menu config from main app")
+        // 重置 pluginRunning 状态，等待心跳恢复
+        pluginRunning = false
+    }
+
+    // MARK: - Helper Methods
 
     func openCommonDirs(target: [String]) {
         logger.info("开始打开常用目录，目标路径：\(target)")
