@@ -64,6 +64,10 @@
 		5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */; };
 		5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
 		5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
+		5CF0376B2F6EA25700047064 /* IconCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0376A2F6EA25700047064 /* IconCache.swift */; };
+		5CF0376C2F6EA25700047064 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF037692F6EA25700047064 /* DataMigrationManager.swift */; };
+		5CF0376D2F6EA25700047064 /* IconCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0376A2F6EA25700047064 /* IconCache.swift */; };
+		5CF0376E2F6EA25700047064 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF037692F6EA25700047064 /* DataMigrationManager.swift */; };
 		5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +140,8 @@
 		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
 		5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		5CDFE3172CA3D66000AE6C95 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5CF037692F6EA25700047064 /* DataMigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationManager.swift; sourceTree = "<group>"; };
+		5CF0376A2F6EA25700047064 /* IconCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCache.swift; sourceTree = "<group>"; };
 		5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -226,6 +232,8 @@
 		5C50D27D2BBFB1E100DF31AA /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				5CF037692F6EA25700047064 /* DataMigrationManager.swift */,
+				5CF0376A2F6EA25700047064 /* IconCache.swift */,
 				5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */,
 				5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */,
 				5C34BAA42D943AF100CF8128 /* Utils.swift */,
@@ -410,6 +418,8 @@
 				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
 				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
 				5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */,
+				5CF0376B2F6EA25700047064 /* IconCache.swift in Sources */,
+				5CF0376C2F6EA25700047064 /* DataMigrationManager.swift in Sources */,
 				5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */,
 				5C4C31282F1A840000193872 /* ActionEntity.swift in Sources */,
 				5C4C31292F1A840000193872 /* AppEntity.swift in Sources */,
@@ -434,6 +444,8 @@
 				5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */,
 				5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */,
 				5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */,
+				5CF0376D2F6EA25700047064 /* IconCache.swift in Sources */,
+				5CF0376E2F6EA25700047064 /* DataMigrationManager.swift in Sources */,
 				5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */,
 				5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */,
 				5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */,
@@ -608,7 +620,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260115001;
+				CURRENT_PROJECT_VERSION = 20260321001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -639,7 +651,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.3;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -666,7 +678,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260115001;
+				CURRENT_PROJECT_VERSION = 20260321001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
@@ -697,7 +709,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.3;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -721,7 +733,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260115001;
+				CURRENT_PROJECT_VERSION = 20260321001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -749,7 +761,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.3;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -774,7 +786,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260115001;
+				CURRENT_PROJECT_VERSION = 20260321001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -797,7 +809,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.7.3;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -8,151 +8,110 @@
 import AppKit
 import Cocoa
 import FinderSync
-import SwiftData
-
-// MARK: DELETE
-
 import OSLog
 
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "FinderOpen")
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "RClick", category: "FinderSyncExt")
 
 // MARK: - Extension State Management
 
-extension FinderSyncExt {
-    /// Current action menu items received from main app
-    var actionMenuItems: [ActionMenuItem] {
-        get {
-            guard let data = UserDefaults.group.data(forKey: Key.actionMenuItems),
-                  let items = try? JSONDecoder().decode([ActionMenuItem].self, from: data) else {
-                return []
-            }
-            return items
-        }
-        set {
-            guard let data = try? JSONEncoder().encode(newValue) else { return }
-            UserDefaults.group.set(data, forKey: Key.actionMenuItems)
-        }
-    }
-
-    /// Current app menu items received from main app
-    var appMenuItems: [AppMenuItem] {
-        get {
-            guard let data = UserDefaults.group.data(forKey: Key.appMenuItems),
-                  let items = try? JSONDecoder().decode([AppMenuItem].self, from: data) else {
-                return []
-            }
-            return items
-        }
-        set {
-            guard let data = try? JSONEncoder().encode(newValue) else { return }
-            UserDefaults.group.set(data, forKey: Key.appMenuItems)
-        }
-    }
-}
-
-// MARK: - Icon Cache
-
-@MainActor
-class IconCache {
-    static let shared = IconCache()
-
-    // Memory cache: URL -> NSImage
-    private var memoryCache: [String: NSImage] = [:]
-
-    // Icon size for caching (standard 32x32 for menu items)
-    private let iconSize = CGSize(width: 32, height: 32)
-
-    private init() {}
-
-    /// Get icon with caching
-    /// - Parameter url: The file URL to get icon for
-    /// - Returns: Cached or newly loaded icon
-    func icon(for url: URL) -> NSImage {
-        let cacheKey = url.path
-
-        // Check memory cache first
-        if let cached = memoryCache[cacheKey] {
-            return cached
-        }
-
-        // Load icon
-        let icon = NSWorkspace.shared.icon(forFile: url.path)
-        icon.size = iconSize
-
-        // Store in memory cache
-        memoryCache[cacheKey] = icon
-
-        return icon
-    }
-
-    /// Clear memory cache (call on memory warning)
-    func clearMemoryCache() {
-        memoryCache.removeAll()
-    }
-
-    /// Preload icons for array of URLs
-    /// - Parameter urls: Array of URLs to preload icons for
-    func preloadIcons(for urls: [URL]) {
-        for url in urls {
-            _ = icon(for: url)
-        }
-    }
-}
-
 @MainActor
 class FinderSyncExt: FIFinderSync {
-    var myFolderURL = URL(fileURLWithPath: "/Users/")
-    var isHostAppOpen = false
+    /// 监听目录：全盘监听（/Users/ + 外接磁盘）
+    private var monitoredURLs: Set<URL> = []
 
+    /// 主程序是否运行
+    private var isHostAppOpen = false
+
+    /// Tag 到资源 ID 的映射
     private var tagRidDict: [Int: String] = [:]
 
-    var triggerManKind = FIMenuKind.contextualMenuForContainer
+    /// 下一个可用的 Tag（递增，避免随机数冲突）
+    private var nextTag: Int = 1
+
+    /// 内存缓存：菜单配置
+    private var cachedMenuConfig: MenuConfigPayload?
+
+    /// 当前菜单触发类型
+    private var triggerManKind: FIMenuKind = .contextualMenuForContainer
 
     override init() {
         super.init()
 
-        FIFinderSyncController.default().directoryURLs = [myFolderURL]
-        logger.info("FinderSync() launched from \(Bundle.main.bundlePath as NSString)")
+        // 设置全盘监听
+        setupMonitoredURLs()
 
-        // Register message handlers
-        Messager.shared.on(name: "quit") { _ in
-            logger.info("Extension received quit message")
-            self.isHostAppOpen = false
-        }
+        logger.info("FinderSyncExt launched from \(Bundle.main.bundlePath)")
 
-        Messager.shared.on(name: "running") { payload in
-            logger.info("Extension received running message")
-            self.isHostAppOpen = true
+        // 注册消息处理器
+        setupMessageHandlers()
 
-            if payload.target.count > 0 {
-                FIFinderSyncController.default().directoryURLs = Set(payload.target.map { URL(fileURLWithPath: $0) })
-                logger.info("Updated directory URLs from main app")
-            }
-            Task {
-                self.heartBeat()
-            }
-        }
-
-        // Handler for receiving updated menu configurations from main app
-        Messager.shared.on(name: Key.messageFromMain) { payload in
-            logger.info("Extension received config update from main app: \(payload.action)")
-
-            switch payload.action {
-            case "update-menu":
-                logger.info("Menu configuration updated, will reload on next menu build")
-                // Menu items are stored in UserDefaults, so they'll be automatically available
-                // on the next menu creation via createActionMenuItems() and createAppItems()
-            default:
-                logger.warning("Unknown config action: \(payload.action)")
-            }
-        }
-
+        // 发送心跳
         heartBeat()
     }
 
-    func heartBeat() {
-        logger.info("Extension heartbeat")
-        Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "heartbeat", target: [], rid: ""))
+    // MARK: - 全盘监听
+
+    private func setupMonitoredURLs() {
+        var urls: Set<URL> = [URL(fileURLWithPath: "/Users/")]
+
+        // 添加外接磁盘
+        let volumeURLs = FileManager.default.mountedVolumeURLs(
+            includingResourceValuesForKeys: [.isVolumeKey],
+            options: [.skipHiddenVolumes]
+        ) ?? []
+
+        for volumeURL in volumeURLs where volumeURL.path != "/" {
+            urls.insert(volumeURL)
+        }
+
+        monitoredURLs = urls
+        FIFinderSyncController.default().directoryURLs = urls
+
+        logger.info("Monitoring directories: \(urls.map { $0.path })")
+    }
+
+    // MARK: - 消息处理
+
+    private func setupMessageHandlers() {
+        // 处理主程序退出通知
+        Messager.shared.onMainMessage(.quit) { [weak self] _ in
+            self?.isHostAppOpen = false
+            logger.info("Host app quit")
+        }
+
+        // 处理主程序启动通知
+        Messager.shared.onMainMessage(.running) { [weak self] data in
+            self?.isHostAppOpen = true
+            logger.info("Host app running")
+
+            if let payload: MessagePayload = Messager.shared.decode(data),
+               !payload.target.isEmpty {
+                let urls = Set(payload.target.map { URL(fileURLWithPath: $0) })
+                FIFinderSyncController.default().directoryURLs = urls
+                logger.info("Updated directory URLs: \(payload.target)")
+            }
+        }
+
+        // 处理菜单配置更新
+        Messager.shared.onMainMessage(.menuConfig) { [weak self] data in
+            guard let config: MenuConfigPayload = Messager.shared.decode(data) else {
+                logger.warning("Failed to decode menu config")
+                return
+            }
+            self?.cachedMenuConfig = config
+            logger.info("Menu config updated: \(config.actions.count) actions, \(config.apps.count) apps")
+        }
+    }
+
+    /// 发送心跳
+    private func heartBeat() {
+        logger.info("Heartbeat")
+        Messager.shared.sendHeartbeat()
+
+        // 定期发送心跳
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            self?.heartBeat()
+        }
     }
 
     // MARK: - Primary Finder Sync protocol methods
@@ -239,52 +198,47 @@ class FinderSyncExt: FIFinderSync {
     }
 
     @objc func createAppItems() -> [NSMenuItem] {
-        return []
-        // guard isHostAppOpen else {
-        //     logger.warning("Host app is not open, returning empty app menu")
-        //     return []
-        // }
-
-        // let apps = appMenuItems
-        // logger.info("Creating \(apps.count) app menu items")
-
-        // return apps.map { app in
-        //     let menuItem = NSMenuItem(title: app.name, action: #selector(appOpen(_:)), keyEquivalent: "")
-
-        //     // Load app icon from cache
-        //     let appIcon = IconCache.shared.icon(for: app.url)
-        //     menuItem.image = appIcon
-
-        //     // Assign unique tag for identifying the app
-        //     let tag = getUniqueTag(for: app.id)
-        //     menuItem.tag = tag
-
-        //     logger.debug("Created app menu item: \(app.name) with tag \(tag)")
-        //     return menuItem
-        // }
-    }
-
-    private func getUniqueTag(for rid: String) -> Int {
-        var newTag = Int.random(in: 1 ... Int.max)
-
-        // 确保生成的 tag 不在已有的 keys 中
-        while tagRidDict.keys.contains(newTag) {
-            newTag = Int.random(in: 1 ... Int.max)
-        }
-        tagRidDict[newTag] = rid
-        return newTag
-    }
-
-    @objc func createActionMenuItems() -> [NSMenuItem] {
-        guard isHostAppOpen else {
-            logger.warning("Host app is not open, returning empty action menu")
+        guard isHostAppOpen,
+              let config = cachedMenuConfig,
+              !config.apps.isEmpty else {
             return []
         }
 
-        let actions = actionMenuItems
-        logger.info("Creating \(actions.count) action menu items")
+        logger.info("Creating \(config.apps.count) app menu items")
 
-        return actions.map { action in
+        return config.apps.map { app in
+            let menuItem = NSMenuItem(title: app.name, action: #selector(appOpen(_:)), keyEquivalent: "")
+
+            // Load app icon from cache
+            let appIcon = IconCache.shared.icon(for: app.url)
+            menuItem.image = appIcon
+
+            // Assign unique tag for identifying the app
+            let tag = getUniqueTag(for: app.id)
+            menuItem.tag = tag
+
+            logger.debug("Created app menu item: \(app.name) with tag \(tag)")
+            return menuItem
+        }
+    }
+
+    private func getUniqueTag(for rid: String) -> Int {
+        let tag = nextTag
+        nextTag += 1
+        tagRidDict[tag] = rid
+        return tag
+    }
+
+    @objc func createActionMenuItems() -> [NSMenuItem] {
+        guard isHostAppOpen,
+              let config = cachedMenuConfig,
+              !config.actions.isEmpty else {
+            return []
+        }
+
+        logger.info("Creating \(config.actions.count) action menu items")
+
+        return config.actions.map { action in
             let menuItem = NSMenuItem(title: action.name, action: #selector(actioning(_:)), keyEquivalent: "")
 
             // Set icon if available
@@ -328,7 +282,13 @@ class FinderSyncExt: FIFinderSync {
         let url = FIFinderSyncController.default().targetedURL()
 
         if let target = url?.path() {
-            Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "Create File", target: [target], rid: rid))
+            let payload = ClickEventPayload(
+                itemId: rid,
+                itemType: .newFile,
+                target: [target],
+                trigger: .toolbar
+            )
+            Messager.shared.sendClickEvent(payload)
         }
     }
 
@@ -344,7 +304,14 @@ class FinderSyncExt: FIFinderSync {
             return
         }
         logger.info("actioning \(rid) , trigger:\(trigger)")
-        Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "actioning", target: target, rid: rid, trigger: trigger))
+
+        let payload = ClickEventPayload(
+            itemId: rid,
+            itemType: .action,
+            target: target,
+            trigger: MenuTrigger(rawValue: trigger) ?? .toolbar
+        )
+        Messager.shared.sendClickEvent(payload)
     }
 
     func getTargets(_: FIMenuKind) -> [String] {
@@ -389,7 +356,13 @@ class FinderSyncExt: FIFinderSync {
 
         let target: [String] = getTargets(triggerManKind)
         if !target.isEmpty {
-            Messager.shared.sendMessage(name: Key.messageFromFinder, data: MessagePayload(action: "open", target: target, rid: rid))
+            let payload = ClickEventPayload(
+                itemId: rid,
+                itemType: .app,
+                target: target,
+                trigger: MenuTrigger(rawValue: getTriggerKind(triggerManKind)) ?? .toolbar
+            )
+            Messager.shared.sendClickEvent(payload)
         } else {
             logger.warning("not get target")
         }
