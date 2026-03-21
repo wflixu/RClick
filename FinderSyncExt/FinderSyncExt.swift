@@ -274,19 +274,63 @@ class FinderSyncExt: FIFinderSync {
         }
     }
 
-    // 创建文件菜单容器
+    // 创建常用目录菜单项
     @objc func createCommonDirMenuItem() -> NSMenuItem? {
-        // TODO: Extension will receive menu config from main app in future
-        return nil
+        guard isHostAppOpen,
+              let config = cachedMenuConfig,
+              !config.commonDirs.isEmpty else {
+            return nil
+        }
+
+        let menuItem = NSMenuItem(title: "常用目录", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "常用目录")
+
+        for commonDir in config.commonDirs {
+            let item = NSMenuItem(title: commonDir.name, action: #selector(openCommonDir(_:)), keyEquivalent: "")
+            item.tag = getUniqueTag(for: commonDir.id)
+            submenu.addItem(item)
+        }
+
+        menuItem.submenu = submenu
+        return menuItem
     }
 
     @MainActor @objc func openCommonDir(_ menuItem: NSMenuItem) {
-        // TODO: Implement when extension receives menu config
+        guard let rid = tagRidDict[menuItem.tag] else {
+            logger.warning("not get rid for \(menuItem.tag)")
+            return
+        }
+
+        let target = getTargets(triggerManKind)
+        if !target.isEmpty {
+            let payload = ClickEventPayload(
+                itemId: rid,
+                itemType: .commonDir,
+                target: target,
+                trigger: MenuTrigger(rawValue: getTriggerKind(triggerManKind)) ?? .toolbar
+            )
+            Messager.shared.sendClickEvent(payload)
+        }
     }
 
     @objc func createFileCreateMenuItem() -> NSMenuItem? {
-        // TODO: Extension will receive menu config from main app in future
-        return nil
+        guard isHostAppOpen,
+              let config = cachedMenuConfig,
+              !config.newFiles.isEmpty else {
+            return nil
+        }
+
+        let menuItem = NSMenuItem(title: "新建文件", action: nil, keyEquivalent: "")
+        let submenu = NSMenu(title: "新建文件")
+
+        for newFile in config.newFiles {
+            let item = NSMenuItem(title: newFile.name, action: #selector(createFile(_:)), keyEquivalent: "")
+            item.tag = getUniqueTag(for: newFile.id)
+            submenu.addItem(item)
+        }
+
+        menuItem.submenu = submenu
+        return menuItem
     }
 
     @MainActor @objc func createFile(_ menuItem: NSMenuItem) {
