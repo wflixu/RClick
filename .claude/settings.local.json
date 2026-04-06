@@ -20,7 +20,11 @@
       "Read(//Applications/**)",
       "Read(//Users/lixu/Applications/**)",
       "Bash(mdfind:*)",
-      "Bash(systemextensionsctl list:*)"
+      "Bash(systemextensionsctl list:*)",
+      "Bash(cp /Users/lixu/code/RClick-new/FinderSyncExt/FinderSyncExt.swift /Users/lixu/code/RClick/FinderSyncExt/FinderSyncExt.swift)",
+      "Bash(cp /Users/lixu/code/RClick-new/FinderSyncExt/FinderSyncExt.entitlements /Users/lixu/code/RClick/FinderSyncExt/FinderSyncExt.entitlements)",
+      "Bash(cp /Users/lixu/code/RClick-new/FinderSyncExt/Info.plist /Users/lixu/code/RClick/FinderSyncExt/Info.plist)",
+      "Bash(rm:*)"
     ]
   }
 }
