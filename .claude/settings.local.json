@@ -16,7 +16,11 @@
       "Bash(git commit:*)",
       "Bash(git add:*)",
       "Bash(tee:*)",
-      "Bash(python3 -c \":*)"
+      "Bash(python3 -c \":*)",
+      "Read(//Applications/**)",
+      "Read(//Users/lixu/Applications/**)",
+      "Bash(mdfind:*)",
+      "Bash(systemextensionsctl list:*)"
     ]
   }
 }
