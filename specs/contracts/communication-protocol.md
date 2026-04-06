@@ -146,6 +146,9 @@ struct MenuConfigPayload: Codable {
 
     /// 常用目录菜单项列表
     let commonDirs: [CommonDirMenuItem]
+    
+    /// 菜单版本号（用于去重和防乱序）
+    let version: Int
 }
 ```
 
@@ -160,13 +163,15 @@ struct ActionMenuItem: Codable {
     /// 菜单项显示名称
     let name: String
 
-    /// SF Symbol 图标名称
+    /// SF Symbol 图标名称（如 "doc.on.doc"）
     let icon: String
 
     /// 是否启用
     let enabled: Bool
 }
 ```
+
+**图标策略**：使用 SF Symbol，Extension 直接用 `NSImage(systemSymbolName:)` 加载
 
 #### 4.1.2 应用菜单项
 
@@ -181,8 +186,16 @@ struct AppMenuItem: Codable {
 
     /// 应用程序路径（Extension 据此加载图标）
     let appURL: URL
+    
+    /// 是否预加载图标：true = 主程序已缓存，false = Extension 自行加载
+    let iconCached: Bool
 }
 ```
+
+**图标策略**：
+- Extension 用 `NSWorkspace.shared.icon(forFile:)` 加载
+- 系统自动缓存，无需主程序传输图标数据
+- 如 `iconCached` 为 true，Extension 可尝试从共享缓存读取
 
 #### 4.1.3 新建文件菜单项
 
@@ -198,7 +211,7 @@ struct NewFileMenuItem: Codable {
     /// 文件扩展名
     let ext: String
 
-    /// SF Symbol 图标名称
+    /// SF Symbol 图标名称（如 "doc.text"）
     let icon: String
 }
 ```
@@ -214,10 +227,26 @@ struct CommonDirMenuItem: Codable {
     /// 菜单项显示名称
     let name: String
 
-    /// SF Symbol 图标名称
+    /// SF Symbol 图标名称（如 "folder"）
     let icon: String
 }
 ```
+
+### 图标传输策略总结
+
+| 菜单类型 | 图标来源 | 传输内容 | 理由 |
+|----------|----------|----------|------|
+| 动作菜单 | SF Symbol | `icon: String` | 数据量小，系统图标 |
+| 应用菜单 | App 路径 | `appURL: URL` | 系统自动缓存应用图标 |
+| 新建文件 | SF Symbol | `icon: String` | 数据量小，系统图标 |
+| 常用目录 | SF Symbol | `icon: String` | 数据量小，系统图标 |
+
+**为什么不传输图标 Data？**
+
+1. **消息大小**：菜单配置可能包含 20-50 个项，每个图标 Data 约 2-10KB
+2. **IPC 开销**：`DistributedNotificationCenter` 传输大数据效率低
+3. **内存占用**：Extension 需要解码所有 Data，内存压力大
+4. **系统缓存**：`NSWorkspace.shared.icon(forFile:)` 自带缓存机制
 
 ### 4.2 点击事件载荷（Extension → Main）
 
