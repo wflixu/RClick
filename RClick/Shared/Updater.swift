@@ -5,6 +5,7 @@
 //  Created by 李旭 on 2025/9/21.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
@@ -51,6 +52,10 @@ struct GitHubRelease: Codable, Identifiable {
 // MARK: - 用户偏好设置
 
 class UpdatePreferences: ObservableObject {
+    let objectWillChange: ObservableObjectPublisher = ObservableObjectPublisher()
+
+    init() {}
+
     @AppStorage("ignoredVersion") private var ignoredVersionData: Data = .init()
     
     // 获取忽略的版本列表
@@ -166,7 +171,6 @@ class GitHubReleaseChecker {
 
 // MARK: - 更新管理器
 
-@MainActor
 class UpdateManager: ObservableObject {
     @Published var availableUpdate: GitHubRelease?
     @Published var isChecking = false

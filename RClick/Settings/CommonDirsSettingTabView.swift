@@ -8,7 +8,10 @@
 import AppKit
 import Cocoa
 import FinderSync
+import Foundation
+import OSLog
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct CommonDirsSettingTabView: View {
     @AppLog(category: "settings-general")

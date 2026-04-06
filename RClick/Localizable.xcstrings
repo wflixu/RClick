@@ -90,6 +90,9 @@
         }
       }
     },
+    "Add Item" : {
+
+    },
     "Add New File Type" : {
       "localizations" : {
         "en" : {
@@ -436,6 +439,9 @@
         }
       }
     },
+    "Item at %@" : {
+
+    },
     "Launch at login" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -629,6 +635,9 @@
           }
         }
       }
+    },
+    "Select an item" : {
+
     },
     "Select App" : {
       "localizations" : {

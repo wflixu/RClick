@@ -6,7 +6,10 @@
 //
 
 import AppKit
+import Foundation
+import OSLog
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AppsSettingsTabView: View {
     @EnvironmentObject var appState: AppState
