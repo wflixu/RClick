@@ -3,471 +3,377 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 100;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
-		5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */; };
-		5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */; };
-		5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0F2BBE9B9B00B2D7C4 /* Preview Assets.xcassets */; };
-		5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D172BBE9C8F00B2D7C4 /* MenuBarView.swift */; };
-		5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D192BBE9D5700B2D7C4 /* SettingsView.swift */; };
-		5C119D332BBEA9AC00B2D7C4 /* FinderSyncExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C119D322BBEA9AC00B2D7C4 /* FinderSyncExt.swift */; };
-		5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */; };
-		5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
-		5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C34BAA42D943AF100CF8128 /* Utils.swift */; };
-		5C4039F42E8F717A00AE4091 /* ModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F32E8F716F00AE4091 /* ModelContainer.swift */; };
-		5C4039F52E8F717A00AE4091 /* ModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4039F32E8F716F00AE4091 /* ModelContainer.swift */; };
-		5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4288652BDA5536000C0828 /* AppLogger.swift */; };
-		5C4C31242F1A840000193872 /* ActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31202F1A840000193872 /* ActionEntity.swift */; };
-		5C4C31252F1A840000193872 /* AppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31212F1A840000193872 /* AppEntity.swift */; };
-		5C4C31262F1A840000193872 /* DataVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31232F1A840000193872 /* DataVersion.swift */; };
-		5C4C31272F1A840000193872 /* CommonDirEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31222F1A840000193872 /* CommonDirEntity.swift */; };
-		5C4C31282F1A840000193872 /* ActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31202F1A840000193872 /* ActionEntity.swift */; };
-		5C4C31292F1A840000193872 /* AppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31212F1A840000193872 /* AppEntity.swift */; };
-		5C4C312A2F1A840000193872 /* DataVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31232F1A840000193872 /* DataVersion.swift */; };
-		5C4C312B2F1A840000193872 /* CommonDirEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C31222F1A840000193872 /* CommonDirEntity.swift */; };
-		5C4C312F2F1A840B00193872 /* NewFileTypeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C312C2F1A840B00193872 /* NewFileTypeEntity.swift */; };
-		5C4C31312F1A840B00193872 /* NewFileTypeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4C312C2F1A840B00193872 /* NewFileTypeEntity.swift */; };
-		5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */; };
-		5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
-		5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C50D2812BBFB33200DF31AA /* StringExtension.swift */; };
-		5C55BF1E2E902CF200943825 /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5C5CAB8B2E7FAF22001C5D58 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */; };
-		5C5CAB8C2E7FAF22001C5D58 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */; };
-		5C5CAB8E2E7FE631001C5D58 /* UpdaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */; };
-		5C5CAB8F2E7FE631001C5D58 /* UpdaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */; };
-		5C68BFE12C6651B80011C096 /* Extension+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C68BFE02C6651B80011C096 /* Extension+.swift */; };
-		5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C68BFE02C6651B80011C096 /* Extension+.swift */; };
-		5C68BFE62C67707D0011C096 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */; };
-		5C74BA712D977DCD005673DB /* CommonDirsSettingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C74BA702D977DCD005673DB /* CommonDirsSettingTabView.swift */; };
-		5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
-		5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */; };
-		5C8E8C1B2E254B1500572EDB /* template.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E8C1A2E254B1500572EDB /* template.xlsx */; };
-		5C8E8C1C2E254B1500572EDB /* template.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E8C1A2E254B1500572EDB /* template.xlsx */; };
-		5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D012CA50AAC00DABD2C /* RCBase.swift */; };
-		5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D012CA50AAC00DABD2C /* RCBase.swift */; };
-		5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
-		5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C945D052CA51B8F00DABD2C /* AppState.swift */; };
-		5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */; };
-		5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */; };
-		5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
-		5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F0992BC5445C00AF9B81 /* Messager.swift */; };
-		5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */; };
-		5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */; };
-		5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */; };
-		5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A722E8EEC7D00271E8D /* OrderedCollections */; };
-		5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDD4A742E8EEC8500271E8D /* ZIPFoundation */; };
-		5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */; };
-		5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
-		5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDFE3172CA3D66000AE6C95 /* Constants.swift */; };
-		5CF0376B2F6EA25700047064 /* IconCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0376A2F6EA25700047064 /* IconCache.swift */; };
-		5CF0376C2F6EA25700047064 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF037692F6EA25700047064 /* DataMigrationManager.swift */; };
-		5CF0376D2F6EA25700047064 /* IconCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0376A2F6EA25700047064 /* IconCache.swift */; };
-		5CF0376E2F6EA25700047064 /* DataMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF037692F6EA25700047064 /* DataMigrationManager.swift */; };
-		5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */; };
+		5C8A291F2F83D74A00FE687C /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C55BF1C2E902C9200943825 /* PBXContainerItemProxy */ = {
+		5C8A28EA2F83D65B00FE687C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C119CFB2BBE9B9900B2D7C4 /* Project object */;
+			containerPortal = 5C8A28D22F83D65900FE687C /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 5C119D2F2BBEA9AC00B2D7C4;
-			remoteInfo = FinderSyncExt;
+			remoteGlobalIDString = 5C8A28D92F83D65900FE687C;
+			remoteInfo = RClick;
 		};
-		5CC1A00C2E90CDAD0048BBFB /* PBXContainerItemProxy */ = {
+		5C8A28F42F83D65B00FE687C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5C119CFB2BBE9B9900B2D7C4 /* Project object */;
+			containerPortal = 5C8A28D22F83D65900FE687C /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 5C119D2F2BBEA9AC00B2D7C4;
+			remoteGlobalIDString = 5C8A28D92F83D65900FE687C;
+			remoteInfo = RClick;
+		};
+		5C8A291D2F83D74A00FE687C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5C8A28D22F83D65900FE687C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C8A29172F83D74A00FE687C;
 			remoteInfo = FinderSyncExt;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5CAF67A22CA68C8900B0AFD2 /* Embed Foundation Extensions */ = {
+		5C8A29202F83D74A00FE687C /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				5C55BF1E2E902CF200943825 /* FinderSyncExt.appex in Embed Foundation Extensions */,
+				5C8A291F2F83D74A00FE687C /* FinderSyncExt.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5C119D032BBE9B9900B2D7C4 /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RClickApp.swift; sourceTree = "<group>"; };
-		5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5C119D0F2BBE9B9B00B2D7C4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		5C119D112BBE9B9B00B2D7C4 /* RClick.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RClick.entitlements; sourceTree = "<group>"; };
-		5C119D172BBE9C8F00B2D7C4 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
-		5C119D192BBE9D5700B2D7C4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C119D322BBEA9AC00B2D7C4 /* FinderSyncExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSyncExt.swift; sourceTree = "<group>"; };
-		5C119D342BBEA9AC00B2D7C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsTabView.swift; sourceTree = "<group>"; };
-		5C1DA5B02BC59978004F88BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		5C34BAA42D943AF100CF8128 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		5C4039F32E8F716F00AE4091 /* ModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainer.swift; sourceTree = "<group>"; };
-		5C4288652BDA5536000C0828 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
-		5C4C31202F1A840000193872 /* ActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionEntity.swift; sourceTree = "<group>"; };
-		5C4C31212F1A840000193872 /* AppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntity.swift; sourceTree = "<group>"; };
-		5C4C31222F1A840000193872 /* CommonDirEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDirEntity.swift; sourceTree = "<group>"; };
-		5C4C31232F1A840000193872 /* DataVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataVersion.swift; sourceTree = "<group>"; };
-		5C4C312C2F1A840B00193872 /* NewFileTypeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFileTypeEntity.swift; sourceTree = "<group>"; };
-		5C50D2542BBEB27900DF31AA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsTabView.swift; sourceTree = "<group>"; };
-		5C50D2812BBFB33200DF31AA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
-		5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterView.swift; sourceTree = "<group>"; };
-		5C68BFE02C6651B80011C096 /* Extension+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+.swift"; sourceTree = "<group>"; };
-		5C74BA702D977DCD005673DB /* CommonDirsSettingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonDirsSettingTabView.swift; sourceTree = "<group>"; };
-		5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		5C8E8C1A2E254B1500572EDB /* template.xlsx */ = {isa = PBXFileReference; lastKnownFileType = file; path = template.xlsx; sourceTree = "<group>"; };
-		5C945D012CA50AAC00DABD2C /* RCBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCBase.swift; sourceTree = "<group>"; };
-		5C945D052CA51B8F00DABD2C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFileSettingsTabView.swift; sourceTree = "<group>"; };
-		5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsSettingsTabView.swift; sourceTree = "<group>"; };
-		5CC9F0992BC5445C00AF9B81 /* Messager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messager.swift; sourceTree = "<group>"; };
-		5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSettingsTabView.swift; sourceTree = "<group>"; };
-		5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderSyncExt.entitlements; sourceTree = "<group>"; };
-		5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
-		5CDFE3172CA3D66000AE6C95 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		5CF037692F6EA25700047064 /* DataMigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationManager.swift; sourceTree = "<group>"; };
-		5CF0376A2F6EA25700047064 /* IconCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCache.swift; sourceTree = "<group>"; };
-		5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		5C8A28DA2F83D65900FE687C /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C8A28E92F83D65B00FE687C /* RClickTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RClickTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RClickUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		5C119D002BBE9B9900B2D7C4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-				5CDD4A6F2E8EEC4700271E8D /* OrderedCollections in Frameworks */,
-				5CDD4A752E8EEC8500271E8D /* ZIPFoundation in Frameworks */,
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		5C8A29232F83D74A00FE687C /* Exceptions for "FinderSyncExt" folder in "FinderSyncExt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
 			);
+			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
 		};
-		5C119D2D2BBEA9AC00B2D7C4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-				5CDD4A712E8EEC6B00271E8D /* ZIPFoundation in Frameworks */,
-				5CDD4A732E8EEC7D00271E8D /* OrderedCollections in Frameworks */,
-			);
-		};
-/* End PBXFrameworksBuildPhase section */
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXGroup section */
-		5C119CFA2BBE9B9900B2D7C4 = {
-			isa = PBXGroup;
-			children = (
-				5C50D2542BBEB27900DF31AA /* README.md */,
-				5C119D052BBE9B9900B2D7C4 /* RClick */,
-				5C119D312BBEA9AC00B2D7C4 /* FinderSyncExt */,
-				5C119D042BBE9B9900B2D7C4 /* Products */,
-				5C50D28B2BBFCFC400DF31AA /* Frameworks */,
-			);
-			sourceTree = "<group>";
-		};
-		5C119D042BBE9B9900B2D7C4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5C119D032BBE9B9900B2D7C4 /* RClick.app */,
-				5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		5C119D052BBE9B9900B2D7C4 /* RClick */ = {
-			isa = PBXGroup;
-			children = (
-				5C2E563F2DE2DE0200ED66C8 /* Resources */,
-				5CDFE3142CA3D5FB00AE6C95 /* Settings */,
-				5C50D2932BBFD17C00DF31AA /* Model */,
-				5C1DA5B02BC59978004F88BC /* Info.plist */,
-				5C50D27D2BBFB1E100DF31AA /* Shared */,
-				5C119D062BBE9B9900B2D7C4 /* RClickApp.swift */,
-				5C945D052CA51B8F00DABD2C /* AppState.swift */,
-				5C119D172BBE9C8F00B2D7C4 /* MenuBarView.swift */,
-				5C119D0C2BBE9B9B00B2D7C4 /* Assets.xcassets */,
-				5C119D112BBE9B9B00B2D7C4 /* RClick.entitlements */,
-				5C119D0E2BBE9B9B00B2D7C4 /* Preview Content */,
-				5C7C2D9F2BDD3FE500ED84EF /* Localizable.xcstrings */,
-			);
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		5C8A28DC2F83D65900FE687C /* RClick */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RClick;
 			sourceTree = "<group>";
 		};
-		5C119D0E2BBE9B9B00B2D7C4 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				5C119D0F2BBE9B9B00B2D7C4 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
+		5C8A28EC2F83D65B00FE687C /* RClickTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RClickTests;
 			sourceTree = "<group>";
 		};
-		5C119D312BBEA9AC00B2D7C4 /* FinderSyncExt */ = {
-			isa = PBXGroup;
-			children = (
-				5CDE94A82BCADA0500B05814 /* FinderSyncExt.entitlements */,
-				5C119D322BBEA9AC00B2D7C4 /* FinderSyncExt.swift */,
-				5C119D342BBEA9AC00B2D7C4 /* Info.plist */,
+		5C8A28F62F83D65B00FE687C /* RClickUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RClickUITests;
+			sourceTree = "<group>";
+		};
+		5C8A29192F83D74A00FE687C /* FinderSyncExt */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5C8A29232F83D74A00FE687C /* Exceptions for "FinderSyncExt" folder in "FinderSyncExt" target */,
 			);
 			path = FinderSyncExt;
 			sourceTree = "<group>";
 		};
-		5C2E563F2DE2DE0200ED66C8 /* Resources */ = {
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5C8A28D72F83D65900FE687C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A28E62F83D65B00FE687C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A28F02F83D65B00FE687C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A29152F83D74A00FE687C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5C8A28D12F83D65900FE687C = {
 			isa = PBXGroup;
 			children = (
-				5C8E8C1A2E254B1500572EDB /* template.xlsx */,
+				5C8A28DC2F83D65900FE687C /* RClick */,
+				5C8A28EC2F83D65B00FE687C /* RClickTests */,
+				5C8A28F62F83D65B00FE687C /* RClickUITests */,
+				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
+				5C8A28DB2F83D65900FE687C /* Products */,
 			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
-		5C50D27D2BBFB1E100DF31AA /* Shared */ = {
+		5C8A28DB2F83D65900FE687C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5CF037692F6EA25700047064 /* DataMigrationManager.swift */,
-				5CF0376A2F6EA25700047064 /* IconCache.swift */,
-				5C5CAB8D2E7FE5BB001C5D58 /* UpdaterView.swift */,
-				5C5CAB8A2E7FAF1D001C5D58 /* Updater.swift */,
-				5C34BAA42D943AF100CF8128 /* Utils.swift */,
-				5CDFE3172CA3D66000AE6C95 /* Constants.swift */,
-				5C50D2812BBFB33200DF31AA /* StringExtension.swift */,
-				5CC9F0992BC5445C00AF9B81 /* Messager.swift */,
-				5C4288652BDA5536000C0828 /* AppLogger.swift */,
-				5C68BFE02C6651B80011C096 /* Extension+.swift */,
-				5CFA85732D1477AD0063A6A1 /* LaunchAtLogin.swift */,
+				5C8A28DA2F83D65900FE687C /* RClick.app */,
+				5C8A28E92F83D65B00FE687C /* RClickTests.xctest */,
+				5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */,
+				5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */,
 			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		5C50D28B2BBFCFC400DF31AA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5C50D2932BBFD17C00DF31AA /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				5C4C312C2F1A840B00193872 /* NewFileTypeEntity.swift */,
-				5C4C31202F1A840000193872 /* ActionEntity.swift */,
-				5C4C31212F1A840000193872 /* AppEntity.swift */,
-				5C4C31222F1A840000193872 /* CommonDirEntity.swift */,
-				5C4C31232F1A840000193872 /* DataVersion.swift */,
-				5C4039F32E8F716F00AE4091 /* ModelContainer.swift */,
-				5C945D012CA50AAC00DABD2C /* RCBase.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		5CDFE3142CA3D5FB00AE6C95 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				5C74BA702D977DCD005673DB /* CommonDirsSettingTabView.swift */,
-				5CDFE3152CA3D63B00AE6C95 /* SettingsWindow.swift */,
-				5C119D192BBE9D5700B2D7C4 /* SettingsView.swift */,
-				5C158AA82BC64654006EC625 /* GeneralSettingsTabView.swift */,
-				5CC9F09C2BC567F000AF9B81 /* ActionSettingsTabView.swift */,
-				5C50D2592BBED0FE00DF31AA /* AboutSettingsTabView.swift */,
-				5CB470D42CEB7A75009BC725 /* AppsSettingsTabView.swift */,
-				5CB470D22CEB7A3B009BC725 /* NewFileSettingsTabView.swift */,
-			);
-			path = Settings;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5C119D022BBE9B9900B2D7C4 /* RClick */ = {
+		5C8A28D92F83D65900FE687C /* RClick */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5C119D142BBE9B9B00B2D7C4 /* Build configuration list for PBXNativeTarget "RClick" */;
+			buildConfigurationList = 5C8A28FD2F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClick" */;
 			buildPhases = (
-				5C119CFF2BBE9B9900B2D7C4 /* Sources */,
-				5C119D002BBE9B9900B2D7C4 /* Frameworks */,
-				5C119D012BBE9B9900B2D7C4 /* Resources */,
-				5CAF67A22CA68C8900B0AFD2 /* Embed Foundation Extensions */,
+				5C8A28D62F83D65900FE687C /* Sources */,
+				5C8A28D72F83D65900FE687C /* Frameworks */,
+				5C8A28D82F83D65900FE687C /* Resources */,
+				5C8A29202F83D74A00FE687C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				5C55BF1D2E902C9200943825 /* PBXTargetDependency */,
-				5CC1A00D2E90CDAD0048BBFB /* PBXTargetDependency */,
+				5C8A291E2F83D74A00FE687C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5C8A28DC2F83D65900FE687C /* RClick */,
 			);
 			name = RClick;
 			packageProductDependencies = (
-				5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */,
-				5CDD4A742E8EEC8500271E8D /* ZIPFoundation */,
 			);
 			productName = RClick;
-			productReference = 5C119D032BBE9B9900B2D7C4 /* RClick.app */;
+			productReference = 5C8A28DA2F83D65900FE687C /* RClick.app */;
 			productType = "com.apple.product-type.application";
 		};
-		5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */ = {
+		5C8A28E82F83D65B00FE687C /* RClickTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5C119D3B2BBEA9AC00B2D7C4 /* Build configuration list for PBXNativeTarget "FinderSyncExt" */;
+			buildConfigurationList = 5C8A29002F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickTests" */;
 			buildPhases = (
-				5C119D2C2BBEA9AC00B2D7C4 /* Sources */,
-				5C119D2D2BBEA9AC00B2D7C4 /* Frameworks */,
-				5C119D2E2BBEA9AC00B2D7C4 /* Resources */,
+				5C8A28E52F83D65B00FE687C /* Sources */,
+				5C8A28E62F83D65B00FE687C /* Frameworks */,
+				5C8A28E72F83D65B00FE687C /* Resources */,
 			);
 			buildRules = (
 			);
+			dependencies = (
+				5C8A28EB2F83D65B00FE687C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5C8A28EC2F83D65B00FE687C /* RClickTests */,
+			);
+			name = RClickTests;
+			packageProductDependencies = (
+			);
+			productName = RClickTests;
+			productReference = 5C8A28E92F83D65B00FE687C /* RClickTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5C8A28F22F83D65B00FE687C /* RClickUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C8A29032F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickUITests" */;
+			buildPhases = (
+				5C8A28EF2F83D65B00FE687C /* Sources */,
+				5C8A28F02F83D65B00FE687C /* Frameworks */,
+				5C8A28F12F83D65B00FE687C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5C8A28F52F83D65B00FE687C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5C8A28F62F83D65B00FE687C /* RClickUITests */,
+			);
+			name = RClickUITests;
+			packageProductDependencies = (
+			);
+			productName = RClickUITests;
+			productReference = 5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		5C8A29172F83D74A00FE687C /* FinderSyncExt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C8A29242F83D74A00FE687C /* Build configuration list for PBXNativeTarget "FinderSyncExt" */;
+			buildPhases = (
+				5C8A29142F83D74A00FE687C /* Sources */,
+				5C8A29152F83D74A00FE687C /* Frameworks */,
+				5C8A29162F83D74A00FE687C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
+			);
 			name = FinderSyncExt;
 			packageProductDependencies = (
-				5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */,
-				5CDD4A722E8EEC7D00271E8D /* OrderedCollections */,
 			);
 			productName = FinderSyncExt;
-			productReference = 5C119D302BBEA9AC00B2D7C4 /* FinderSyncExt.appex */;
+			productReference = 5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		5C119CFB2BBE9B9900B2D7C4 /* Project object */ = {
+		5C8A28D22F83D65900FE687C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 2600;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
-					5C119D022BBE9B9900B2D7C4 = {
-						CreatedOnToolsVersion = 15.2;
+					5C8A28D92F83D65900FE687C = {
+						CreatedOnToolsVersion = 26.4;
 					};
-					5C119D2F2BBEA9AC00B2D7C4 = {
-						CreatedOnToolsVersion = 15.2;
+					5C8A28E82F83D65B00FE687C = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = 5C8A28D92F83D65900FE687C;
+					};
+					5C8A28F22F83D65B00FE687C = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = 5C8A28D92F83D65900FE687C;
+					};
+					5C8A29172F83D74A00FE687C = {
+						CreatedOnToolsVersion = 26.4;
 					};
 				};
 			};
-			buildConfigurationList = 5C119CFE2BBE9B9900B2D7C4 /* Build configuration list for PBXProject "RClick" */;
+			buildConfigurationList = 5C8A28D52F83D65900FE687C /* Build configuration list for PBXProject "RClick" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				"zh-Hans",
 				Base,
 			);
-			mainGroup = 5C119CFA2BBE9B9900B2D7C4;
-			packageReferences = (
-				5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */,
-			);
-			preferredProjectObjectVersion = 100;
-			productRefGroup = 5C119D042BBE9B9900B2D7C4 /* Products */;
+			mainGroup = 5C8A28D12F83D65900FE687C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5C8A28DB2F83D65900FE687C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5C119D022BBE9B9900B2D7C4 /* RClick */,
-				5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */,
+				5C8A28D92F83D65900FE687C /* RClick */,
+				5C8A28E82F83D65B00FE687C /* RClickTests */,
+				5C8A28F22F83D65B00FE687C /* RClickUITests */,
+				5C8A29172F83D74A00FE687C /* FinderSyncExt */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		5C119D012BBE9B9900B2D7C4 /* Resources */ = {
+		5C8A28D82F83D65900FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
-				5C119D102BBE9B9B00B2D7C4 /* Preview Assets.xcassets in Resources */,
-				5C119D0D2BBE9B9B00B2D7C4 /* Assets.xcassets in Resources */,
-				5C8E8C1C2E254B1500572EDB /* template.xlsx in Resources */,
-				5C7C2DA02BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5C119D2E2BBEA9AC00B2D7C4 /* Resources */ = {
+		5C8A28E72F83D65B00FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
-				5C68BFE62C67707D0011C096 /* Assets.xcassets in Resources */,
-				5C8E8C1B2E254B1500572EDB /* template.xlsx in Resources */,
-				5C7C2DA12BDD3FE500ED84EF /* Localizable.xcstrings in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A28F12F83D65B00FE687C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A29162F83D74A00FE687C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		5C119CFF2BBE9B9900B2D7C4 /* Sources */ = {
+		5C8A28D62F83D65900FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
-				5C74BA712D977DCD005673DB /* CommonDirsSettingTabView.swift in Sources */,
-				5C945D062CA51B8F00DABD2C /* AppState.swift in Sources */,
-				5C5CAB8E2E7FE631001C5D58 /* UpdaterView.swift in Sources */,
-				5CC9F09D2BC567F000AF9B81 /* ActionSettingsTabView.swift in Sources */,
-				5C50D25A2BBED0FE00DF31AA /* AboutSettingsTabView.swift in Sources */,
-				5CDFE3162CA3D65000AE6C95 /* SettingsWindow.swift in Sources */,
-				5CB470D32CEB7A3B009BC725 /* NewFileSettingsTabView.swift in Sources */,
-				5C945D032CA50AC000DABD2C /* RCBase.swift in Sources */,
-				5CFA85742D1477AD0063A6A1 /* LaunchAtLogin.swift in Sources */,
-				5C119D1A2BBE9D5700B2D7C4 /* SettingsView.swift in Sources */,
-				5C5CAB8B2E7FAF22001C5D58 /* Updater.swift in Sources */,
-				5C119D182BBE9C8F00B2D7C4 /* MenuBarView.swift in Sources */,
-				5CC9F09A2BC5445C00AF9B81 /* Messager.swift in Sources */,
-				5C4288662BDA5536000C0828 /* AppLogger.swift in Sources */,
-				5C50D2822BBFB33200DF31AA /* StringExtension.swift in Sources */,
-				5CF0376B2F6EA25700047064 /* IconCache.swift in Sources */,
-				5CF0376C2F6EA25700047064 /* DataMigrationManager.swift in Sources */,
-				5CB470D52CEB7A75009BC725 /* AppsSettingsTabView.swift in Sources */,
-				5C4C31282F1A840000193872 /* ActionEntity.swift in Sources */,
-				5C4C31292F1A840000193872 /* AppEntity.swift in Sources */,
-				5C4C312A2F1A840000193872 /* DataVersion.swift in Sources */,
-				5C4C312B2F1A840000193872 /* CommonDirEntity.swift in Sources */,
-				5C158AA92BC64654006EC625 /* GeneralSettingsTabView.swift in Sources */,
-				5C4C31312F1A840B00193872 /* NewFileTypeEntity.swift in Sources */,
-				5C68BFE12C6651B80011C096 /* Extension+.swift in Sources */,
-				5C119D072BBE9B9900B2D7C4 /* RClickApp.swift in Sources */,
-				5C4039F52E8F717A00AE4091 /* ModelContainer.swift in Sources */,
-				5C34BAA52D943AF100CF8128 /* Utils.swift in Sources */,
-				5CDFE3192CA3D66B00AE6C95 /* Constants.swift in Sources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5C119D2C2BBEA9AC00B2D7C4 /* Sources */ = {
+		5C8A28E52F83D65B00FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
-				5C4C312F2F1A840B00193872 /* NewFileTypeEntity.swift in Sources */,
-				5C119D332BBEA9AC00B2D7C4 /* FinderSyncExt.swift in Sources */,
-				5C945D022CA50AC000DABD2C /* RCBase.swift in Sources */,
-				5CDFE3182CA3D66B00AE6C95 /* Constants.swift in Sources */,
-				5C50D2922BBFD11100DF31AA /* StringExtension.swift in Sources */,
-				5CF0376D2F6EA25700047064 /* IconCache.swift in Sources */,
-				5CF0376E2F6EA25700047064 /* DataMigrationManager.swift in Sources */,
-				5C043AC32BEB7C1200C837D1 /* AppLogger.swift in Sources */,
-				5C34BAA62D943AF100CF8128 /* Utils.swift in Sources */,
-				5CC9F09B2BC5464400AF9B81 /* Messager.swift in Sources */,
-				5C4039F42E8F717A00AE4091 /* ModelContainer.swift in Sources */,
-				5C68BFE22C6651B80011C096 /* Extension+.swift in Sources */,
-				5C945D072CA51B8F00DABD2C /* AppState.swift in Sources */,
-				5C5CAB8F2E7FE631001C5D58 /* UpdaterView.swift in Sources */,
-				5C5CAB8C2E7FAF22001C5D58 /* Updater.swift in Sources */,
-				5C4C31242F1A840000193872 /* ActionEntity.swift in Sources */,
-				5C4C31252F1A840000193872 /* AppEntity.swift in Sources */,
-				5C4C31262F1A840000193872 /* DataVersion.swift in Sources */,
-				5C4C31272F1A840000193872 /* CommonDirEntity.swift in Sources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A28EF2F83D65B00FE687C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8A29142F83D74A00FE687C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5C55BF1D2E902C9200943825 /* PBXTargetDependency */ = {
+		5C8A28EB2F83D65B00FE687C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */;
-			targetProxy = 5C55BF1C2E902C9200943825 /* PBXContainerItemProxy */;
+			target = 5C8A28D92F83D65900FE687C /* RClick */;
+			targetProxy = 5C8A28EA2F83D65B00FE687C /* PBXContainerItemProxy */;
 		};
-		5CC1A00D2E90CDAD0048BBFB /* PBXTargetDependency */ = {
+		5C8A28F52F83D65B00FE687C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5C119D2F2BBEA9AC00B2D7C4 /* FinderSyncExt */;
-			targetProxy = 5CC1A00C2E90CDAD0048BBFB /* PBXContainerItemProxy */;
+			target = 5C8A28D92F83D65900FE687C /* RClick */;
+			targetProxy = 5C8A28F42F83D65B00FE687C /* PBXContainerItemProxy */;
+		};
+		5C8A291E2F83D74A00FE687C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
+			targetProxy = 5C8A291D2F83D74A00FE687C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		5C119D122BBE9B9B00B2D7C4 /* Debug configuration for PBXProject "RClick" */ = {
+		5C8A28FB2F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -497,8 +403,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -510,10 +416,6 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				"GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*]" = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -521,24 +423,21 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
-		5C119D132BBE9B9B00B2D7C4 /* Release configuration for PBXProject "RClick" */ = {
+		5C8A28FC2F83D65B00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -567,14 +466,11 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "3rd Party Mac Developer Application";
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -585,229 +481,216 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
-		5C119D152BBE9B9B00B2D7C4 /* Debug configuration for PBXNativeTarget "RClick" */ = {
+		5C8A28FE2F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260406001;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
-				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
-				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readwrite;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RClick/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RClick;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
-				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
-				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
-				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
-				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
-				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		5C119D162BBE9B9B00B2D7C4 /* Release configuration for PBXNativeTarget "RClick" */ = {
+		5C8A28FF2F83D65B00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260406001;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"RClick/Preview Content\"";
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
-				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
-				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readwrite;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RClick/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RClick;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
-				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
-				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
-				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
-				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
-				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		5C119D392BBEA9AC00B2D7C4 /* Debug configuration for PBXNativeTarget "FinderSyncExt" */ = {
+		5C8A29012F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3563XCBN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RClick.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RClick";
+			};
+			name = Debug;
+		};
+		5C8A29022F83D65B00FE687C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3563XCBN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RClick.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RClick";
+			};
+			name = Release;
+		};
+		5C8A29042F83D65B00FE687C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3563XCBN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = RClick;
+			};
+			name = Debug;
+		};
+		5C8A29052F83D65B00FE687C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3563XCBN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = RClick;
+			};
+			name = Release;
+		};
+		5C8A29212F83D74A00FE687C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260406001;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
-				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
-				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readwrite;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinderSyncExt/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				REGISTER_APP_GROUPS = YES;
-				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
-				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
-				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
-				RUNTIME_EXCEPTION_DEBUGGING_TOOL = YES;
-				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		5C119D3A2BBEA9AC00B2D7C4 /* Release configuration for PBXNativeTarget "FinderSyncExt" */ = {
+		5C8A29222F83D74A00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260406001;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
-				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
-				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
-				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_USER_SELECTED_FILES = readwrite;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinderSyncExt/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinderSyncExt;
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright ©️ 2024 Li Xu. All rights reserved";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				REGISTER_APP_GROUPS = YES;
-				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
-				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
-				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
-				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
-				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
-				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
 				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -815,73 +698,52 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5C119CFE2BBE9B9900B2D7C4 /* Build configuration list for PBXProject "RClick" */ = {
+		5C8A28D52F83D65900FE687C /* Build configuration list for PBXProject "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D122BBE9B9B00B2D7C4 /* Debug configuration for PBXProject "RClick" */,
-				5C119D132BBE9B9B00B2D7C4 /* Release configuration for PBXProject "RClick" */,
+				5C8A28FB2F83D65B00FE687C /* Debug */,
+				5C8A28FC2F83D65B00FE687C /* Release */,
 			);
-			defaultConfigurationName = Debug;
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		5C119D142BBE9B9B00B2D7C4 /* Build configuration list for PBXNativeTarget "RClick" */ = {
+		5C8A28FD2F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D152BBE9B9B00B2D7C4 /* Debug configuration for PBXNativeTarget "RClick" */,
-				5C119D162BBE9B9B00B2D7C4 /* Release configuration for PBXNativeTarget "RClick" */,
+				5C8A28FE2F83D65B00FE687C /* Debug */,
+				5C8A28FF2F83D65B00FE687C /* Release */,
 			);
-			defaultConfigurationName = Debug;
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		5C119D3B2BBEA9AC00B2D7C4 /* Build configuration list for PBXNativeTarget "FinderSyncExt" */ = {
+		5C8A29002F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C119D392BBEA9AC00B2D7C4 /* Debug configuration for PBXNativeTarget "FinderSyncExt" */,
-				5C119D3A2BBEA9AC00B2D7C4 /* Release configuration for PBXNativeTarget "FinderSyncExt" */,
+				5C8A29012F83D65B00FE687C /* Debug */,
+				5C8A29022F83D65B00FE687C /* Release */,
 			);
-			defaultConfigurationName = Debug;
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5C8A29032F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C8A29042F83D65B00FE687C /* Debug */,
+				5C8A29052F83D65B00FE687C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5C8A29242F83D74A00FE687C /* Build configuration list for PBXNativeTarget "FinderSyncExt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C8A29212F83D74A00FE687C /* Debug */,
+				5C8A29222F83D74A00FE687C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.19;
-			};
-		};
-		5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-collections.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		5CDD4A6E2E8EEC4700271E8D /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = OrderedCollections;
-		};
-		5CDD4A702E8EEC6B00271E8D /* ZIPFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
-			productName = ZIPFoundation;
-		};
-		5CDD4A722E8EEC7D00271E8D /* OrderedCollections */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5CDD4A6D2E8EEC4700271E8D /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = OrderedCollections;
-		};
-		5CDD4A742E8EEC8500271E8D /* ZIPFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C28E72C2D1900CB00A9F4C1 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
-			productName = ZIPFoundation;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 5C119CFB2BBE9B9900B2D7C4 /* Project object */;
+	rootObject = 5C8A28D22F83D65900FE687C /* Project object */;
 }
