@@ -8,196 +8,64 @@
 
 ## 一、概述
 
-RClick 的数据模型采用 SwiftData 框架进行持久化存储，所有模型定义在主应用程序中，FinderSync Extension 不直接访问数据，而是通过主程序发送的菜单配置获取所需数据。
+### 1.1 架构调整：完全磁盘访问权限
 
-### 1.1 模型分类
+由于采用**完全磁盘访问权限**（用户手动授权），不再需要 Bookmark 缓存机制。
 
-| 模型类别 | 用途 | 存储位置 |
+| 之前的设计 | 当前设计 |
+|-----------|---------|
+| PermissiveDir + Bookmark 缓存 | 不需要，依赖完全磁盘访问权限 |
+| 按需请求权限 | 一次性授权，全盘访问 |
+
+### 1.2 模型分类
+
+| 模型类别 | 用途 | 存储方式 |
 |---------|------|---------|
 | **应用模型** | 外部应用程序配置 | SwiftData |
 | **动作模型** | 右键菜单动作配置 | SwiftData |
 | **文件类型模型** | 新建文件模板配置 | SwiftData |
-| **目录模型** | 常用目录和授权目录 | SwiftData |
-| **消息模型** | 进程间通信数据传输 | 内存（Codable） |
+| **目录模型** | 常用目录配置 | SwiftData |
+| **内存模型** | 运行时数据表示 | 纯 Swift 结构 |
+| **消息模型** | 进程间通信数据传输 | Codable 协议 |
 
-### 1.2 架构原则
+### 1.3 设计原则
 
-- **单一数据源**: SwiftData 是唯一持久化存储
-- **Extension 无状态**: Extension 只缓存内存中的菜单配置
-- **类型安全**: 所有模型实现 Codable 协议
+1. **SwiftData 模型**：只存储配置数据，@Model 标记
+2. **内存模型**：RCBase 协议，运行时使用
+3. **消息模型**：Codable 协议，IPC 通信使用
+4. **模型转换**：SwiftData ↔ 内存模型 ↔ 消息模型
+
+### 1.4 模型关系图
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  SwiftData 模型   │ <-> │  内存模型 (RCBase) │ <-> │  消息模型        │
+│  (持久化存储)     │     │  (运行时使用)     │     │  (IPC 通信)       │
+├─────────────────┤     ├─────────────────┤     ├─────────────────┤
+│ AppEntity       │     │ OpenWithApp     │     │ AppMenuItem     │
+│ ActionEntity    │     │ RCAction        │     │ ActionMenuItem  │
+│ NewFileTypeEntity│    │ NewFile         │     │ NewFileMenuItem │
+│ CommonDirEntity │     │ CommonDir       │     │ CommonDirMenuItem│
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
 
 ---
 
 ## 二、SwiftData 持久化模型
 
-### 2.1 应用实体（AppEntity）
+### 简化设计原则
 
-存储外部应用程序配置，用于"用其他应用打开"功能。
+1. **移除 Data 字段**：直接用 SwiftData 的 @Relationship 或 @Attribute 存储
+2. **移除时间戳**：配置数据不需要 createdAt/updatedAt
+3. **移除 PermissiveDir**：完全磁盘访问权限无需 Bookmark
 
-```swift
-import SwiftData
-import Foundation
+### 模型简化对比
 
-/// 应用实体 - 用于存储外部应用程序配置
-@Model
-final class AppEntity {
-    @Attribute(.unique) var id: String
-    var urlString: String  // 存储为 String，SwiftData 对 URL 支持有限
-    var itemName: String
-    var inheritFromGlobalArguments: Bool
-    var inheritFromGlobalEnvironment: Bool
-    var argumentsData: Data?  // 编码后的数组
-    var environmentData: Data? // 编码后的字典
-    var sortOrder: Int
-    var isEnabled: Bool
-    var createdAt: Date
-    var updatedAt: Date
-
-    init(id: String = UUID().uuidString,
-         url: URL,
-         itemName: String = "",
-         inheritFromGlobalArguments: Bool = true,
-         inheritFromGlobalEnvironment: Bool = true,
-         arguments: [String] = [],
-         environment: [String: String] = [:],
-         sortOrder: Int = 0,
-         isEnabled: Bool = true) {
-        self.id = id
-        self.urlString = url.path()
-        self.itemName = itemName
-        self.inheritFromGlobalArguments = inheritFromGlobalArguments
-        self.inheritFromGlobalEnvironment = inheritFromGlobalEnvironment
-        self.sortOrder = sortOrder
-        self.isEnabled = isEnabled
-        self.createdAt = Date()
-        self.updatedAt = Date()
-
-        // 编码复杂数据
-        self.argumentsData = try? JSONEncoder().encode(arguments)
-        self.environmentData = try? JSONEncoder().encode(environment)
-    }
-
-    // 计算属性：从存储的数据解码
-    var url: URL {
-        get { URL(fileURLWithPath: urlString) }
-        set { urlString = newValue.path() }
-    }
-
-    var arguments: [String] {
-        guard let data = argumentsData,
-              let args = try? JSONDecoder().decode([String].self, from: data) else {
-            return []
-        }
-        return args
-    }
-
-    var environment: [String: String] {
-        guard let data = environmentData,
-              let env = try? JSONDecoder().decode([String: String].self, from: data) else {
-            return [:]
-        }
-        return env
-    }
-}
-```
-
-#### 属性说明
-
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `id` | String | 唯一标识符 |
-| `urlString` | String | 应用程序路径 |
-| `itemName` | String | 自定义显示名称 |
-| `inheritFromGlobalArguments` | Bool | 是否继承全局参数 |
-| `inheritFromGlobalEnvironment` | Bool | 是否继承全局环境变量 |
-| `argumentsData` | Data? | 编码后的参数数组 |
-| `environmentData` | Data? | 编码后的环境变量的字典 |
-| `sortOrder` | Int | 排序顺序 |
-| `isEnabled` | Bool | 是否启用 |
-| `createdAt` | Date | 创建时间 |
-| `updatedAt` | Date | 更新时间 |
-
----
-
-### 2.2 动作实体（ActionEntity）
-
-存储右键菜单动作配置。
-
-```swift
-import SwiftData
-import Foundation
-
-/// 动作实体 - 用于存储右键菜单动作配置
-@Model
-final class ActionEntity {
-    @Attribute(.unique) var id: String
-    var name: String
-    var icon: String
-    var isEnabled: Bool
-    var sortOrder: Int
-    var createdAt: Date
-    var updatedAt: Date
-
-    init(id: String = UUID().uuidString,
-         name: String,
-         icon: String,
-         isEnabled: Bool = true,
-         sortOrder: Int = 0) {
-        self.id = id
-        self.name = name
-        self.icon = icon
-        self.isEnabled = isEnabled
-        self.sortOrder = sortOrder
-        self.createdAt = Date()
-        self.updatedAt = Date()
-    }
-}
-```
-
-#### 预定义动作
-
-```swift
-extension ActionEntity {
-    static func createDefaultActions() -> [ActionEntity] {
-        return [
-            ActionEntity(id: "copy-path", name: "复制路径", icon: "doc.on.doc", sortOrder: 0),
-            ActionEntity(id: "copy-filename", name: "复制文件名", icon: "doc.text", sortOrder: 1),
-            ActionEntity(id: "reveal", name: "在 Finder 中显示", icon: "folder", sortOrder: 2),
-            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", sortOrder: 3),
-            ActionEntity(id: "delete", name: "删除", icon: "trash", sortOrder: 4),
-            ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", sortOrder: 5),
-            ActionEntity(id: "unhide", name: "显示", icon: "eye", sortOrder: 6),
-        ]
-    }
-}
-```
-
----
-
-### 2.3 新建文件类型实体（NewFileTypeEntity）
-
-存储新建文件模板配置。
-
-```swift
-import SwiftData
-import Foundation
-
-/// 新建文件类型实体 - 用于存储文件模板配置
-@Model
-final class NewFileTypeEntity {
-    @Attribute(.unique) var id: String
-    var fileExtension: String
-    var name: String
-    var icon: String
-    var isEnabled: Bool
-    var sortOrder: Int
-    var templatePath: String?
-    var openAppPath: String?
-    var createdAt: Date
-    var updatedAt: Date
-
-    init(id: String = UUID().uuidString,
-         fileExtension: String,
+| 属性 | 之前设计 | 简化后设计 |
+|------|---------|-----------|
+| 复杂数据 | `argumentsData: Data?` | `arguments: [String]` (SwiftData 6.0+ 支持) |
+| 时间戳 | `createdAt`, `updatedAt` | 移除 |
+| Bookmark | `PermissiveDir` | 移除 |
          name: String,
          icon: String = "doc",
          isEnabled: Bool = true,
