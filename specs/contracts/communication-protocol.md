@@ -52,9 +52,6 @@ enum MainToExtensionAction: String, Codable {
 
     /// 主程序退出通知
     case quit = "quit"
-
-    /// 请求菜单配置（Extension 主动请求）
-    case requestConfig = "request-config"
 }
 ```
 
@@ -69,7 +66,7 @@ enum ExtensionToMainAction: String, Codable {
     /// 心跳消息
     case heartbeat = "heartbeat"
 
-    /// 请求菜单配置
+    /// 请求菜单配置（Extension 启动或缓存失效时）
     case requestConfig = "request-config"
 }
 ```
@@ -186,16 +183,12 @@ struct AppMenuItem: Codable {
 
     /// 应用程序路径（Extension 据此加载图标）
     let appURL: URL
-    
-    /// 是否预加载图标：true = 主程序已缓存，false = Extension 自行加载
-    let iconCached: Bool
 }
 ```
 
 **图标策略**：
 - Extension 用 `NSWorkspace.shared.icon(forFile:)` 加载
 - 系统自动缓存，无需主程序传输图标数据
-- 如 `iconCached` 为 true，Extension 可尝试从共享缓存读取
 
 #### 4.1.3 新建文件菜单项
 
@@ -253,23 +246,29 @@ struct CommonDirMenuItem: Codable {
 ```swift
 /// 点击事件消息载荷
 struct ClickEventPayload: Codable {
-    /// 点击的动作类型
-    let action: ExtensionToMainAction
+    /// 触发场景（从 FIMenuKind 转换）
+    let scene: MenuScene
 
-    /// 点击的菜单项 ID
-    let itemId: String
+    /// 当前目录路径
+    let currentDirectory: String
 
+    /// 选中的文件/目录路径列表
+    let selectedItems: [String]
+
+    /// 点击的菜单项信息
+    let menuItem: MenuItemInfo
+}
+
+/// 菜单项信息
+struct MenuItemInfo: Codable {
     /// 菜单项类型
-    let itemType: MenuItemType
+    let type: MenuItemType
 
-    /// 目标文件/目录路径列表
-    let target: [String]
+    /// 菜单项 ID
+    let id: String
 
-    /// 触发来源
-    let trigger: MenuTrigger
-
-    /// 目标类型列表（文件/文件夹）
-    let itemTypes: [ItemType]
+    /// 菜单项 tag（用于快速查找）
+    let tag: Int
 }
 ```
 
@@ -284,21 +283,21 @@ enum MenuItemType: String, Codable {
 }
 ```
 
-#### 4.2.2 触发来源
+#### 4.2.2 触发场景
 
 ```swift
-enum MenuTrigger: String, Codable {
+enum MenuScene: String, Codable {
     /// 选中文件/文件夹右键
-    case contextualItems = "ctx-items"
+    case contextualMenuForItems = "ctx-items"
 
     /// 空白处右键
-    case contextualContainer = "ctx-container"
+    case contextualMenuForContainer = "ctx-container"
 
     /// 侧边栏右键
-    case contextualSidebar = "ctx-sidebar"
+    case contextualMenuForSidebar = "ctx-sidebar"
 
     /// 工具栏
-    case toolbar = "toolbar"
+    case toolbarItemMenu = "toolbar"
 }
 ```
 
@@ -456,25 +455,58 @@ func decode<T: Codable>(_ data: Data?) -> T? {
 }
 ```
 
-### 7.2 消息丢失处理
+### 7.2 心跳机制
 
-- **Extension 端**: 如果未收到菜单配置，显示空菜单或默认菜单
-- **主程序端**: 如果未收到心跳，标记 Extension 为离线状态
+心跳消息用于 Extension 感知主程序是否运行，确保用户点击菜单时有效果。
 
-### 7.3 超时机制
+**心跳流程**：
 
-对于请求 - 响应模式的消息，建议实现超时机制：
-
-```swift
-func sendRequest<T: Codable>(
-    action: MainToExtensionAction,
-    data: Codable?,
-    timeout: TimeInterval = 5.0,
-    completion: @escaping (T?) -> Void
-) {
-    // 实现超时处理
-}
 ```
+┌─────────────────┐                    ┌─────────────────┐
+│   Main App      │                    │   Extension     │
+│                 │                    │                 │
+│  1. 启动时发送 running 消息          │                 │
+│  ──────────────────────────────────►│                 │
+│                 │                    │                 │
+│  2. 定期发送心跳（可选）              │                 │
+│  ──────────────────────────────────►│                 │
+│                 │                    │                 │
+│  3. 收到 menuConfig，保存快照        │                 │
+│  ──────────────────────────────────►│                 │
+│                 │                    │                 │
+│                 │  4. 点击菜单时，    │                 │
+│     ◄────────────────────────────────│ 发送 click 事件  │
+│     执行操作     │                    │                 │
+│                 │                    │                 │
+│                 │  5. 定期发送心跳    │                 │
+│     ◄────────────────────────────────│ (感知主程序存活) │
+│                 │                    │                 │
+│  6. 收到心跳，确认 Extension 在线     │                 │
+│  ──────────────────────────────────►│                 │
+│                 │                    │                 │
+```
+
+**设计要点**：
+
+| 方向 | 消息类型 | 频率 | 用途 |
+|------|----------|------|------|
+| Main → Extension | `running` | 启动时 + 重试 6 次 | 通知 Extension 主程序已启动 |
+| Main → Extension | `menuConfig` | 配置变更时 | 发送菜单配置 |
+| Extension → Main | `heartbeat` | 每 5-10 秒 | 让主程序知道 Extension 存活 |
+| Extension → Main | `click` | 用户点击时 | 发送点击事件 |
+| Extension → Main | `requestConfig` | 缓存为空时 | 主动请求菜单配置 |
+
+**心跳超时处理**：
+
+- 主程序超过 15 秒未收到心跳，标记 Extension 为离线
+- 主程序菜单栏显示"扩展未响应"提示
+- 用户可点击"重新加载扩展"按钮触发 `menu.request` 消息
+
+**Extension 缓存为空处理**：
+
+- Extension 启动时，如果 `menuConfig` 缓存为空，发送 `requestConfig` 消息
+- 主程序收到后，发送完整的 `menuConfig` 响应
+- Extension 收到后保存到内存缓存，用于后续菜单渲染
 
 ---
 

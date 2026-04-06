@@ -109,7 +109,8 @@ Main App ←→ 发送/请求 ←→ Extension（可主动拉取）
 **设计要点**：
 - 主 App 保存最后发送的菜单配置（内存缓存）
 - 每次数据变更时更新快照和版本号
-- 响应 Extension 的 `menu.request` 消息
+- 响应 Extension 的 `requestConfig` 消息
+- `running` 消息携带 `MenuSnapshot`
 
 **实现方案**：
 ```swift
@@ -124,13 +125,14 @@ class RClickApp: NSObject, NSApplicationDelegate {
         menuVersion += 1
         let snapshot = MenuSnapshot(version: menuVersion, config: buildMenuConfig())
         lastMenuSnapshot = try? JSONEncoder().encode(snapshot)
-        sendMenuUpdate(snapshot)
+        // 发送 running 消息时携带 snapshot
+        sendRunningMessage(snapshot)
     }
 
-    // 响应请求
-    func handleMenuRequest() {
+    // 响应 Extension 的 config 请求
+    func handleConfigRequest() {
         if let data = lastMenuSnapshot {
-            postNotification("menu.update", data: data)
+            Messager.shared.sendToExtension(.menuConfig, data: data)
         }
     }
 }
@@ -138,6 +140,11 @@ class RClickApp: NSObject, NSApplicationDelegate {
 struct MenuSnapshot: Codable {
     let version: Int
     let config: MenuConfigPayload
+}
+
+// 发送 running 消息
+func sendRunningMessage(_ snapshot: MenuSnapshot) {
+    Messager.shared.sendToExtension(.running, data: snapshot)
 }
 ```
 
@@ -189,13 +196,13 @@ class FinderSyncExt: FIFinderSync {
 ### 4.2 心跳重试机制（保留）
 
 **设计思路**：
-- 主 App 启动后发送 `running` 消息
+- 主 App 启动后发送 `running` 消息（携带 `MenuSnapshot`）
 - 每 5 秒重试一次，持续 30 秒（6 次）
 - 确保 Extension 加载后能收到消息
 
 **修改要点**：
-- 不再依赖时序延迟发送菜单
-- 改为响应 `menu.request` 时发送快照
+- `running` 消息携带 `MenuSnapshot`，而非单独发送菜单配置
+- Extension 收到 `running` 后进行版本检查，更新缓存
 
 ---
 
@@ -205,7 +212,7 @@ class FinderSyncExt: FIFinderSync {
 
 | 时机 | 说明 |
 |------|------|
-| Extension 启动时 | `init()` 中发送 `menu.request` |
+| Extension 启动时 | `init()` 中发送 `requestConfig` |
 | 缓存为空时 | `menu(for:)` 发现缓存为空 |
 | 缓存过期时 | 超时未收到更新（可选：30 秒） |
 | 版本不匹配时 | 检测到数据不一致 |
@@ -213,11 +220,51 @@ class FinderSyncExt: FIFinderSync {
 #### 请求流程
 
 ```
-Extension → menu.request → Main App
-                          ↓
-Main App → lastSnapshot → Extension
-                          ↓
+Extension → requestConfig → Main App
+                            ↓
+Main App → menuConfig → Extension
+                            ↓
 Extension → 版本检查 → 缓存更新
+```
+
+#### 实现方案
+
+```swift
+// Extension 端
+class FinderSyncExt: FIFinderSync {
+    private var currentVersion: Int = 0
+    private var cachedMenuConfig: MenuConfigPayload?
+
+    override init() {
+        super.init()
+        setupMessageHandlers()
+        // 启动时主动请求配置
+        sendMenuRequest()
+    }
+
+    private func handleRunning(_ data: Data?) {
+        guard let snapshot = decode<MenuSnapshot>(data) else { return }
+        // 版本检查：只接受更新的版本
+        guard snapshot.version > currentVersion else { return }
+        currentVersion = snapshot.version
+        cachedMenuConfig = snapshot.config
+    }
+
+    private func handleMenuConfig(_ data: Data?) {
+        guard let config = decode<MenuConfigPayload>(data) else { return }
+        cachedMenuConfig = config
+    }
+
+    // 菜单构建：只读缓存
+    override func menu(for menuKind: FIMenuKind) -> NSMenu {
+        guard let config = cachedMenuConfig else {
+            // 缓存为空，触发请求
+            sendMenuRequest()
+            return NSMenu(title: "RClick (loading...)")
+        }
+        // 使用缓存构建菜单...
+    }
+}
 ```
 
 ---
@@ -225,19 +272,36 @@ Extension → 版本检查 → 缓存更新
 ### 4.4 自动重连机制（优化）
 
 **设计要点**：
-- 保留心跳超时检测（15 秒）
-- 超时后不发送延迟消息
-- 改为触发主 App 重新发送快照
+- 主 App 端添加心跳超时检测（15 秒）
+- 超时后标记 Extension 为离线状态
+- 用户可点击"刷新 Extension"按钮触发重连
 
-**修改方案**：
+**实现方案**：
 ```swift
-private func performReconnection() {
-    // 不再使用时序延迟
-    // 改为触发主 App 重新发送快照
-    Messager.shared.sendMessage(
-        name: Key.messageFromFinder,
-        data: MessagePayload(action: "menu.request", target: [], rid: "")
-    )
+// Main App 端
+private var heartbeatTimeoutTimer: Timer?
+private var isExtensionOnline: Bool = false
+
+func handleHeartbeat() {
+    isExtensionOnline = true
+    // 重置超时定时器
+    heartbeatTimeoutTimer?.invalidate()
+    heartbeatTimeoutTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { [weak self] _ in
+        self?.handleHeartbeatTimeout()
+    }
+}
+
+func handleHeartbeatTimeout() {
+    isExtensionOnline = false
+    // 菜单栏显示"扩展未响应"
+    // 用户可点击"刷新 Extension"按钮
+}
+
+// 用户点击"刷新 Extension"时
+func refreshExtension() {
+    if let snapshot = lastMenuSnapshot {
+        Messager.shared.sendToExtension(.running, data: snapshot)
+    }
 }
 ```
 
@@ -254,34 +318,30 @@ private func performReconnection() {
 
 ## 五、消息协议设计
 
-### 5.1 基础消息结构（建议）
+### 5.1 消息类型定义
 
-```swift
-// 统一消息载体（支持去重）
-struct IPCMessage<T: Codable>: Codable {
-    let id: UUID          // 消息 ID，用于去重
-    let type: String      // 消息类型
-    let timestamp: TimeInterval
-    let payload: T
-}
-```
+**基于通信协议**：
 
-### 5.2 消息类型
+| 消息类型 | 方向 | 枚举值 | 说明 |
+|---------|------|--------|------|
+| `requestConfig` | Ext→App | `ExtensionToMainAction.requestConfig` | Extension 请求菜单配置 |
+| `menuConfig` | App→Ext | `MainToExtensionAction.menuConfig` | 主 App 推送菜单配置 |
+| `running` | App→Ext | `MainToExtensionAction.running` | 主 App 启动通知（携带 MenuSnapshot） |
+| `click` | Ext→App | `ExtensionToMainAction.click` | 用户点击菜单项 |
+| `heartbeat` | Ext→App | `ExtensionToMainAction.heartbeat` | 心跳消息 |
 
-| 消息类型 | 方向 | 说明 |
-|---------|------|------|
-| `menu.request` | Ext→App | Extension 请求菜单配置 |
-| `menu.update` | App→Ext | 主 App 推送菜单更新 |
-| `menu.action` | Ext→App | 用户点击菜单项 |
-| `running` | App→Ext | 主 App 启动通知 |
-| `heartbeat` | Ext→App | 心跳消息 |
-
-### 5.3 菜单数据结构
+### 5.2 菜单数据结构
 
 ```swift
 struct MenuSnapshot: Codable {
     let version: Int          // 版本号，用于防重防乱序
-    let items: MenuConfigPayload
+    let config: MenuConfigPayload
+}
+
+// running 消息携带 MenuSnapshot
+func sendRunningMessage() {
+    let snapshot = MenuSnapshot(version: menuVersion, config: buildMenuConfig())
+    Messager.shared.sendToExtension(.running, data: snapshot)
 }
 ```
 
@@ -296,11 +356,13 @@ struct MenuSnapshot: Codable {
 **步骤**：
 1. 在 `RClickApp.swift` 添加 `lastMenuSnapshot` 和 `menuVersion`
 2. 每次菜单配置变更时更新快照
-3. 注册 `menu.request` 消息处理器
+3. 注册 `requestConfig` 消息处理器
+4. `running` 消息携带 `MenuSnapshot`
 
 **验收标准**：
 - [ ] 主 App 保存最后菜单状态
-- [ ] 响应请求时发送快照
+- [ ] `running` 消息携带 `MenuSnapshot`
+- [ ] 响应 `requestConfig` 请求时发送快照
 
 ---
 
@@ -327,23 +389,26 @@ struct MenuSnapshot: Codable {
 
 **步骤**：
 1. 在 `RClickApp.swift` 添加重试定时器
-2. 每 5 秒发送 `running` 消息，持续 30 秒
+2. 每 5 秒发送 `running` 消息（携带 `MenuSnapshot`），持续 30 秒
 
 **验收标准**：
 - [ ] 主 App 启动后发送 6 次 `running` 消息
 
 ---
 
-### Phase 4: 自动重连（P1）
+### Phase 4: 心跳检测（P1）
 
-**目标**：覆盖"运行中断"场景
+**目标**：检测 Extension 存活状态
 
 **步骤**：
 1. 添加心跳超时检测（15 秒）
-2. 超时后发送 `menu.request` 而非延迟消息
+2. 超时后标记 Extension 离线
+3. 用户可手动"刷新 Extension"
 
 **验收标准**：
-- [ ] 心跳超时后自动触发重连
+- [ ] Extension 每 10 秒发送 `heartbeat`
+- [ ] 主 App 15 秒未收到心跳，标记离线
+- [ ] 用户可点击"刷新 Extension"按钮
 
 ---
 
@@ -357,8 +422,7 @@ struct MenuSnapshot: Codable {
 
 **验收标准**：
 - [ ] 点击按钮后菜单更新
-
----
+```
 
 ## 七、预期效果
 
@@ -366,11 +430,11 @@ struct MenuSnapshot: Codable {
 
 | 场景 | 行为 | 结果 |
 |------|------|------|
-| 主 App 启动 | 发送 running × 6 + 保存快照 | Extension 加载后收到消息 |
-| Extension 重启 | 主动发送 menu.request | 立即获取最新状态 |
-| 缓存为空 | menu(for:) 触发请求 | 自愈恢复 |
+| 主 App 启动 | 发送 `running` × 6 + 保存快照 | Extension 加载后收到消息 |
+| Extension 重启 | 主动发送 `requestConfig` | 立即获取最新状态 |
+| 缓存为空 | `menu(for:)` 触发请求 | 自愈恢复 |
 | 消息丢失 | 下次请求获取快照 | 状态一致 |
-| Extension 超时 | 15 秒后自动重连 | 自动恢复连接 |
+| Extension 超时 | 15 秒未收到 `heartbeat` | 标记离线，用户可刷新 |
 | 用户手动刷新 | 点击菜单按钮 | 立即刷新 |
 
 ### 7.2 能力评估
@@ -409,16 +473,16 @@ log show --predicate 'subsystem == "cn.wflixu.RClick" AND category == "FinderOpe
 2. **测试主动请求**：
    - 终止 Extension
    - 重启 Extension
-   - 观察日志中 `menu.request` 和 `menu.update`
+   - 观察日志中 `requestConfig` 和 `menuConfig` 消息
 
 3. **测试版本检查**：
    - 快速多次修改配置
    - 验证 Extension 只接受最新版本
 
-4. **测试自动重连**：
+4. **测试心跳检测**：
    - 启动主 App 和 Extension
    - 使用 `killall FinderSyncExt` 终止 Extension
-   - 观察是否自动恢复
+   - 观察主 App 是否在 15 秒后标记离线
 
 ---
 
@@ -426,10 +490,13 @@ log show --predicate 'subsystem == "cn.wflixu.RClick" AND category == "FinderOpe
 
 ### 9.1 设计约束
 
-1. **Notification 只是信号**：不要依赖通知携带全部数据
-2. **状态快照是唯一真相**：所有恢复都从快照获取
+1. **Notification 只是信号**：通知只能当"信号"，不能当"真相"
+2. **状态快照是唯一真相**：主 App 保存 `lastMenuSnapshot` 作为真相源
 3. **版本号必须单调递增**：防止乱序问题
 4. **消息处理必须幂等**：重复消息不能产生副作用
+5. **双向心跳机制**：
+   - Main → Ext: `running`（启动时 + 重试 6 次）
+   - Ext → Main: `heartbeat`（每 10 秒）
 
 ### 9.2 工程建议
 
@@ -442,6 +509,6 @@ log show --predicate 'subsystem == "cn.wflixu.RClick" AND category == "FinderOpe
 
 ## 十、参考文档
 
-- **temp.md**：专家评审意见和优化方案
 - **communication-protocol.md**：通信协议设计
 - **重构设计.md**：整体架构设计
+- **重构计划.md**：实施计划

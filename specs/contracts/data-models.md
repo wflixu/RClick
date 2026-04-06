@@ -64,8 +64,31 @@
 | 属性 | 之前设计 | 简化后设计 |
 |------|---------|-----------|
 | 复杂数据 | `argumentsData: Data?` | `arguments: [String]` (SwiftData 6.0+ 支持) |
-| 时间戳 | `createdAt`, `updatedAt` | 移除 |
-| Bookmark | `PermissiveDir` | 移除 |
+| 时间戳 | `createdAt`, `updatedAt` | 移除（配置数据不需要） |
+| Bookmark | `PermissiveDir` | 移除（完全磁盘访问权限） |
+
+### 2.3 新建文件类型实体（NewFileTypeEntity）
+
+存储新建文件类型配置。
+
+```swift
+import SwiftData
+import Foundation
+
+/// 新建文件类型实体 - 用于存储新建文件类型配置
+@Model
+final class NewFileTypeEntity {
+    @Attribute(.unique) var id: String
+    var fileExtension: String
+    var name: String
+    var icon: String
+    var isEnabled: Bool
+    var sortOrder: Int
+    var templatePath: String?  // 模板文件路径（可选）
+    var openAppPath: String?   // 默认打开应用路径（可选）
+
+    init(id: String = UUID().uuidString,
+         fileExtension: String,
          name: String,
          icon: String = "doc",
          isEnabled: Bool = true,
@@ -80,8 +103,6 @@
         self.sortOrder = sortOrder
         self.templatePath = templatePath
         self.openAppPath = openAppPath
-        self.createdAt = Date()
-        self.updatedAt = Date()
     }
 }
 ```
@@ -122,8 +143,6 @@ final class CommonDirEntity {
     var icon: String
     var sortOrder: Int
     var isEnabled: Bool
-    var createdAt: Date
-    var updatedAt: Date
 
     init(id: String = UUID().uuidString,
          name: String,
@@ -137,8 +156,6 @@ final class CommonDirEntity {
         self.icon = icon
         self.sortOrder = sortOrder
         self.isEnabled = isEnabled
-        self.createdAt = Date()
-        self.updatedAt = Date()
     }
 
     var path: URL {
