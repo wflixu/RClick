@@ -143,7 +143,10 @@ struct MenuConfigPayload: Codable {
 
     /// 常用目录菜单项列表
     let commonDirs: [CommonDirMenuItem]
-    
+
+    /// 脚本菜单项列表（新增）
+    let scripts: [ScriptMenuItem]
+
     /// 菜单版本号（用于去重和防乱序）
     let version: Int
 }
@@ -225,6 +228,25 @@ struct CommonDirMenuItem: Codable {
 }
 ```
 
+#### 4.1.5 脚本菜单项
+
+```swift
+/// 脚本菜单项（执行自定义脚本）
+struct ScriptMenuItem: Codable {
+    /// 菜单项唯一标识
+    let id: String
+
+    /// 菜单项显示名称
+    let name: String
+
+    /// SF Symbol 图标名称（如 "terminal"）
+    let icon: String
+
+    /// 脚本类型
+    let scriptType: String  // "shell" | "python" | "applescript"
+}
+```
+
 ### 图标传输策略总结
 
 | 菜单类型 | 图标来源 | 传输内容 | 理由 |
@@ -233,6 +255,7 @@ struct CommonDirMenuItem: Codable {
 | 应用菜单 | App 路径 | `appURL: URL` | 系统自动缓存应用图标 |
 | 新建文件 | SF Symbol | `icon: String` | 数据量小，系统图标 |
 | 常用目录 | SF Symbol | `icon: String` | 数据量小，系统图标 |
+| 脚本菜单 | SF Symbol | `icon: String` | 数据量小，系统图标 |
 
 **为什么不传输图标 Data？**
 
@@ -280,6 +303,7 @@ enum MenuItemType: String, Codable {
     case app = "app"                // 应用菜单
     case newFile = "new-file"       // 新建文件
     case commonDir = "common-dir"   // 常用目录
+    case script = "script"          // 执行脚本
 }
 ```
 

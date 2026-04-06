@@ -25,6 +25,7 @@
 | **动作模型** | 右键菜单动作配置 | SwiftData |
 | **文件类型模型** | 新建文件模板配置 | SwiftData |
 | **目录模型** | 常用目录配置 | SwiftData |
+| **脚本模型** | 用户自定义脚本配置 | SwiftData |
 | **内存模型** | 运行时数据表示 | 纯 Swift 结构 |
 | **消息模型** | 进程间通信数据传输 | Codable 协议 |
 
@@ -46,6 +47,7 @@
 │ ActionEntity    │     │ RCAction        │     │ ActionMenuItem  │
 │ NewFileTypeEntity│    │ NewFile         │     │ NewFileMenuItem │
 │ CommonDirEntity │     │ CommonDir       │     │ CommonDirMenuItem│
+│ ScriptEntity    │     │ RCScript        │     │ ScriptMenuItem  │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
@@ -191,6 +193,77 @@ extension CommonDirEntity {
 
 ---
 
+### 2.5 脚本实体（ScriptEntity）
+
+存储用户自定义脚本配置，支持 Shell、Python、AppleScript 三种类型。
+
+```swift
+import SwiftData
+import Foundation
+
+/// 脚本实体 - 用于存储用户自定义脚本配置
+@Model
+final class ScriptEntity {
+    @Attribute(.unique) var id: String
+    var name: String              // 菜单显示名称
+    var scriptType: String        // "shell" | "python" | "applescript"
+    var scriptContent: String     // 脚本内容
+    var icon: String              // SF Symbol 图标
+    var sortOrder: Int
+    var isEnabled: Bool
+
+    init(id: String = UUID().uuidString,
+         name: String,
+         scriptType: String,
+         scriptContent: String,
+         icon: String = "terminal",
+         sortOrder: Int = 0,
+         isEnabled: Bool = true) {
+        self.id = id
+        self.name = name
+        self.scriptType = scriptType
+        self.scriptContent = scriptContent
+        self.icon = icon
+        self.sortOrder = sortOrder
+        self.isEnabled = isEnabled
+    }
+}
+```
+
+#### 预定义脚本模板（可选）
+
+```swift
+extension ScriptEntity {
+    static func createDefaultScripts() -> [ScriptEntity] {
+        return [
+            ScriptEntity(
+                name: "显示文件信息",
+                scriptType: "shell",
+                scriptContent: "mdls \"$1\"",
+                icon: "info.circle",
+                sortOrder: 0
+            ),
+            ScriptEntity(
+                name: "在 VSCode 打开",
+                scriptType: "shell",
+                scriptContent: "open -a \"Visual Studio Code\" \"$@\"",
+                icon: "terminal",
+                sortOrder: 1
+            ),
+            ScriptEntity(
+                name: "获取文件哈希",
+                scriptType: "shell",
+                scriptContent: "shasum -a 256 \"$@\"",
+                icon: "hash",
+                sortOrder: 2
+            ),
+        ]
+    }
+}
+```
+
+---
+
 ## 三、基础协议和模型（RCBase）
 
 ### 3.1 基础协议
@@ -328,6 +401,26 @@ struct CommonDir: RCBase {
 }
 ```
 
+### 3.6 脚本（RCScript）
+
+```swift
+struct RCScript: RCBase {
+    var id: String
+    var name: String
+    var scriptType: ScriptType
+    var scriptContent: String
+    var icon: String
+    var enabled: Bool
+    var idx: Int
+    
+    enum ScriptType: String, Codable {
+        case shell = "shell"
+        case python = "python"
+        case applescript = "applescript"
+    }
+}
+```
+
 ---
 
 ## 四、消息传输模型（Codable）
@@ -406,6 +499,25 @@ struct CommonDirMenuItem: Codable {
 }
 ```
 
+### 4.5 脚本菜单项（ScriptMenuItem）
+
+```swift
+/// Menu item for custom scripts
+struct ScriptMenuItem: Codable {
+    let id: String
+    let name: String
+    let icon: String
+    let scriptType: String  // "shell" | "python" | "applescript"
+
+    init(id: String, name: String, icon: String, scriptType: String) {
+        self.id = id
+        self.name = name
+        self.icon = icon
+        self.scriptType = scriptType
+    }
+}
+```
+
 ---
 
 ## 五、模型转换
@@ -451,6 +563,17 @@ extension CommonDirEntity {
             id: id,
             name: name,
             icon: icon
+        )
+    }
+}
+
+extension ScriptEntity {
+    func toMenuItem() -> ScriptMenuItem {
+        ScriptMenuItem(
+            id: id,
+            name: name,
+            icon: icon,
+            scriptType: scriptType
         )
     }
 }
@@ -509,112 +632,27 @@ extension CommonDirEntity {
         )
     }
 }
-```
 
----
-
-## 六、Bookmark 缓存管理
-
-### 6.1 BookmarkManager
-
-```swift
-import Foundation
-
-/// Bookmark 管理器 - 缓存用户授权的文件夹访问权限
-actor BookmarkManager {
-    static let shared = BookmarkManager()
-
-    private var bookmarks: [String: Data] = [:]  // path -> bookmark data
-    private let userDefaultsKey = "FolderBookmarks"
-
-    private init() {
-        loadBookmarks()
-    }
-
-    /// 加载保存的 bookmarks
-    private func loadBookmarks() {
-        if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
-           let decoded = try? JSONDecoder().decode([String: Data].self, from: data) {
-            bookmarks = decoded
-        }
-    }
-
-    /// 保存 bookmarks 到持久化存储
-    private func saveBookmarks() {
-        if let encoded = try? JSONEncoder().encode(bookmarks) {
-            UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
-        }
-    }
-
-    /// 为 URL 创建 bookmark
-    func createBookmark(for url: URL) throws -> Data {
-        let bookmark = try url.bookmarkData(
-            options: [.withSecurityScope],
-            includingResourceValuesForKeys: nil,
-            relativeTo: nil
+extension ScriptEntity {
+    convenience init(from script: RCScript, sortOrder: Int = 0) {
+        self.init(
+            id: script.id,
+            name: script.name,
+            scriptType: script.scriptType.rawValue,
+            scriptContent: script.scriptContent,
+            icon: script.icon,
+            sortOrder: sortOrder,
+            isEnabled: script.enabled
         )
-        bookmarks[url.path] = bookmark
-        saveBookmarks()
-        return bookmark
-    }
-
-    /// 从 bookmark 恢复 URL 访问
-    func restoreAccess(from bookmark: Data, for path: String) -> URL? {
-        var isStale = false
-        guard let url = try? URL(
-            resolvingBookmarkData: bookmark,
-            options: [.withSecurityScope],
-            relativeTo: nil,
-            bookmarkDataIsStale: &isStale
-        ) else {
-            return nil
-        }
-
-        // 如果 bookmark 已过期，尝试更新
-        if isStale, let freshBookmark = try? createBookmark(for: url) {
-            bookmarks[path] = freshBookmark
-            saveBookmarks()
-        }
-
-        return url
-    }
-
-    /// 获取 URL 的 bookmark（如果存在）
-    func getBookmark(for path: String) -> Data? {
-        return bookmarks[path]
-    }
-
-    /// 删除 bookmark
-    func removeBookmark(for path: String) {
-        bookmarks.removeValue(forKey: path)
-        saveBookmarks()
-    }
-
-    /// 访问授权的文件（自动管理 security scope）
-    func accessFile<T>(at path: String, operation: (URL) throws -> T) -> T? {
-        guard let bookmark = bookmarks[path],
-              let url = restoreAccess(from: bookmark, for: path) else {
-            return nil
-        }
-
-        guard url.startAccessingSecurityScopedResource() else {
-            return nil
-        }
-
-        defer {
-            url.stopAccessingSecurityScopedResource()
-        }
-
-        return try? operation(url)
     }
 }
 ```
 
 ---
 
-## 七、数据持久化配置
+## 六、数据持久化配置
 
-### 7.1 SwiftData 容器
+### 6.1 SwiftData 容器
 
 ```swift
 import SwiftData
@@ -627,7 +665,8 @@ final class SharedDataManager {
             AppEntity.self,
             ActionEntity.self,
             NewFileTypeEntity.self,
-            CommonDirEntity.self
+            CommonDirEntity.self,
+            ScriptEntity.self
         ])
 
         let modelConfiguration = ModelConfiguration(
@@ -648,7 +687,7 @@ final class SharedDataManager {
 }
 ```
 
-### 7.2 应用组配置
+### 6.2 应用组配置
 
 为了让 Extension 也能访问数据（虽然在本架构中 Extension 不直接读取），使用应用组共享容器：
 
@@ -662,7 +701,7 @@ let modelConfiguration = ModelConfiguration(
 
 ---
 
-## 八、参考文档
+## 七、参考文档
 
 - **重构设计**: [../重构设计.md](../重构设计.md)
 - **通信协议**: [communication-protocol.md](communication-protocol.md)
