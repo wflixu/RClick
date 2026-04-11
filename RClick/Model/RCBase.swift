@@ -219,18 +219,14 @@ extension NewFile {
 struct AppMenuItem: Codable {
     let id: String
     let name: String
-    let url: URL
-    let icon: String?
-    let arguments: [String]
-    let environment: [String: String]
+    let icon: String
+    let tag: Int
 
-    init(id: String, name: String, url: URL, icon: String? = nil, arguments: [String] = [], environment: [String: String] = [:]) {
+    init(id: String, name: String, icon: String, tag: Int) {
         self.id = id
         self.name = name
-        self.url = url
         self.icon = icon
-        self.arguments = arguments
-        self.environment = environment
+        self.tag = tag
     }
 }
 
@@ -238,16 +234,42 @@ struct AppMenuItem: Codable {
 struct ActionMenuItem: Codable {
     let id: String
     let name: String
-    let idx: Int
     let icon: String
-    let enabled: Bool
+    let tag: Int
 
-    init(id: String, name: String, idx: Int, icon: String, enabled: Bool = true) {
+    init(id: String, name: String, icon: String, tag: Int) {
         self.id = id
         self.name = name
-        self.idx = idx
         self.icon = icon
-        self.enabled = enabled
+        self.tag = tag
+    }
+}
+
+/// Menu item for creating new files
+struct NewFileMenuItem: Codable {
+    let id: String
+    let name: String
+    let ext: String
+    let icon: String
+
+    init(id: String, name: String, ext: String, icon: String) {
+        self.id = id
+        self.name = name
+        self.ext = ext
+        self.icon = icon
+    }
+}
+
+/// Menu item for common directories
+struct CommonDirMenuItem: Codable {
+    let id: String
+    let name: String
+    let icon: String
+
+    init(id: String, name: String, icon: String) {
+        self.id = id
+        self.name = name
+        self.icon = icon
     }
 }
 
@@ -259,9 +281,8 @@ extension RCAction {
         return ActionMenuItem(
             id: id,
             name: name,
-            idx: idx,
             icon: icon,
-            enabled: enabled
+            tag: idx
         )
     }
 }
@@ -272,10 +293,8 @@ extension OpenWithApp {
         return AppMenuItem(
             id: id,
             name: name,
-            url: url,
-            icon: nil,
-            arguments: arguments,
-            environment: environment
+            icon: "app",
+            tag: 0
         )
     }
 }
