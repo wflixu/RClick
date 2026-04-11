@@ -177,42 +177,19 @@ struct GeneralSettingsTabView: View {
         // Finder 扩展状态
         finderSyncStatus = FIFinderSyncController.isExtensionEnabled ? .enabled : .disabled
 
-        // 完全磁盘访问权限检测
-        fullDiskAccessStatus = hasFullDiskAccess() ? .enabled : .disabled
+        // 完全磁盘访问权限检测（使用 PermissionChecker）
+        fullDiskAccessStatus = PermissionChecker.hasFullDiskAccess() ? .enabled : .disabled
 
-        // 辅助功能权限检测
-        accessibilityStatus = hasAccessibilityPermission() ? .enabled : .disabled
+        // 辅助功能权限检测（使用 PermissionChecker）
+        accessibilityStatus = PermissionChecker.hasAccessibilityPermission() ? .enabled : .disabled
     }
 
     private func hasFullDiskAccess() -> Bool {
-        // 通过尝试访问受保护目录来检测完全磁盘访问权限
-        // 使用多个受保护目录进行测试，提高准确性
-        let testPaths = [
-            "/Library/Application Support",
-            "/Library/Logs",
-            NSString(string: "~/Library/Application Support").expandingTildeInPath
-        ]
-
-        for path in testPaths {
-            let testURL = URL(fileURLWithPath: path)
-            do {
-                // 尝试读取目录内容
-                let _ = try FileManager.default.contentsOfDirectory(at: testURL, includingPropertiesForKeys: nil, options: [])
-                // 如果能读取，继续测试下一个路径
-                continue
-            } catch {
-                // 如果任何一个受保护目录无法访问，说明没有完全磁盘访问权限
-                return false
-            }
-        }
-        // 所有路径都能访问，说明有完全磁盘访问权限
-        return true
+        return PermissionChecker.hasFullDiskAccess()
     }
 
     private func hasAccessibilityPermission() -> Bool {
-        // 检查辅助功能权限 - 使用更可靠的检测方法
-        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false] as CFDictionary
-        return AXIsProcessTrustedWithOptions(options)
+        return PermissionChecker.hasAccessibilityPermission()
     }
 
     // MARK: - 权限设置打开
@@ -223,11 +200,11 @@ struct GeneralSettingsTabView: View {
     }
 
     private func openFullDiskAccessSettings() {
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")!)
+        PermissionChecker.openFullDiskAccessSettings()
     }
 
     private func openAccessibilitySettings() {
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
+        PermissionChecker.openAccessibilitySettings()
     }
 
     // MARK: - 设置管理
