@@ -77,6 +77,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let maxRunningMessageRetryCount: Int = 6
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        logger.info("applicationDidFinishLaunching called")
+
         // 在 app 启动后执行的函数
 
         if showInDock {
@@ -117,6 +119,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             // Register message handlers using type-safe API
+            logger.info("Registering message handlers")
             messager.onExtensionMessage(.click) { [weak self] data in
                 guard let self = self else { return }
                 if let event: ClickEventPayload = messager.decode(data) {
@@ -186,7 +189,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             actions: actionMenuItems,
             apps: appMenuItems,
             newFiles: newFileMenuItems,
-            commonDirs: commonDirMenuItems
+            commonDirs: commonDirMenuItems,
+            actionsCollapsed: false,      // Actions 默认不折叠
+            appsCollapsed: false,         // Open With 默认不折叠
+            newFilesCollapsed: true,      // New File 默认折叠
+            commonDirsCollapsed: true     // Common Dirs 默认折叠
         )
 
         // 更新快照

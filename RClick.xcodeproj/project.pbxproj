@@ -118,11 +118,38 @@
 			);
 			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
 		};
+		5C96A3872F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = 5C8A28E82F83D65B00FE687C /* RClickTests */;
+		};
+		5C96A3882F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = 5C8A28F22F83D65B00FE687C /* RClickUITests */;
+		};
+		5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Localizable.xcstrings,
+			);
+			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5C8A28DC2F83D65900FE687C /* RClick */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				5C96A3872F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickTests" target */,
+				5C96A3882F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickUITests" target */,
+				5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */,
+			);
 			path = RClick;
 			sourceTree = "<group>";
 		};
@@ -142,6 +169,11 @@
 				5C8A29232F83D74A00FE687C /* Exceptions for "FinderSyncExt" folder in "FinderSyncExt" target */,
 			);
 			path = FinderSyncExt;
+			sourceTree = "<group>";
+		};
+		5C8A29302F83D85000FE687C /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -185,6 +217,7 @@
 				5C8A28EC2F83D65B00FE687C /* RClickTests */,
 				5C8A28F62F83D65B00FE687C /* RClickUITests */,
 				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
+				5C8A29302F83D85000FE687C /* Shared */,
 				5C8A28DB2F83D65900FE687C /* Products */,
 				5C969FB12F8A494600D022F8 /* CLAUDE.md */,
 				5C969FB22F8A494600D022F8 /* LICENSE */,
@@ -246,6 +279,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				5C8A28DC2F83D65900FE687C /* RClick */,
+				5C8A29302F83D85000FE687C /* Shared */,
 			);
 			name = RClick;
 			packageProductDependencies = (
@@ -314,6 +348,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
+				5C8A29302F83D85000FE687C /* Shared */,
 			);
 			name = FinderSyncExt;
 			packageProductDependencies = (
@@ -623,7 +658,7 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClickDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260411002;
+				CURRENT_PROJECT_VERSION = 20260411005;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -656,7 +691,7 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260411002;
+				CURRENT_PROJECT_VERSION = 20260411005;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -767,7 +802,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260411002;
+				CURRENT_PROJECT_VERSION = 20260411005;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -800,7 +835,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260411002;
+				CURRENT_PROJECT_VERSION = 20260411005;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;

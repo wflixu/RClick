@@ -11,17 +11,6 @@ import OSLog
 import AppKit
 import CryptoKit
 
-// MARK: - 消息签名辅助类型
-
-/// 原始数据包装器 (用于签名验证)
-struct RawDataWrapper: Codable {
-    let data: Data
-
-    init(data: Data) {
-        self.data = data
-    }
-}
-
 // MARK: - 消息类型枚举
 
 /// 主程序发送给 Extension 的消息类型
@@ -60,19 +49,35 @@ struct MenuConfigPayload: Codable {
     let newFiles: [NewFileMenuItem]
     /// 常用目录菜单项列表
     let commonDirs: [CommonDirMenuItem]
+    /// 是否折叠动作菜单（默认 false）
+    let actionsCollapsed: Bool
+    /// 是否折叠应用菜单（默认 false）
+    let appsCollapsed: Bool
+    /// 是否折叠新建文件菜单（默认 true）
+    let newFilesCollapsed: Bool
+    /// 是否折叠常用目录菜单（默认 true）
+    let commonDirsCollapsed: Bool
 
     init(
         version: Int = 1,
         actions: [ActionMenuItem] = [],
         apps: [AppMenuItem] = [],
         newFiles: [NewFileMenuItem] = [],
-        commonDirs: [CommonDirMenuItem] = []
+        commonDirs: [CommonDirMenuItem] = [],
+        actionsCollapsed: Bool = false,
+        appsCollapsed: Bool = false,
+        newFilesCollapsed: Bool = true,
+        commonDirsCollapsed: Bool = true
     ) {
         self.version = version
         self.actions = actions
         self.apps = apps
         self.newFiles = newFiles
         self.commonDirs = commonDirs
+        self.actionsCollapsed = actionsCollapsed
+        self.appsCollapsed = appsCollapsed
+        self.newFilesCollapsed = newFilesCollapsed
+        self.commonDirsCollapsed = commonDirsCollapsed
     }
 }
 
@@ -257,12 +262,14 @@ class Messager {
     func sendToExtension<T: Codable>(_ action: MainToExtensionAction, data: T? = nil) {
         let message = MainToExtensionMessage(action: action, data: data)
         sendMessage(message, via: Self.mainToExtensionNotification)
+        logger.info("Sent to extension: \(action.rawValue)")
     }
 
     /// Extension 发送消息给主程序
     func sendToMain<T: Codable>(_ action: ExtensionToMainAction, data: T? = nil) {
         let message = ExtensionToMainMessage(action: action, data: data)
         sendMessage(message, via: Self.extensionToMainNotification)
+        logger.info("Sent to main: \(action.rawValue)")
     }
 
     /// 发送消息到通知中心
@@ -278,6 +285,7 @@ class Messager {
         }
 
         logger.info("Sending message via \(notificationName)")
+        logger.debug("Message JSON: \(jsonString.prefix(200))...")
         center.postNotificationName(
             NSNotification.Name(notificationName),
             object: jsonString,
@@ -311,11 +319,9 @@ class Messager {
             let message = try JSONDecoder().decode(MainToExtensionMessage.self, from: jsonData)
             logger.info("Received main-to-extension message: \(message.action.rawValue)")
 
-            // 验证签名并解码数据
-            let decodedData = decodeSignedData(message.signedData)
-
+            // 直接传递 signedData，让 handler 自己解码
             if let handler = mainToExtensionHandlers[message.action] {
-                handler(decodedData)
+                handler(message.signedData)
             } else {
                 logger.warning("No handler registered for action: \(message.action.rawValue)")
             }
@@ -335,36 +341,14 @@ class Messager {
             let message = try JSONDecoder().decode(ExtensionToMainMessage.self, from: jsonData)
             logger.info("Received extension-to-main message: \(message.action.rawValue)")
 
-            // 验证签名并解码数据
-            let decodedData = decodeSignedData(message.signedData)
-
+            // 直接传递 signedData，让 handler 自己解码
             if let handler = extensionToMainHandlers[message.action] {
-                handler(decodedData)
+                handler(message.signedData)
             } else {
                 logger.warning("No handler registered for action: \(message.action.rawValue)")
             }
         } catch {
             logger.error("Failed to decode message: \(error)")
-        }
-    }
-
-    /// 解码并验证签名的数据
-    private func decodeSignedData(_ signedData: Data?) -> Data? {
-        guard let signedData = signedData else { return nil }
-
-        do {
-            let signedPayload = try JSONDecoder().decode(SignedPayload<RawDataWrapper>.self, from: signedData)
-
-            // 验证签名
-            if MessageSecurity.verify(signedPayload) {
-                return signedPayload.payload.data
-            } else {
-                logger.warning("Message signature verification failed, dropping message")
-                return nil
-            }
-        } catch {
-            logger.error("Failed to decode signed data: \(error)")
-            return nil
         }
     }
 
@@ -412,5 +396,26 @@ class Messager {
     func decode<T: Codable>(_ data: Data?) -> T? {
         guard let data = data else { return nil }
         return try? JSONDecoder().decode(T.self, from: data)
+    }
+
+    /// 解码并验证签名的数据为指定类型
+    func decodeSignedData<T: Codable>(_ signedData: Data?, as type: T.Type = T.self) -> T? {
+        guard let signedData = signedData else { return nil }
+
+        do {
+            // 解码为 SignedPayload<T>
+            let signedPayload = try JSONDecoder().decode(SignedPayload<T>.self, from: signedData)
+
+            // 验证签名
+            if MessageSecurity.verify(signedPayload) {
+                return signedPayload.payload
+            } else {
+                logger.warning("Message signature verification failed, dropping message")
+                return nil
+            }
+        } catch {
+            logger.error("Failed to decode signed data: \(error)")
+            return nil
+        }
     }
 }

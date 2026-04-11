@@ -49,7 +49,6 @@ final class ActionEntity {
         return [
             ActionEntity(id: "copy-path", name: "复制路径", icon: "doc.on.doc", sortOrder: 0),
             ActionEntity(id: "copy-filename", name: "复制文件名", icon: "doc.text", sortOrder: 1),
-            ActionEntity(id: "reveal", name: "在Finder中显示", icon: "folder", sortOrder: 2),
             ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", sortOrder: 3),
             ActionEntity(id: "delete", name: "删除", icon: "trash", sortOrder: 4),
             ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", sortOrder: 5),

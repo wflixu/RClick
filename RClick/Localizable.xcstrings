@@ -218,6 +218,23 @@
         }
       }
     },
+    "Common Dirs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Dirs"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
     "Common Folders" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -297,6 +314,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示名称"
+          }
+        }
+      }
+    },
+    "DOCX" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOCX"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word 文档"
           }
         }
       }
@@ -442,6 +476,23 @@
     "Item at %@" : {
 
     },
+    "JSON" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 文件"
+          }
+        }
+      }
+    },
     "Launch at login" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -455,6 +506,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登录时启动"
+          }
+        }
+      }
+    },
+    "Markdown" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown 文档"
           }
         }
       }
@@ -533,6 +601,23 @@
         }
       }
     },
+    "Open With" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open With"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用...打开"
+          }
+        }
+      }
+    },
     "Open With %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -546,6 +631,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用 %@ 打开"
+          }
+        }
+      }
+    },
+    "PPTX" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PPTX"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PowerPoint 演示文稿"
           }
         }
       }
@@ -765,6 +867,23 @@
         }
       }
     },
+    "TXT" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TXT"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TXT 文本"
+          }
+        }
+      }
+    },
     "Unhide" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -811,6 +930,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要添加新功能，在这里反馈"
+          }
+        }
+      }
+    },
+    "XLSX" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XLSX"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excel 表格"
           }
         }
       }

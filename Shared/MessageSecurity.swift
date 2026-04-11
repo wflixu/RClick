@@ -36,7 +36,8 @@ public class MessageSecurity {
 
         return SignedPayload(
             payload: payload,
-            signature: Data(hmac).base64EncodedString()
+            signature: Data(hmac).base64EncodedString(),
+            data: data
         )
     }
 
@@ -45,23 +46,30 @@ public class MessageSecurity {
     /// - Returns: 签名是否有效
     public static func verify<T: Codable>(_ signed: SignedPayload<T>) -> Bool {
         guard let signatureData = Data(base64Encoded: signed.signature) else {
-            os_log("Failed to decode signature from base64", log: OSLog.default, type: .error)
+            logger.error("Failed to decode signature from base64")
+            return false
+        }
+
+        // 从保存的 jsonData 恢复原始数据
+        guard let payloadData = Data(base64Encoded: signed.jsonData) else {
+            logger.error("Failed to decode jsonData from base64")
             return false
         }
 
         let key = SymmetricKey(data: sharedKey.data(using: .utf8)!)
 
-        // 编码 payload
-        guard let payloadData = try? JSONEncoder().encode(signed.payload) else {
-            os_log("Failed to encode payload for verification", log: OSLog.default, type: .error)
-            return false
-        }
-
-        // 计算预期的 HMAC
+        // 计算预期的 HMAC（使用保存的原始数据）
         let expectedHMAC = HMAC<SHA256>.authenticationCode(for: payloadData, using: key)
 
         // 比较签名（常数时间比较，防止时序攻击）
-        return signatureData.elementsEqual(Data(expectedHMAC))
+        let isValid = signatureData.elementsEqual(Data(expectedHMAC))
+
+        // 添加详细日志
+        logger.info("Signature verification: \(isValid ? "PASSED" : "FAILED")")
+        logger.info("Signature prefix: \(signed.signature.prefix(20))...")
+        logger.info("Payload data hash: \(MessageSecurity.hash(payloadData).prefix(16))...")
+
+        return isValid
     }
 }
 
@@ -75,13 +83,25 @@ public struct SignedPayload<T: Codable>: Codable {
     /// Base64 编码的 HMAC-SHA256 签名
     public let signature: String
 
+    /// Base64 编码的原始 JSON 数据（用于验证）
+    public let jsonData: String
+
     /// 初始化器
     /// - Parameters:
     ///   - payload: 原始消息载荷
     ///   - signature: Base64 编码的签名
-    public init(payload: T, signature: String) {
+    ///   - jsonData: Base64 编码的原始 JSON 数据
+    public init(payload: T, signature: String, jsonData: String) {
         self.payload = payload
         self.signature = signature
+        self.jsonData = jsonData
+    }
+
+    /// 内部初始化器 - 从签名操作创建
+    init(payload: T, signature: String, data: Data) {
+        self.payload = payload
+        self.signature = signature
+        self.jsonData = data.base64EncodedString()
     }
 }
 

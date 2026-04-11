@@ -174,7 +174,7 @@ extension RCAction {
     static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
     static let airdrop = RCAction(id: "airdrop", name: "AirDrop", idx: 4, icon: "paperplane")
 
-    static var all: [RCAction] = [.copyPath, .deleteDirect,.airdrop, .hideFileDir, .unhideFileDir]
+    static var all: [RCAction] = [.copyPath, .deleteDirect, .airdrop, .hideFileDir, .unhideFileDir]
 }
 
 // New File Type
@@ -205,6 +205,7 @@ struct NewFile: RCBase {
 extension NewFile {
     static var all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx]
 
+    // 图标名称对应 Assets.xcassets 中的 PNG 图标，已共享到 FinderSyncExt 目标
     static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "icon-file-json")
     static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "icon-file-txt")
     static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "icon-file-md")
@@ -221,12 +222,14 @@ struct AppMenuItem: Codable {
     let name: String
     let icon: String
     let tag: Int
+    let appURL: String?  // 应用路径，用于获取应用图标
 
-    init(id: String, name: String, icon: String, tag: Int) {
+    init(id: String, name: String, icon: String, tag: Int, appURL: String? = nil) {
         self.id = id
         self.name = name
         self.icon = icon
         self.tag = tag
+        self.appURL = appURL
     }
 }
 
@@ -294,7 +297,8 @@ extension OpenWithApp {
             id: id,
             name: name,
             icon: "app",
-            tag: 0
+            tag: 0,
+            appURL: url.path
         )
     }
 }
