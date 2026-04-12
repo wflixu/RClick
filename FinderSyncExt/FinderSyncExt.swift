@@ -370,6 +370,8 @@ class FinderSyncExt: FIFinderSync {
     }
 
     @objc private func handleAppClick(_ sender: NSMenuItem) {
+        logger.info("handleAppClick called with sender: \(sender.title), tag: \(sender.tag)")
+
         guard let config = cachedMenuConfig,
               let app = config.apps.first(where: { hashForApp($0) == sender.tag }) else {
             logger.warning("App not found for tag: \(sender.tag)")
@@ -380,6 +382,7 @@ class FinderSyncExt: FIFinderSync {
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
+        logger.info("Selected items: \(itemPaths)")
 
         let event = ClickEventPayload(
             itemId: app.id,
@@ -387,6 +390,7 @@ class FinderSyncExt: FIFinderSync {
             target: itemPaths,
             trigger: getTriggerForMenuKind()
         )
+        logger.info("Sending click event for app: \(app.name)")
         messager.sendClickEvent(event)
     }
 
