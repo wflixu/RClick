@@ -19,17 +19,14 @@ private let logger = Logger(
 
 // MARK: - Icon Loading
 
-/// 从 Assets 加载图标，支持 PNG 和 SF Symbol
+/// 从 Assets 加载图标
 private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
-    // 优先从 Assets.xcassets 加载 PNG 图标
+    // 优先从 Assets.xcassets 加载 PNG 图标，如果加载不到则尝试 SF Symbol
     if let icon = NSImage(named: iconName) {
         return icon
     }
-    // 其次尝试 SF Symbol
-    if let icon = NSImage(systemSymbolName: iconName, accessibilityDescription: description) {
-        return icon
-    }
-    return nil
+    // 尝试 SF Symbol（CommonDir 使用 SF Symbol 名称）
+    return NSImage(systemSymbolName: iconName, accessibilityDescription: description)
 }
 
 // MARK: - FinderSync Extension
@@ -285,8 +282,9 @@ class FinderSyncExt: FIFinderSync {
                     item.image = loadIcon(named: newFile.icon, accessibilityDescription: newFile.name)
                     newFilesSubMenu.addItem(item)
                 }
-                let newFilesItem = NSMenuItem(title: "New File", action: nil, keyEquivalent: "")
+                let newFilesItem = NSMenuItem(title: NSLocalizedString("New File", comment: ""), action: nil, keyEquivalent: "")
                 newFilesItem.submenu = newFilesSubMenu
+                newFilesItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "New File")
                 menu.addItem(newFilesItem)
             } else {
                 // 不折叠：直接显示菜单项
@@ -310,8 +308,9 @@ class FinderSyncExt: FIFinderSync {
                     item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
                     commonDirsSubMenu.addItem(item)
                 }
-                let commonDirsItem = NSMenuItem(title: "Common Dirs", action: nil, keyEquivalent: "")
+                let commonDirsItem = NSMenuItem(title: NSLocalizedString("Common Dirs", comment: ""), action: nil, keyEquivalent: "")
                 commonDirsItem.submenu = commonDirsSubMenu
+                commonDirsItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: "Common Dirs")
                 menu.addItem(commonDirsItem)
             } else {
                 // 不折叠：直接显示菜单项

@@ -268,11 +268,13 @@ struct CommonDirMenuItem: Codable {
     let id: String
     let name: String
     let icon: String
+    let url: String?  // 文件夹路径，用于获取文件夹图标
 
-    init(id: String, name: String, icon: String) {
+    init(id: String, name: String, icon: String, url: String? = nil) {
         self.id = id
         self.name = name
         self.icon = icon
+        self.url = url
     }
 }
 

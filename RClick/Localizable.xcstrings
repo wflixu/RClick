@@ -90,9 +90,6 @@
         }
       }
     },
-    "Add Item" : {
-
-    },
     "Add New File Type" : {
       "localizations" : {
         "en" : {
@@ -219,7 +216,6 @@
       }
     },
     "Common Dirs" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -473,9 +469,6 @@
         }
       }
     },
-    "Item at %@" : {
-
-    },
     "JSON" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -531,14 +524,7 @@
 
     },
     "New File" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New File"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -737,9 +723,6 @@
           }
         }
       }
-    },
-    "Select an item" : {
-
     },
     "Select App" : {
       "localizations" : {
