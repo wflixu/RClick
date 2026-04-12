@@ -232,28 +232,38 @@ class Messager {
     static let mainToExtensionNotification = "RClick.MainToExtension"
     static let extensionToMainNotification = "RClick.ExtensionToMain"
 
+    private let isExtension: Bool
+
     private init() {
+        // 判断当前是否为 Extension 进程
+        let bundleId = Bundle.main.bundleIdentifier ?? ""
+        self.isExtension = bundleId.hasSuffix(".FinderSyncExt")
+
         setupNotificationObservers()
     }
 
     // MARK: - 设置通知观察者
 
     private func setupNotificationObservers() {
-        // 监听主程序发送给 Extension 的消息
-        center.addObserver(
-            self,
-            selector: #selector(handleMainToExtensionMessage(_:)),
-            name: NSNotification.Name(Self.mainToExtensionNotification),
-            object: nil
-        )
-
-        // 监听 Extension 发送给主程序的消息
-        center.addObserver(
-            self,
-            selector: #selector(handleExtensionToMainMessage(_:)),
-            name: NSNotification.Name(Self.extensionToMainNotification),
-            object: nil
-        )
+        if isExtension {
+            // Extension 只监听主程序发来的消息
+            center.addObserver(
+                self,
+                selector: #selector(handleMainToExtensionMessage(_:)),
+                name: NSNotification.Name(Self.mainToExtensionNotification),
+                object: nil
+            )
+            logger.info("Messager initialized as Extension, listening to main-to-extension messages")
+        } else {
+            // 主程序只监听 Extension 发来的消息
+            center.addObserver(
+                self,
+                selector: #selector(handleExtensionToMainMessage(_:)),
+                name: NSNotification.Name(Self.extensionToMainNotification),
+                object: nil
+            )
+            logger.info("Messager initialized as Main App, listening to extension-to-main messages")
+        }
     }
 
     // MARK: - 发送消息
