@@ -38,17 +38,34 @@
 
 ### 1.4 模型关系图
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  SwiftData 模型   │ <-> │  内存模型 (RCBase) │ <-> │  消息模型        │
-│  (持久化存储)     │     │  (运行时使用)     │     │  (IPC 通信)       │
-├─────────────────┤     ├─────────────────┤     ├─────────────────┤
-│ AppEntity       │     │ OpenWithApp     │     │ AppMenuItem     │
-│ ActionEntity    │     │ RCAction        │     │ ActionMenuItem  │
-│ NewFileTypeEntity│    │ NewFile         │     │ NewFileMenuItem │
-│ CommonDirEntity │     │ CommonDir       │     │ CommonDirMenuItem│
-│ ScriptEntity    │     │ RCScript        │     │ ScriptMenuItem  │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
+```mermaid
+graph LR
+    subgraph Persistent["SwiftData 模型<br/>持久化存储"]
+        PE1[AppEntity]
+        PE2[ActionEntity]
+        PE3[NewFileTypeEntity]
+        PE4[CommonDirEntity]
+        PE5[ScriptEntity]
+    end
+
+    subgraph Memory["内存模型 (RCBase)<br/>运行时使用"]
+        M1[OpenWithApp]
+        M2[RCAction]
+        M3[NewFile]
+        M4[CommonDir]
+        M5[RCScript]
+    end
+
+    subgraph Message["消息模型<br/>IPC 通信"]
+        S1[AppMenuItem]
+        S2[ActionMenuItem]
+        S3[NewFileMenuItem]
+        S4[CommonDirMenuItem]
+        S5[ScriptMenuItem]
+    end
+
+    Persistent <--> Memory
+    Memory <--> Message
 ```
 
 ---

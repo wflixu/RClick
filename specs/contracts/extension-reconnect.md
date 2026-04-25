@@ -47,12 +47,17 @@
 
 ### 2.2 架构升级：从"纯推"到"推 + 拉混合"
 
-```
-之前：纯推送模式
-Main App → 发送消息 → Extension（靠运气接收）
+```mermaid
+graph LR
+    subgraph Before["纯推送模式"]
+        A1[Main App] -->|发送消息| A2[Extension]
+        A2 -.->|靠运气接收| A1
+    end
 
-升级：推 + 拉混合模式
-Main App ←→ 发送/请求 ←→ Extension（可主动拉取）
+    subgraph After["推 + 拉混合模式"]
+        B1[Main App] <-->|发送/请求| B2[Extension]
+        B2 -.->|可主动拉取| B1
+    end
 ```
 
 ---
@@ -71,31 +76,28 @@ Main App ←→ 发送/请求 ←→ Extension（可主动拉取）
 
 ### 3.2 架构图
 
-```
-┌─────────────────────────┐
-│      Main App           │
-│─────────────────────────│
-│  状态源（唯一真相）      │
-│  - MenuSnapshot 缓存    │
-│  - 版本计数器           │
-│  - Action Handler       │
-└───────────┬─────────────┘
-            │
-    ┌───────┼────────────────┐
-    │       │                │
-    ▼       ▼                ▼
-推送    请求/响应        心跳检测
-(信号)   (拉取补偿)        (可选)
-    │
-    ▼
-┌──────────────────────────────┐
-│   FinderSync Extension       │
-│──────────────────────────────│
-│  内存缓存（menu snapshot）    │
-│  UI 渲染（只读缓存）           │
-│  用户点击 → 发消息            │
-│  缓存过期 → 发送 request      │
-└──────────────────────────────┘
+```mermaid
+graph TB
+    subgraph MainApp["Main App"]
+        Snapshot["状态源（唯一真相）<br/>- MenuSnapshot 缓存<br/>- 版本计数器<br/>- Action Handler"]
+    end
+
+    MainApp -->|推送<br/>信号| Push
+    MainApp -->|请求/响应<br/>拉取补偿| Pull
+    MainApp -->|心跳检测<br/>可选| Heartbeat
+
+    subgraph Extension["FinderSync Extension"]
+        Cache["内存缓存（menu snapshot）"]
+        Render["UI 渲染（只读缓存）"]
+        Click["用户点击 → 发消息"]
+        Request["缓存过期 → 发送 request"]
+    end
+
+    Push --> Cache
+    Pull --> Cache
+    Cache --> Render
+    Click --> MainApp
+    Request --> Pull
 ```
 
 ---
@@ -219,12 +221,16 @@ class FinderSyncExt: FIFinderSync {
 
 #### 请求流程
 
-```
-Extension → requestConfig → Main App
-                            ↓
-Main App → menuConfig → Extension
-                            ↓
-Extension → 版本检查 → 缓存更新
+```mermaid
+sequenceDiagram
+    participant Ext as Extension
+    participant App as Main App
+
+    Ext->>App: requestConfig
+    App->>App: 查找 lastMenuSnapshot
+    App->>Ext: menuConfig (携带配置数据)
+    Ext->>Ext: 版本检查
+    Ext->>Ext: 缓存更新
 ```
 
 #### 实现方案
