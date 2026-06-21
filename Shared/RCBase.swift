@@ -51,12 +51,34 @@ extension OpenWithApp {
         self.init(appURL: url)
     }
 
-    static let vscode = OpenWithApp(bundleIdentifier: "com.microsoft.VSCode")
+    static var vscode: OpenWithApp? {
+        // 尝试多个 VS Code 变体的 bundle identifier
+        let identifiers = [
+            "com.microsoft.VSCode",
+            "com.microsoft.VSCodeInsiders",
+        ]
+        if let id = identifiers.first(where: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) != nil }),
+           let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: id) {
+            return OpenWithApp(appURL: url)
+        }
+        // 回退：搜索常见路径
+        let commonPaths = [
+            "/Applications/Visual Studio Code.app",
+            "/Applications/Visual Studio Code - Insiders.app",
+            NSHomeDirectory() + "/Applications/Visual Studio Code.app",
+        ]
+        for path in commonPaths {
+            if FileManager.default.fileExists(atPath: path) {
+                return OpenWithApp(appURL: URL(fileURLWithPath: path))
+            }
+        }
+        return nil
+    }
     static let terminal = OpenWithApp(bundleIdentifier: "com.apple.Terminal")
     static var defaultApps: [OpenWithApp] {
         [
             .terminal,
-            .vscode
+            vscode,
         ].compactMap { $0 }
     }
 }
@@ -281,11 +303,23 @@ struct CommonDirMenuItem: Codable {
 // MARK: - Conversion Extensions
 
 extension RCAction {
+    /// 本地化显示名称
+    var displayName: String {
+        switch id {
+        case "copy-path": return String(localized: "Copy Path")
+        case "delete-direct": return String(localized: "Delete Direct")
+        case "hide": return String(localized: "Hide")
+        case "unhide": return String(localized: "Unhide")
+        case "airdrop": return String(localized: "AirDrop")
+        default: return name
+        }
+    }
+
     /// Convert RCAction to ActionMenuItem for the extension
     func toActionMenuItem() -> ActionMenuItem {
         return ActionMenuItem(
             id: id,
-            name: name,
+            name: displayName,
             icon: icon,
             tag: idx
         )

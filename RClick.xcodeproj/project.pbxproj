@@ -136,7 +136,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
-				Localizable.xcstrings,
 			);
 			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
 		};

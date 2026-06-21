@@ -65,9 +65,9 @@ public class MessageSecurity {
         let isValid = signatureData.elementsEqual(Data(expectedHMAC))
 
         // 添加详细日志
-        logger.info("Signature verification: \(isValid ? "PASSED" : "FAILED")")
-        logger.info("Signature prefix: \(signed.signature.prefix(20))...")
-        logger.info("Payload data hash: \(MessageSecurity.hash(payloadData).prefix(16))...")
+        logger.debug("Signature verification: \(isValid ? "PASSED" : "FAILED")")
+        logger.debug("Signature prefix: \(signed.signature.prefix(20))...")
+        logger.debug("Payload data hash: \(MessageSecurity.hash(payloadData).prefix(16))...")
 
         return isValid
     }

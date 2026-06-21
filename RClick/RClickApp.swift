@@ -122,7 +122,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             logger.info("Registering message handlers")
             messager.onExtensionMessage(.click) { [weak self] data in
                 guard let self = self else { return }
-                if let event: ClickEventPayload = messager.decode(data) {
+                if let event: ClickEventPayload = messager.decodeSignedData(data) {
                     self.handleClickEvent(event)
                 } else {
                     logger.warning("Invalid click event data")
@@ -131,7 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             messager.onExtensionMessage(.heartbeat) { [weak self] _ in
                 guard let self = self else { return }
-                logger.info("Received heartbeat from extension")
+                logger.debug("Received heartbeat from extension")
                 pluginRunning = true
                 sendMenuConfigurationUpdate()
             }
@@ -198,11 +198,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 更新快照
         lastMenuSnapshot = try? JSONEncoder().encode(config)
-        logger.info("Menu config version updated to \(self.menuVersion)")
+        logger.debug("Menu config version updated to \(self.menuVersion)")
 
         // Send using type-safe API
         messager.sendMenuConfig(config)
-        logger.info("Sent menu configuration to extension: \(actionMenuItems.count) actions, \(appMenuItems.count) apps")
+        logger.debug("Sent menu configuration to extension: \(actionMenuItems.count) actions, \(appMenuItems.count) apps")
     }
 
     func handleClickEvent(_ event: ClickEventPayload) {
@@ -247,7 +247,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func sendRunningMessageRetry() {
         guard self.runningMessageRetryCount < self.maxRunningMessageRetryCount else {
-            logger.info("Running message retry completed")
+            logger.debug("Running message retry completed")
             return
         }
 
@@ -255,7 +255,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 使用完全磁盘访问权限，不需要特定目录
         let directories: [String] = []
         messager.sendRunningNotification(directories: directories)
-        logger.info("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
+        logger.debug("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
 
         if !self.pluginRunning {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
@@ -266,7 +266,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// 执行重连：发送菜单配置请求
     @MainActor private func performReconnection() {
-        logger.info("Performing reconnection: requesting menu config from main app")
+        logger.debug("Performing reconnection: requesting menu config from main app")
         // 重置 pluginRunning 状态，等待心跳恢复
         pluginRunning = false
     }
@@ -294,20 +294,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let appUrl = rcitem.url
-        logger.info("openApp: rid=\(rid)")
-        logger.info("appUrl=\(appUrl)")
-        logger.info("appUrl.path=\(appUrl.path)")
-        logger.info("appUrl.isFileURL=\(appUrl.isFileURL)")
-        logger.info("appUrl.scheme=\(appUrl.scheme ?? "nil")")
-        logger.info("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
+        logger.debug("openApp: rid=\(rid)")
+        logger.debug("appUrl=\(appUrl)")
+        logger.debug("appUrl.path=\(appUrl.path)")
+        logger.debug("appUrl.isFileURL=\(appUrl.isFileURL)")
+        logger.debug("appUrl.scheme=\(appUrl.scheme ?? "nil")")
+        logger.debug("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
-            logger.info("dir=\(dir)")
-            logger.info("dir.path=\(dir.path)")
-            logger.info("dir.isFileURL=\(dir.isFileURL)")
-            logger.info("FileManager.fileExists(atPath: dir.path)=\(FileManager.default.fileExists(atPath: dir.path))")
-            logger.info("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
+            logger.debug("dir=\(dir)")
+            logger.debug("dir.path=\(dir.path)")
+            logger.debug("dir.isFileURL=\(dir.isFileURL)")
+            logger.debug("FileManager.fileExists(atPath: dir.path)=\(FileManager.default.fileExists(atPath: dir.path))")
+            logger.debug("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
 
             // 特殊处理：WezTerm
             if appUrl.path.hasSuffix("WezTerm.app") {
@@ -333,7 +333,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             // 通用处理：使用 NSWorkspace 打开目录
             else {
-                logger.info("starting open dir: \(dir.path), app: \(appUrl.path)")
+                logger.debug("starting open dir: \(dir.path), app: \(appUrl.path)")
 
                 // 方法 1：直接使用 NSWorkspace.open(_:withApplicationAt:configuration:completionHandler:)
                 let config = NSWorkspace.OpenConfiguration()
@@ -342,7 +342,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         self.logger.error("Error opening with application: \(error.localizedDescription)")
                         self.logger.error("Error code: \((error as NSError).code), domain: \((error as NSError).domain)")
                     } else if let runningApp = runningApp {
-                        self.logger.info("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
+                        self.logger.debug("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
                     }
                 }
             }

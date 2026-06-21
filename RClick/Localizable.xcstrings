@@ -106,22 +106,8 @@
         }
       }
     },
-    "App Icon Show" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Icon Show"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App 图标展示"
-          }
-        }
-      }
+    "AirDrop" : {
+
     },
     "Apps" : {
       "extractionState" : "manual",
@@ -216,6 +202,7 @@
       }
     },
     "Common Dirs" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -524,6 +511,7 @@
 
     },
     "New File" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -672,6 +660,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RClick"
+          }
+        }
+      }
+    },
+    "RClick (loading...)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick (loading...)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick (加载中...)"
           }
         }
       }

@@ -13,7 +13,7 @@ import AppKit
 // MARK: - Logger
 
 private let logger = Logger(
-    subsystem: Bundle.main.bundleIdentifier ?? "RClick.FinderSyncExt",
+    subsystem: "RClick.FinderSyncExt",
     category: "FinderSyncExt"
 )
 
@@ -122,7 +122,7 @@ class FinderSyncExt: FIFinderSync {
     /// 处理菜单配置
     private func handleMenuConfig(_ config: MenuConfigPayload) {
         cachedMenuConfig = config
-        logger.info("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
+        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
     }
 
     /// 请求菜单配置
@@ -146,15 +146,15 @@ class FinderSyncExt: FIFinderSync {
     // MARK: - Primary Finder Sync protocol methods
 
     override func beginObservingDirectory(at url: URL) {
-        logger.info("beginObservingDirectoryAtURL: \(url.path)")
+        logger.debug("beginObservingDirectoryAtURL: \(url.path)")
     }
 
     override func endObservingDirectory(at url: URL) {
-        logger.info("endObservingDirectoryAtURL: \(url.path)")
+        logger.debug("endObservingDirectoryAtURL: \(url.path)")
     }
 
     override func requestBadgeIdentifier(for url: URL) {
-        logger.info("requestBadgeIdentifierForURL: \(url.path)")
+        logger.debug("requestBadgeIdentifierForURL: \(url.path)")
 
         // 示例：根据文件状态设置徽章
         let whichBadge = abs(url.path.hash) % 3
@@ -183,7 +183,7 @@ class FinderSyncExt: FIFinderSync {
         // 如果缓存为空，触发请求并返回加载中的菜单
         guard let config = cachedMenuConfig else {
             requestMenuConfig()
-            menu.addItem(withTitle: "RClick (loading...)", action: nil, keyEquivalent: "")
+            menu.addItem(withTitle: String(localized: "RClick (loading...)"), action: nil, keyEquivalent: "")
             return menu
         }
 
@@ -191,16 +191,17 @@ class FinderSyncExt: FIFinderSync {
         if !config.actions.isEmpty {
             if config.actionsCollapsed {
                 // 折叠：使用子菜单
-                let actionsSubMenu = NSMenu(title: "Actions")
+                let actionsSubMenu = NSMenu(title: String(localized: "Actions"))
                 for action in config.actions {
                     let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
                     item.tag = hashForAction(action)
+                    item.target = self
                     if let icon = NSImage(systemSymbolName: action.icon, accessibilityDescription: action.name) {
                         item.image = icon
                     }
                     actionsSubMenu.addItem(item)
                 }
-                let actionsItem = NSMenuItem(title: "Actions", action: nil, keyEquivalent: "")
+                let actionsItem = NSMenuItem(title: String(localized: "Actions"), action: nil, keyEquivalent: "")
                 actionsItem.submenu = actionsSubMenu
                 menu.addItem(actionsItem)
             } else {
@@ -208,6 +209,7 @@ class FinderSyncExt: FIFinderSync {
                 for action in config.actions {
                     let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
                     item.tag = hashForAction(action)
+                    item.target = self
                     if let icon = NSImage(systemSymbolName: action.icon, accessibilityDescription: action.name) {
                         item.image = icon
                     }
@@ -220,10 +222,11 @@ class FinderSyncExt: FIFinderSync {
         if !config.apps.isEmpty {
             if config.appsCollapsed {
                 // 折叠：使用子菜单
-                let appsSubMenu = NSMenu(title: "Open With")
+                let appsSubMenu = NSMenu(title: String(localized: "Open With"))
                 for app in config.apps {
                     let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
                     item.tag = hashForApp(app)
+                    item.target = self
                     // 优先从应用路径获取图标，其次从 Assets 加载，最后使用 SF Symbol
                     if let appURL = app.appURL {
                         // NSWorkspace.icon(forFile:) 总是返回非空，但路径无效时返回通用图标
@@ -242,7 +245,7 @@ class FinderSyncExt: FIFinderSync {
                     }
                     appsSubMenu.addItem(item)
                 }
-                let appsItem = NSMenuItem(title: "Open With", action: nil, keyEquivalent: "")
+                let appsItem = NSMenuItem(title: String(localized: "Open With"), action: nil, keyEquivalent: "")
                 appsItem.submenu = appsSubMenu
                 menu.addItem(appsItem)
             } else {
@@ -250,6 +253,7 @@ class FinderSyncExt: FIFinderSync {
                 for app in config.apps {
                     let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
                     item.tag = hashForApp(app)
+                    item.target = self
                     // 优先从应用路径获取图标，其次从 Assets 加载，最后使用 SF Symbol
                     if let appURL = app.appURL {
                         // NSWorkspace.icon(forFile:) 总是返回非空，但路径无效时返回通用图标
@@ -275,14 +279,15 @@ class FinderSyncExt: FIFinderSync {
         if !config.newFiles.isEmpty {
             if config.newFilesCollapsed {
                 // 折叠：使用子菜单
-                let newFilesSubMenu = NSMenu(title: "New File")
+                let newFilesSubMenu = NSMenu(title: String(localized: "New File"))
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
+                    item.target = self
                     item.image = loadIcon(named: newFile.icon, accessibilityDescription: newFile.name)
                     newFilesSubMenu.addItem(item)
                 }
-                let newFilesItem = NSMenuItem(title: NSLocalizedString("New File", comment: ""), action: nil, keyEquivalent: "")
+                let newFilesItem = NSMenuItem(title: String(localized: "New File"), action: nil, keyEquivalent: "")
                 newFilesItem.submenu = newFilesSubMenu
                 newFilesItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "New File")
                 menu.addItem(newFilesItem)
@@ -291,6 +296,7 @@ class FinderSyncExt: FIFinderSync {
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
+                    item.target = self
                     item.image = loadIcon(named: newFile.icon, accessibilityDescription: newFile.name)
                     menu.addItem(item)
                 }
@@ -301,14 +307,15 @@ class FinderSyncExt: FIFinderSync {
         if !config.commonDirs.isEmpty {
             if config.commonDirsCollapsed {
                 // 折叠：使用子菜单
-                let commonDirsSubMenu = NSMenu(title: "Common Dirs")
+                let commonDirsSubMenu = NSMenu(title: String(localized: "Common Dirs"))
                 for commonDir in config.commonDirs {
                     let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
                     item.tag = hashForCommonDir(commonDir)
+                    item.target = self
                     item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
                     commonDirsSubMenu.addItem(item)
                 }
-                let commonDirsItem = NSMenuItem(title: NSLocalizedString("Common Dirs", comment: ""), action: nil, keyEquivalent: "")
+                let commonDirsItem = NSMenuItem(title: String(localized: "Common Dirs"), action: nil, keyEquivalent: "")
                 commonDirsItem.submenu = commonDirsSubMenu
                 commonDirsItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: "Common Dirs")
                 menu.addItem(commonDirsItem)
@@ -317,6 +324,7 @@ class FinderSyncExt: FIFinderSync {
                 for commonDir in config.commonDirs {
                     let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
                     item.tag = hashForCommonDir(commonDir)
+                    item.target = self
                     item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
                     menu.addItem(item)
                 }
@@ -353,7 +361,7 @@ class FinderSyncExt: FIFinderSync {
             return
         }
 
-        logger.info("Action clicked: \(action.name) (id: \(action.id))")
+        logger.debug("Action clicked: \(action.name) (id: \(action.id))")
 
         // 获取选中的文件/目录
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
@@ -370,7 +378,7 @@ class FinderSyncExt: FIFinderSync {
     }
 
     @objc private func handleAppClick(_ sender: NSMenuItem) {
-        logger.info("handleAppClick called with sender: \(sender.title), tag: \(sender.tag)")
+        logger.debug("handleAppClick called with sender: \(sender.title), tag: \(sender.tag)")
 
         guard let config = cachedMenuConfig,
               let app = config.apps.first(where: { hashForApp($0) == sender.tag }) else {
@@ -378,11 +386,11 @@ class FinderSyncExt: FIFinderSync {
             return
         }
 
-        logger.info("App clicked: \(app.name) (id: \(app.id))")
+        logger.debug("App clicked: \(app.name) (id: \(app.id))")
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
-        logger.info("Selected items: \(itemPaths)")
+        logger.debug("Selected items: \(itemPaths)")
 
         let event = ClickEventPayload(
             itemId: app.id,
@@ -390,7 +398,7 @@ class FinderSyncExt: FIFinderSync {
             target: itemPaths,
             trigger: getTriggerForMenuKind()
         )
-        logger.info("Sending click event for app: \(app.name)")
+        logger.debug("Sending click event for app: \(app.name)")
         messager.sendClickEvent(event)
     }
 
@@ -401,7 +409,7 @@ class FinderSyncExt: FIFinderSync {
             return
         }
 
-        logger.info("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
+        logger.debug("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
@@ -422,7 +430,7 @@ class FinderSyncExt: FIFinderSync {
             return
         }
 
-        logger.info("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
+        logger.debug("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }

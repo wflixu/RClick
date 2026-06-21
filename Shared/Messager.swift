@@ -272,14 +272,14 @@ class Messager {
     func sendToExtension<T: Codable>(_ action: MainToExtensionAction, data: T? = nil) {
         let message = MainToExtensionMessage(action: action, data: data)
         sendMessage(message, via: Self.mainToExtensionNotification)
-        logger.info("Sent to extension: \(action.rawValue)")
+        logger.debug("Sent to extension: \(action.rawValue)")
     }
 
     /// Extension 发送消息给主程序
     func sendToMain<T: Codable>(_ action: ExtensionToMainAction, data: T? = nil) {
         let message = ExtensionToMainMessage(action: action, data: data)
         sendMessage(message, via: Self.extensionToMainNotification)
-        logger.info("Sent to main: \(action.rawValue)")
+        logger.debug("Sent to main: \(action.rawValue)")
     }
 
     /// 发送消息到通知中心
@@ -294,7 +294,7 @@ class Messager {
             return
         }
 
-        logger.info("Sending message via \(notificationName)")
+        logger.debug("Sending message via \(notificationName)")
         logger.debug("Message JSON: \(jsonString.prefix(200))...")
         center.postNotificationName(
             NSNotification.Name(notificationName),
@@ -327,7 +327,7 @@ class Messager {
 
         do {
             let message = try JSONDecoder().decode(MainToExtensionMessage.self, from: jsonData)
-            logger.info("Received main-to-extension message: \(message.action.rawValue)")
+            logger.debug("Received main-to-extension message: \(message.action.rawValue)")
 
             // 直接传递 signedData，让 handler 自己解码
             if let handler = mainToExtensionHandlers[message.action] {
@@ -349,7 +349,7 @@ class Messager {
 
         do {
             let message = try JSONDecoder().decode(ExtensionToMainMessage.self, from: jsonData)
-            logger.info("Received extension-to-main message: \(message.action.rawValue)")
+            logger.debug("Received extension-to-main message: \(message.action.rawValue)")
 
             // 直接传递 signedData，让 handler 自己解码
             if let handler = extensionToMainHandlers[message.action] {

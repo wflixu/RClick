@@ -77,6 +77,16 @@ class SharedDataManager {
             Self.logger.info("已初始化默认文件类型")
         }
 
+        let appDescriptor = FetchDescriptor<AppEntity>()
+        let appCount = try? context.fetchCount(appDescriptor)
+
+        if appCount == 0 {
+            for app in OpenWithApp.defaultApps {
+                context.insert(AppEntity(from: app))
+            }
+            Self.logger.info("已初始化默认应用")
+        }
+
         let commonDirDescriptor = FetchDescriptor<CommonDirEntity>()
         let commonDirCount = try? context.fetchCount(commonDirDescriptor)
 
