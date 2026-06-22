@@ -385,13 +385,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func getUniqueFilePath(dir: String, ext: String) -> String {
         let fileManager = FileManager.default
+        let dirURL = URL(fileURLWithPath: dir.hasSuffix("/") ? String(dir.dropLast()) : dir)
         let baseFileName = String(localized: "Untitled")
-        var filePath = "\(dir)\(baseFileName)\(ext)"
+        var filePath = dirURL.appendingPathComponent("\(baseFileName)\(ext)").path
         var counter = 1
 
         while fileManager.fileExists(atPath: filePath) {
             let newFileName = "\(baseFileName)\(counter)"
-            filePath = "\(dir)\(newFileName)\(ext)"
+            filePath = dirURL.appendingPathComponent("\(newFileName)\(ext)").path
             counter += 1
         }
 

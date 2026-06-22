@@ -151,12 +151,12 @@ extension NewFile {
     static var all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx]
 
     // 图标名称对应 Assets.xcassets 中的 PNG 图标，已共享到 FinderSyncExt 目标
-    static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "icon-file-json")
-    static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "icon-file-txt")
-    static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "icon-file-md")
-    static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "icon-file-docx")
-    static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "icon-file-pptx")
-    static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "icon-file-xlsx")
+    static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "curlybraces")
+    static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "doc.text")
+    static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "doc.richtext")
+    static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "doc.richtext.fill")
+    static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "rectangle.on.rectangle.fill")
+    static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "tablecells")
 }
 
 // MARK: - Menu Item Models for Extension Communication

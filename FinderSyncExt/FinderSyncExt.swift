@@ -19,14 +19,37 @@ private let logger = Logger(
 
 // MARK: - Icon Loading
 
-/// 从 Assets 加载图标
+/// 无效/旧版图标名 → SF Symbol 映射（兼容升级用户数据库中的旧数据）
+private let iconFallbackMap: [String: String] = [
+    // New File 旧 PNG 图标名
+    "icon-file-json": "curlybraces",
+    "icon-file-txt": "doc.text",
+    "icon-file-md": "doc.richtext",
+    "icon-file-docx": "doc.richtext.fill",
+    "icon-file-pptx": "rectangle.on.rectangle.fill",
+    "icon-file-xlsx": "tablecells",
+    // Common Dir 无效图标名
+    "document": "doc",
+    "apps.iphone.badge.checkmark": "square.grid.2x2",
+]
+
+/// 从 Assets 或 SF Symbol 加载图标
 private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
-    // 优先从 Assets.xcassets 加载 PNG 图标，如果加载不到则尝试 SF Symbol
+    // 1. 尝试 Assets 中的 PNG（主 app 可用，扩展不可用）
     if let icon = NSImage(named: iconName) {
         return icon
     }
-    // 尝试 SF Symbol（CommonDir 使用 SF Symbol 名称）
-    return NSImage(systemSymbolName: iconName, accessibilityDescription: description)
+    // 2. 尝试 SF Symbol 直接匹配
+    if let icon = NSImage(systemSymbolName: iconName, accessibilityDescription: description) {
+        icon.isTemplate = true
+        return icon
+    }
+    // 3. 回退映射表
+    if let fallback = iconFallbackMap[iconName],
+       let icon = NSImage(systemSymbolName: fallback, accessibilityDescription: description) {
+        return icon
+    }
+    return nil
 }
 
 // MARK: - FinderSync Extension
@@ -432,13 +455,13 @@ class FinderSyncExt: FIFinderSync {
 
         logger.debug("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
 
-        let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
-        let itemPaths = selectedItems.map { $0.path }
+        // 使用常用目录自身的路径，而不是 Finder 当前选中的路径
+        let target = commonDir.url.map { [$0] } ?? []
 
         let event = ClickEventPayload(
             itemId: commonDir.id,
             itemType: .commonDir,
-            target: itemPaths,
+            target: target,
             trigger: getTriggerForMenuKind()
         )
         messager.sendClickEvent(event)

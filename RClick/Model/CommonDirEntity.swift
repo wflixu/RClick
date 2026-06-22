@@ -66,9 +66,9 @@ final class CommonDirEntity {
         let downloads = homeDir.appendingPathComponent("Downloads")
 
         dirs.append(CommonDirEntity(id: "desktop", name: "桌面", path: desktop, icon: "desktopcomputer", sortOrder: 0))
-        dirs.append(CommonDirEntity(id: "documents", name: "文档", path: documents, icon: "document", sortOrder: 1))
+        dirs.append(CommonDirEntity(id: "documents", name: "文档", path: documents, icon: "doc", sortOrder: 1))
         dirs.append(CommonDirEntity(id: "downloads", name: "下载", path: downloads, icon: "arrow.down.circle", sortOrder: 2))
-        dirs.append(CommonDirEntity(id: "applications", name: "应用程序", path: URL(fileURLWithPath: "/Applications"), icon: "apps.iphone.badge.checkmark", sortOrder: 3))
+        dirs.append(CommonDirEntity(id: "applications", name: "应用程序", path: URL(fileURLWithPath: "/Applications"), icon: "square.grid.2x2", sortOrder: 3))
         dirs.append(CommonDirEntity(id: "home", name: "用户主目录", path: homeDir, icon: "person.crop.circle", sortOrder: 4))
 
         return dirs

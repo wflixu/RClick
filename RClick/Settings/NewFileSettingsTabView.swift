@@ -32,6 +32,22 @@ struct NewFileSettingsTabView: View {
     @State private var isAddingNew = false
     
     let messager = Messager.shared
+
+    /// 旧版 PNG 图标名 → SF Symbol 映射（暗黑模式适配 + 兼容旧数据）
+    private let iconToSF: [String: String] = [
+        "icon-file-json": "curlybraces",
+        "icon-file-txt": "doc.text",
+        "icon-file-md": "doc.richtext",
+        "icon-file-docx": "doc.richtext.fill",
+        "icon-file-pptx": "rectangle.on.rectangle.fill",
+        "icon-file-xlsx": "tablecells",
+    ]
+
+    /// 获取适配当前外观的图标名称，优先转为 SF Symbol
+    private func adaptiveIconName(_ name: String) -> String {
+        iconToSF[name] ?? name
+    }
+
     // 优化后的存储路径选择
     let templatesDir: URL? = // 选项1: 应用程序支持目录（推荐）
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
@@ -73,13 +89,14 @@ struct NewFileSettingsTabView: View {
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 32, height: 32)
                                 } else {
-                                    if item.icon.starts(with: "icon-") {
-                                        Image(item.icon)
+                                    let displayIcon = adaptiveIconName(item.icon)
+                                    if displayIcon.starts(with: "icon-") {
+                                        Image(displayIcon)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 20, height: 20)
                                     } else {
-                                        Image(systemName: item.icon)
+                                        Image(systemName: displayIcon)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 20, height: 20)
@@ -217,12 +234,13 @@ struct NewFileSettingsTabView: View {
                             if !editingIcon.isEmpty {
                                 HStack {
                                     Text("Preview:")
-                                    if editingIcon.starts(with: "icon-") {
-                                        Image(editingIcon)
+                                    let displayIcon = adaptiveIconName(editingIcon)
+                                    if displayIcon.starts(with: "icon-") {
+                                        Image(displayIcon)
                                             .resizable()
                                             .frame(width: 20, height: 20)
                                     } else {
-                                        Image(systemName: editingIcon)
+                                        Image(systemName: displayIcon)
                                             .resizable()
                                             .frame(width: 20, height: 20)
                                     }
