@@ -74,8 +74,14 @@ struct GeneralSettingsTabView: View {
                     Label("完全磁盘访问权限", systemImage: fullDiskAccessStatus.icon)
                         .foregroundColor(fullDiskAccessStatus.color)
                     Spacer()
-                    Button("设置…") {
-                        openFullDiskAccessSettings()
+                    if fullDiskAccessStatus != .enabled {
+                        Button(action: openFullDiskAccessSettings) {
+                            Label("设置…", systemImage: "exclamationmark.triangle.fill")
+                        }
+                    } else {
+                        Button("设置…") {
+                            openFullDiskAccessSettings()
+                        }
                     }
                 }
 
@@ -97,8 +103,16 @@ struct GeneralSettingsTabView: View {
                     Text("完全磁盘访问权限：用于在受保护目录中创建和删除文件")
                         .foregroundColor(.secondary)
                     if fullDiskAccessStatus != .enabled {
-                        Text("添加 RClick 到列表：点击「+」→ 前往「应用程序」→ 选择「RClick.app」")
-                            .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("RClick 需要完全磁盘访问权限才能正常操作受保护目录中的文件")
+                                .fontWeight(.medium)
+                            Text("1. 点击右侧「设置…」按钮打开系统设置")
+                            Text("2. 点击左下角锁图标并认证")
+                            Text("3. 点击「+」→ 前往「应用程序」→ 选择「RClick」")
+                            Text("4. 确保 RClick 旁边的开关已打开")
+                        }
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                     }
                 }
             }
@@ -177,8 +191,9 @@ struct GeneralSettingsTabView: View {
         // Finder 扩展状态
         finderSyncStatus = FIFinderSyncController.isExtensionEnabled ? .enabled : .disabled
 
-        // 完全磁盘访问权限检测（使用 PermissionChecker）
-        fullDiskAccessStatus = PermissionChecker.hasFullDiskAccess() ? .enabled : .disabled
+        // 完全磁盘访问权限检测（同步到 AppState）
+        store.checkFullDiskAccess()
+        fullDiskAccessStatus = store.hasFullDiskAccess ? .enabled : .disabled
 
         // 辅助功能权限检测（使用 PermissionChecker）
         accessibilityStatus = PermissionChecker.hasAccessibilityPermission() ? .enabled : .disabled

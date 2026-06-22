@@ -40,6 +40,18 @@
         }
       }
     },
+    "1. 点击右侧「设置…」按钮打开系统设置" : {
+
+    },
+    "2. 点击左下角锁图标并认证" : {
+
+    },
+    "3. 点击「+」→ 前往「应用程序」→ 选择「RClick」" : {
+
+    },
+    "4. 确保 RClick 旁边的开关已打开" : {
+
+    },
     "About" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -318,6 +330,9 @@
         }
       }
     },
+    "Don't Ask Again" : {
+
+    },
     "Edit App Properties" : {
       "localizations" : {
         "en" : {
@@ -353,6 +368,9 @@
           }
         }
       }
+    },
+    "Enable Full Disk Access" : {
+
     },
     "Environment Variables" : {
       "localizations" : {
@@ -473,6 +491,9 @@
         }
       }
     },
+    "Later" : {
+
+    },
     "Launch at login" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -559,7 +580,6 @@
 
     },
     "Open Settings" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -696,6 +716,12 @@
           }
         }
       }
+    },
+    "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON" : {
+
+    },
+    "RClick 需要完全磁盘访问权限才能正常操作受保护目录中的文件" : {
+
     },
     "Reset" : {
       "localizations" : {
@@ -1050,9 +1076,6 @@
 
     },
     "正在检查更新..." : {
-
-    },
-    "添加 RClick 到列表：点击「+」→ 前往「应用程序」→ 选择「RClick.app」" : {
 
     },
     "版本 %@" : {

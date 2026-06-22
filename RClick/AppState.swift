@@ -24,6 +24,7 @@ class AppState: ObservableObject {
     @Published var newFiles: [NewFile] = []
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
+    @Published var hasFullDiskAccess: Bool = false
 
     // 折叠开关状态 - 每个分类独立控制
     @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
@@ -45,8 +46,14 @@ class AppState: ObservableObject {
             await MainActor.run {
                 logger.info("start load")
                 try? load()
+                checkFullDiskAccess()
             }
         }
+    }
+
+    func checkFullDiskAccess() {
+        hasFullDiskAccess = PermissionChecker.hasFullDiskAccess()
+        logger.info("Full Disk Access status: \(self.hasFullDiskAccess)")
     }
     
     // Apps

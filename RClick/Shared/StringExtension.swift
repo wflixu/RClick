@@ -34,10 +34,10 @@ enum Key {
     static let apps = "RCLICK_APPs"
     static let actions = "RCLICK_ACTIONS"
     static let fileTypes = "RCLICK_FILE_TYPES"
-    static let permDirs = "RCLICK_PERMISSIVE_DIRS"   
     static let commonDirs = "RCLICK_COMMON_DIRS"
     static let showMenuBarExtra = "showMenuBarExtra"
     static let showInDock = "SHOW_IN_DOCK"
+    static let hasSeenFDAGuide = "HAS_SEEN_FDA_GUIDE"
     static let actionMenuItems = "RCLICK_ACTION_MENU_ITEMS"
     static let appMenuItems = "RCLICK_APP_MENU_ITEMS"
 

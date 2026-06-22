@@ -149,6 +149,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             startRunningMessageRetry()
 
             sendObserveDirMessage()
+            checkFDAAndGuideIfNeeded()
         }
     }
 
@@ -260,6 +261,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !self.pluginRunning {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
                 self?.sendRunningMessageRetry()
+            }
+        }
+    }
+
+    // MARK: - FDA Permission Guide
+
+    private func checkFDAAndGuideIfNeeded() {
+        let hasSeenGuide = UserDefaults.group.bool(forKey: Key.hasSeenFDAGuide)
+        guard !hasSeenGuide else { return }
+
+        let hasFDA = PermissionChecker.hasFullDiskAccess()
+        appState.hasFullDiskAccess = hasFDA
+        guard !hasFDA else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            let alert = NSAlert()
+            alert.messageText = String(localized: "Enable Full Disk Access")
+            alert.informativeText = String(localized: "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: String(localized: "Open Settings"))
+            alert.addButton(withTitle: String(localized: "Later"))
+            alert.addButton(withTitle: String(localized: "Don't Ask Again"))
+
+            let response = alert.runModal()
+            switch response {
+            case .alertFirstButtonReturn:
+                PermissionChecker.openFullDiskAccessSettings()
+            case .alertThirdButtonReturn:
+                UserDefaults.group.set(true, forKey: Key.hasSeenFDAGuide)
+            default:
+                break
             }
         }
     }

@@ -6,13 +6,6 @@
 //
 import AppKit
 import Foundation
-import OSLog
-
-/// Logger for RCBase model operations
-private let logger = Logger(
-    subsystem: Bundle.main.bundleIdentifier ?? "RClick",
-    category: "RCBase"
-)
 
 protocol RCBase: Hashable, Identifiable, Codable {
     var id: String { get }
@@ -80,76 +73,6 @@ extension OpenWithApp {
             .terminal,
             vscode,
         ].compactMap { $0 }
-    }
-}
-
-struct PermissiveDir: RCBase {
-    var id: String
-    var url: URL
-    var bookmark: Data
-
-    init(id: String = UUID().uuidString, permUrl url: URL) {
-        self.id = id
-        self.url = url
-        let result = url.startAccessingSecurityScopedResource()
-        logger.info("start init PermissiveDir------------------------")
-        if !result {
-            logger.error("Fail to start access security scoped resource on \(url.path)")
-        }
-        do {
-            bookmark = try url.bookmarkData(options: .withSecurityScope)
-        } catch {
-            logger.warning("\(error.localizedDescription)")
-            fatalError()
-        }
-    }
-
-//    enum CodingKeys: String, CodingKey {
-//        case url, bookmark
-//    }
-//
-//    init(from decoder: any Decoder) throws {
-//        let values = try decoder.container(keyedBy: CodingKeys.self)
-//        bookmark = try values.decode(Data.self, forKey: .bookmark)
-//        var isStale = false
-//        do {
-//            url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-//            let result = url.startAccessingSecurityScopedResource()
-//
-//            if !result {
-//                logger.error("Fail to start access security scoped resource on \(path)")
-//            }
-//        } catch {
-//            // Show for the main app
-//            url = try values.decode(URL.self, forKey: .url)
-//        }
-//        id = UUID().uuidString
-//    }
-}
-
-extension PermissiveDir {
-    static var home: PermissiveDir? {
-        guard let pw = getpwuid(getuid()),
-              let home = pw.pointee.pw_dir
-        else {
-            return nil
-        }
-        let path = FileManager.default.string(withFileSystemRepresentation: home, length: strlen(home))
-        let url = URL(fileURLWithPath: path)
-        return PermissiveDir(permUrl: url)
-    }
-
-    static var application: PermissiveDir? {
-        PermissiveDir(permUrl: URL(fileURLWithPath: "/Applications"))
-    }
-
-    static var volumns: [PermissiveDir] {
-        let volumns = (FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: [], options: .skipHiddenVolumes) ?? []).dropFirst()
-        return volumns.compactMap { PermissiveDir(permUrl: $0) }
-    }
-
-    static var defaultFolders: [PermissiveDir] {
-        [.home].compactMap { $0 } + volumns
     }
 }
 

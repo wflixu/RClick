@@ -28,9 +28,8 @@ class DataMigrationManager {
         let hasActionsData = UserDefaults.group.data(forKey: Key.actions) != nil
         let hasFileTypesData = UserDefaults.group.data(forKey: Key.fileTypes) != nil
         let hasCommonDirsData = UserDefaults.group.data(forKey: Key.commonDirs) != nil
-        let hasPermDirsData = UserDefaults.group.data(forKey: Key.permDirs) != nil
 
-        return hasAppsData || hasActionsData || hasFileTypesData || hasCommonDirsData || hasPermDirsData
+        return hasAppsData || hasActionsData || hasFileTypesData || hasCommonDirsData
     }
 
     /// 执行数据迁移
@@ -157,7 +156,6 @@ class DataMigrationManager {
         UserDefaults.group.removeObject(forKey: Key.actions)
         UserDefaults.group.removeObject(forKey: Key.fileTypes)
         UserDefaults.group.removeObject(forKey: Key.commonDirs)
-        UserDefaults.group.removeObject(forKey: Key.permDirs)
         UserDefaults.group.removeObject(forKey: Key.actionMenuItems)
         UserDefaults.group.removeObject(forKey: Key.appMenuItems)
 
@@ -188,7 +186,6 @@ class DataMigrationManager {
                     "actions": UserDefaults.group.data(forKey: Key.actions) as Any,
                     "fileTypes": UserDefaults.group.data(forKey: Key.fileTypes) as Any,
                     "commonDirs": UserDefaults.group.data(forKey: Key.commonDirs) as Any,
-                    "permDirs": UserDefaults.group.data(forKey: Key.permDirs) as Any,
                 ],
                 options: .prettyPrinted
             )
