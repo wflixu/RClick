@@ -33,6 +33,13 @@ private let iconFallbackMap: [String: String] = [
     "apps.iphone.badge.checkmark": "square.grid.2x2",
 ]
 
+/// 加载 SF Symbol 并设 paletteColors 适配暗色/浅色模式
+private func templateSymbol(_ name: String) -> NSImage? {
+    let config = NSImage.SymbolConfiguration(paletteColors: [.labelColor])
+    return NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+        .withSymbolConfiguration(config)
+}
+
 /// 从 Assets 或 SF Symbol 加载图标
 private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
     // 1. 尝试 Assets 中的 PNG（主 app 可用，扩展不可用）
@@ -40,13 +47,12 @@ private func loadIcon(named iconName: String, accessibilityDescription descripti
         return icon
     }
     // 2. 尝试 SF Symbol 直接匹配
-    if let icon = NSImage(systemSymbolName: iconName, accessibilityDescription: description) {
-        icon.isTemplate = true
+    if let icon = templateSymbol(iconName) {
         return icon
     }
     // 3. 回退映射表
     if let fallback = iconFallbackMap[iconName],
-       let icon = NSImage(systemSymbolName: fallback, accessibilityDescription: description) {
+       let icon = templateSymbol(fallback) {
         return icon
     }
     return nil
@@ -219,7 +225,7 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
                     item.tag = hashForAction(action)
                     item.target = self
-                    if let icon = NSImage(systemSymbolName: action.icon, accessibilityDescription: action.name) {
+                    if let icon = templateSymbol(action.icon) {
                         item.image = icon
                     }
                     actionsSubMenu.addItem(item)
@@ -233,7 +239,7 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
                     item.tag = hashForAction(action)
                     item.target = self
-                    if let icon = NSImage(systemSymbolName: action.icon, accessibilityDescription: action.name) {
+                    if let icon = templateSymbol(action.icon) {
                         item.image = icon
                     }
                     menu.addItem(item)
@@ -262,7 +268,7 @@ class FinderSyncExt: FIFinderSync {
                     if item.image == nil {
                         if let icon = NSImage(named: app.icon) {
                             item.image = icon
-                        } else if let icon = NSImage(systemSymbolName: app.icon, accessibilityDescription: app.name) {
+                        } else if let icon = templateSymbol(app.icon) {
                             item.image = icon
                         }
                     }
@@ -289,7 +295,7 @@ class FinderSyncExt: FIFinderSync {
                     if item.image == nil {
                         if let icon = NSImage(named: app.icon) {
                             item.image = icon
-                        } else if let icon = NSImage(systemSymbolName: app.icon, accessibilityDescription: app.name) {
+                        } else if let icon = templateSymbol(app.icon) {
                             item.image = icon
                         }
                     }
@@ -312,7 +318,7 @@ class FinderSyncExt: FIFinderSync {
                 }
                 let newFilesItem = NSMenuItem(title: String(localized: "New File"), action: nil, keyEquivalent: "")
                 newFilesItem.submenu = newFilesSubMenu
-                newFilesItem.image = NSImage(systemSymbolName: "doc.badge.plus", accessibilityDescription: "New File")
+                newFilesItem.image = templateSymbol("doc.badge.plus")
                 menu.addItem(newFilesItem)
             } else {
                 // 不折叠：直接显示菜单项
@@ -340,7 +346,7 @@ class FinderSyncExt: FIFinderSync {
                 }
                 let commonDirsItem = NSMenuItem(title: String(localized: "Common Dirs"), action: nil, keyEquivalent: "")
                 commonDirsItem.submenu = commonDirsSubMenu
-                commonDirsItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: "Common Dirs")
+                commonDirsItem.image = templateSymbol("folder")
                 menu.addItem(commonDirsItem)
             } else {
                 // 不折叠：直接显示菜单项
