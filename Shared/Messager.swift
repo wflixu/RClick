@@ -222,17 +222,19 @@ private let logger = Logger(
 class Messager: @unchecked Sendable {
     static let shared = Messager()
 
-    // 消息处理器存储（启动时写入一次，之后只读）
+    // 消息处理器存储
+    // 安全说明：仅在 init/启动阶段写入一次，之后只读不写
+    // 写入发生在分布式通知到达之前，无并发读写风险
     nonisolated(unsafe) private var mainToExtensionHandlers: [MainToExtensionAction: (Data?) -> Void] = [:]
     nonisolated(unsafe) private var extensionToMainHandlers: [ExtensionToMainAction: (Data?) -> Void] = [:]
 
     // 通知名称
-    nonisolated static let mainToExtensionNotification = "RClick.MainToExtension"
-    nonisolated static let extensionToMainNotification = "RClick.ExtensionToMain"
+    static let mainToExtensionNotification = "RClick.MainToExtension"
+    static let extensionToMainNotification = "RClick.ExtensionToMain"
 
-    nonisolated private let isExtension: Bool
+    private let isExtension: Bool
 
-    nonisolated private init() {
+    private init() {
         // 判断当前是否为 Extension 进程
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         self.isExtension = bundleId.hasSuffix(".FinderSyncExt")
@@ -305,18 +307,10 @@ class Messager: @unchecked Sendable {
         extensionToMainHandlers[action] = handler
     }
 
-    // MARK: - 处理消息（@objc nonisolated → 转发到 @MainActor）
+    // MARK: - 处理消息
 
-    @objc nonisolated private func handleMainToExtensionMessage(_ notification: NSNotification) {
-        let jsonString = notification.object as? String
-        Task { @MainActor in
-            await processMainToExtensionMessage(jsonString: jsonString)
-        }
-    }
-
-    @MainActor
-    private func processMainToExtensionMessage(jsonString: String?) async {
-        guard let jsonString,
+    @objc private func handleMainToExtensionMessage(_ notification: NSNotification) {
+        guard let jsonString = notification.object as? String,
               let jsonData = jsonString.data(using: .utf8) else {
             logger.error("Invalid message format")
             return
@@ -336,16 +330,8 @@ class Messager: @unchecked Sendable {
         }
     }
 
-    @objc nonisolated private func handleExtensionToMainMessage(_ notification: NSNotification) {
-        let jsonString = notification.object as? String
-        Task { @MainActor in
-            await processExtensionToMainMessage(jsonString: jsonString)
-        }
-    }
-
-    @MainActor
-    private func processExtensionToMainMessage(jsonString: String?) async {
-        guard let jsonString,
+    @objc private func handleExtensionToMainMessage(_ notification: NSNotification) {
+        guard let jsonString = notification.object as? String,
               let jsonData = jsonString.data(using: .utf8) else {
             logger.error("Invalid message format")
             return

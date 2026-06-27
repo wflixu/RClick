@@ -35,19 +35,15 @@ class AppState: ObservableObject {
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
 
-    // SwiftData ModelContext
-    private var modelContext: ModelContext {
-        ModelContext(SharedDataManager.sharedModelContainer)
-    }
+    // SwiftData ModelContext（lazy 复用单个实例）
+    private lazy var modelContext = ModelContext(SharedDataManager.sharedModelContainer)
 
     init(inExt: Bool = false) {
         self.inExt = inExt
-        Task {
-            await MainActor.run {
-                logger.debug("start load")
-                try? load()
-                checkFullDiskAccess()
-            }
+        Task { @MainActor in
+            logger.debug("start load")
+            try? load()
+            checkFullDiskAccess()
         }
     }
 

@@ -145,7 +145,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         scheduleHeartbeat()
     }
 
-    /// 调度下一次心跳
     private func scheduleHeartbeat() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { @MainActor [weak self] in
             self?.messager.sendHeartbeat()

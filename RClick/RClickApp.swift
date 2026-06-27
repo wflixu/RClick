@@ -73,8 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastMenuSnapshot: Data?
     /// 菜单版本号，用于防重复和防乱序
     private var menuVersion: Int = 0
-    /// 重试计数器
-    private var runningMessageRetryCount: Int = 0
     /// 最大重试次数
     private let maxRunningMessageRetryCount: Int = 6
 
@@ -86,7 +84,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             forName: .menuConfigShouldUpdate,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
+        ) { _ in
             Task { @MainActor [weak self] in
                 self?.sendMenuConfigurationUpdate()
             }
@@ -178,12 +176,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Message Handlers
 
     func sendObserveDirMessage() {
-        // 使用完全磁盘访问权限，不需要特定目录
         let directories: [String] = []
         messager.sendRunningNotification(directories: directories)
         if !pluginRunning {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { @MainActor in
-                self.sendObserveDirMessage()
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(3))
+                sendObserveDirMessage()
             }
         }
     }
@@ -236,51 +234,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - 重连机制
 
+    /// 心跳监控 Task（可取消）
+    private var heartbeatMonitorTask: Task<Void, Never>?
+
     /// 启动心跳监控（15 秒超时检测）
     private func startHeartbeatMonitoring() {
-        scheduleHeartbeatCheck()
-    }
-
-    /// 调度下一次心跳检查
-    private func scheduleHeartbeatCheck() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) { @MainActor [weak self] in
-            guard let self else { return }
-            if self.pluginRunning {
-                // 收到过心跳，重置标志，等待下一个周期
-                self.pluginRunning = false
-            } else {
-                // 15 秒内未收到心跳 → 真正超时
-                self.logger.warning("Heartbeat timeout detected, triggering reconnection")
-                self.performReconnection()
+        heartbeatMonitorTask?.cancel()
+        heartbeatMonitorTask = Task { @MainActor in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(15))
+                guard !Task.isCancelled else { break }
+                if pluginRunning {
+                    pluginRunning = false
+                } else {
+                    logger.warning("Heartbeat timeout detected, triggering reconnection")
+                    performReconnection()
+                }
             }
-            self.scheduleHeartbeatCheck()
         }
     }
 
     /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
     private func startRunningMessageRetry() {
-        runningMessageRetryCount = 0
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { @MainActor [weak self] in
-            self?.sendRunningMessageRetry()
-        }
-    }
-
-    private func sendRunningMessageRetry() {
-        guard self.runningMessageRetryCount < self.maxRunningMessageRetryCount else {
-            logger.debug("Running message retry completed")
-            return
-        }
-
-        self.runningMessageRetryCount += 1
-        // 使用完全磁盘访问权限，不需要特定目录
-        let directories: [String] = []
-        messager.sendRunningNotification(directories: directories)
-        logger.debug("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
-
-        if !self.pluginRunning {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { @MainActor [weak self] in
-                self?.sendRunningMessageRetry()
+        Task { @MainActor in
+            for retryCount in 0..<self.maxRunningMessageRetryCount {
+                try? await Task.sleep(for: .seconds(5))
+                guard !self.pluginRunning else { break }
+                self.messager.sendRunningNotification()
+                self.logger.debug("Sending running message retry \(retryCount + 1)/\(self.maxRunningMessageRetryCount)")
             }
+            logger.debug("Running message retry completed")
         }
     }
 
@@ -294,7 +277,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         appState.hasFullDiskAccess = hasFDA
         guard !hasFDA else { return }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
             let alert = NSAlert()
             alert.messageText = String(localized: "Enable Full Disk Access")
             alert.informativeText = String(localized: "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")

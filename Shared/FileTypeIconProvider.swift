@@ -84,9 +84,8 @@ final class FileTypeIconProvider: @unchecked Sendable {
     ]
 
     /// 通过 NSWorkspace 获取文件类型对应的默认应用图标
-    /// 使用 icon(forFileType:) 直接传扩展名，绕过 UTType（扩展沙箱中不可用）
+    /// DispatchQueue.main.sync: Extension 不在 @MainActor，需桥接
     private func workspaceIcon(for ext: String) -> NSImage? {
-        // NSWorkspace.shared.icon(forFileType:) 需 @MainActor，用 sync 桥接
         let icon: NSImage = DispatchQueue.main.sync {
             NSWorkspace.shared.icon(forFileType: ext)
         }
