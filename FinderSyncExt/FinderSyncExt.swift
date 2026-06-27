@@ -19,6 +19,9 @@ private let logger = Logger(
 
 // MARK: - Icon Loading
 
+/// 文件类型图标提供者（NSWorkspace → SF Symbol fallback）
+private let iconProvider = FileTypeIconProvider.shared
+
 /// 无效/旧版图标名 → SF Symbol 映射（兼容升级用户数据库中的旧数据）
 private let iconFallbackMap: [String: String] = [
     // New File 旧 PNG 图标名
@@ -313,7 +316,8 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
                     item.target = self
-                    item.image = loadIcon(named: newFile.icon, accessibilityDescription: newFile.name)
+                    item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
+                    item.image?.accessibilityDescription = newFile.name
                     newFilesSubMenu.addItem(item)
                 }
                 let newFilesItem = NSMenuItem(title: String(localized: "New File"), action: nil, keyEquivalent: "")
@@ -326,7 +330,8 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
                     item.target = self
-                    item.image = loadIcon(named: newFile.icon, accessibilityDescription: newFile.name)
+                    item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
+                    item.image?.accessibilityDescription = newFile.name
                     menu.addItem(item)
                 }
             }

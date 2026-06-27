@@ -82,25 +82,17 @@ struct NewFileSettingsTabView: View {
                         HStack(spacing: 12) {
                             // 左侧图标和名称
                             HStack(spacing: 8) {
-                                // 图标显示逻辑
+                                // 图标：优先系统 App 图标
                                 if let appUrl = item.openApp {
                                     Image(nsImage: IconCache.shared.icon(for: appUrl))
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 32, height: 32)
-                                } else {
-                                    let displayIcon = adaptiveIconName(item.icon)
-                                    if displayIcon.starts(with: "icon-") {
-                                        Image(displayIcon)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image(systemName: displayIcon)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 20, height: 20)
-                                    }
+                                } else if let sysIcon = FileTypeIconProvider.shared.icon(for: item.ext, fallbackSymbol: item.icon) {
+                                    Image(nsImage: sysIcon)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20, height: 20)
                                 }
                                 
                                 HStack(alignment: .center) {
@@ -234,13 +226,12 @@ struct NewFileSettingsTabView: View {
                             if !editingIcon.isEmpty {
                                 HStack {
                                     Text("Preview:")
-                                    let displayIcon = adaptiveIconName(editingIcon)
-                                    if displayIcon.starts(with: "icon-") {
-                                        Image(displayIcon)
+                                    if let preview = FileTypeIconProvider.shared.icon(for: editingExt, fallbackSymbol: editingIcon) {
+                                        Image(nsImage: preview)
                                             .resizable()
                                             .frame(width: 20, height: 20)
                                     } else {
-                                        Image(systemName: displayIcon)
+                                        Image(systemName: "doc")
                                             .resizable()
                                             .frame(width: 20, height: 20)
                                     }

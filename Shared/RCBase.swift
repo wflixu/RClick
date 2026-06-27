@@ -222,15 +222,18 @@ struct NewFile: RCBase {
 }
 
 extension NewFile {
-    static var all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx]
+    static var all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx, .pages, .key, .numbers]
 
-    // 图标名称对应 Assets.xcassets 中的 PNG 图标，已共享到 FinderSyncExt 目标
+    // icon 字段为 SF Symbol 名称，作为 NSWorkspace 获取失败时的 fallback
     static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "curlybraces")
     static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "doc.text")
     static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "doc.richtext")
     static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "doc.richtext.fill")
     static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "rectangle.on.rectangle.fill")
     static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "tablecells")
+    static let pages = NewFile(ext: ".pages", name: "Pages", idx: 6, icon: "doc.richtext")
+    static let key = NewFile(ext: ".key", name: "Keynote", idx: 7, icon: "rectangle.on.rectangle")
+    static let numbers = NewFile(ext: ".numbers", name: "Numbers", idx: 8, icon: "tablecells")
 }
 
 // MARK: - Menu Item Models for Extension Communication
