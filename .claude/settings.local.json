@@ -25,7 +25,11 @@
       "Bash(cp /Users/lixu/code/RClick-new/FinderSyncExt/FinderSyncExt.entitlements /Users/lixu/code/RClick/FinderSyncExt/FinderSyncExt.entitlements)",
       "Bash(cp /Users/lixu/code/RClick-new/FinderSyncExt/Info.plist /Users/lixu/code/RClick/FinderSyncExt/Info.plist)",
       "Bash(rm:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(/usr/bin/log show *)",
+      "Bash(xcodebuild -project RClick.xcodeproj -scheme RClick -destination 'platform=macOS' build)",
+      "WebSearch",
+      "WebFetch(domain:stackoverflow.com)"
     ]
   }
 }

@@ -295,7 +295,6 @@ class Messager {
         }
 
         logger.debug("Sending message via \(notificationName)")
-        logger.debug("Message JSON: \(jsonString.prefix(200))...")
         center.postNotificationName(
             NSNotification.Name(notificationName),
             object: jsonString,

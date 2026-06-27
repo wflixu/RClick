@@ -73,8 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var lastMenuSnapshot: Data?
     /// 菜单版本号，用于防重复和防乱序
     private var menuVersion: Int = 0
-    /// 心跳定时器
-    private var heartBeatTimer: Timer?
     /// 重试计数器
     private var runningMessageRetryCount: Int = 0
     /// 最大重试次数
@@ -89,7 +87,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.sendMenuConfigurationUpdate()
+            Task { @MainActor [weak self] in
+                self?.sendMenuConfigurationUpdate()
+            }
         }
 
         // 在 app 启动后执行的函数
@@ -220,7 +220,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func handleClickEvent(_ event: ClickEventPayload) {
-        logger.info("Handling click event: \(event.itemId) type=\(event.itemType.rawValue)")
+        logger.debug("Handling click event: \(event.itemId) type=\(event.itemType.rawValue) trigger=\(event.trigger.rawValue) target=\(event.target)")
 
         switch event.itemType {
         case .app:
@@ -238,17 +238,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// 启动心跳监控（15 秒超时检测）
     private func startHeartbeatMonitoring() {
-        heartBeatTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                guard let self = self else { return }
-                if self.pluginRunning {
-                    self.pluginRunning = false
-                    self.logger.warning("Heartbeat timeout detected, triggering reconnection")
-                    self.performReconnection()
-                }
+        scheduleHeartbeatCheck()
+    }
+
+    /// 调度下一次心跳检查
+    private func scheduleHeartbeatCheck() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) { [weak self] in
+            guard let self else { return }
+            if self.pluginRunning {
+                // 收到过心跳，重置标志，等待下一个周期
+                self.pluginRunning = false
+            } else {
+                // 15 秒内未收到心跳 → 真正超时
+                self.logger.warning("Heartbeat timeout detected, triggering reconnection")
+                self.performReconnection()
             }
+            self.scheduleHeartbeatCheck()
         }
-        RunLoop.current.add(heartBeatTimer!, forMode: .default)
     }
 
     /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
@@ -319,17 +325,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Helper Methods
 
     func openCommonDirs(target: [String]) {
-        logger.info("开始打开常用目录，目标路径：\(target)")
+        logger.debug("开始打开常用目录，目标路径：\(target)")
 
         for dirPath in target {
             let path = dirPath.removingPercentEncoding ?? dirPath
             let url = URL(fileURLWithPath: path, isDirectory: true)
 
-            logger.info("正在打开目录：\(path)")
+            logger.debug("正在打开目录：\(path)")
             NSWorkspace.shared.open(url)
         }
 
-        logger.info("常用目录打开操作完成")
+        logger.debug("常用目录打开操作完成")
     }
 
     func openApp(rid: String, target: [String]) {
@@ -339,20 +345,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let appUrl = rcitem.url
-        logger.debug("openApp: rid=\(rid)")
-        logger.debug("appUrl=\(appUrl)")
-        logger.debug("appUrl.path=\(appUrl.path)")
-        logger.debug("appUrl.isFileURL=\(appUrl.isFileURL)")
-        logger.debug("appUrl.scheme=\(appUrl.scheme ?? "nil")")
-        logger.debug("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
+        logger.debug("openApp: rid=\(rid) app=\(appUrl.path) target=\(target)")
 
         for dirPath in target {
             let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
-            logger.debug("dir=\(dir)")
-            logger.debug("dir.path=\(dir.path)")
-            logger.debug("dir.isFileURL=\(dir.isFileURL)")
-            logger.debug("FileManager.fileExists(atPath: dir.path)=\(FileManager.default.fileExists(atPath: dir.path))")
-            logger.debug("FileManager.fileExists(atPath: appUrl.path)=\(FileManager.default.fileExists(atPath: appUrl.path))")
 
             // 特殊处理：WezTerm
             if appUrl.path.hasSuffix("WezTerm.app") {
@@ -378,9 +374,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             // 通用处理：使用 NSWorkspace 打开目录
             else {
-                logger.debug("starting open dir: \(dir.path), app: \(appUrl.path)")
-
-                // 方法 1：直接使用 NSWorkspace.open(_:withApplicationAt:configuration:completionHandler:)
                 let config = NSWorkspace.OpenConfiguration()
                 NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
                     if let error = error {

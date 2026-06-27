@@ -44,7 +44,7 @@ class AppState: ObservableObject {
         self.inExt = inExt
         Task {
             await MainActor.run {
-                logger.info("start load")
+                logger.debug("start load")
                 try? load()
                 checkFullDiskAccess()
             }
@@ -53,7 +53,7 @@ class AppState: ObservableObject {
 
     func checkFullDiskAccess() {
         hasFullDiskAccess = PermissionChecker.hasFullDiskAccess()
-        logger.info("Full Disk Access status: \(self.hasFullDiskAccess)")
+        logger.debug("Full Disk Access status: \(self.hasFullDiskAccess)")
     }
     
     // Apps
@@ -67,7 +67,7 @@ class AppState: ObservableObject {
     }
 
     @MainActor func addApp(item: OpenWithApp) {
-        logger.info("start add app")
+        logger.debug("start add app")
         apps.append(item)
 
         do {
@@ -100,7 +100,7 @@ class AppState: ObservableObject {
     }
     
     @MainActor func addNewFile(_ item: NewFile) {
-        logger.info("start add new file type")
+        logger.debug("start add new file type")
         newFiles.append(item)
         
         do {
@@ -237,6 +237,6 @@ class AppState: ObservableObject {
             try? context.save()
         }
 
-        logger.info("Load from SwiftData: \(self.apps.count) apps, \(self.actions.count) actions, \(self.newFiles.count) newFiles, \(self.cdirs.count) commonDirs")
+        logger.debug("Load from SwiftData: \(self.apps.count) apps, \(self.actions.count) actions, \(self.newFiles.count) newFiles, \(self.cdirs.count) commonDirs")
     }
 }

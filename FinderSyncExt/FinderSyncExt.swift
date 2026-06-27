@@ -244,11 +244,28 @@ class FinderSyncExt: FIFinderSync {
     }
 
     override var toolbarItemImage: NSImage {
-        return NSImage(named: NSImage.cautionName) ?? NSImage()
+        let image = NSImage(named: "toolbar") ?? NSImage()
+        image.isTemplate = true
+        return image
     }
+
+    /// 当前菜单触发类型（工具栏 or 右键）
+    private var currentMenuKind: FIMenuKind = .contextualMenuForItems
 
     /// 构建并返回 Finder 上下文菜单
     override func menu(for menuKind: FIMenuKind) -> NSMenu {
+        currentMenuKind = menuKind
+        let menuKindLabel: String = {
+            switch menuKind {
+            case .contextualMenuForItems: return "右键菜单(选中项)"
+            case .contextualMenuForContainer: return "右键菜单(空白处)"
+            case .contextualMenuForSidebar: return "右键菜单(侧边栏)"
+            case .toolbarItemMenu: return "工具栏按钮"
+            default: return "其他(\(menuKind.rawValue))"
+            }
+        }()
+        logger.info("构建菜单，触发方式: \(menuKindLabel)")
+
         let menu = NSMenu(title: "RClick")
 
         // 如果缓存为空，触发请求并返回加载中的菜单
@@ -409,6 +426,7 @@ class FinderSyncExt: FIFinderSync {
         // 获取选中的文件/目录
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
+        logger.info("[Action] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
         // 发送点击事件到主程序
         let event = ClickEventPayload(
@@ -433,7 +451,7 @@ class FinderSyncExt: FIFinderSync {
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
-        logger.debug("Selected items: \(itemPaths)")
+        logger.info("[App] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
         let event = ClickEventPayload(
             itemId: app.id,
@@ -491,9 +509,18 @@ class FinderSyncExt: FIFinderSync {
 
     /// 获取触发来源
     private func getTriggerForMenuKind() -> MenuTrigger {
-        // 根据菜单类型判断触发来源
-        // 这里简化处理，默认使用 contextualItems
-        return .contextualItems
+        switch currentMenuKind {
+        case .toolbarItemMenu:
+            return .toolbar
+        case .contextualMenuForItems:
+            return .contextualItems
+        case .contextualMenuForContainer:
+            return .contextualContainer
+        case .contextualMenuForSidebar:
+            return .contextualSidebar
+        default:
+            return .contextualItems
+        }
     }
 }
 

@@ -39,7 +39,7 @@ public class PermissionChecker {
         for (path, desc) in protectedTestPaths {
             let testURL = URL(fileURLWithPath: path)
             if canAccessDirectory(at: testURL) {
-                logger.info("完全磁盘访问权限检测通过（\(desc)）")
+                logger.debug("完全磁盘访问权限检测通过（\(desc)）")
                 return true
             }
             logger.warning("FDA 检测：无法访问 \(path)（\(desc)）")

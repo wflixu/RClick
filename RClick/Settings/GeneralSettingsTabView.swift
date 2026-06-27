@@ -28,8 +28,6 @@ struct GeneralSettingsTabView: View {
     @State private var wrongFold = false
     @State private var showAlert = false
 
-    @Environment(\.modelContext) private var modelContext
-
     let messager = Messager.shared
 
     var body: some View {
