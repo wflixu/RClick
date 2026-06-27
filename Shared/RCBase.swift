@@ -11,7 +11,7 @@ protocol RCBase: Hashable, Identifiable, Codable {
     var id: String { get }
 }
 
-struct OpenWithApp: RCBase {
+struct OpenWithApp: @MainActor RCBase {
     var id: String
 
     init(id: String = UUID().uuidString, appURL url: URL) {
@@ -27,15 +27,16 @@ struct OpenWithApp: RCBase {
     var arguments: [String] = []
     var environment: [String: String] = [:]
 
-    var appName: String {
+    nonisolated var appName: String {
         FileManager.default.displayName(atPath: url.path)
     }
 
-    var name: String {
+    nonisolated var name: String {
         itemName.isEmpty ? appName : itemName
     }
 }
 
+@MainActor
 extension OpenWithApp {
     init?(bundleIdentifier identifier: String) {
         guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
@@ -76,11 +77,12 @@ extension OpenWithApp {
     }
 }
 
+
 // MARK: - Common Directory Icon Resolution
 
 /// 根据目录路径返回对应的 SF Symbol 图标名称
 /// 优先使用直接的路径拼接比较（不受 iCloud 重定向影响），FileManager API 作为补充
-func iconForDirectory(url: URL) -> String {
+nonisolated func iconForDirectory(url: URL) -> String {
     let resolvedPath = url.resolvingSymlinksInPath().path
     let fm = FileManager.default
     let home = fm.homeDirectoryForCurrentUser
@@ -151,7 +153,7 @@ func iconForDirectory(url: URL) -> String {
 }
 
 // 常用目录
-struct CommonDir: RCBase {
+struct CommonDir: @MainActor RCBase {
     var id: String
     var name: String
     var url: URL
@@ -164,7 +166,7 @@ struct CommonDir: RCBase {
     }
 }
 
-struct RCAction: RCBase {
+struct RCAction: @MainActor RCBase {
     static func == (lhs: RCAction, rhs: RCAction) -> Bool {
         lhs.id == rhs.id
     }
@@ -185,6 +187,7 @@ struct RCAction: RCBase {
     }
 }
 
+
 extension RCAction {
 
     static let copyPath = RCAction(id: "copy-path", name: "Copy Path", enabled: true, idx: 0, icon: "doc.on.doc")
@@ -193,11 +196,11 @@ extension RCAction {
     static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", enabled: false, idx: 3, icon: "eye")
     static let airdrop = RCAction(id: "airdrop", name: "AirDrop", enabled: false, idx: 4, icon: "paperplane")
 
-    static var all: [RCAction] = [.copyPath, .deleteDirect, .airdrop, .hideFileDir, .unhideFileDir]
+    static let all: [RCAction] = [.copyPath, .deleteDirect, .airdrop, .hideFileDir, .unhideFileDir]
 }
 
 // New File Type
-struct NewFile: RCBase {
+struct NewFile: @MainActor RCBase {
     static func == (lhs: NewFile, rhs: NewFile) -> Bool {
         lhs.id == rhs.id
     }
@@ -221,8 +224,9 @@ struct NewFile: RCBase {
     }
 }
 
+
 extension NewFile {
-    static var all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx, .pages, .key, .numbers]
+    static let all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx, .pages, .key, .numbers]
 
     // icon 字段为 SF Symbol 名称，作为 NSWorkspace 获取失败时的 fallback
     static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "curlybraces")

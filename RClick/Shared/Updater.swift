@@ -171,6 +171,7 @@ class GitHubReleaseChecker {
 
 // MARK: - 更新管理器
 
+@MainActor
 class UpdateManager: ObservableObject {
     @Published var availableUpdate: GitHubRelease?
     @Published var isChecking = false
@@ -436,8 +437,10 @@ class UpdateManager: ObservableObject {
             if error != nil {
                 print("启动新应用失败，可能需要手动启动")
             }
-            // 无论如何都退出当前应用
-            NSApp.terminate(nil)
+            // 无论如何都退出当前应用（切回主线程）
+            Task { @MainActor in
+                NSApp.terminate(nil)
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import OSLog
 
 /// 文件类型图标提供者 - 优先使用系统 App 图标，失败则回退到 SF Symbol
 /// 带内存缓存，避免每次生成菜单都查询 NSWorkspace
-class FileTypeIconProvider {
+final class FileTypeIconProvider: @unchecked Sendable {
     static let shared = FileTypeIconProvider()
 
     /// 菜单项图标尺寸
@@ -86,11 +86,14 @@ class FileTypeIconProvider {
     /// 通过 NSWorkspace 获取文件类型对应的默认应用图标
     /// 使用 icon(forFileType:) 直接传扩展名，绕过 UTType（扩展沙箱中不可用）
     private func workspaceIcon(for ext: String) -> NSImage? {
-        // 获取文件类型关联的应用图标
-        let icon = NSWorkspace.shared.icon(forFileType: ext)
+        // NSWorkspace.shared.icon(forFileType:) 需 @MainActor，用 sync 桥接
+        let icon: NSImage = DispatchQueue.main.sync {
+            NSWorkspace.shared.icon(forFileType: ext)
+        }
+        let genericIcon: NSImage = DispatchQueue.main.sync {
+            NSWorkspace.shared.icon(forFileType: "")
+        }
 
-        // 与通用图标比较，相同则说明没有关联的 App
-        let genericIcon = NSWorkspace.shared.icon(forFileType: "")
         if icon === genericIcon {
             logger.debug("workspaceIcon '\(ext)': no specific app (generic icon)")
             return nil

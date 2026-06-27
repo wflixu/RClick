@@ -219,54 +219,44 @@ private let logger = Logger(
 // MARK: - 消息管理器
 
 /// 消息管理器 - 处理主程序和 Extension 之间的通信
-class Messager {
+class Messager: @unchecked Sendable {
     static let shared = Messager()
 
-    private let center: DistributedNotificationCenter = .default()
-
-    // 消息处理器存储
-    private var mainToExtensionHandlers: [MainToExtensionAction: (Data?) -> Void] = [:]
-    private var extensionToMainHandlers: [ExtensionToMainAction: (Data?) -> Void] = [:]
+    // 消息处理器存储（启动时写入一次，之后只读）
+    nonisolated(unsafe) private var mainToExtensionHandlers: [MainToExtensionAction: (Data?) -> Void] = [:]
+    nonisolated(unsafe) private var extensionToMainHandlers: [ExtensionToMainAction: (Data?) -> Void] = [:]
 
     // 通知名称
-    static let mainToExtensionNotification = "RClick.MainToExtension"
-    static let extensionToMainNotification = "RClick.ExtensionToMain"
+    nonisolated static let mainToExtensionNotification = "RClick.MainToExtension"
+    nonisolated static let extensionToMainNotification = "RClick.ExtensionToMain"
 
-    private let isExtension: Bool
+    nonisolated private let isExtension: Bool
 
-    private init() {
+    nonisolated private init() {
         // 判断当前是否为 Extension 进程
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         self.isExtension = bundleId.hasSuffix(".FinderSyncExt")
 
-        setupNotificationObservers()
-    }
-
-    // MARK: - 设置通知观察者
-
-    private func setupNotificationObservers() {
+        // Danger note: DistributedNotificationCenter 初始化线程安全
+        let center = DistributedNotificationCenter.default()
         if isExtension {
-            // Extension 只监听主程序发来的消息
             center.addObserver(
                 self,
                 selector: #selector(handleMainToExtensionMessage(_:)),
                 name: NSNotification.Name(Self.mainToExtensionNotification),
                 object: nil
             )
-            logger.info("Messager initialized as Extension, listening to main-to-extension messages")
         } else {
-            // 主程序只监听 Extension 发来的消息
             center.addObserver(
                 self,
                 selector: #selector(handleExtensionToMainMessage(_:)),
                 name: NSNotification.Name(Self.extensionToMainNotification),
                 object: nil
             )
-            logger.info("Messager initialized as Main App, listening to extension-to-main messages")
         }
     }
 
-    // MARK: - 发送消息
+    // MARK: - 发送消息（nonisolated，不访问 @MainActor 状态）
 
     /// 主程序发送消息给 Extension
     func sendToExtension<T: Codable>(_ action: MainToExtensionAction, data: T? = nil) {
@@ -295,7 +285,7 @@ class Messager {
         }
 
         logger.debug("Sending message via \(notificationName)")
-        center.postNotificationName(
+        DistributedNotificationCenter.default().postNotificationName(
             NSNotification.Name(notificationName),
             object: jsonString,
             userInfo: nil,
@@ -315,10 +305,18 @@ class Messager {
         extensionToMainHandlers[action] = handler
     }
 
-    // MARK: - 处理消息
+    // MARK: - 处理消息（@objc nonisolated → 转发到 @MainActor）
 
-    @objc private func handleMainToExtensionMessage(_ notification: NSNotification) {
-        guard let jsonString = notification.object as? String,
+    @objc nonisolated private func handleMainToExtensionMessage(_ notification: NSNotification) {
+        let jsonString = notification.object as? String
+        Task { @MainActor in
+            await processMainToExtensionMessage(jsonString: jsonString)
+        }
+    }
+
+    @MainActor
+    private func processMainToExtensionMessage(jsonString: String?) async {
+        guard let jsonString,
               let jsonData = jsonString.data(using: .utf8) else {
             logger.error("Invalid message format")
             return
@@ -328,7 +326,6 @@ class Messager {
             let message = try JSONDecoder().decode(MainToExtensionMessage.self, from: jsonData)
             logger.debug("Received main-to-extension message: \(message.action.rawValue)")
 
-            // 直接传递 signedData，让 handler 自己解码
             if let handler = mainToExtensionHandlers[message.action] {
                 handler(message.signedData)
             } else {
@@ -339,8 +336,16 @@ class Messager {
         }
     }
 
-    @objc private func handleExtensionToMainMessage(_ notification: NSNotification) {
-        guard let jsonString = notification.object as? String,
+    @objc nonisolated private func handleExtensionToMainMessage(_ notification: NSNotification) {
+        let jsonString = notification.object as? String
+        Task { @MainActor in
+            await processExtensionToMainMessage(jsonString: jsonString)
+        }
+    }
+
+    @MainActor
+    private func processExtensionToMainMessage(jsonString: String?) async {
+        guard let jsonString,
               let jsonData = jsonString.data(using: .utf8) else {
             logger.error("Invalid message format")
             return
@@ -350,7 +355,6 @@ class Messager {
             let message = try JSONDecoder().decode(ExtensionToMainMessage.self, from: jsonData)
             logger.debug("Received extension-to-main message: \(message.action.rawValue)")
 
-            // 直接传递 signedData，让 handler 自己解码
             if let handler = extensionToMainHandlers[message.action] {
                 handler(message.signedData)
             } else {
@@ -412,10 +416,8 @@ class Messager {
         guard let signedData = signedData else { return nil }
 
         do {
-            // 解码为 SignedPayload<T>
             let signedPayload = try JSONDecoder().decode(SignedPayload<T>.self, from: signedData)
 
-            // 验证签名
             if MessageSecurity.verify(signedPayload) {
                 return signedPayload.payload
             } else {

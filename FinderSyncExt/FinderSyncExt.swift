@@ -17,98 +17,34 @@ private let logger = Logger(
     category: "FinderSyncExt"
 )
 
-// MARK: - Icon Loading
-
-/// 文件类型图标提供者（NSWorkspace → SF Symbol fallback）
-private let iconProvider = FileTypeIconProvider.shared
-
-/// 图标内存缓存，避免每次构建菜单都重新创建 NSImage
-private var iconCache: [String: NSImage] = [:]
-
-/// 无效/旧版图标名 → SF Symbol 映射（兼容升级用户数据库中的旧数据）
-private let iconFallbackMap: [String: String] = [
-    // New File 旧 PNG 图标名
-    "icon-file-json": "curlybraces",
-    "icon-file-txt": "doc.text",
-    "icon-file-md": "doc.richtext",
-    "icon-file-docx": "doc.richtext.fill",
-    "icon-file-pptx": "rectangle.on.rectangle.fill",
-    "icon-file-xlsx": "tablecells",
-    // Common Dir 无效图标名
-    "document": "doc",
-    "apps.iphone.badge.checkmark": "square.grid.2x2",
-]
-
-/// 获取 App 图标（带缓存）
-private func cachedAppIcon(app: AppMenuItem) -> NSImage? {
-    if let appURL = app.appURL {
-        let cacheKey = "app:\(appURL)"
-        if let cached = iconCache[cacheKey] {
-            return cached
-        }
-        let icon = NSWorkspace.shared.icon(forFile: appURL)
-        if icon.size.width > 0 {
-            iconCache[cacheKey] = icon
-            return icon
-        }
-    }
-    // 回退：SF Symbol 或 Assets
-    if let icon = NSImage(named: app.icon) {
-        return icon
-    }
-    return templateSymbol(app.icon)
-}
-
-/// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式（带缓存）
-private func templateSymbol(_ name: String) -> NSImage? {
-    let cacheKey = "sf:\(name)"
-    if let cached = iconCache[cacheKey] {
-        return cached
-    }
-    let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
-    guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-        .withSymbolConfiguration(config) else {
-        return nil
-    }
-    iconCache[cacheKey] = image
-    return image
-}
-
-/// 从 Assets 或 SF Symbol 加载图标（带缓存）
-private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
-    let cacheKey = "load:\(iconName)"
-    if let cached = iconCache[cacheKey] {
-        return cached
-    }
-    // 1. 尝试 Assets 中的 PNG（主 app 可用，扩展不可用）
-    if let icon = NSImage(named: iconName) {
-        iconCache[cacheKey] = icon
-        return icon
-    }
-    // 2. 尝试 SF Symbol 直接匹配
-    if let icon = templateSymbol(iconName) {
-        iconCache[cacheKey] = icon
-        return icon
-    }
-    // 3. 回退映射表
-    if let fallback = iconFallbackMap[iconName],
-       let icon = templateSymbol(fallback) {
-        iconCache[cacheKey] = icon
-        return icon
-    }
-    return nil
-}
-
 // MARK: - FinderSync Extension
 
 /// FinderSync Extension - 瘦 Extension 架构
 /// 只负责菜单渲染和事件转发，不读取 SwiftData
-class FinderSyncExt: FIFinderSync {
+class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     // MARK: - Properties
 
     /// 菜单配置缓存（内存缓存，从 Main App 推送）
     private var cachedMenuConfig: MenuConfigPayload?
+
+    /// 图标内存缓存，避免每次构建菜单都重新创建 NSImage
+    private var iconCache: [String: NSImage] = [:]
+
+    /// 文件类型图标提供者
+    private let iconProvider = FileTypeIconProvider.shared
+
+    /// 无效/旧版图标名 → SF Symbol 映射
+    private let iconFallbackMap: [String: String] = [
+        "icon-file-json": "curlybraces",
+        "icon-file-txt": "doc.text",
+        "icon-file-md": "doc.richtext",
+        "icon-file-docx": "doc.richtext.fill",
+        "icon-file-pptx": "rectangle.on.rectangle.fill",
+        "icon-file-xlsx": "tablecells",
+        "document": "doc",
+        "apps.iphone.badge.checkmark": "square.grid.2x2",
+    ]
 
     /// 消息管理器
     private let messager = Messager.shared
@@ -206,12 +142,15 @@ class FinderSyncExt: FIFinderSync {
 
     /// 启动心跳机制（每 10 秒发送一次）
     private func startHeartbeat() {
-        Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+        scheduleHeartbeat()
+    }
+
+    /// 调度下一次心跳
+    private func scheduleHeartbeat() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) { @MainActor [weak self] in
             self?.messager.sendHeartbeat()
+            self?.scheduleHeartbeat()
         }
-        RunLoop.current.add(Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
-            self?.messager.sendHeartbeat()
-        }, forMode: .common)
     }
 
     // MARK: - Primary Finder Sync protocol methods
@@ -251,6 +190,56 @@ class FinderSyncExt: FIFinderSync {
 
     /// 当前菜单触发类型（工具栏 or 右键）
     private var currentMenuKind: FIMenuKind = .contextualMenuForItems
+
+    // MARK: - Icon Helpers
+
+    /// 获取 App 图标（带缓存）
+    private func cachedAppIcon(app: AppMenuItem) -> NSImage? {
+        if let appURL = app.appURL {
+            let cacheKey = "app:\(appURL)"
+            if let cached = iconCache[cacheKey] { return cached }
+            let icon: NSImage = DispatchQueue.main.sync {
+                NSWorkspace.shared.icon(forFile: appURL)
+            }
+            if icon.size.width > 0 {
+                iconCache[cacheKey] = icon
+                return icon
+            }
+        }
+        if let icon = NSImage(named: app.icon) { return icon }
+        return templateSymbol(app.icon)
+    }
+
+    /// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式（带缓存）
+    private func templateSymbol(_ name: String) -> NSImage? {
+        let cacheKey = "sf:\(name)"
+        if let cached = iconCache[cacheKey] { return cached }
+        let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
+        guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return nil }
+        iconCache[cacheKey] = image
+        return image
+    }
+
+    /// 从 Assets 或 SF Symbol 加载图标（带缓存）
+    private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
+        let cacheKey = "load:\(iconName)"
+        if let cached = iconCache[cacheKey] { return cached }
+        if let icon = NSImage(named: iconName) {
+            iconCache[cacheKey] = icon
+            return icon
+        }
+        if let icon = templateSymbol(iconName) {
+            iconCache[cacheKey] = icon
+            return icon
+        }
+        if let fallback = iconFallbackMap[iconName],
+           let icon = templateSymbol(fallback) {
+            iconCache[cacheKey] = icon
+            return icon
+        }
+        return nil
+    }
 
     /// 构建并返回 Finder 上下文菜单
     override func menu(for menuKind: FIMenuKind) -> NSMenu {

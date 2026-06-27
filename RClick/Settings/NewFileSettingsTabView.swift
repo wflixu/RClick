@@ -352,7 +352,7 @@ struct NewFileSettingsTabView: View {
             }
             appState.newFiles[index] = updatedFile
         }
-        Task {
+        Task { @MainActor in
             appState.sync()
         }
         messager.sendRunningNotification()

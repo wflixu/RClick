@@ -29,6 +29,7 @@ struct MenuBarView: View {
         }
     }
 
+    @MainActor
     private func actionSettings() {
         openWindow(id: Constants.settingsWindowID)
 
@@ -41,10 +42,11 @@ struct MenuBarView: View {
         }
     }
 
+    @MainActor
     private func actionQuit() {
         messager.sendQuitNotification()
 
-        Task {
+        Task { @MainActor in
             try await Task.sleep(nanoseconds: UInt64(1.0 * 1e9))
 
             NSApplication.shared.terminate(self)

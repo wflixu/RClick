@@ -127,7 +127,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             // Preload icons for all apps to improve performance
-            Task {
+            Task { @MainActor in
                 IconCache.shared.preloadIcons(for: appState.apps.map { $0.url })
             }
 
@@ -182,7 +182,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let directories: [String] = []
         messager.sendRunningNotification(directories: directories)
         if !pluginRunning {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { @MainActor in
                 self.sendObserveDirMessage()
             }
         }
@@ -243,7 +243,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// 调度下一次心跳检查
     private func scheduleHeartbeatCheck() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) { @MainActor [weak self] in
             guard let self else { return }
             if self.pluginRunning {
                 // 收到过心跳，重置标志，等待下一个周期
@@ -260,7 +260,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
     private func startRunningMessageRetry() {
         runningMessageRetryCount = 0
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { @MainActor [weak self] in
             self?.sendRunningMessageRetry()
         }
     }
@@ -278,7 +278,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         logger.debug("Sending running message retry \(self.runningMessageRetryCount)/\(self.maxRunningMessageRetryCount)")
 
         if !self.pluginRunning {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { @MainActor [weak self] in
                 self?.sendRunningMessageRetry()
             }
         }
@@ -375,12 +375,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // 通用处理：使用 NSWorkspace 打开目录
             else {
                 let config = NSWorkspace.OpenConfiguration()
+                let logger = self.logger  // 捕获 Sendable logger
                 NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
                     if let error = error {
-                        self.logger.error("Error opening with application: \(error.localizedDescription)")
-                        self.logger.error("Error code: \((error as NSError).code), domain: \((error as NSError).domain)")
+                        logger.error("Error opening with application: \(error.localizedDescription)")
+                        logger.error("Error code: \((error as NSError).code), domain: \((error as NSError).domain)")
                     } else if let runningApp = runningApp {
-                        self.logger.debug("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
+                        logger.debug("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
                     }
                 }
             }

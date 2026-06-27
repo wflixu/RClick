@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+@preconcurrency import ApplicationServices
 import OSLog
 import SwiftUI
 
@@ -77,6 +78,7 @@ public class PermissionChecker {
     }
 
     /// 打开完全磁盘访问权限设置
+    @MainActor
     public static func openFullDiskAccessSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
             NSWorkspace.shared.open(url)
@@ -84,6 +86,7 @@ public class PermissionChecker {
     }
 
     /// 打开辅助功能权限设置
+    @MainActor
     public static func openAccessibilitySettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
             NSWorkspace.shared.open(url)
