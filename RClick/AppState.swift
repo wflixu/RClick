@@ -212,14 +212,28 @@ class AppState: ObservableObject {
 
         // 加载 CommonDirs
         let commonDirDescriptor = FetchDescriptor<CommonDirEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        var needSaveCommonDirs = false
         cdirs = (try? context.fetch(commonDirDescriptor))?.map { entity in
-            CommonDir(
+            // 自动修复旧的通用图标
+            let resolvedIcon: String
+            if entity.icon == "folder" || entity.icon.isEmpty {
+                let newIcon = iconForDirectory(url: entity.path)
+                entity.icon = newIcon
+                needSaveCommonDirs = true
+                resolvedIcon = newIcon
+            } else {
+                resolvedIcon = entity.icon
+            }
+            return CommonDir(
                 id: entity.id,
                 name: entity.name,
                 url: entity.path,
-                icon: entity.icon
+                icon: resolvedIcon
             )
         } ?? []
+        if needSaveCommonDirs {
+            try? context.save()
+        }
 
         logger.info("Load from SwiftData: \(self.apps.count) apps, \(self.actions.count) actions, \(self.newFiles.count) newFiles, \(self.cdirs.count) commonDirs")
     }

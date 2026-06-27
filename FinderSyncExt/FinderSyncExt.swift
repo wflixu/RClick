@@ -33,9 +33,9 @@ private let iconFallbackMap: [String: String] = [
     "apps.iphone.badge.checkmark": "square.grid.2x2",
 ]
 
-/// 加载 SF Symbol 并设 paletteColors 适配暗色/浅色模式
+/// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式
 private func templateSymbol(_ name: String) -> NSImage? {
-    let config = NSImage.SymbolConfiguration(paletteColors: [.labelColor])
+    let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
     return NSImage(systemSymbolName: name, accessibilityDescription: nil)?
         .withSymbolConfiguration(config)
 }

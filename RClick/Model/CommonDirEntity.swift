@@ -65,11 +65,11 @@ final class CommonDirEntity {
         let documents = homeDir.appendingPathComponent("Documents")
         let downloads = homeDir.appendingPathComponent("Downloads")
 
-        dirs.append(CommonDirEntity(id: "desktop", name: "桌面", path: desktop, icon: "desktopcomputer", sortOrder: 0))
-        dirs.append(CommonDirEntity(id: "documents", name: "文档", path: documents, icon: "doc", sortOrder: 1))
-        dirs.append(CommonDirEntity(id: "downloads", name: "下载", path: downloads, icon: "arrow.down.circle", sortOrder: 2))
-        dirs.append(CommonDirEntity(id: "applications", name: "应用程序", path: URL(fileURLWithPath: "/Applications"), icon: "square.grid.2x2", sortOrder: 3))
-        dirs.append(CommonDirEntity(id: "home", name: "用户主目录", path: homeDir, icon: "person.crop.circle", sortOrder: 4))
+        dirs.append(CommonDirEntity(id: "desktop", name: "桌面", path: desktop, icon: iconForDirectory(url: desktop), sortOrder: 0))
+        dirs.append(CommonDirEntity(id: "documents", name: "文档", path: documents, icon: iconForDirectory(url: documents), sortOrder: 1))
+        dirs.append(CommonDirEntity(id: "downloads", name: "下载", path: downloads, icon: iconForDirectory(url: downloads), sortOrder: 2))
+        dirs.append(CommonDirEntity(id: "applications", name: "应用程序", path: URL(fileURLWithPath: "/Applications"), icon: iconForDirectory(url: URL(fileURLWithPath: "/Applications")), sortOrder: 3))
+        dirs.append(CommonDirEntity(id: "home", name: "用户主目录", path: homeDir, icon: iconForDirectory(url: homeDir), sortOrder: 4))
 
         return dirs
     }

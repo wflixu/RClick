@@ -76,6 +76,80 @@ extension OpenWithApp {
     }
 }
 
+// MARK: - Common Directory Icon Resolution
+
+/// 根据目录路径返回对应的 SF Symbol 图标名称
+/// 优先使用直接的路径拼接比较（不受 iCloud 重定向影响），FileManager API 作为补充
+func iconForDirectory(url: URL) -> String {
+    let resolvedPath = url.resolvingSymlinksInPath().path
+    let fm = FileManager.default
+    let home = fm.homeDirectoryForCurrentUser
+
+    // 第一优先级：用户主目录下的标准子目录（直接路径拼接，不受 iCloud 影响）
+    let userDirs: [(String, String)] = [
+        ("Desktop", "desktopcomputer"),
+        ("Documents", "doc"),
+        ("Downloads", "arrow.down.circle"),
+        ("Pictures", "photo"),
+        ("Music", "music.note"),
+        ("Movies", "film"),
+        ("Library", "books.vertical"),
+        ("Public", "person.2"),
+        ("Sites", "globe"),
+        ("Applications", "square.grid.2x2"),
+    ]
+
+    for (subPath, icon) in userDirs {
+        if home.appendingPathComponent(subPath).resolvingSymlinksInPath().path == resolvedPath {
+            return icon
+        }
+    }
+
+    // 用户主目录
+    if resolvedPath == home.resolvingSymlinksInPath().path {
+        return "house.fill"
+    }
+
+    // 第二优先级：FileManager 标准目录（可能被 iCloud 重定向）
+    let standardDirs: [(FileManager.SearchPathDirectory, String)] = [
+        (.desktopDirectory, "desktopcomputer"),
+        (.documentDirectory, "doc"),
+        (.downloadsDirectory, "arrow.down.circle"),
+        (.musicDirectory, "music.note"),
+        (.moviesDirectory, "film"),
+        (.picturesDirectory, "photo"),
+        (.libraryDirectory, "books.vertical"),
+    ]
+
+    for (dir, icon) in standardDirs {
+        if let standardURL = fm.urls(for: dir, in: .userDomainMask).first,
+           standardURL.resolvingSymlinksInPath().path == resolvedPath {
+            return icon
+        }
+    }
+
+    // 系统级目录
+    let systemPaths: [(String, String)] = [
+        ("/Applications", "square.grid.2x2"),
+        ("/System", "gearshape.2"),
+        ("/Library", "building.columns"),
+        ("/Users", "person.3"),
+        ("/usr", "terminal"),
+        ("/tmp", "clock"),
+        ("/opt", "externaldrive"),
+        ("/Volumes", "externaldrive"),
+    ]
+
+    for (sysPath, icon) in systemPaths {
+        if URL(fileURLWithPath: sysPath).resolvingSymlinksInPath().path == resolvedPath {
+            return icon
+        }
+    }
+
+    // 默认图标
+    return "folder"
+}
+
 // 常用目录
 struct CommonDir: RCBase {
     var id: String

@@ -27,7 +27,7 @@ struct CommonDirsSettingTabView: View {
                 List {
                     ForEach(store.cdirs) { item in
                         HStack {
-                            Image(systemName: "folder")
+                            Image(systemName: item.icon.isEmpty ? "folder" : item.icon)
                             Text(verbatim: item.url.path)
                             Spacer()
                             Button {
@@ -60,7 +60,7 @@ struct CommonDirsSettingTabView: View {
                 switch result {
                     case .success(let urls):
                         if let url = urls.first {
-                            let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: "folder")
+                            let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: iconForDirectory(url: url))
                             if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
                                 store.cdirs.append(commonDir)
                                 store.sync()
