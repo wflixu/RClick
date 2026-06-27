@@ -60,6 +60,9 @@ struct NewFileSettingsTabView: View {
                     // 折叠开关
                     Toggle("折叠新建文件菜单", isOn: $appState.foldNewFileMenu)
                         .toggleStyle(.switch)
+                        .onChange(of: appState.foldNewFileMenu) { _ in
+                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                        }
                     Spacer()
                     Button {
                         isAddingNew = true

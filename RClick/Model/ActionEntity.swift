@@ -44,15 +44,14 @@ final class ActionEntity {
         )
     }
 
-    // 预定义动作的工厂方法
+    // 预定义动作的工厂方法（默认只开启前两个）
     static func createDefaultActions() -> [ActionEntity] {
         return [
-            ActionEntity(id: "copy-path", name: "复制路径", icon: "doc.on.doc", sortOrder: 0),
-            ActionEntity(id: "copy-filename", name: "复制文件名", icon: "doc.text", sortOrder: 1),
-            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", sortOrder: 3),
-            ActionEntity(id: "delete", name: "删除", icon: "trash", sortOrder: 4),
-            ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", sortOrder: 5),
-            ActionEntity(id: "unhide", name: "显示", icon: "eye", sortOrder: 6),
+            ActionEntity(id: "copy-path", name: "复制路径", icon: "doc.on.doc", isEnabled: true, sortOrder: 0),
+            ActionEntity(id: "delete-direct", name: "直接删除", icon: "trash", isEnabled: true, sortOrder: 1),
+            ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", isEnabled: false, sortOrder: 2),
+            ActionEntity(id: "unhide", name: "显示", icon: "eye", isEnabled: false, sortOrder: 3),
+            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", isEnabled: false, sortOrder: 4),
         ]
     }
 }

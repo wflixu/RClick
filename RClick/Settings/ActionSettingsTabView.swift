@@ -18,6 +18,9 @@ struct ActionSettingsTabView: View {
                 // 折叠开关
                 Toggle("折叠动作菜单", isOn: $appState.foldActionsMenu)
                     .toggleStyle(.switch)
+                    .onChange(of: appState.foldActionsMenu) { _ in
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
                 Spacer()
                 Button {
                     appState.resetActionItems()

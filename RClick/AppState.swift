@@ -29,8 +29,8 @@ class AppState: ObservableObject {
     // 折叠开关状态 - 每个分类独立控制
     @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
     @AppStorage("foldActionsMenu") var foldActionsMenu: Bool = false
-    @AppStorage("foldNewFileMenu") var foldNewFileMenu: Bool = false
-    @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = false
+    @AppStorage("foldNewFileMenu") var foldNewFileMenu: Bool = true
+    @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = true
 
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
@@ -121,6 +121,7 @@ class AppState: ObservableObject {
     // Action
     @MainActor func toggleActionItem() {
         try? save()
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
     }
 
     @MainActor func resetActionItems() {
@@ -194,6 +195,7 @@ class AppState: ObservableObject {
             RCAction(
                 id: entity.id,
                 name: entity.name,
+                enabled: entity.isEnabled,
                 idx: entity.sortOrder,
                 icon: entity.icon
             )

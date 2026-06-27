@@ -42,6 +42,9 @@ struct CommonDirsSettingTabView: View {
                 HStack {
                     Toggle("折叠常用文件夹菜单", isOn: $store.foldCommonDirMenu)
                         .toggleStyle(.switch)
+                        .onChange(of: store.foldCommonDirMenu) { _ in
+                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                        }
                     Spacer()
                     Button {
                         showCommonDirImporter = true

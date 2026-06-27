@@ -223,7 +223,7 @@ class FinderSyncExt: FIFinderSync {
         if !config.actions.isEmpty {
             if config.actionsCollapsed {
                 // 折叠：使用子菜单
-                let actionsSubMenu = NSMenu(title: String(localized: "Actions"))
+                let actionsSubMenu = NSMenu(title: "操作")
                 for action in config.actions {
                     let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
                     item.tag = hashForAction(action)
@@ -233,7 +233,7 @@ class FinderSyncExt: FIFinderSync {
                     }
                     actionsSubMenu.addItem(item)
                 }
-                let actionsItem = NSMenuItem(title: String(localized: "Actions"), action: nil, keyEquivalent: "")
+                let actionsItem = NSMenuItem(title: "操作", action: nil, keyEquivalent: "")
                 actionsItem.submenu = actionsSubMenu
                 menu.addItem(actionsItem)
             } else {
@@ -254,7 +254,7 @@ class FinderSyncExt: FIFinderSync {
         if !config.apps.isEmpty {
             if config.appsCollapsed {
                 // 折叠：使用子菜单
-                let appsSubMenu = NSMenu(title: String(localized: "Open With"))
+                let appsSubMenu = NSMenu(title: "打开方式")
                 for app in config.apps {
                     let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
                     item.tag = hashForApp(app)
@@ -277,7 +277,7 @@ class FinderSyncExt: FIFinderSync {
                     }
                     appsSubMenu.addItem(item)
                 }
-                let appsItem = NSMenuItem(title: String(localized: "Open With"), action: nil, keyEquivalent: "")
+                let appsItem = NSMenuItem(title: "打开方式", action: nil, keyEquivalent: "")
                 appsItem.submenu = appsSubMenu
                 menu.addItem(appsItem)
             } else {
@@ -311,7 +311,7 @@ class FinderSyncExt: FIFinderSync {
         if !config.newFiles.isEmpty {
             if config.newFilesCollapsed {
                 // 折叠：使用子菜单
-                let newFilesSubMenu = NSMenu(title: String(localized: "New File"))
+                let newFilesSubMenu = NSMenu(title: "新建文件")
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
@@ -320,7 +320,7 @@ class FinderSyncExt: FIFinderSync {
                     item.image?.accessibilityDescription = newFile.name
                     newFilesSubMenu.addItem(item)
                 }
-                let newFilesItem = NSMenuItem(title: String(localized: "New File"), action: nil, keyEquivalent: "")
+                let newFilesItem = NSMenuItem(title: "新建文件", action: nil, keyEquivalent: "")
                 newFilesItem.submenu = newFilesSubMenu
                 newFilesItem.image = templateSymbol("doc.badge.plus")
                 menu.addItem(newFilesItem)
@@ -341,7 +341,7 @@ class FinderSyncExt: FIFinderSync {
         if !config.commonDirs.isEmpty {
             if config.commonDirsCollapsed {
                 // 折叠：使用子菜单
-                let commonDirsSubMenu = NSMenu(title: String(localized: "Common Dirs"))
+                let commonDirsSubMenu = NSMenu(title: "常用文件夹")
                 for commonDir in config.commonDirs {
                     let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
                     item.tag = hashForCommonDir(commonDir)
@@ -349,7 +349,7 @@ class FinderSyncExt: FIFinderSync {
                     item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
                     commonDirsSubMenu.addItem(item)
                 }
-                let commonDirsItem = NSMenuItem(title: String(localized: "Common Dirs"), action: nil, keyEquivalent: "")
+                let commonDirsItem = NSMenuItem(title: "常用文件夹", action: nil, keyEquivalent: "")
                 commonDirsItem.submenu = commonDirsSubMenu
                 commonDirsItem.image = templateSymbol("folder")
                 menu.addItem(commonDirsItem)

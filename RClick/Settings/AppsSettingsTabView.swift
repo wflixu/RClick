@@ -29,6 +29,9 @@ struct AppsSettingsTabView: View {
                     // 折叠开关
                     Toggle("折叠应用菜单", isOn: $appState.foldAppsMenu)
                         .toggleStyle(.switch)
+                        .onChange(of: appState.foldAppsMenu) { _ in
+                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                        }
                     Spacer()
                     Button {
                         showSelectApp = true

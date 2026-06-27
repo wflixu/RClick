@@ -187,11 +187,11 @@ struct RCAction: RCBase {
 
 extension RCAction {
 
-    static let copyPath = RCAction(id: "copy-path", name: "Copy Path", idx: 0, icon: "doc.on.doc")
-    static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", idx: 1, icon: "trash")
-    static let hideFileDir = RCAction(id: "hide", name: "Hide", idx: 2, icon: "eye.slash")
-    static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", idx: 3, icon: "eye")
-    static let airdrop = RCAction(id: "airdrop", name: "AirDrop", idx: 4, icon: "paperplane")
+    static let copyPath = RCAction(id: "copy-path", name: "Copy Path", enabled: true, idx: 0, icon: "doc.on.doc")
+    static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", enabled: true, idx: 1, icon: "trash")
+    static let hideFileDir = RCAction(id: "hide", name: "Hide", enabled: false, idx: 2, icon: "eye.slash")
+    static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", enabled: false, idx: 3, icon: "eye")
+    static let airdrop = RCAction(id: "airdrop", name: "AirDrop", enabled: false, idx: 4, icon: "paperplane")
 
     static var all: [RCAction] = [.copyPath, .deleteDirect, .airdrop, .hideFileDir, .unhideFileDir]
 }

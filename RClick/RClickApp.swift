@@ -12,6 +12,10 @@ import SwiftData
 import FinderSync
 import os.log
 
+extension NSNotification.Name {
+    static let menuConfigShouldUpdate = NSNotification.Name("RClick.menuConfigShouldUpdate")
+}
+
 @main
 struct RClickApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
@@ -78,6 +82,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("applicationDidFinishLaunching called")
+
+        // 监听菜单配置更新通知（设置页 toggle 动作时触发）
+        NotificationCenter.default.addObserver(
+            forName: .menuConfigShouldUpdate,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.sendMenuConfigurationUpdate()
+        }
 
         // 在 app 启动后执行的函数
 
@@ -177,7 +190,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func sendMenuConfigurationUpdate() {
         // Build menu config from AppState
-        let actionMenuItems = appState.actions.map { $0.toActionMenuItem() }
+        let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
         let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
         let commonDirMenuItems = appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon, url: $0.url.path) }
@@ -191,10 +204,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             apps: appMenuItems,
             newFiles: newFileMenuItems,
             commonDirs: commonDirMenuItems,
-            actionsCollapsed: false,      // Actions 默认不折叠
-            appsCollapsed: false,         // Open With 默认不折叠
-            newFilesCollapsed: true,      // New File 默认折叠
-            commonDirsCollapsed: true     // Common Dirs 默认折叠
+            actionsCollapsed: appState.foldActionsMenu,
+            appsCollapsed: appState.foldAppsMenu,
+            newFilesCollapsed: appState.foldNewFileMenu,
+            commonDirsCollapsed: appState.foldCommonDirMenu
         )
 
         // 更新快照
