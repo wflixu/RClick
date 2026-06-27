@@ -22,6 +22,9 @@ private let logger = Logger(
 /// 文件类型图标提供者（NSWorkspace → SF Symbol fallback）
 private let iconProvider = FileTypeIconProvider.shared
 
+/// 图标内存缓存，避免每次构建菜单都重新创建 NSImage
+private var iconCache: [String: NSImage] = [:]
+
 /// 无效/旧版图标名 → SF Symbol 映射（兼容升级用户数据库中的旧数据）
 private let iconFallbackMap: [String: String] = [
     // New File 旧 PNG 图标名
@@ -36,26 +39,61 @@ private let iconFallbackMap: [String: String] = [
     "apps.iphone.badge.checkmark": "square.grid.2x2",
 ]
 
-/// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式
-private func templateSymbol(_ name: String) -> NSImage? {
-    let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
-    return NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-        .withSymbolConfiguration(config)
+/// 获取 App 图标（带缓存）
+private func cachedAppIcon(app: AppMenuItem) -> NSImage? {
+    if let appURL = app.appURL {
+        let cacheKey = "app:\(appURL)"
+        if let cached = iconCache[cacheKey] {
+            return cached
+        }
+        let icon = NSWorkspace.shared.icon(forFile: appURL)
+        if icon.size.width > 0 {
+            iconCache[cacheKey] = icon
+            return icon
+        }
+    }
+    // 回退：SF Symbol 或 Assets
+    if let icon = NSImage(named: app.icon) {
+        return icon
+    }
+    return templateSymbol(app.icon)
 }
 
-/// 从 Assets 或 SF Symbol 加载图标
+/// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式（带缓存）
+private func templateSymbol(_ name: String) -> NSImage? {
+    let cacheKey = "sf:\(name)"
+    if let cached = iconCache[cacheKey] {
+        return cached
+    }
+    let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
+    guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+        .withSymbolConfiguration(config) else {
+        return nil
+    }
+    iconCache[cacheKey] = image
+    return image
+}
+
+/// 从 Assets 或 SF Symbol 加载图标（带缓存）
 private func loadIcon(named iconName: String, accessibilityDescription description: String) -> NSImage? {
+    let cacheKey = "load:\(iconName)"
+    if let cached = iconCache[cacheKey] {
+        return cached
+    }
     // 1. 尝试 Assets 中的 PNG（主 app 可用，扩展不可用）
     if let icon = NSImage(named: iconName) {
+        iconCache[cacheKey] = icon
         return icon
     }
     // 2. 尝试 SF Symbol 直接匹配
     if let icon = templateSymbol(iconName) {
+        iconCache[cacheKey] = icon
         return icon
     }
     // 3. 回退映射表
     if let fallback = iconFallbackMap[iconName],
        let icon = templateSymbol(fallback) {
+        iconCache[cacheKey] = icon
         return icon
     }
     return nil
@@ -154,7 +192,8 @@ class FinderSyncExt: FIFinderSync {
     /// 处理菜单配置
     private func handleMenuConfig(_ config: MenuConfigPayload) {
         cachedMenuConfig = config
-        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
+        iconCache.removeAll()
+        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count), icons cleared")
     }
 
     /// 请求菜单配置
@@ -259,22 +298,7 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
                     item.tag = hashForApp(app)
                     item.target = self
-                    // 优先从应用路径获取图标，其次从 Assets 加载，最后使用 SF Symbol
-                    if let appURL = app.appURL {
-                        // NSWorkspace.icon(forFile:) 总是返回非空，但路径无效时返回通用图标
-                        let icon = NSWorkspace.shared.icon(forFile: appURL)
-                        // 检查是否是通用图标（通过比较大小或名称）
-                        if icon.size.width > 0 {
-                            item.image = icon
-                        }
-                    }
-                    if item.image == nil {
-                        if let icon = NSImage(named: app.icon) {
-                            item.image = icon
-                        } else if let icon = templateSymbol(app.icon) {
-                            item.image = icon
-                        }
-                    }
+                    item.image = cachedAppIcon(app: app)
                     appsSubMenu.addItem(item)
                 }
                 let appsItem = NSMenuItem(title: "打开方式", action: nil, keyEquivalent: "")
@@ -286,22 +310,7 @@ class FinderSyncExt: FIFinderSync {
                     let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
                     item.tag = hashForApp(app)
                     item.target = self
-                    // 优先从应用路径获取图标，其次从 Assets 加载，最后使用 SF Symbol
-                    if let appURL = app.appURL {
-                        // NSWorkspace.icon(forFile:) 总是返回非空，但路径无效时返回通用图标
-                        let icon = NSWorkspace.shared.icon(forFile: appURL)
-                        // 检查是否是通用图标（通过比较大小或名称）
-                        if icon.size.width > 0 {
-                            item.image = icon
-                        }
-                    }
-                    if item.image == nil {
-                        if let icon = NSImage(named: app.icon) {
-                            item.image = icon
-                        } else if let icon = templateSymbol(app.icon) {
-                            item.image = icon
-                        }
-                    }
+                    item.image = cachedAppIcon(app: app)
                     menu.addItem(item)
                 }
             }
