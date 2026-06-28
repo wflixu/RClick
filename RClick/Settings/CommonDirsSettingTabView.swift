@@ -8,7 +8,10 @@
 import AppKit
 import Cocoa
 import FinderSync
+import Foundation
+import OSLog
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct CommonDirsSettingTabView: View {
     @AppLog(category: "settings-general")
@@ -19,52 +22,62 @@ struct CommonDirsSettingTabView: View {
     @State private var showCommonDirImporter = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        Form {
             Section {
-                List {
-                    ForEach(store.cdirs) { item in
-                        HStack {
-                            Image(systemName: "folder")
-                            Text(verbatim: item.url.path)
-                            Spacer()
-                            Button {
-                                removeCommonDir(item)
-                            } label: {
-                                Image(systemName: "trash")
-                            }
-                        }
+                Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
+                    .onChange(of: store.showCommonDirs) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
-                }
-            } header: {
+                Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
+                    .disabled(!store.showCommonDirs)
+                    .onChange(of: store.foldCommonDirMenu) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
+            }
+
+            Section {
                 HStack {
-                    Text("Common Folders").font(.title3).fontWeight(.semibold)
                     Spacer()
                     Button {
                         showCommonDirImporter = true
-                    } label: { Label("Add", systemImage: "folder.badge.plus") }
+                    } label: {
+                        Label("添加文件夹", systemImage: "folder.badge.plus")
+                    }
                 }
-            } footer: {
-                Text("Quick access to frequently used folders")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-            }
-            .fileImporter(
-                isPresented: $showCommonDirImporter,
-                allowedContentTypes: [.directory],
-                allowsMultipleSelection: false
-            ) { result in
-                switch result {
-                    case .success(let urls):
-                        if let url = urls.first {
-                            let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: "folder")
-                            if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
-                                store.cdirs.append(commonDir)
-                                try? store.saveCommonDir()
-                            }
+
+                ForEach(store.cdirs) { item in
+                    LabeledContent {
+                        Button {
+                            removeCommonDir(item)
+                        } label: {
+                            Image(systemName: "trash")
                         }
-                    case .failure(let error):
-                        logger.error("Failed to select common folder: \(error.localizedDescription)")
+                        .buttonStyle(.borderless)
+                    } label: {
+                        Label(item.url.lastPathComponent, systemImage: item.icon.isEmpty ? "folder" : item.icon)
+                    }
                 }
+            } header: {
+                Text("已添加的文件夹")
+            }
+        }
+        .formStyle(.grouped)
+        .fileImporter(
+            isPresented: $showCommonDirImporter,
+            allowedContentTypes: [.directory],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+                case .success(let urls):
+                    if let url = urls.first {
+                        let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: iconForDirectory(url: url))
+                        if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
+                            store.cdirs.append(commonDir)
+                            store.sync()
+                        }
+                    }
+                case .failure(let error):
+                    logger.error("Failed to select common folder: \(error.localizedDescription)")
             }
         }
     }
@@ -72,7 +85,7 @@ struct CommonDirsSettingTabView: View {
     @MainActor private func removeCommonDir(_ item: CommonDir) {
         if let index = store.cdirs.firstIndex(of: item) {
             store.cdirs.remove(at: index)
-            try? store.saveCommonDir()
+            store.sync()
         }
     }
 }

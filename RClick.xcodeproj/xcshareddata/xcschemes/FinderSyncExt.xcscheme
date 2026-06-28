@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
+   LastUpgradeVersion = "2650"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -16,7 +16,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5C119D2F2BBEA9AC00B2D7C4"
+               BlueprintIdentifier = "5C8A29172F83D74A00FE687C"
                BuildableName = "FinderSyncExt.appex"
                BlueprintName = "FinderSyncExt"
                ReferencedContainer = "container:RClick.xcodeproj">
@@ -30,7 +30,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+               BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
                BuildableName = "RClick.app"
                BlueprintName = "RClick"
                ReferencedContainer = "container:RClick.xcodeproj">
@@ -51,22 +51,29 @@
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       askForAppToLaunch = "Yes"
-      useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/lixu"
-      ignoresPersistentStateOnLaunch = "YES"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
-      launchAutomaticallySubstyle = "2">
+      launchAutomaticallySubstyle = "2"
+      queueDebuggingEnableBacktraceRecording = "Yes">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+            BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
             BuildableName = "RClick.app"
             BlueprintName = "RClick"
             ReferencedContainer = "container:RClick.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "IDEPreferLogStreaming"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -80,7 +87,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+            BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
             BuildableName = "RClick.app"
             BlueprintName = "RClick"
             ReferencedContainer = "container:RClick.xcodeproj">

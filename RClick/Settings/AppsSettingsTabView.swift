@@ -6,236 +6,110 @@
 //
 
 import AppKit
+import Foundation
+import OSLog
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AppsSettingsTabView: View {
     @EnvironmentObject var appState: AppState
     @State var showSelectApp = false
-    @State private var expandedAppId: String?
     @State private var editingApp: OpenWithApp?
-    @State private var editingItemName: String = ""
-    @State private var editingArguments: String = ""
-    @State private var editingEnvironment: String = ""
-    
+
     let messager = Messager.shared
-    
+
     var body: some View {
-        ZStack {
-            VStack {
+        Form {
+            Section {
+                Toggle("折叠应用菜单", isOn: $appState.foldAppsMenu)
+                    .onChange(of: appState.foldAppsMenu) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
+            }
+
+            Section {
                 HStack {
-                   
                     Spacer()
                     Button {
                         showSelectApp = true
                     } label: {
-                        Label("Add", systemImage: "plus.app")
-                            .font(.body)
+                        Label("添加应用", systemImage: "plus.app")
                     }
                 }
-                
-                List {
-                    ForEach(appState.apps) { item in
-                        VStack {
-                            // App 基本信息行
-                            HStack {
-                                Image(nsImage: NSWorkspace.shared.icon(forFile: item.url.path))
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 32, height: 32)
-                                Text(item.name).font(.title2)
-                                Spacer()
-                                
-                                // 展开/收起按钮
-                                Button {
-                                    withAnimation {
-                                        if expandedAppId == item.id {
-                                            expandedAppId = nil
-                                        } else {
-                                            expandedAppId = item.id
-                                        }
-                                    }
-                                } label: {
-                                    Image(systemName: expandedAppId == item.id ? "chevron.up" : "chevron.down")
-                                }
-                                
-                                // 编辑按钮
-                                Button {
-                                    editingApp = item
-                                    editingItemName = item.itemName
-                                    editingArguments = item.arguments.joined(separator: "; ")
-                                    editingEnvironment = item.environment.map { "\($0.key)=\($0.value)" }.joined(separator: "\n")
-                                } label: {
-                                    Image(systemName: "pencil")
-                                }
-                                
-                                // 删除按钮
-                                Button {
-                                    deleteApp(item)
-                                } label: {
-                                    Image(systemName: "trash")
-                                }
+
+                ForEach(appState.apps) { item in
+                    LabeledContent {
+                        HStack(spacing: 8) {
+                            Button {
+                                editingApp = item
+                            } label: {
+                                Image(systemName: "pencil")
                             }
-                            .padding(.vertical, 4)
-                            
-                            // 展开的属性信息
-                            if expandedAppId == item.id {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    if !item.arguments.isEmpty {
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text("Arguments:").font(.headline)
-                                            VStack(alignment: .leading, spacing: 2) {
-                                                ForEach(item.arguments, id: \.self) { arg in
-                                                    HStack(spacing: 4) {
-                                                        Image(systemName: "arrow.right")
-                                                            .foregroundColor(.secondary)
-                                                            .font(.caption)
-                                                        Text(arg)
-                                                            .font(.system(.body, design: .monospaced))
-                                                    }
-                                                }
-                                            }
-                                            .padding(.leading, 8)
-                                        }
-                                    }
-                                    
-                                    if !item.environment.isEmpty {
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text("Environment:").font(.headline)
-                                            VStack(alignment: .leading, spacing: 2) {
-                                                ForEach(Array(item.environment.sorted(by: { $0.key < $1.key })), id: \.key) { key, value in
-                                                    HStack(spacing: 4) {
-                                                        Image(systemName: "arrow.right")
-                                                            .foregroundColor(.secondary)
-                                                            .font(.caption)
-                                                        Text("\(key)=\(value)")
-                                                            .font(.system(.body, design: .monospaced))
-                                                    }
-                                                }
-                                            }
-                                            .padding(.leading, 8)
-                                        }
-                                    }
+                            .buttonStyle(.borderless)
+                            .help("编辑应用")
+
+                            Button {
+                                deleteApp(item)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.borderless)
+                            .help("删除应用")
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(nsImage: IconCache.shared.icon(for: item.url))
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 24, height: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(item.name)
+                                if !item.arguments.isEmpty || !item.environment.isEmpty {
+                                    Text(appSummary(item))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
                                 }
-                                .padding(.leading, 40)
-                                .padding(.vertical, 8)
-                                
-                                .transition(.opacity)
-                                .frame(maxWidth: .infinity, alignment: .leading) // 添加这行使宽度填充整个可用空间
-                                .background(Color(NSColor.alternatingContentBackgroundColors[1])) // 使用系统交替背景色
-                                .cornerRadius(6)
                             }
                         }
                     }
                 }
-            }
-            .fileImporter(
-                isPresented: $showSelectApp,
-                allowedContentTypes: [.application],
-                allowsMultipleSelection: false
-            ) { result in
-                switch result {
-                case .success(let files):
-                    if let url = files.first {
-                        appState.addApp(item: OpenWithApp(appURL: url))
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-            
-            // 编辑浮层
-            if editingApp != nil {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        editingApp = nil
-                    }
-                
-                VStack {
-                    HStack {
-                        Text("Edit App Properties").font(.title2)
-                    }.padding(.top, 16)
-                    
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        VStack(alignment: .leading) {
-                            Text("Display Name").font(.headline)
-                            TextField("Display Name", text: $editingItemName)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        
-                        VStack(alignment: .leading) {
-                            Text("Arguments").font(.headline)
-                            Text("One argument per semicolon (;)").font(.caption)
-                                .foregroundColor(.secondary)
-                            TextField("Arguments", text: $editingArguments)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        
-                        VStack(alignment: .leading) {
-                            Text("Environment Variables").font(.headline)
-                            Text("Format: KEY=VALUE, one per line").font(.caption)
-                                .foregroundColor(.secondary)
-                            TextEditor(text: $editingEnvironment)
-                                .font(.system(.body, design: .monospaced))
-                                .frame(height: 100)
-                                .border(Color.gray.opacity(0.2))
-                        }
-                    }
-                    .padding()
-                    
-                    HStack {
-                        Button("Cancel") {
-                            editingApp = nil
-                        }
-                        .keyboardShortcut(.escape)
-                        
-                        Button("Save") {
-                            if let app = editingApp {
-                                updateApp(app)
-                            }
-                            editingApp = nil
-                        }
-                        .keyboardShortcut(.return)
-                    }
-                    .padding(.bottom)
-                }
-                .frame(width: 400)
-                .background(Color(NSColor.windowBackgroundColor))
-                .cornerRadius(12)
-                .shadow(radius: 10)
             }
         }
-    }
-    
-    private func parseEnvironmentVariables(_ text: String) -> [String: String] {
-        var result: [String: String] = [:]
-        for line in text.split(separator: "\n") {
-            let parts = line.split(separator: "=", maxSplits: 1)
-            if parts.count == 2 {
-                result[String(parts[0]).trimmingCharacters(in: .whitespaces)] = String(parts[1]).trimmingCharacters(in: .whitespaces)
+        .formStyle(.grouped)
+        .fileImporter(
+            isPresented: $showSelectApp,
+            allowedContentTypes: [.application],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let files):
+                if let url = files.first {
+                    appState.addApp(item: OpenWithApp(appURL: url))
+                }
+            case .failure(let error):
+                print(error)
             }
         }
-        return result
+        .sheet(item: $editingApp) { app in
+            EditAppSheetView(app: app, appState: appState)
+        }
     }
-    
-    @MainActor private func updateApp(_ app: OpenWithApp) {
-        appState.updateApp(
-            id: app.id,
-            itemName: editingItemName,
-            arguments: editingArguments.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty },
-            environment: parseEnvironmentVariables(editingEnvironment)
-        )
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+
+    private func appSummary(_ item: OpenWithApp) -> String {
+        var parts: [String] = []
+        if !item.arguments.isEmpty {
+            parts.append("参数: \(item.arguments.joined(separator: "; "))")
+        }
+        if !item.environment.isEmpty {
+            parts.append("环境变量: \(item.environment.count)个")
+        }
+        return parts.joined(separator: " · ")
     }
     
     @MainActor private func deleteApp(_ appItem: OpenWithApp) {
         if let index = appState.apps.firstIndex(where: { $0.id == appItem.id }) {
             appState.deleteApp(index: index)
-            if expandedAppId == appItem.id {
-                expandedAppId = nil
-            }
         }
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+        messager.sendRunningNotification()
     }
 }

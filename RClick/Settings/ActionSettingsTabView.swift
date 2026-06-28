@@ -9,42 +9,39 @@ import SwiftUI
 
 struct ActionSettingsTabView: View {
     @EnvironmentObject var appState: AppState
-    
+
     let messager = Messager.shared
 
     var body: some View {
-        VStack {
-            HStack {
-                
-                Spacer()
-                Button {
-                    appState.resetActionItems()
-                } label: {
-                    Label("Reset", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.body)
-                }
-            }
+        Form {
+            Section {
+                Toggle("折叠动作菜单", isOn: $appState.foldActionsMenu)
+                    .onChange(of: appState.foldActionsMenu) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
 
-            List {
                 ForEach($appState.actions) { $item in
-                    HStack {
-                        Image(systemName: item.icon)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
-                        Text(LocalizedStringKey(item.name)).font(.title2)
-                        Spacer()
-                        Toggle("", isOn: $item.enabled)
+                    LabeledContent {
+                        Toggle("启用", isOn: $item.enabled)
+                            .toggleStyle(.switch)
                             .onChange(of: item.enabled) {
                                 appState.toggleActionItem()
-                                messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: []))
+                                messager.sendRunningNotification()
                             }
-                            .toggleStyle(.switch)
+                            .labelsHidden()
+                    } label: {
+                        Label(LocalizedStringKey(item.name), systemImage: item.icon)
                     }
-                    .padding(.top, 12)
-                    .padding(.bottom, 4)
+                }
+            } footer: {
+                HStack {
+                    Spacer()
+                    Button("恢复到默认设置") {
+                        appState.resetActionItems()
+                    }
                 }
             }
         }
+        .formStyle(.grouped)
     }
 }

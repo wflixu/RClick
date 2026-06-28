@@ -9,7 +9,8 @@ import Foundation
 
 import SwiftUI
 import ServiceManagement
-import os.log
+import OSLog
+import Combine
 
 public enum LaunchAtLogin {
     private static let logger = Logger(subsystem:  Bundle.main.bundleIdentifier ?? "LaunchAtLogin", category: "main")

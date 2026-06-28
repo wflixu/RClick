@@ -30,17 +30,17 @@ enum Key {
 
     static let showSubMenuForApplication = "SHOW_SUB_MENU_FOR_APPLICATION"
     static let showSubMenuForAction = "SHOW_SUB_MENU_FOR_ACTION"
-    static let messageFromFinder = "RCLICK_FINDER_Main"
-    static let messageFromMain = "RCLICK_MAIN_FINDER"
     
     static let apps = "RCLICK_APPs"
     static let actions = "RCLICK_ACTIONS"
     static let fileTypes = "RCLICK_FILE_TYPES"
-    static let permDirs = "RCLICK_PERMISSIVE_DIRS"   
     static let commonDirs = "RCLICK_COMMON_DIRS"
     static let showMenuBarExtra = "showMenuBarExtra"
     static let showInDock = "SHOW_IN_DOCK"
-    
+    static let hasSeenFDAGuide = "HAS_SEEN_FDA_GUIDE"
+    static let actionMenuItems = "RCLICK_ACTION_MENU_ITEMS"
+    static let appMenuItems = "RCLICK_APP_MENU_ITEMS"
+
 }
 
 enum NewFileExtension: String, CaseIterable, Identifiable {
@@ -96,9 +96,12 @@ extension String {
 // }
 
 extension UserDefaults {
-    static var group: UserDefaults {
-        UserDefaults(suiteName: "group.cn.wflixu.RClick")!
-    }
+    static let group: UserDefaults = {
+        if let suite = UserDefaults(suiteName: "group.cn.wflixu.RClick") {
+            return suite
+        }
+        return .standard
+    }()
 
     var showContextualMenuForItem: Bool {
         defaults(for: Key.showContextualMenuForItem) ?? true

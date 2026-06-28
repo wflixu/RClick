@@ -12,6 +12,10 @@ import SwiftData
 import FinderSync
 import os.log
 
+extension NSNotification.Name {
+    static let menuConfigShouldUpdate = NSNotification.Name("RClick.menuConfigShouldUpdate")
+}
+
 @main
 struct RClickApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
@@ -63,7 +67,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var showInDock = UserDefaults.group.bool(forKey: Key.showInDock)
     var settingsWindow: NSWindow!
 
+    // MARK: - 重连机制状态
+
+    /// 菜单配置快照（真相源）
+    private var lastMenuSnapshot: Data?
+    /// 菜单版本号，用于防重复和防乱序
+    private var menuVersion: Int = 0
+    /// 最大重试次数
+    private let maxRunningMessageRetryCount: Int = 6
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        logger.info("applicationDidFinishLaunching called")
+
+        // 监听菜单配置更新通知（设置页 toggle 动作时触发）
+        NotificationCenter.default.addObserver(
+            forName: .menuConfigShouldUpdate,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor [weak self] in
+                self?.sendMenuConfigurationUpdate()
+            }
+        }
+
         // 在 app 启动后执行的函数
 
         if showInDock {
@@ -72,73 +98,292 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.setActivationPolicy(.accessory)
         }
 
-        messager.on(name: Key.messageFromFinder) { payload in
+        // 执行数据迁移
+        // TODO: 需要在 Xcode 中将 DataMigrationManager.swift 添加到 RClick target 后取消注释
+        Task { @MainActor in
+            do {
+//                if DataMigrationManager.shared.needsMigration() {
+//                    logger.info("检测到旧数据，开始迁移...")
+//
+//                    // 备份现有数据
+//                    if let backupURL = DataMigrationManager.shared.backupUserDefaults() {
+//                        logger.info("数据已备份到：\(backupURL.path)")
+//                    }
+//
+//                    // 执行迁移
+//                    let context = ModelContext(SharedDataManager.sharedModelContainer)
+//                    try await DataMigrationManager.shared.migrateFromUserDefaults(context: context)
+//
+//                    logger.info("数据迁移成功完成")
+//                } else {
+//                    logger.info("无需数据迁移")
+//                }
 
-            self.logger.info("recive mess from finder by app \(payload.description)")
-            switch payload.action {
-            case "open":
-                self.openApp(rid: payload.rid, target: payload.target)
-            case "actioning":
-                self.actionHandler(rid: payload.rid, target: payload.target, trigger: payload.trigger)
-            case "Create File":
-                self.createFile(rid: payload.rid, target: payload.target)
-            case "common-dirs":
-                self.openCommonDirs(target: payload.target)
-            case "heartbeat":
-                self.logger.warning("message from finder plugin heartbeat")
-                self.pluginRunning = true
-            default:
-                self.logger.warning("actioning payload no matched")
+                // 初始化默认数据
+                let context = ModelContext(SharedDataManager.sharedModelContainer)
+                await SharedDataManager.initializeDefaultData(context: context)
+            }
+
+            // Preload icons for all apps to improve performance
+            Task { @MainActor in
+                IconCache.shared.preloadIcons(for: appState.apps.map { $0.url })
+            }
+
+            // Register message handlers using type-safe API
+            logger.info("Registering message handlers")
+            messager.onExtensionMessage(.click) { [weak self] data in
+                guard let self = self else { return }
+                if let event: ClickEventPayload = messager.decodeSignedData(data) {
+                    self.handleClickEvent(event)
+                } else {
+                    logger.warning("Invalid click event data")
+                }
+            }
+
+            messager.onExtensionMessage(.heartbeat) { [weak self] _ in
+                guard let self = self else { return }
+                logger.debug("Received heartbeat from extension")
+                pluginRunning = true
+                sendMenuConfigurationUpdate()
+            }
+
+            // 处理 Extension 请求菜单配置
+            messager.onExtensionMessage(.requestConfig) { [weak self] _ in
+                guard let self = self else { return }
+                logger.info("Received menu config request from extension")
+                self.sendMenuConfigurationUpdate()
+            }
+
+            // 启动心跳超时检测
+            startHeartbeatMonitoring()
+            // 启动 running 消息重试机制
+            startRunningMessageRetry()
+
+            sendObserveDirMessage()
+            checkFDAAndGuideIfNeeded()
+        }
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        messager.sendQuitNotification()
+        logger.info("applicationWillTerminate")
+    }
+
+    // MARK: - Message Handlers
+
+    func sendObserveDirMessage() {
+        let directories: [String] = []
+        messager.sendRunningNotification(directories: directories)
+        if !pluginRunning {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(3))
+                sendObserveDirMessage()
             }
         }
-        sendObserveDirMessage()
-        
     }
-    
+
+    func sendMenuConfigurationUpdate() {
+        // Build menu config from AppState
+        let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
+        let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
+        let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
+        let commonDirMenuItems = appState.showCommonDirs ? appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon, url: $0.url.path) } : []
+
+        // 更新版本号
+        menuVersion += 1
+
+        let config = MenuConfigPayload(
+            version: menuVersion,
+            actions: actionMenuItems,
+            apps: appMenuItems,
+            newFiles: newFileMenuItems,
+            commonDirs: commonDirMenuItems,
+            actionsCollapsed: appState.foldActionsMenu,
+            appsCollapsed: appState.foldAppsMenu,
+            newFilesCollapsed: appState.foldNewFileMenu,
+            commonDirsCollapsed: appState.foldCommonDirMenu
+        )
+
+        // 更新快照
+        lastMenuSnapshot = try? JSONEncoder().encode(config)
+        logger.debug("Menu config version updated to \(self.menuVersion)")
+
+        // Send using type-safe API
+        messager.sendMenuConfig(config)
+        logger.debug("Sent menu configuration to extension: \(actionMenuItems.count) actions, \(appMenuItems.count) apps")
+    }
+
+    func handleClickEvent(_ event: ClickEventPayload) {
+        logger.debug("Handling click event: \(event.itemId) type=\(event.itemType.rawValue) trigger=\(event.trigger.rawValue) target=\(event.target)")
+
+        switch event.itemType {
+        case .app:
+            self.openApp(rid: event.itemId, target: event.target)
+        case .action:
+            self.actionHandler(rid: event.itemId, target: event.target, trigger: event.trigger.rawValue)
+        case .newFile:
+            self.createFile(rid: event.itemId, target: event.target)
+        case .commonDir:
+            self.openCommonDirs(target: event.target)
+        }
+    }
+
+    // MARK: - 重连机制
+
+    /// 心跳监控 Task（可取消）
+    private var heartbeatMonitorTask: Task<Void, Never>?
+
+    /// 启动心跳监控（15 秒超时检测）
+    private func startHeartbeatMonitoring() {
+        heartbeatMonitorTask?.cancel()
+        heartbeatMonitorTask = Task { @MainActor in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(15))
+                guard !Task.isCancelled else { break }
+                if pluginRunning {
+                    pluginRunning = false
+                } else {
+                    logger.warning("Heartbeat timeout detected, triggering reconnection")
+                    performReconnection()
+                }
+            }
+        }
+    }
+
+    /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
+    private func startRunningMessageRetry() {
+        Task { @MainActor in
+            for retryCount in 0..<self.maxRunningMessageRetryCount {
+                try? await Task.sleep(for: .seconds(5))
+                guard !self.pluginRunning else { break }
+                self.messager.sendRunningNotification()
+                self.logger.debug("Sending running message retry \(retryCount + 1)/\(self.maxRunningMessageRetryCount)")
+            }
+            logger.debug("Running message retry completed")
+        }
+    }
+
+    // MARK: - FDA Permission Guide
+
+    private func checkFDAAndGuideIfNeeded() {
+        let hasSeenGuide = UserDefaults.group.bool(forKey: Key.hasSeenFDAGuide)
+        guard !hasSeenGuide else { return }
+
+        let hasFDA = PermissionChecker.hasFullDiskAccess()
+        appState.hasFullDiskAccess = hasFDA
+        guard !hasFDA else { return }
+
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
+            let alert = NSAlert()
+            alert.messageText = String(localized: "Enable Full Disk Access")
+            alert.informativeText = String(localized: "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: String(localized: "Open Settings"))
+            alert.addButton(withTitle: String(localized: "Later"))
+            alert.addButton(withTitle: String(localized: "Don't Ask Again"))
+
+            let response = alert.runModal()
+            switch response {
+            case .alertFirstButtonReturn:
+                PermissionChecker.openFullDiskAccessSettings()
+            case .alertThirdButtonReturn:
+                UserDefaults.group.set(true, forKey: Key.hasSeenFDAGuide)
+            default:
+                break
+            }
+        }
+    }
+
+    /// 执行重连：发送菜单配置请求
+    @MainActor private func performReconnection() {
+        logger.debug("Performing reconnection: requesting menu config from main app")
+        // 重置 pluginRunning 状态，等待心跳恢复
+        pluginRunning = false
+    }
+
+    // MARK: - Helper Methods
+
     func openCommonDirs(target: [String]) {
-        logger.info("开始打开常用目录，目标路径: \(target)")
+        logger.debug("开始打开常用目录，目标路径：\(target)")
 
         for dirPath in target {
             let path = dirPath.removingPercentEncoding ?? dirPath
             let url = URL(fileURLWithPath: path, isDirectory: true)
 
-            logger.info("正在打开目录: \(path)")
+            logger.debug("正在打开目录：\(path)")
             NSWorkspace.shared.open(url)
         }
 
-        logger.info("常用目录打开操作完成")
+        logger.debug("常用目录打开操作完成")
     }
 
-    func sendObserveDirMessage() {
-        let target: [String] = appState.dirs.map { $0.url.path() }
+    func openApp(rid: String, target: [String]) {
+        guard let rcitem = appState.getAppItem(rid: rid) else {
+            logger.warning("when openapp, but not have app \(rid)")
+            return
+        }
 
-        messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: target))
-        if !pluginRunning {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                self.sendObserveDirMessage()
+        let appUrl = rcitem.url
+        logger.debug("openApp: rid=\(rid) app=\(appUrl.path) target=\(target)")
+
+        for dirPath in target {
+            let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
+
+            // 特殊处理：WezTerm
+            if appUrl.path.hasSuffix("WezTerm.app") {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/Users/lixu/play/rpm/target/debug/rpm")
+                process.arguments = ["--name", "arg2"]
+
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+
+                do {
+                    try process.run()
+                    process.waitUntilExit()
+
+                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                    if let output = String(data: data, encoding: .utf8) {
+                        print("Output: \(output)")
+                    }
+                } catch {
+                    print("Error: \(error)")
+                }
+            }
+            // 通用处理：使用 NSWorkspace 打开目录
+            else {
+                let config = NSWorkspace.OpenConfiguration()
+                let logger = self.logger  // 捕获 Sendable logger
+                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
+                    if let error = error {
+                        logger.error("Error opening with application: \(error.localizedDescription)")
+                        logger.error("Error code: \((error as NSError).code), domain: \((error as NSError).domain)")
+                    } else if let runningApp = runningApp {
+                        logger.debug("Successfully opened with application: \(runningApp.localizedName ?? "Unknown")")
+                    }
+                }
             }
         }
     }
 
-    // 创建一个当前文件夹下的不存在的新建文件名
+    // MARK: - Helper Methods
+
     func getUniqueFilePath(dir: String, ext: String) -> String {
-        // 创建文件管理器
         let fileManager = FileManager.default
-
-        // 基础文件名
+        let dirURL = URL(fileURLWithPath: dir.hasSuffix("/") ? String(dir.dropLast()) : dir)
         let baseFileName = String(localized: "Untitled")
-
-        // 初始文件路径
-        var filePath = "\(dir)\(baseFileName)\(ext)"
-
-        // 文件计数器
+        var filePath = dirURL.appendingPathComponent("\(baseFileName)\(ext)").path
         var counter = 1
 
-        // 查询文件是否存在，直到找到一个不存在的路径
         while fileManager.fileExists(atPath: filePath) {
-            // 更新文件名和路径，使用计数器递增
             let newFileName = "\(baseFileName)\(counter)"
-            filePath = "\(dir)\(newFileName)\(ext)"
+            filePath = dirURL.appendingPathComponent("\(newFileName)\(ext)").path
             counter += 1
         }
 
@@ -147,7 +392,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func actionHandler(rid: String, target: [String], trigger: String) {
         guard let rcitem = appState.getActionItem(rid: rid) else {
-            logger.warning("when createFile,but not have fileType ")
+            logger.warning("when createFile, but not have fileType ")
             return
         }
 
@@ -168,12 +413,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func showAirDrop(_ target: [String], _ trigger: String) {
-        logger.info("---- showAirDrop  trigger:\(trigger)")
+        logger.info("---- showAirDrop trigger:\(trigger)")
         let fm = FileManager.default
         var fileURLs: [URL] = []
 
         if trigger == "ctx-container" {
-            // 显示警告对话框
             let alert = NSAlert()
             alert.messageText = "警告"
             alert.informativeText = "无法共享当前文件夹，请选择文件或子文件夹进行共享。"
@@ -188,22 +432,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             logger.info("airdrop path \(decodedPath)")
 
             if Utils.isProtectedFolder(decodedPath) {
-                // 显示警告对话框
                 let alert = NSAlert()
                 alert.messageText = "警告"
                 alert.informativeText = "无法分享系统保护文件夹：\(decodedPath)"
                 alert.alertStyle = .warning
                 alert.addButton(withTitle: "确定")
                 alert.runModal()
-
-                logger.warning("试图分享受保护的系统文件夹，操作已被阻止: \(decodedPath)")
+                logger.warning("试图分享受保护的系统文件夹，操作已被阻止：\(decodedPath)")
                 continue
             }
 
             var isDir: ObjCBool = false
             if fm.fileExists(atPath: decodedPath, isDirectory: &isDir) {
                 if isDir.boolValue {
-                    logger.warning("不能通过 AirDrop 分享文件夹: \(decodedPath)")
+                    logger.warning("不能通过 AirDrop 分享文件夹：\(decodedPath)")
                     let alert = NSAlert()
                     alert.messageText = "提示"
                     alert.informativeText = "不能通过 AirDrop 分享文件夹：\(decodedPath)"
@@ -220,23 +462,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !fileURLs.isEmpty {
             if let airDropService = NSSharingService(named: .sendViaAirDrop) {
                 airDropService.perform(withItems: fileURLs)
-                logger.info("已通过 AirDrop 分享文件: \(fileURLs.map { $0.path }.joined(separator: ", "))")
+                logger.info("已通过 AirDrop 分享文件：\(fileURLs.map { $0.path }.joined(separator: ", "))")
             } else {
                 logger.warning("无法获取 AirDrop 服务")
             }
         }
     }
 
-    // 显示目标文件夹下的隐藏的所有文件和文件夹
     func unhideFilesAndDirs(_ target: [String], _ trigger: String) {
-        logger.info("开始取消隐藏文件和目录，目标路径: \(target)")
+        logger.info("开始取消隐藏文件和目录，目标路径：\(target)")
         if let dirPath = target.first {
             let fileManager = FileManager.default
             let path = dirPath.removingPercentEncoding ?? dirPath
-            logger.info("处理主目录: \(path)")
+            logger.info("处理主目录：\(path)")
             var url = URL(fileURLWithPath: path)
 
-            // 仅处理目录下一级的内容
             do {
                 let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsPackageDescendants])
                 for case var fileURL in contents {
@@ -244,77 +484,72 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         var resourceValues = URLResourceValues()
                         resourceValues.isHidden = false
                         try fileURL.setResourceValues(resourceValues)
-                        logger.info("成功取消隐藏: \(fileURL.path)")
+                        logger.info("成功取消隐藏：\(fileURL.path)")
                     } catch {
-                        logger.error("取消隐藏失败: \(fileURL.path): \(error)")
+                        logger.error("取消隐藏失败：\(fileURL.path): \(error)")
                     }
                 }
             } catch {
-                logger.error("获取目录内容失败: \(error)")
+                logger.error("获取目录内容失败：\(error)")
             }
 
-            // 处理目录本身
             do {
                 var resourceValues = URLResourceValues()
                 resourceValues.isHidden = false
                 try url.setResourceValues(resourceValues)
-                logger.info("成功取消隐藏主目录: \(path)")
+                logger.info("成功取消隐藏主目录：\(path)")
             } catch {
-                logger.error("取消隐藏主目录失败: \(path): \(error)")
+                logger.error("取消隐藏主目录失败：\(path): \(error)")
             }
-            logger.info("取消隐藏操作完成，共处理目录: \(path)")
+            logger.info("取消隐藏操作完成，共处理目录：\(path)")
         }
     }
 
-    // 隐藏目标文件或文件夹
     func hideFilesAndDirs(_ target: [String], _ trigger: String) {
-        logger.info("开始隐藏文件和目录，目标路径: \(target), 触发器: \(trigger)")
+        logger.info("开始隐藏文件和目录，目标路径：\(target), 触发器：\(trigger)")
         let fileManager = FileManager.default
 
         if trigger == "ctx-container", let dirPath = target.first {
             let path = dirPath.removingPercentEncoding ?? dirPath
-            logger.info("处理主目录: \(path)")
+            logger.info("处理主目录：\(path)")
             let url = URL(fileURLWithPath: path)
 
-            // 仅处理目录下一级的内容
             do {
                 let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsPackageDescendants])
                 for case var fileURL in contents {
-                    // 如果是受保护的文件路径，跳过
                     if Utils.isProtectedFolder(fileURL.path) {
-                        logger.warning("跳过受保护的文件路径: \(fileURL.path)")
+                        logger.warning("跳过受保护的文件路径：\(fileURL.path)")
                         continue
                     }
                     do {
                         var resourceValues = URLResourceValues()
                         resourceValues.isHidden = true
                         try fileURL.setResourceValues(resourceValues)
-                        logger.info("成功隐藏: \(fileURL.path)")
+                        logger.info("成功隐藏：\(fileURL.path)")
                     } catch {
-                        logger.error("隐藏失败: \(fileURL.path): \(error)")
+                        logger.error("隐藏失败：\(fileURL.path): \(error)")
                     }
                 }
             } catch {
-                logger.error("获取目录内容失败: \(error)")
+                logger.error("获取目录内容失败：\(error)")
             }
         } else if trigger == "ctx-items" {
             for dirPath in target {
                 let path = dirPath.removingPercentEncoding ?? dirPath
-                logger.info("处理路径: \(path)")
+                logger.info("处理路径：\(path)")
                 var url = URL(fileURLWithPath: path)
 
-                // 处理单个文件或目录
                 if Utils.isProtectedFolder(path) {
-                    logger.warning("跳过受保护的文件路径: \(path)")
+                    logger.warning("跳过受保护的文件路径：\(path)")
                     continue
                 }
                 do {
                     var resourceValues = URLResourceValues()
                     resourceValues.isHidden = true
                     try url.setResourceValues(resourceValues)
-                    logger.info("成功隐藏: \(path)")
+                    logger.info("成功隐藏：\(path)")
                 } catch {
-                    logger.error("隐藏失败: \(path): \(error)")
+                    logger.error("隐藏失败：\(path): \(error)")
                 }
             }
         }
@@ -324,19 +559,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func copyPath(_ target: [String]) {
         if let dirPath = target.first {
             let pasteboard = NSPasteboard.general
-            // must do to fix bug
             pasteboard.clearContents()
-
             pasteboard.setString(dirPath.removingPercentEncoding ?? dirPath, forType: .string)
         }
     }
 
     func deleteFoldorFile(_ target: [String], _ trigger: String) {
-        logger.info("---- deleteFoldorFile  trigger:\(trigger)")
+        logger.info("---- deleteFoldorFile trigger:\(trigger)")
         let fm = FileManager.default
-        // 如果是容器，无法删除
+
         if trigger == "ctx-container" {
-            // 显示警告对话框
             let alert = NSAlert()
             alert.messageText = "警告"
             alert.informativeText = "无法删除当前文件夹，请选择文件或子文件夹进行删除。"
@@ -350,182 +582,69 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let decodedPath = item.removingPercentEncoding ?? item
 
             if Utils.isProtectedFolder(decodedPath) {
-                // 显示警告对话框
                 let alert = NSAlert()
                 alert.messageText = "警告"
                 alert.informativeText = "无法删除系统保护文件夹：\(decodedPath)"
                 alert.alertStyle = .warning
                 alert.addButton(withTitle: "确定")
                 alert.runModal()
-
-                logger.warning("试图删除受保护的系统文件夹，操作已被阻止: \(decodedPath)")
+                logger.warning("试图删除受保护的系统文件夹，操作已被阻止：\(decodedPath)")
                 continue
             }
 
-            if let permDir = appState.dirs.first(where: { permd in
-                item.contains(permd.url.path())
-            }) {
-                var isStale = false
-                do {
-                    let folderURL = try URL(resolvingBookmarkData: permDir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-
-                    if isStale {
-                        // 重新创建 bookmarkData
-                        // createBookmark(for: folderURL) // 这里可以调用之前的函数
-                    }
-
-                    // 进入安全范围
-                    let success = folderURL.startAccessingSecurityScopedResource()
-                    if success {
-                        try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
-                        // 完成后释放资源
-                        folderURL.stopAccessingSecurityScopedResource()
-                    } else {
-                        logger.warning("fail access scope \(permDir.url.path)")
-                    }
-                } catch {
-                    logger.error("delete \(target) file run error \(error)")
-                }
+            // 使用完全磁盘访问权限，直接删除
+            do {
+                try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+            } catch {
+                logger.error("delete \(target) file run error \(error)")
             }
         }
     }
 
     func createFile(rid: String, target: [String]) {
         guard let rcitem = appState.getFileType(rid: rid), let dirPath = target.first else {
-            logger.warning("when createFile,but not have fileType \(rid) ")
+            logger.warning("when createFile, but not have fileType \(rid) ")
             return
         }
 
         let ext = rcitem.ext
         logger.info("create file dir:\(dirPath) -- ext \(ext)")
-        // 完整的文件路径
         let filePath = getUniqueFilePath(dir: dirPath.removingPercentEncoding ?? dirPath, ext: ext)
-
         let fileURL = URL(fileURLWithPath: filePath)
 
-        if let dir = appState.dirs.first(where: {
-            dirPath.contains($0.url.path)
-        }) {
-            var isStale = false
-            do {
-                let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+        // 使用完全磁盘访问权限，直接创建文件
+        do {
+            let fileManager = FileManager.default
 
-                // 进入安全范围
-                let success = folderURL.startAccessingSecurityScopedResource()
-                if success {
-                    do {
-                        let fileManager = FileManager.default
-
-                        // 检查是否有有效的模板URL
-                        if let templateUrl = rcitem.template {
-                            try fileManager.copyItem(at: templateUrl, to: fileURL)
-                            logger.info("已成功复制模板到目标路径: \(fileURL.path)")
-
-                        } else {
-                            // 从Bundle中获取模板文件
-                            if let defaultTemplateURL = Bundle.main.url(forResource: "template", withExtension: ext.replacingOccurrences(of: ".", with: "")) {
-                                logger.info("使用模板创建文件，模板路径: \(defaultTemplateURL.path)")
-                                try fileManager.copyItem(at: defaultTemplateURL, to: fileURL)
-                                logger.info("已成功复制模板到目标路径: \(fileURL.path)")
-                            } else {
-                                logger.warning("模板文件不存在: \(ext)")
-                                // 模板不存在时创建空文件
-                                try Data().write(to: fileURL)
-                            }
-                        }
-                    } catch let error as NSError {
-                        switch error.domain {
-                        case NSCocoaErrorDomain:
-                            switch error.code {
-                            case NSFileNoSuchFileError:
-                                logger.error("文件不存在: \(filePath)")
-                            case NSFileWriteOutOfSpaceError:
-                                logger.error("磁盘空间不足")
-                            case NSFileWriteNoPermissionError:
-                                logger.error("没有写入权限: \(filePath)")
-                            default:
-                                logger.error("创建文件错误: \(error.localizedDescription) (错误码: \(error.code))")
-                            }
-                        default:
-                            logger.error("未处理的错误: \(error.localizedDescription) (错误码: \(error.code))")
-                        }
-                    }
-                    // 完成后释放资源
-                    folderURL.stopAccessingSecurityScopedResource()
-                } else {
-                    logger.warning("fail access scope \(dir.url.path)")
-                }
-            } catch {
-                print("解析 bookmark 失败：\(error)")
-            }
-        }
-    }
-
-    func openApp(rid: String, target: [String]) {
-        guard let rcitem = appState.getAppItem(rid: rid) else {
-            logger.warning("when openapp,but not have app \(rid)")
-            return
-        }
-
-        let appUrl = rcitem.url
-        let config = NSWorkspace.OpenConfiguration()
-        config.promptsUserIfNeeded = false
-
-        for dirPath in target {
-            let dir = URL(fileURLWithPath: dirPath.removingPercentEncoding ?? dirPath, isDirectory: true)
-
-            config.arguments = rcitem.arguments
-            config.environment = rcitem.environment
-
-            if appUrl.path.hasSuffix("WezTerm.app") {
-                // 创建一个 Process 实例
-                let process = Process()
-
-                // 设置要运行的二进制文件路径
-                process.executableURL = URL(fileURLWithPath: "/Users/lixu/play/rpm/target/debug/rpm")
-
-                // 设置命令行参数（如果有）
-                process.arguments = ["--name", "arg2"]
-
-                // 设置标准输出和标准错误
-                let pipe = Pipe()
-                process.standardOutput = pipe
-                process.standardError = pipe
-
-                do {
-                    // 启动进程
-                    try process.run()
-
-                    // 等待进程完成
-                    process.waitUntilExit()
-
-                    // 读取输出
-                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                    if let output = String(data: data, encoding: .utf8) {
-                        print("Output: \(output)")
-                    }
-                } catch {
-                    print("Error: \(error)")
-                }
+            if let templateUrl = rcitem.template {
+                try fileManager.copyItem(at: templateUrl, to: fileURL)
+                logger.info("已成功复制模板到目标路径：\(fileURL.path)")
             } else {
-                logger.info("starting open dir .........\(dir.path), app:\(appUrl.path())")
-                NSWorkspace.shared.open([dir], withApplicationAt: appUrl, configuration: config) { runningApp, error in
-                    if let error = error {
-                        print("Error opening application: \(error.localizedDescription)")
-                    } else if let runningApp = runningApp {
-                        print("Successfully opened application: \(runningApp.localizedName ?? "Unknown")")
-                    }
+                if let defaultTemplateURL = Bundle.main.url(forResource: "template", withExtension: ext.replacingOccurrences(of: ".", with: "")) {
+                    logger.info("使用模板创建文件，模板路径：\(defaultTemplateURL.path)")
+                    try fileManager.copyItem(at: defaultTemplateURL, to: fileURL)
+                    logger.info("已成功复制模板到目标路径：\(fileURL.path)")
+                } else {
+                    logger.warning("模板文件不存在：\(ext)")
+                    try Data().write(to: fileURL)
                 }
             }
+        } catch let error as NSError {
+            switch error.domain {
+            case NSCocoaErrorDomain:
+                switch error.code {
+                case NSFileNoSuchFileError:
+                    logger.error("文件不存在：\(filePath)")
+                case NSFileWriteOutOfSpaceError:
+                    logger.error("磁盘空间不足")
+                case NSFileWriteNoPermissionError:
+                    logger.error("没有写入权限：\(filePath)")
+                default:
+                    logger.error("创建文件错误：\(error.localizedDescription) (错误码：\(error.code))")
+                }
+            default:
+                logger.error("未处理的错误：\(error.localizedDescription) (错误码：\(error.code))")
+            }
         }
-    }
-
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return false
-    }
-
-    func applicationWillTerminate(_ notification: Notification) {
-        messager.sendMessage(name: "quit", data: MessagePayload(action: "quit", target: [], trigger: "unknown"))
-        logger.info("applicationWillTerminate")
     }
 }

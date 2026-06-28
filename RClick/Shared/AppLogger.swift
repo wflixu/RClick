@@ -21,4 +21,3 @@ struct AppLog {
         return logger
     }
 }
-

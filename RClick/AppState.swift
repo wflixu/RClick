@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AppState.swift
 //  RClick
 //
 //  Created by 李旭 on 2024/9/26.
@@ -7,34 +7,51 @@
 
 import Combine
 import Foundation
-import OrderedCollections
 import SwiftUI
+import SwiftData
+import OSLog
+
 
 @MainActor
 class AppState: ObservableObject {
     static let shared = AppState()
-    
+
     @AppLog(category: "AppState")
     private var logger
-    
+
     @Published var apps: [OpenWithApp] = []
-    @Published var dirs: [PermissiveDir] = []
     @Published var actions: [RCAction] = []
     @Published var newFiles: [NewFile] = []
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
-    
-    @Published var showMenuBar: Bool = true;
-    
-    
+    @Published var hasFullDiskAccess: Bool = false
+
+    // 折叠开关状态 - 每个分类独立控制
+    @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
+    @AppStorage("foldActionsMenu") var foldActionsMenu: Bool = false
+    @AppStorage("foldNewFileMenu") var foldNewFileMenu: Bool = true
+    @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = true
+    // 常用文件夹总开关（默认关闭）
+    @AppStorage("showCommonDirs") var showCommonDirs: Bool = false
+
+    // 菜单栏显示
+    @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
+
+    // SwiftData ModelContext（lazy 复用单个实例）
+    private lazy var modelContext = ModelContext(SharedDataManager.sharedModelContainer)
+
     init(inExt: Bool = false) {
         self.inExt = inExt
-        Task {
-            await MainActor.run {
-                logger.info("start load")
-                try? load()
-            }
+        Task { @MainActor in
+            logger.debug("start load")
+            try? load()
+            checkFullDiskAccess()
         }
+    }
+
+    func checkFullDiskAccess() {
+        hasFullDiskAccess = PermissionChecker.hasFullDiskAccess()
+        logger.debug("Full Disk Access status: \(self.hasFullDiskAccess)")
     }
     
     // Apps
@@ -42,26 +59,22 @@ class AppState: ObservableObject {
         apps.remove(at: index)
         do {
             try save()
-            // 使用 result
         } catch {
-            // 处理错误
             logger.info("save error: \(error.localizedDescription)")
         }
     }
 
     @MainActor func addApp(item: OpenWithApp) {
-        logger.info("start add app")
+        logger.debug("start add app")
         apps.append(item)
-        
+
         do {
             try save()
-            // 使用 result
         } catch {
-            // 处理错误
             logger.info("save error: \(error.localizedDescription)")
         }
     }
-    
+
     @MainActor
     func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
         if let index = apps.firstIndex(where: { $0.id == id }) {
@@ -85,7 +98,7 @@ class AppState: ObservableObject {
     }
     
     @MainActor func addNewFile(_ item: NewFile) {
-        logger.info("start add new file type")
+        logger.debug("start add new file type")
         newFiles.append(item)
         
         do {
@@ -106,146 +119,122 @@ class AppState: ObservableObject {
     // Action
     @MainActor func toggleActionItem() {
         try? save()
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
     }
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
         try? save()
     }
-    
+
     @MainActor func resetFiletypeItems() {
         newFiles = NewFile.all
         try? save()
     }
-    
-    // Permission
-    @MainActor func deletePermissiveDir(index: Int) {
-        dirs.remove(at: index)
 
+    @MainActor func refresh() {
+        try? load()
+    }
+
+    @MainActor func sync() {
         try? save()
     }
 
-    @MainActor func hasParentBookmark(of url: URL) -> Bool {
-        return false
-//        let storedUrls = dirs.map { $0.url }
-//        for storedURL in storedUrls {
-//            // 确保 storedURL 是一个目录，并且传入的 URL 以 storedURL 的路径为前缀
-//            if url.path.hasPrefix(storedURL.path) {
-//                return true
-//            }
-//        }
-//        return false
-    }
-    
     @MainActor
     private func save() throws {
-        let encoder = PropertyListEncoder()
-        let appItemsData = try encoder.encode(OrderedSet(apps))
-        let actionItemsData = try encoder.encode(OrderedSet(actions))
-        let filetypeItemsData = try encoder.encode(OrderedSet(newFiles))
-        let permDirsData = try encoder.encode(OrderedSet(dirs))
-        let commonDirsData = try encoder.encode(OrderedSet(cdirs))
-        UserDefaults.group.set(appItemsData, forKey: Key.apps)
-        UserDefaults.group.set(actionItemsData, forKey: Key.actions)
-        UserDefaults.group.set(filetypeItemsData, forKey: Key.fileTypes)
-        UserDefaults.group.set(permDirsData, forKey: Key.permDirs)
-        UserDefaults.group.set(commonDirsData, forKey: Key.commonDirs)
-    }
-    
-    @MainActor
-    func savePermissiveDir() throws {
-        let encoder = PropertyListEncoder()
-        let permDirsData = try encoder.encode(OrderedSet(dirs))
-        UserDefaults.group.set(permDirsData, forKey: Key.permDirs)
+        let context = modelContext
+
+        // 保存 Apps
+        try context.delete(model: AppEntity.self)
+        for app in apps {
+            context.insert(AppEntity(from: app))
+        }
+
+        // 保存 Actions
+        try context.delete(model: ActionEntity.self)
+        for action in actions {
+            context.insert(ActionEntity(from: action))
+        }
+
+        // 保存 NewFiles
+        try context.delete(model: NewFileTypeEntity.self)
+        for newFile in newFiles {
+            context.insert(NewFileTypeEntity(from: newFile))
+        }
+
+        // 保存 CommonDirs
+        try context.delete(model: CommonDirEntity.self)
+        for commonDir in cdirs {
+            context.insert(CommonDirEntity(from: commonDir))
+        }
+
+        try context.save()
     }
 
-    //  保存常用文件夹
-    @MainActor
-    func saveCommonDir() throws {
-        let encoder = PropertyListEncoder()
-        let commonDirsData = try encoder.encode(OrderedSet(cdirs))
-        UserDefaults.group.set(commonDirsData, forKey: Key.commonDirs)
-        logger.info("save common dirs success")
-    }
-    
-    @MainActor func refresh() {
-        _ = try? load()
-    }
-    
-    @MainActor func sync() {
-        _ = try? save()
-    }
-    
     @MainActor
     private func load() throws {
-        let decoder = PropertyListDecoder()
-        if !inExt {
-            if let permDirsData = UserDefaults.group.data(forKey: Key.permDirs) {
-                dirs = try decoder.decode([PermissiveDir].self, from: permDirsData)
-                logger.info("load permDir success")
-                
-                for dir in dirs {
-                    var isStale = false
-                    do {
-                        let folderURL = try URL(resolvingBookmarkData: dir.bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+        let context = modelContext
 
-                        if isStale {
-                            // 重新创建 bookmarkData
-                            // createBookmark(for: folderURL) // 这里可以调用之前的函数
-                        }
+        // 加载 Apps
+        let appDescriptor = FetchDescriptor<AppEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        apps = (try? context.fetch(appDescriptor))?.map { entity in
+            var app = OpenWithApp(id: entity.id, appURL: entity.url)
+            app.itemName = entity.itemName
+            app.inheritFromGlobalArguments = entity.inheritFromGlobalArguments
+            app.inheritFromGlobalEnvironment = entity.inheritFromGlobalEnvironment
+            app.arguments = entity.arguments
+            app.environment = entity.environment
+            return app
+        } ?? []
 
-                        // 进入安全范围
-                        let success = folderURL.startAccessingSecurityScopedResource()
-                        if success {
-                            // 完成后释放资源
-                            logger.info("startAccessingSecurityScopedResource success")
-//                            folderURL.stopAccessingSecurityScopedResource()
-                        } else {
-                            logger.warning("fail access scope \(dir.url.path)")
-                        }
-                    } catch {
-                        print("解析 bookmark 失败：\(error)")
-                    }
-                }
-                 
+        // 加载 Actions
+        let actionDescriptor = FetchDescriptor<ActionEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        actions = (try? context.fetch(actionDescriptor))?.map { entity in
+            RCAction(
+                id: entity.id,
+                name: entity.name,
+                enabled: entity.isEnabled,
+                idx: entity.sortOrder,
+                icon: entity.icon
+            )
+        } ?? []
+
+        // 加载 NewFiles
+        let newFileDescriptor = FetchDescriptor<NewFileTypeEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        newFiles = (try? context.fetch(newFileDescriptor))?.map { entity in
+            NewFile(
+                ext: entity.fileExtension,
+                name: entity.name,
+                idx: entity.sortOrder,
+                icon: entity.icon
+            )
+        } ?? []
+
+        // 加载 CommonDirs
+        let commonDirDescriptor = FetchDescriptor<CommonDirEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        var needSaveCommonDirs = false
+        cdirs = (try? context.fetch(commonDirDescriptor))?.map { entity in
+            // 自动修复旧的通用图标
+            let resolvedIcon: String
+            if entity.icon == "folder" || entity.icon.isEmpty {
+                let newIcon = iconForDirectory(url: entity.path)
+                entity.icon = newIcon
+                needSaveCommonDirs = true
+                resolvedIcon = newIcon
             } else {
-                logger.warning("load permission dirfailed")
-               
-                dirs = []
+                resolvedIcon = entity.icon
             }
+            return CommonDir(
+                id: entity.id,
+                name: entity.name,
+                url: entity.path,
+                icon: resolvedIcon
+            )
+        } ?? []
+        if needSaveCommonDirs {
+            try? context.save()
         }
 
-        if let commonDirsData = UserDefaults.group.data(forKey: Key.commonDirs) {
-            cdirs = try decoder.decode([CommonDir].self, from: commonDirsData)
-                
-            logger.info("load common dirs success")
-        } else {
-            logger.warning("load common dirs failed")
-            cdirs = []
-        }
-        
-        if let actionData = UserDefaults.group.data(forKey: Key.actions) {
-            actions = try decoder.decode([RCAction].self, from: actionData)
-            logger.info("load actions success")
-        } else {
-            logger.warning("load actions failed")
-            actions = RCAction.all
-        }
-        
-        if let filetypeItemData = UserDefaults.group.data(forKey: Key.fileTypes) {
-            newFiles = try decoder.decode([NewFile].self, from: filetypeItemData)
-            logger.info("load filetype success")
-        } else {
-            logger.warning("load  new file type failed")
-            newFiles = NewFile.all
-        }
-        
-        if let appItemData = UserDefaults.group.data(forKey: Key.apps) {
-            apps = try decoder.decode([OpenWithApp].self, from: appItemData)
-            logger.info("load apps success")
-        } else {
-            logger.warning("load apps failed")
-            apps = OpenWithApp.defaultApps
-        }
+        logger.debug("Load from SwiftData: \(self.apps.count) apps, \(self.actions.count) actions, \(self.newFiles.count) newFiles, \(self.cdirs.count) commonDirs")
     }
 }

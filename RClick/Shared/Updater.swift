@@ -5,6 +5,7 @@
 //  Created by 李旭 on 2025/9/21.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
@@ -51,6 +52,10 @@ struct GitHubRelease: Codable, Identifiable {
 // MARK: - 用户偏好设置
 
 class UpdatePreferences: ObservableObject {
+    let objectWillChange: ObservableObjectPublisher = ObservableObjectPublisher()
+
+    init() {}
+
     @AppStorage("ignoredVersion") private var ignoredVersionData: Data = .init()
     
     // 获取忽略的版本列表
@@ -432,8 +437,10 @@ class UpdateManager: ObservableObject {
             if error != nil {
                 print("启动新应用失败，可能需要手动启动")
             }
-            // 无论如何都退出当前应用
-            NSApp.terminate(nil)
+            // 无论如何都退出当前应用（切回主线程）
+            Task { @MainActor in
+                NSApp.terminate(nil)
+            }
         }
     }
 

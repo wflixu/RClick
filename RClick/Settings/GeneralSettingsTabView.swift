@@ -8,240 +8,306 @@
 import AppKit
 import Cocoa
 import FinderSync
+import Foundation
+import OSLog
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct GeneralSettingsTabView: View {
     @AppLog(category: "settings-general")
     private var logger
 
-    @AppStorage("extensionEnabled") private var extensionEnabled = false
-    @AppStorage(Key.showMenuBarExtra) private var showMenuBarExtra = true
-    @AppStorage(Key.showInDock) private var showInDock = false
-
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
     @EnvironmentObject var store: AppState
 
-    @State private var showAlert = false
-    @State private var wrongFold = false
+    @State private var finderSyncStatus: PermissionStatus = .unknown
+    @State private var fullDiskAccessStatus: PermissionStatus = .unknown
+    @State private var accessibilityStatus: PermissionStatus = .unknown
 
     @State private var showDirImporter = false
-
-    @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.modelContext) private var modelContext
+    @State private var wrongFold = false
+    @State private var showAlert = false
 
     let messager = Messager.shared
 
-    var enableIcon: String {
-        if extensionEnabled {
-            return "checkmark.circle.fill"
-        } else {
-            return "checkmark.circle"
-        }
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .bottom) {
-                Text("Enable extension").font(.title3).fontWeight(.semibold)
-                Spacer()
-                Button(action: openExtensionset) {
-                    Label("Open Settings", systemImage: enableIcon)
-                }
-            }
-
-            Text("The RClick extension needs to be enabled for it to work properly")
-                .font(.headline)
-                .fontWeight(.thin)
-                .foregroundColor(Color.gray)
-            Divider()
-
-            HStack {
-                LaunchAtLogin.Toggle(
-                    LocalizedStringKey("Launch at login")
-                )
-            }
-            Divider()
-            Text("App Icon Show").font(.title2)
-
-            HStack {
-                Toggle("Show in menu bar", isOn: $showMenuBarExtra)
-                    .toggleStyle(.checkbox)
-                Spacer()
-                // 设置 showMenuBarExtra 的开关
-                Toggle("Show in dock", isOn: $showInDock)
-                    .toggleStyle(.checkbox)
-                    .onChange(of: showInDock) { _, newValue in
-                        logger.debug("the hcnage --- a kjd \(newValue)")
-                        // 在这里处理开关状态的变化
+        Form {
+            // MARK: - 第一组：主要控制
+            Section {
+                Toggle("启用 RClick", isOn: Binding(
+                    get: { finderSyncStatus == .enabled },
+                    set: { newValue in
                         if newValue {
-                            // 显示菜单栏图标
-                            NSApp.setActivationPolicy(.regular)
-                        } else {
-                            // 隐藏菜单栏图标
-                            NSApp.setActivationPolicy(.accessory)
-                        }
-                    }
-            }
-            // 设置 showMenuBarExtra 的开关
-
-            Divider()
-            HStack {}.frame(height: 10)
-
-            VStack(alignment: .leading) {
-                Section {
-                    List {
-                        ForEach(store.dirs) { item in
-                            HStack {
-                                Image(systemName: "folder")
-                                Text(verbatim: item.url.path)
-                                Spacer()
-                                Button {
-                                    removeBookmark(item)
-                                } label: {
-                                    Image(systemName: "trash")
-                                }
+                            // 开启：如果未启用，打开文件提供程序设置
+                            if !FIFinderSyncController.isExtensionEnabled {
+                                openFileProviderSettings()
                             }
+                        } else {
+                            // 关闭：同样打开设置让用户手动关闭
+                            openFileProviderSettings()
                         }
                     }
-                } header: {
-                    HStack {
-                        Text("Authorization folder").font(.title3).fontWeight(.semibold)
-                        Spacer()
-                        Button {
-                            showDirImporter = true
-                        } label: { Label("Add", systemImage: "folder.badge.plus") }
-                    }
+                ))
 
-                } footer: {
-                    VStack {
-                        HStack {
-                            Text("The operation of the menu can only be executed in authorized folders")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                            Spacer()
+                Toggle("在菜单栏显示图标", isOn: $showMenuBarExtra)
+
+                Toggle("登录时启动", isOn: $launchAtLogin)
+            } header: {
+                Text("主要控制")
+            } footer: {
+                Text("在文件提供程序中启用 RClick 以在右键菜单中显示功能")
+            }
+
+            // MARK: - 第二组：权限
+            Section {
+                // Finder 扩展状态
+                LabeledContent {
+                    Text(finderSyncStatus.description)
+                        .foregroundColor(.secondary)
+                } label: {
+                    Label("Finder 扩展", systemImage: finderSyncStatus.icon)
+                        .foregroundColor(finderSyncStatus.color)
+                }
+
+                // 完全磁盘访问权限
+                LabeledContent {
+                    Button("设置…") {
+                        openFullDiskAccessSettings()
+                    }
+                } label: {
+                    Label("完全磁盘访问权限", systemImage: fullDiskAccessStatus.icon)
+                        .foregroundColor(fullDiskAccessStatus.color)
+                }
+
+                // 辅助功能权限
+                LabeledContent {
+                    Button("设置…") {
+                        openAccessibilitySettings()
+                    }
+                } label: {
+                    Label("辅助功能", systemImage: accessibilityStatus.icon)
+                        .foregroundColor(accessibilityStatus.color)
+                }
+            } header: {
+                Text("权限")
+            } footer: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("文件提供程序：在列表中选择「RClick」以启用 Finder 右键菜单")
+                        .foregroundColor(.secondary)
+                    Text("完全磁盘访问权限：用于在受保护目录中创建和删除文件")
+                        .foregroundColor(.secondary)
+                    if fullDiskAccessStatus != .enabled {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("RClick 需要完全磁盘访问权限才能正常操作受保护目录中的文件")
+                                .fontWeight(.medium)
+                            Text("1. 点击右侧「设置…」按钮打开系统设置")
+                            Text("2. 点击左下角锁图标并认证")
+                            Text("3. 点击「+」→ 前往「应用程序」→ 选择「RClick」")
+                            Text("4. 确保 RClick 旁边的开关已打开")
                         }
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                     }
                 }
             }
-            .alert(
-                Text("Invalid Folder Selection"),
-                isPresented: $wrongFold
-            ) {
-                Button("OK") {
-                    showDirImporter = true
+
+            // MARK: - 第三组：设置管理
+            Section {
+                // 备份
+                LabeledContent {
+                    HStack(spacing: 12) {
+                        Button("导出…") {
+                            exportSettings()
+                        }
+                        Button("导入…") {
+                            importSettings()
+                        }
+                    }
+                } label: {
+                    Text("备份")
                 }
-            } message: {
-                Text("The selected folder is a subdirectory of the previously chosen folder. Please select a different folder.")
+
+                // 日志
+                LabeledContent {
+                    Button("导出日志…") {
+                        exportLogs()
+                    }
+                } label: {
+                    Text("日志")
+                }
+
+                // 重置所有设置
+                HStack {
+                    Spacer()
+                    Button("重置所有设置…") {
+                        resetAllSettings()
+                    }
+                    .foregroundColor(.red)
+                }
+            } header: {
+                Text("设置管理")
+            } footer: {
+                Text("重置所有设置将恢复默认配置，此操作不可逆")
             }
+        }
+        .formStyle(.grouped)
+        .onAppear {
+            updatePermissionStatus()
+        }
+        .onForeground {
+            updatePermissionStatus()
         }
         .alert(
-            Text("Not Authorized Folder"),
-            isPresented: $showAlert
+            Text("无效文件夹"),
+            isPresented: $wrongFold
         ) {
-            Button("OK") {
+            Button("确定") {
                 showDirImporter = true
             }
         } message: {
-            Text("You must grant access to the folder to use this feature.")
+            Text("所选文件夹是已选文件夹的子目录，请选择其他文件夹。")
         }
-        .fileImporter(
-            isPresented: $showDirImporter,
-            allowedContentTypes: [.directory],
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case let .success(dirs):
-                startAddDir(dirs.first!)
-
-            case let .failure(error):
-                // handle error
-                print(error)
+        .alert(
+            Text("未授权文件夹"),
+            isPresented: $showAlert
+        ) {
+            Button("确定") {
+                showDirImporter = true
             }
-        }
-
-        .onAppear {
-            extensionEnabled = FIFinderSyncController.isExtensionEnabled
-
-        }.onForeground {
-            updateEnableState()
-//            Task {
-//                await checkPermissionFolder()
-//            }
-        }
-        .task {
-//            await checkPermissionFolder()
+        } message: {
+            Text("必须授予文件夹访问权限才能使用此功能。")
         }
     }
 
-    func updateEnableState() {
-        extensionEnabled = FIFinderSyncController.isExtensionEnabled
+    // MARK: - 权限状态检测
+
+    private func updatePermissionStatus() {
+        // Finder 扩展状态
+        finderSyncStatus = FIFinderSyncController.isExtensionEnabled ? .enabled : .disabled
+
+        // 完全磁盘访问权限检测（同步到 AppState）
+        store.checkFullDiskAccess()
+        fullDiskAccessStatus = store.hasFullDiskAccess ? .enabled : .disabled
+
+        // 辅助功能权限检测（使用 PermissionChecker）
+        accessibilityStatus = PermissionChecker.hasAccessibilityPermission() ? .enabled : .disabled
     }
 
-    func checkPermissionFolder() async {
-        let isEmpty = store.dirs.isEmpty
-        if isEmpty {
-            showAlert = true
-        } else {
-            logger.info("no empty")
+    private func hasFullDiskAccess() -> Bool {
+        return PermissionChecker.hasFullDiskAccess()
+    }
+
+    private func hasAccessibilityPermission() -> Bool {
+        return PermissionChecker.hasAccessibilityPermission()
+    }
+
+    // MARK: - 权限设置打开
+
+    private func openFileProviderSettings() {
+        // 打开系统设置的"文件提供程序"扩展管理界面
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.AppleFileProvider")!)
+    }
+
+    private func openFullDiskAccessSettings() {
+        PermissionChecker.openFullDiskAccessSettings()
+    }
+
+    private func openAccessibilitySettings() {
+        PermissionChecker.openAccessibilitySettings()
+    }
+
+    // MARK: - 设置管理
+
+    private func exportSettings() {
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.propertyList]
+        savePanel.nameFieldStringValue = "RClick_Settings.plist"
+        savePanel.begin { response in
+            guard response == .OK, let url = savePanel.url else { return }
+            // TODO: 实现设置导出逻辑
+            logger.info("导出设置到：\(url.path)")
         }
     }
 
-    private func insertNewPermDir(url: URL) {
-        // 2. 创建唯一的ID
-        let newId = UUID().uuidString
-
-        // 3. 创建Bookmark Data (这里你需要根据实际情况提供)
-        // 例如，你可以尝试从URL创建bookmark data，或者根据你的应用逻辑提供相应的数据。
-        // 如果暂时没有实际数据，可以使用空Data()，但不建议长期这样。
-        let bookmarkData: Data
-        do {
-            bookmarkData = try url.bookmarkData(options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: nil)
-        } catch {
-            print("Failed to create bookmark data: \(error)")
-            // 根据你的需求决定错误处理方式，这里使用空Data
-            bookmarkData = Data()
-        }
-
-        // 4. 创建新的PermDir实例
-        let newPermDir = PermDir(id: newId, url: url, bookmark: bookmarkData)
-
-        // 5. 插入到模型上下文:cite[1]
-        modelContext.insert(newPermDir)
-
-        // 6. 保存上下文（SwiftData有时会自动保存，但显式保存是个好习惯，尤其是在重要操作后）
-        do {
-            try modelContext.save()
-            print("PermDir inserted successfully.")
-        } catch {
-            print("Failed to save context: \(error)")
+    private func importSettings() {
+        let openPanel = NSOpenPanel()
+        openPanel.allowedContentTypes = [.propertyList]
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = false
+        openPanel.allowsMultipleSelection = false
+        openPanel.begin { response in
+            guard response == .OK, let url = openPanel.url else { return }
+            // TODO: 实现设置导入逻辑
+            logger.info("从以下路径导入设置：\(url.path)")
         }
     }
 
-    @MainActor
-    func startAddDir(_ url: URL) {
-        let hasParentDir = store.hasParentBookmark(of: url)
-        if hasParentDir {
-            wrongFold = true
-//            showAlert = true
-            logger.info("hasParentDir\(hasParentDir)")
-        } else {
-            store.dirs.append(PermissiveDir(permUrl: url))
-            // 声明一个PermDir 实体，并插入到 modelContext 中
-            insertNewPermDir(url: url)
-            try? store.savePermissiveDir()
-
-            let observeDirs = store.dirs.map { $0.url.path }
-            messager.sendMessage(name: "running", data: MessagePayload(action: "running", target: observeDirs))
+    private func exportLogs() {
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.plainText]
+        savePanel.nameFieldStringValue = "RClick_Log.txt"
+        savePanel.begin { response in
+            guard response == .OK, let url = savePanel.url else { return }
+            // TODO: 实现日志导出逻辑
+            logger.info("导出日志到：\(url.path)")
         }
     }
 
-    @MainActor private func removeBookmark(_ item: PermissiveDir) {
-        // 根据item 查找offsets
-        if let index = store.dirs.firstIndex(of: item) {
-            store.deletePermissiveDir(index: index)
+    private func resetAllSettings() {
+        let alert = NSAlert()
+        alert.messageText = "重置所有设置？"
+        alert.informativeText = "此操作将删除所有自定义配置，恢复到默认状态。此操作不可逆。"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "重置")
+        alert.addButton(withTitle: "取消")
+        alert.buttons[0].hasDestructiveAction = true
+
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            // TODO: 实现重置逻辑
+            logger.info("重置所有设置")
+        }
+    }
+}
+
+// MARK: - 权限状态枚举
+
+enum PermissionStatus {
+    case enabled
+    case disabled
+    case unknown
+
+    var icon: String {
+        switch self {
+        case .enabled:
+            return "checkmark.circle.fill"
+        case .disabled:
+            return "circle"
+        case .unknown:
+            return "exclamationmark.triangle"
         }
     }
 
-    private func openExtensionset() {
-        FinderSync.FIFinderSyncController.showExtensionManagementInterface()
+    var color: Color {
+        switch self {
+        case .enabled:
+            return .green
+        case .disabled:
+            return .gray
+        case .unknown:
+            return .yellow
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .enabled:
+            return "已授权"
+        case .disabled:
+            return "未授权"
+        case .unknown:
+            return "未知"
+        }
     }
 }

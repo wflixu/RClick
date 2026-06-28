@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
-   wasCreatedForAppExtension = "YES"
-   version = "1.7">
+   LastUpgradeVersion = "2650"
+   version = "2.2">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -16,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+               BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
                BuildableName = "RClick.app"
                BlueprintName = "RClick"
                ReferencedContainer = "container:RClick.xcodeproj">
@@ -24,17 +23,12 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5C119D2F2BBEA9AC00B2D7C4"
-               BuildableName = "FinderSyncExt.appex"
-               BlueprintName = "FinderSyncExt"
-               ReferencedContainer = "container:RClick.xcodeproj">
-            </BuildableReference>
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <AutocreatedTestPlanReference>
+            </AutocreatedTestPlanReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
@@ -44,47 +38,52 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5C8A28E82F83D65B00FE687C"
+               BuildableName = "RClickTests.xctest"
+               BlueprintName = "RClickTests"
+               ReferencedContainer = "container:RClick.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5C8A28F22F83D65B00FE687C"
+               BuildableName = "RClickUITests.xctest"
+               BlueprintName = "RClickUITests"
+               ReferencedContainer = "container:RClick.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/lixu"
-      ignoresPersistentStateOnLaunch = "YES"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      enableGPUValidationMode = "1"
       allowLocationSimulation = "YES"
-      consoleMode = "0"
-      structuredConsoleMode = "1">
+      queueDebuggingEnableBacktraceRecording = "Yes">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+            BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
             BuildableName = "RClick.app"
             BlueprintName = "RClick"
             ReferencedContainer = "container:RClick.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5C119D2F2BBEA9AC00B2D7C4"
-            BuildableName = "FinderSyncExt.appex"
-            BlueprintName = "FinderSyncExt"
-            ReferencedContainer = "container:RClick.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "IDEPreferLogStreaming"
-            value = "YES"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -96,7 +95,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5C119D022BBE9B9900B2D7C4"
+            BlueprintIdentifier = "5C8A28D92F83D65900FE687C"
             BuildableName = "RClick.app"
             BlueprintName = "RClick"
             ReferencedContainer = "container:RClick.xcodeproj">
@@ -104,7 +103,7 @@
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
