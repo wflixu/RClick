@@ -8,7 +8,7 @@
 [![macOS 15.6+](https://img.shields.io/badge/macOS_15.6+-Compatible-green)](https://www.apple.com/macos/macos-sequoia/)
 [![Xcode 16.4+](https://img.shields.io/badge/Xcode-16.4+-blue)](https://developer.apple.com/xcode/)
 
-Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2 and SwiftUI for macOS 15.6+.
+Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2 and SwiftUI for macOS 15.6+. Full dark mode support with adaptive icons.
 
 ## 🚀 Features
 
@@ -17,8 +17,9 @@ Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2
 - [x] **Delete Directly** — Delete files or folders directly, bypassing Trash.
 - [x] **Hide / Unhide** — Toggle file visibility in Finder.
 - [x] **AirDrop** — Share files instantly via AirDrop.
-- [x] **Create New Files** — Generate new files from templates directly in Finder: `.txt`, `.json`, `.md`, `.docx`, `.pptx`, `.xlsx` and more.
+- [x] **Create New Files** — Generate new files from templates directly in Finder. Supports `.txt`, `.json`, `.md`, `.docx`, `.pptx`, `.xlsx`, as well as Apple iWork formats: `.pages`, `.key`, `.numbers`.
 - [x] **Quick Access Folders** — Pin frequently used directories to the right-click menu.
+- [x] **Dark Mode** — Full light/dark appearance support with adaptive icons and SF Symbols.
 
 ## 🏗 Architecture
 
@@ -33,11 +34,10 @@ Communication between the two processes uses `DistributedNotificationCenter`. Se
 
 ## 📸 Screenshots
 
-### Context Menu
-![](./images/screenshot.png)
 
-### Settings
-![](./images/screenshot2.png)
+![](./images/rclick-v2.0.1-screenshot.png)
+
+
 
 ## 📦 Installation
 
