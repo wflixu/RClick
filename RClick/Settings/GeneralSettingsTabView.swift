@@ -18,6 +18,7 @@ struct GeneralSettingsTabView: View {
     private var logger
 
     @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
     @EnvironmentObject var store: AppState
 
     @State private var finderSyncStatus: PermissionStatus = .unknown
@@ -48,6 +49,8 @@ struct GeneralSettingsTabView: View {
                         }
                     }
                 ))
+
+                Toggle("在菜单栏显示图标", isOn: $showMenuBarExtra)
 
                 Toggle("登录时启动", isOn: $launchAtLogin)
             } header: {
