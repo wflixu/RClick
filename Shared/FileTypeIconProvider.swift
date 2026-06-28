@@ -108,9 +108,11 @@ final class FileTypeIconProvider: @unchecked Sendable {
         return image.resized(to: NSSize(width: iconSize, height: iconSize))
     }
 
-    /// SF Symbol 图标（含暗色模式适配）
+    /// SF Symbol 图标（自动适配明暗模式）
     private func sfSymbolIcon(named name: String) -> NSImage? {
-        let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
+        let colorConfig = NSImage.SymbolConfiguration(paletteColors: [.labelColor])
+        let sizeConfig = NSImage.SymbolConfiguration(pointSize: iconSize, weight: .regular)
+        let config = colorConfig.applying(sizeConfig)
         return NSImage(systemSymbolName: name, accessibilityDescription: nil)?
             .withSymbolConfiguration(config)
     }

@@ -62,38 +62,32 @@ struct GeneralSettingsTabView: View {
             // MARK: - 第二组：权限
             Section {
                 // Finder 扩展状态
-                HStack {
-                    Label("Finder 扩展", systemImage: finderSyncStatus.icon)
-                        .foregroundColor(finderSyncStatus.color)
-                    Spacer()
+                LabeledContent {
                     Text(finderSyncStatus.description)
                         .foregroundColor(.secondary)
+                } label: {
+                    Label("Finder 扩展", systemImage: finderSyncStatus.icon)
+                        .foregroundColor(finderSyncStatus.color)
                 }
 
                 // 完全磁盘访问权限
-                HStack {
+                LabeledContent {
+                    Button("设置…") {
+                        openFullDiskAccessSettings()
+                    }
+                } label: {
                     Label("完全磁盘访问权限", systemImage: fullDiskAccessStatus.icon)
                         .foregroundColor(fullDiskAccessStatus.color)
-                    Spacer()
-                    if fullDiskAccessStatus != .enabled {
-                        Button(action: openFullDiskAccessSettings) {
-                            Label("设置…", systemImage: "exclamationmark.triangle.fill")
-                        }
-                    } else {
-                        Button("设置…") {
-                            openFullDiskAccessSettings()
-                        }
-                    }
                 }
 
                 // 辅助功能权限
-                HStack {
-                    Label("辅助功能", systemImage: accessibilityStatus.icon)
-                        .foregroundColor(accessibilityStatus.color)
-                    Spacer()
+                LabeledContent {
                     Button("设置…") {
                         openAccessibilitySettings()
                     }
+                } label: {
+                    Label("辅助功能", systemImage: accessibilityStatus.icon)
+                        .foregroundColor(accessibilityStatus.color)
                 }
             } header: {
                 Text("权限")
@@ -121,9 +115,7 @@ struct GeneralSettingsTabView: View {
             // MARK: - 第三组：设置管理
             Section {
                 // 备份
-                HStack {
-                    Text("备份")
-                    Spacer()
+                LabeledContent {
                     HStack(spacing: 12) {
                         Button("导出…") {
                             exportSettings()
@@ -132,15 +124,17 @@ struct GeneralSettingsTabView: View {
                             importSettings()
                         }
                     }
+                } label: {
+                    Text("备份")
                 }
 
                 // 日志
-                HStack {
-                    Text("日志")
-                    Spacer()
+                LabeledContent {
                     Button("导出日志…") {
                         exportLogs()
                     }
+                } label: {
+                    Text("日志")
                 }
 
                 // 重置所有设置

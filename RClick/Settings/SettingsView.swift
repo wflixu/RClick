@@ -19,12 +19,12 @@ enum Tabs: String, CaseIterable, Identifiable {
 
     var icon: String {
         switch self {
-        case .general: "slider.horizontal.2.square"
-        case .apps: "apps.ipad.landscape"
+        case .general: "gearshape"
+        case .apps: "app.badge"
         case .actions: "bolt.square"
         case .newFile: "doc.badge.plus"
         case .cdirs: "folder.badge.gearshape"
-        case .about: "exclamationmark.circle"
+        case .about: "info.circle"
         }
     }
 }
@@ -36,33 +36,15 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var sidebar: some View {
-        Section {
-            Divider()
-            List(selection: self.$selectedTab) {
-                ForEach(Tabs.allCases, id: \.self) { tab in
-                    HStack {
-                        // 使用固定大小的frame来确保图标大小一致
-                        Label {
-                            Text(LocalizedStringKey(tab.rawValue))
-                                .font(.title2)
-                        } icon: {
-                            Image(systemName: tab.icon)
-                                .font(.title2)
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.all, 8)
-                        .labelStyle(.titleAndIcon)
-                        Spacer(minLength: 0)
-                    }
-                    .onTapGesture {
-                        self.selectedTab = tab
-                    }
-                }
+        List(selection: self.$selectedTab) {
+            ForEach(Tabs.allCases, id: \.self) { tab in
+                Label(LocalizedStringKey(tab.rawValue), systemImage: tab.icon)
+                    .labelStyle(.titleAndIcon)
             }
-            .listStyle(SidebarListStyle())
-            .scrollDisabled(true)
-            .navigationSplitViewColumnWidth(210)
-        } header: {
+        }
+        .listStyle(.sidebar)
+        .navigationSplitViewColumnWidth(220)
+        .safeAreaInset(edge: .top) {
             //  App Icon 部分
             VStack {
                 HStack {
@@ -82,8 +64,7 @@ struct SettingsView: View {
             .padding(.horizontal)
             .padding(.vertical, 24)
         }
-        .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
-        .removeSidebarToggle()
+        .toolbar(removing: .sidebarToggle)
     }
 
     @ViewBuilder var detailView: some View {
@@ -105,7 +86,7 @@ struct SettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .frame(minWidth: 450,idealWidth: 600, maxWidth: 800)
+        .frame(minWidth: 450)
         .padding()
     }
 
@@ -125,15 +106,6 @@ struct SettingsView: View {
     }
 }
 
-extension View {
-    /// Removes the sidebar toggle button from the toolbar.
-    func removeSidebarToggle() -> some View {
-        toolbar(removing: .sidebarToggle)
-            .toolbar {
-                Color.clear
-            }
-    }
-}
 
 #Preview {
     SettingsView()

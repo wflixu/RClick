@@ -22,62 +22,62 @@ struct CommonDirsSettingTabView: View {
     @State private var showCommonDirImporter = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        Form {
             Section {
-                List {
-                    ForEach(store.cdirs) { item in
-                        HStack {
-                            Image(systemName: item.icon.isEmpty ? "folder" : item.icon)
-                            Text(verbatim: item.url.path)
-                            Spacer()
-                            Button {
-                                removeCommonDir(item)
-                            } label: {
-                                Image(systemName: "trash")
-                            }
-                        }
+                Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
+                    .onChange(of: store.showCommonDirs) { _ in
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
-                }
-            } header: {
+                Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
+                    .disabled(!store.showCommonDirs)
+                    .onChange(of: store.foldCommonDirMenu) { _ in
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
+            }
+
+            Section {
                 HStack {
-                    Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
-                        .toggleStyle(.switch)
-                        .onChange(of: store.showCommonDirs) { _ in
-                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-                        }
-                    Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
-                        .toggleStyle(.switch)
-                        .disabled(!store.showCommonDirs)
-                        .onChange(of: store.foldCommonDirMenu) { _ in
-                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-                        }
                     Spacer()
                     Button {
                         showCommonDirImporter = true
-                    } label: { Label("Add", systemImage: "folder.badge.plus") }
+                    } label: {
+                        Label("添加文件夹", systemImage: "folder.badge.plus")
+                    }
                 }
-            } footer: {
-                Text("Quick access to frequently used folders")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-            }
-            .fileImporter(
-                isPresented: $showCommonDirImporter,
-                allowedContentTypes: [.directory],
-                allowsMultipleSelection: false
-            ) { result in
-                switch result {
-                    case .success(let urls):
-                        if let url = urls.first {
-                            let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: iconForDirectory(url: url))
-                            if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
-                                store.cdirs.append(commonDir)
-                                store.sync()
-                            }
+
+                ForEach(store.cdirs) { item in
+                    LabeledContent {
+                        Button {
+                            removeCommonDir(item)
+                        } label: {
+                            Image(systemName: "trash")
                         }
-                    case .failure(let error):
-                        logger.error("Failed to select common folder: \(error.localizedDescription)")
+                        .buttonStyle(.borderless)
+                    } label: {
+                        Label(item.url.lastPathComponent, systemImage: item.icon.isEmpty ? "folder" : item.icon)
+                    }
                 }
+            } header: {
+                Text("已添加的文件夹")
+            }
+        }
+        .formStyle(.grouped)
+        .fileImporter(
+            isPresented: $showCommonDirImporter,
+            allowedContentTypes: [.directory],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+                case .success(let urls):
+                    if let url = urls.first {
+                        let commonDir = CommonDir(id: UUID().uuidString, name: url.lastPathComponent, url: url, icon: iconForDirectory(url: url))
+                        if !store.cdirs.contains(where: { $0.url == commonDir.url }) {
+                            store.cdirs.append(commonDir)
+                            store.sync()
+                        }
+                    }
+                case .failure(let error):
+                    logger.error("Failed to select common folder: \(error.localizedDescription)")
             }
         }
     }

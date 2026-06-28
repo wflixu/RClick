@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -15,6 +16,7 @@
 
     },
     "%@（%@）" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -26,16 +28,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@（%2$@）"
-          }
-        }
-      }
-    },
-    "%@=%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@=%2$@"
           }
         }
       }
@@ -87,6 +79,7 @@
       }
     },
     "Add" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -103,6 +96,7 @@
       }
     },
     "Add New File Type" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -139,6 +133,7 @@
       }
     },
     "Arguments" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -153,9 +148,6 @@
           }
         }
       }
-    },
-    "Arguments:" : {
-
     },
     "Authorization folder" : {
       "extractionState" : "stale",
@@ -175,6 +167,7 @@
       }
     },
     "Cancel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -189,12 +182,6 @@
           }
         }
       }
-    },
-    "Change App" : {
-
-    },
-    "Change Template" : {
-
     },
     "Common Dir" : {
       "extractionState" : "manual",
@@ -265,6 +252,7 @@
       }
     },
     "Default Open App" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -298,6 +286,7 @@
       }
     },
     "Display Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -334,6 +323,7 @@
 
     },
     "Edit App Properties" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -348,9 +338,6 @@
           }
         }
       }
-    },
-    "Edit File Type" : {
-
     },
     "Enable extension" : {
       "extractionState" : "stale",
@@ -373,6 +360,7 @@
 
     },
     "Environment Variables" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -387,12 +375,6 @@
           }
         }
       }
-    },
-    "Environment:" : {
-
-    },
-    "Extension" : {
-
     },
     "Favorite Folders" : {
       "extractionState" : "stale",
@@ -411,13 +393,7 @@
         }
       }
     },
-    "File Extension (e.g., .txt)" : {
-
-    },
     "Finder 扩展" : {
-
-    },
-    "Format: KEY=VALUE, one per line" : {
 
     },
     "General" : {
@@ -437,6 +413,9 @@
         }
       }
     },
+    "github.com/wflixu/RClick" : {
+
+    },
     "Hide" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -453,9 +432,6 @@
           }
         }
       }
-    },
-    "Icon" : {
-
     },
     "Invalid Folder Selection" : {
       "extractionState" : "stale",
@@ -528,9 +504,6 @@
         }
       }
     },
-    "Name" : {
-
-    },
     "New File" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -575,9 +548,6 @@
           }
         }
       }
-    },
-    "One argument per semicolon (;)" : {
-
     },
     "Open Settings" : {
       "localizations" : {
@@ -646,12 +616,6 @@
         }
       }
     },
-    "Preview:" : {
-
-    },
-    "Quick access to frequently used folders" : {
-
-    },
     "Quit" : {
       "localizations" : {
         "en" : {
@@ -702,6 +666,7 @@
       }
     },
     "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -717,6 +682,9 @@
         }
       }
     },
+    "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions." : {
+
+    },
     "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON" : {
 
     },
@@ -724,6 +692,7 @@
 
     },
     "Reset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -740,6 +709,7 @@
       }
     },
     "Save" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -756,6 +726,7 @@
       }
     },
     "Select App" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -770,9 +741,6 @@
           }
         }
       }
-    },
-    "Select Template" : {
-
     },
     "Settings" : {
       "localizations" : {
@@ -790,7 +758,7 @@
         }
       }
     },
-    "SF Symbol name or custom icon" : {
+    "SF Symbol 名称" : {
 
     },
     "Show in dock" : {
@@ -826,9 +794,6 @@
           }
         }
       }
-    },
-    "Template" : {
-
     },
     "The operation of the menu can only be executed in authorized folders" : {
       "extractionState" : "stale",
@@ -931,6 +896,16 @@
         }
       }
     },
+    "Version %@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Version %1$@ (%2$@)"
+          }
+        }
+      }
+    },
     "Want to add a feature? Give feedback here." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -988,16 +963,37 @@
     "主要控制" : {
 
     },
+    "例如：txt、md、json" : {
+
+    },
+    "保存" : {
+
+    },
+    "删除应用" : {
+
+    },
+    "参数（分号分隔）" : {
+
+    },
     "发现新版本" : {
 
     },
-    "后缀：" : {
+    "取消" : {
+
+    },
+    "名称" : {
+
+    },
+    "启用" : {
 
     },
     "启用 RClick" : {
 
     },
     "启用常用文件夹" : {
+
+    },
+    "图标" : {
 
     },
     "在文件提供程序中启用 RClick 以在右键菜单中显示功能" : {
@@ -1007,6 +1003,9 @@
 
     },
     "备份" : {
+
+    },
+    "多个参数用分号（;）分隔" : {
 
     },
     "完全磁盘访问权限" : {
@@ -1027,6 +1026,9 @@
     "已是最新版本" : {
 
     },
+    "已添加的文件夹" : {
+
+    },
     "当前版本已是最新，无需更新。" : {
 
     },
@@ -1036,10 +1038,22 @@
     "忽略此版本" : {
 
     },
+    "恢复到默认设置" : {
+
+    },
+    "恢复默认" : {
+
+    },
     "所选文件夹是已选文件夹的子目录，请选择其他文件夹。" : {
 
     },
     "手动下载" : {
+
+    },
+    "扩展名" : {
+
+    },
+    "扩展名: %@" : {
 
     },
     "折叠动作菜单" : {
@@ -1054,6 +1068,9 @@
     "折叠菜单" : {
 
     },
+    "文件扩展名" : {
+
+    },
     "文件提供程序：在列表中选择「RClick」以启用 Finder 右键菜单" : {
 
     },
@@ -1063,10 +1080,22 @@
     "日志" : {
 
     },
+    "显示名称" : {
+
+    },
+    "更换应用" : {
+
+    },
+    "更换模板" : {
+
+    },
     "未授权文件夹" : {
 
     },
     "权限" : {
+
+    },
+    "格式：KEY=VALUE，每行一个" : {
 
     },
     "检查更新" : {
@@ -1075,22 +1104,43 @@
     "检查更新失败" : {
 
     },
-    "模板路径：%@" : {
-
-    },
-    "模版：" : {
+    "模板" : {
 
     },
     "正在检查更新..." : {
 
     },
+    "添加" : {
+
+    },
+    "添加应用" : {
+
+    },
+    "添加文件夹" : {
+
+    },
+    "添加文件类型" : {
+
+    },
     "版本 %@" : {
+
+    },
+    "环境变量" : {
 
     },
     "登录时启动" : {
 
     },
     "确定" : {
+
+    },
+    "编辑应用" : {
+
+    },
+    "编辑应用属性" : {
+
+    },
+    "编辑文件类型" : {
 
     },
     "设置…" : {
@@ -1102,10 +1152,28 @@
     "辅助功能" : {
 
     },
+    "输入 SF Symbol 名称，例如 doc.text、curlybraces" : {
+
+    },
+    "运行参数" : {
+
+    },
+    "选择模板文件" : {
+
+    },
+    "选择默认打开应用" : {
+
+    },
     "重置所有设置…" : {
 
     },
     "重置所有设置将恢复默认配置，此操作不可逆" : {
+
+    },
+    "预览:" : {
+
+    },
+    "默认打开应用" : {
 
     }
   },
