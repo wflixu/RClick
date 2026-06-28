@@ -40,8 +40,14 @@ struct CommonDirsSettingTabView: View {
                 }
             } header: {
                 HStack {
-                    Toggle("折叠常用文件夹菜单", isOn: $store.foldCommonDirMenu)
+                    Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
                         .toggleStyle(.switch)
+                        .onChange(of: store.showCommonDirs) { _ in
+                            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                        }
+                    Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
+                        .toggleStyle(.switch)
+                        .disabled(!store.showCommonDirs)
                         .onChange(of: store.foldCommonDirMenu) { _ in
                             NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                         }

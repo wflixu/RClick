@@ -191,7 +191,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
         let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
-        let commonDirMenuItems = appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon, url: $0.url.path) }
+        let commonDirMenuItems = appState.showCommonDirs ? appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon, url: $0.url.path) } : []
 
         // 更新版本号
         menuVersion += 1

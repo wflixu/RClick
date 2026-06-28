@@ -84,14 +84,11 @@ final class FileTypeIconProvider: @unchecked Sendable {
     ]
 
     /// 通过 NSWorkspace 获取文件类型对应的默认应用图标
-    /// DispatchQueue.main.sync: Extension 不在 @MainActor，需桥接
+    /// 主线程安全：主 App 在 @MainActor 调用，Extension 在 main thread 调用
     private func workspaceIcon(for ext: String) -> NSImage? {
-        let icon: NSImage = DispatchQueue.main.sync {
-            NSWorkspace.shared.icon(forFileType: ext)
-        }
-        let genericIcon: NSImage = DispatchQueue.main.sync {
-            NSWorkspace.shared.icon(forFileType: "")
-        }
+        let contentType = UTType(filenameExtension: ext) ?? .data
+        let icon = NSWorkspace.shared.icon(for: contentType)
+        let genericIcon = NSWorkspace.shared.icon(for: .data)
 
         if icon === genericIcon {
             logger.debug("workspaceIcon '\(ext)': no specific app (generic icon)")

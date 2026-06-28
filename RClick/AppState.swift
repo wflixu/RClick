@@ -31,6 +31,8 @@ class AppState: ObservableObject {
     @AppStorage("foldActionsMenu") var foldActionsMenu: Bool = false
     @AppStorage("foldNewFileMenu") var foldNewFileMenu: Bool = true
     @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = true
+    // 常用文件夹总开关（默认关闭）
+    @AppStorage("showCommonDirs") var showCommonDirs: Bool = false
 
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
