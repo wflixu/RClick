@@ -24,37 +24,47 @@ final class FileTypeIconProvider: @unchecked Sendable {
 
     // MARK: - Public API
 
-    /// 根据文件扩展名获取图标
+    /// 根据文件扩展名获取图标（三级降级策略）
     /// - Parameters:
-    ///   - ext: 文件扩展名，如 "docx", "txt"
-    ///   - fallbackSymbol: SF Symbol 名称，作为二级回退
+    ///   - ext: 文件扩展名（可能带点，如 ".txt"）
+    ///   - fallbackSymbol: 图标名称，可能是旧 PNG 名("icon-file-txt")或新 SF Symbol 名("doc.text")
     /// - Returns: 图标 NSImage
     func icon(for ext: String, fallbackSymbol: String = "doc") -> NSImage? {
-        // 1. 内存缓存命中
+        // 0. 内存缓存命中
         if let cached = cache[ext] {
             return cached
         }
 
-        // 2. 系统 App 图标（优先）
-        if let icon = workspaceIcon(for: ext) {
+        // 去掉可能的前导点，后续统一使用无点版本
+        let cleanExt = ext.hasPrefix(".") ? String(ext.dropFirst()) : ext
+
+        // 1. 系统 App 图标（优先）
+        if let icon = workspaceIcon(for: cleanExt) {
             cache[ext] = icon
             return icon
         }
 
-        // 3. 用户 PNG 图标（从主 App Bundle 加载）
-        if let png = pngIcon(for: fallbackSymbol) {
-            cache[ext] = png
-            return png
+        // 2. 用户 PNG 图标 — 先按约定命名查，再用传入的名称兜底
+        //    约定命名: "icon-file-{ext}" 如 icon-file-txt, icon-file-json
+        let legacyPngName = "icon-file-\(cleanExt)"
+        if let icon = pngIcon(for: legacyPngName) {
+            cache[ext] = icon
+            return icon
+        }
+        //    传入名称兜底（兼容数据库中仍存有旧 PNG 名的数据）
+        if let icon = pngIcon(for: fallbackSymbol) {
+            cache[ext] = icon
+            return icon
         }
 
-        // 4. SF Symbol 回退：先解析旧 PNG 图标名，再尝试直接匹配
+        // 3. SF Symbol 回退：先解析旧 PNG 图标名映射，再尝试直接匹配
         let resolvedSymbol = iconFallbackMap[fallbackSymbol] ?? fallbackSymbol
         if let icon = sfSymbolIcon(named: resolvedSymbol) {
             cache[ext] = icon
             return icon
         }
 
-        // 5. 最后兜底
+        // 4. 最终兜底
         if let icon = sfSymbolIcon(named: "doc") {
             cache[ext] = icon
             return icon
