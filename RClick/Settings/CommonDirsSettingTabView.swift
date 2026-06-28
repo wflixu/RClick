@@ -25,12 +25,12 @@ struct CommonDirsSettingTabView: View {
         Form {
             Section {
                 Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
-                    .onChange(of: store.showCommonDirs) { _ in
+                    .onChange(of: store.showCommonDirs) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
                 Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
                     .disabled(!store.showCommonDirs)
-                    .onChange(of: store.foldCommonDirMenu) { _ in
+                    .onChange(of: store.foldCommonDirMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
             }

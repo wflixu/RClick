@@ -22,7 +22,7 @@ struct AppsSettingsTabView: View {
         Form {
             Section {
                 Toggle("折叠应用菜单", isOn: $appState.foldAppsMenu)
-                    .onChange(of: appState.foldAppsMenu) { _ in
+                    .onChange(of: appState.foldAppsMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
             }

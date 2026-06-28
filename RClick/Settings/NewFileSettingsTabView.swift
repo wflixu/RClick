@@ -24,7 +24,7 @@ struct NewFileSettingsTabView: View {
         Form {
             Section {
                 Toggle("折叠新建文件菜单", isOn: $appState.foldNewFileMenu)
-                    .onChange(of: appState.foldNewFileMenu) { _ in
+                    .onChange(of: appState.foldNewFileMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
             }

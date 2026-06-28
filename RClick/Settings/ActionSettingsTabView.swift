@@ -16,7 +16,7 @@ struct ActionSettingsTabView: View {
         Form {
             Section {
                 Toggle("折叠动作菜单", isOn: $appState.foldActionsMenu)
-                    .onChange(of: appState.foldActionsMenu) { _ in
+                    .onChange(of: appState.foldActionsMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
 
