@@ -23,7 +23,9 @@ struct NewFileSettingsTabView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("折叠新建文件菜单", isOn: $appState.foldNewFileMenu)
+                Toggle(isOn: $appState.foldNewFileMenu) {
+                    Text(appLocalized: "Collapse new file menu")
+                }
                     .onChange(of: appState.foldNewFileMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
@@ -35,13 +37,13 @@ struct NewFileSettingsTabView: View {
                     Button {
                         appState.resetFiletypeItems()
                     } label: {
-                        Label("恢复默认", systemImage: "arrow.triangle.2.circlepath")
+                        Label(AppLocalization.localized("Restore Defaults"), systemImage: "arrow.triangle.2.circlepath")
                     }
                     Spacer()
                     Button {
                         editingFile = NewFile(ext: "", name: "", idx: appState.newFiles.count)
                     } label: {
-                        Label("添加文件类型", systemImage: "plus")
+                        Label(AppLocalization.localized("Add File Type"), systemImage: "plus")
                     }
                 }
 
@@ -54,9 +56,9 @@ struct NewFileSettingsTabView: View {
                                 Image(systemName: "pencil")
                             }
                             .buttonStyle(.borderless)
-                            .help("编辑文件类型")
+                            .help(AppLocalization.localized("Edit File Type"))
 
-                            Toggle("启用", isOn: $item.enabled)
+                            Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
                                 .toggleStyle(.switch)
                                 .onChange(of: item.enabled) {
                                     appState.toggleActionItem()
@@ -81,7 +83,7 @@ struct NewFileSettingsTabView: View {
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(item.name)
-                                Text("扩展名: \(item.ext)")
+                                Text(String(format: AppLocalization.localized("Extension: %@"), item.ext))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }

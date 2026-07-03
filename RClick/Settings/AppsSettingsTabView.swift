@@ -21,7 +21,9 @@ struct AppsSettingsTabView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("折叠应用菜单", isOn: $appState.foldAppsMenu)
+                Toggle(isOn: $appState.foldAppsMenu) {
+                    Text(appLocalized: "Collapse apps menu")
+                }
                     .onChange(of: appState.foldAppsMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
@@ -33,7 +35,7 @@ struct AppsSettingsTabView: View {
                     Button {
                         showSelectApp = true
                     } label: {
-                        Label("添加应用", systemImage: "plus.app")
+                        Label(AppLocalization.localized("Add App"), systemImage: "plus.app")
                     }
                 }
 
@@ -46,7 +48,7 @@ struct AppsSettingsTabView: View {
                                 Image(systemName: "pencil")
                             }
                             .buttonStyle(.borderless)
-                            .help("编辑应用")
+                            .help(AppLocalization.localized("Edit App"))
 
                             Button {
                                 deleteApp(item)
@@ -54,7 +56,7 @@ struct AppsSettingsTabView: View {
                                 Image(systemName: "trash")
                             }
                             .buttonStyle(.borderless)
-                            .help("删除应用")
+                            .help(AppLocalization.localized("Delete App"))
                         }
                     } label: {
                         HStack(spacing: 8) {
@@ -98,10 +100,10 @@ struct AppsSettingsTabView: View {
     private func appSummary(_ item: OpenWithApp) -> String {
         var parts: [String] = []
         if !item.arguments.isEmpty {
-            parts.append("参数: \(item.arguments.joined(separator: "; "))")
+            parts.append(String(format: AppLocalization.localized("Arguments: %@"), item.arguments.joined(separator: "; ")))
         }
         if !item.environment.isEmpty {
-            parts.append("环境变量: \(item.environment.count)个")
+            parts.append(String(format: AppLocalization.localized("Environment variables: %lld"), Int64(item.environment.count)))
         }
         return parts.joined(separator: " · ")
     }

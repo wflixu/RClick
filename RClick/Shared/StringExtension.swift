@@ -38,6 +38,7 @@ enum Key {
     static let showMenuBarExtra = "showMenuBarExtra"
     static let showInDock = "SHOW_IN_DOCK"
     static let hasSeenFDAGuide = "HAS_SEEN_FDA_GUIDE"
+    static let selectedLanguage = "SELECTED_LANGUAGE"
     static let actionMenuItems = "RCLICK_ACTION_MENU_ITEMS"
     static let appMenuItems = "RCLICK_APP_MENU_ITEMS"
 

@@ -52,26 +52,26 @@ struct EditFileTypeSheetView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(isAdding ? "添加文件类型" : "编辑文件类型")
+            Text(appLocalized: isAdding ? "Add File Type" : "Edit File Type")
                 .font(.headline)
                 .padding(.top, 20)
                 .padding(.bottom, 12)
 
             Form {
                 Section {
-                    TextField("显示名称", text: $name)
+                    TextField(AppLocalization.localized("Display Name"), text: $name)
                         .textFieldStyle(.roundedBorder)
                 } header: {
-                    Text("名称")
+                    Text(appLocalized: "Name")
                 }
 
                 Section {
-                    TextField("文件扩展名", text: $ext)
+                    TextField(AppLocalization.localized("File Extension"), text: $ext)
                         .textFieldStyle(.roundedBorder)
                 } header: {
-                    Text("扩展名")
+                    Text(appLocalized: "File Extension")
                 } footer: {
-                    Text("例如：txt、md、json")
+                    Text(appLocalized: "For example: txt, md, json")
                         .foregroundColor(.secondary)
                 }
 
@@ -89,7 +89,7 @@ struct EditFileTypeSheetView: View {
                         Button {
                             showSelectTemplate = true
                         } label: {
-                            Text(template == nil ? "选择模板文件" : "更换模板")
+                            Text(appLocalized: template == nil ? "Choose Template File" : "Change Template")
                         }
                         .fileImporter(
                             isPresented: $showSelectTemplate,
@@ -107,16 +107,16 @@ struct EditFileTypeSheetView: View {
                         }
                     }
                 } header: {
-                    Text("模板")
+                    Text(appLocalized: "Template")
                 }
 
                 Section {
-                    TextField("SF Symbol 名称", text: $icon)
+                    TextField(AppLocalization.localized("SF Symbol Name"), text: $icon)
                         .textFieldStyle(.roundedBorder)
 
                     if !icon.isEmpty {
                         HStack {
-                            Text("预览:")
+                            Text(appLocalized: "Preview:")
                             if let preview = FileTypeIconProvider.shared.icon(for: ext, fallbackSymbol: icon) {
                                 Image(nsImage: preview)
                                     .resizable()
@@ -129,9 +129,9 @@ struct EditFileTypeSheetView: View {
                         }
                     }
                 } header: {
-                    Text("图标")
+                    Text(appLocalized: "Icon")
                 } footer: {
-                    Text("输入 SF Symbol 名称，例如 doc.text、curlybraces")
+                    Text(appLocalized: "Enter an SF Symbol name, for example doc.text or curlybraces")
                         .foregroundColor(.secondary)
                 }
 
@@ -147,7 +147,7 @@ struct EditFileTypeSheetView: View {
                         Button {
                             showSelectApp = true
                         } label: {
-                            Text(openApp == nil ? "选择默认打开应用" : "更换应用")
+                            Text(appLocalized: openApp == nil ? "Choose Default App" : "Change App")
                         }
                         .fileImporter(
                             isPresented: $showSelectApp,
@@ -174,18 +174,18 @@ struct EditFileTypeSheetView: View {
                         }
                     }
                 } header: {
-                    Text("默认打开应用")
+                    Text(appLocalized: "Default Open App")
                 }
             }
             .formStyle(.grouped)
 
             HStack {
-                Button("取消") {
+                Button(AppLocalization.localized("Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.escape)
 
-                Button(isAdding ? "添加" : "保存") {
+                Button(AppLocalization.localized(isAdding ? "Add" : "Save")) {
                     saveChanges()
                     dismiss()
                 }

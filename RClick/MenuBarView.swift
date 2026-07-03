@@ -17,13 +17,13 @@ struct MenuBarView: View {
         VStack {
             Button(action: actionSettings) {
                 Image(systemName: "gearshape")
-                Text("Settings")
+                Text(appLocalized: "Settings")
             }
             .keyboardShortcut(",", modifiers: [.command])
 
             Button(action: actionQuit) {
                 Image(systemName: "xmark.square")
-                Text("Quit")
+                Text(appLocalized: "Quit")
             }
             .keyboardShortcut("q", modifiers: [.command])
         }

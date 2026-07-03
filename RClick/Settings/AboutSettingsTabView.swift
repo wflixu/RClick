@@ -25,7 +25,7 @@ struct AboutSettingsTabView: View {
 
                     VStack(spacing: 4) {
                         Text("RClick").font(.title)
-                        Text("Version \(getAppVersion()) (\(getBuildVersion()))")
+                        Text(String(format: AppLocalization.localized("Version %@ (%@)"), getAppVersion(), getBuildVersion()))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -34,13 +34,13 @@ struct AboutSettingsTabView: View {
             }
 
             Section {
-                Text("RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions.")
+                Text(appLocalized: "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions.")
                     .font(.body)
             }
 
             Section {
                 HStack {
-                    Button("检查更新") {
+                    Button(AppLocalization.localized("Check for Updates")) {
                         Task {
                             await updateManager.checkForUpdates(force: true)
                         }
@@ -65,14 +65,14 @@ struct AboutSettingsTabView: View {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             return version
         }
-        return "Unknown"
+        return AppLocalization.localized("Unknown")
     }
 
     func getBuildVersion() -> String {
         if let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
             return buildVersion
         }
-        return "Unknown"
+        return AppLocalization.localized("Unknown")
     }
 }
 

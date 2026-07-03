@@ -15,14 +15,16 @@ struct ActionSettingsTabView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("折叠动作菜单", isOn: $appState.foldActionsMenu)
+                Toggle(isOn: $appState.foldActionsMenu) {
+                    Text(appLocalized: "Collapse actions menu")
+                }
                     .onChange(of: appState.foldActionsMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
 
                 ForEach($appState.actions) { $item in
                     LabeledContent {
-                        Toggle("启用", isOn: $item.enabled)
+                        Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
                             .toggleStyle(.switch)
                             .onChange(of: item.enabled) {
                                 appState.toggleActionItem()
@@ -30,13 +32,13 @@ struct ActionSettingsTabView: View {
                             }
                             .labelsHidden()
                     } label: {
-                        Label(LocalizedStringKey(item.name), systemImage: item.icon)
+                        Label(item.displayName, systemImage: item.icon)
                     }
                 }
             } footer: {
                 HStack {
                     Spacer()
-                    Button("恢复到默认设置") {
+                    Button(AppLocalization.localized("Restore Defaults")) {
                         appState.resetActionItems()
                     }
                 }
