@@ -28,6 +28,7 @@ struct GeneralSettingsTabView: View {
     @State private var showDirImporter = false
     @State private var wrongFold = false
     @State private var showAlert = false
+    @State private var showLanguageRestartAlert = false
 
     let messager = Messager.shared
 
@@ -62,7 +63,11 @@ struct GeneralSettingsTabView: View {
 
                 Picker(selection: Binding(
                     get: { store.selectedLanguage },
-                    set: { store.selectedLanguage = $0 }
+                    set: { newValue in
+                        guard newValue != store.selectedLanguage else { return }
+                        store.selectedLanguage = newValue
+                        showLanguageRestartAlert = true
+                    }
                 )) {
                     Text(appLocalized: "Automatic").tag(AppLanguage.automatic)
                     Text(appLocalized: "Simplified Chinese").tag(AppLanguage.simplifiedChinese)
@@ -75,6 +80,7 @@ struct GeneralSettingsTabView: View {
                 Text(appLocalized: "Main Controls")
             } footer: {
                 Text(appLocalized: "Enable RClick in File Provider to show its actions in Finder context menus")
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             // MARK: - 第二组：权限
@@ -113,16 +119,23 @@ struct GeneralSettingsTabView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
                         .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(appLocalized: "Full Disk Access: Required to create and delete files in protected directories")
                         .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     if fullDiskAccessStatus != .enabled {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(appLocalized: "RClick needs Full Disk Access to work with files in protected directories")
                                 .fontWeight(.medium)
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(appLocalized: "1. Click \"Settings…\" on the right to open System Settings")
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(appLocalized: "2. Click the lock icon and authenticate")
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(appLocalized: "3. Click \"+\" -> open \"Applications\" -> select \"RClick\"")
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(appLocalized: "4. Make sure the switch next to RClick is turned on")
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -167,6 +180,7 @@ struct GeneralSettingsTabView: View {
                 Text(appLocalized: "Settings Management")
             } footer: {
                 Text(appLocalized: "Resetting all settings restores the default configuration and cannot be undone")
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .formStyle(.grouped)
@@ -195,6 +209,17 @@ struct GeneralSettingsTabView: View {
             }
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
+        }
+        .alert(
+            Text(appLocalized: "Language Change Requires Restart"),
+            isPresented: $showLanguageRestartAlert
+        ) {
+            Button(AppLocalization.localized("Restart Now")) {
+                restartApplication()
+            }
+            Button(AppLocalization.localized("Later"), role: .cancel) {}
+        } message: {
+            Text(appLocalized: "Some interface elements and Finder menus will update after restarting RClick.")
         }
     }
 
@@ -233,6 +258,12 @@ struct GeneralSettingsTabView: View {
 
     private func openAccessibilitySettings() {
         PermissionChecker.openAccessibilitySettings()
+    }
+
+    private func restartApplication() {
+        let appURL = Bundle.main.bundleURL
+        try? Process.run(URL(fileURLWithPath: "/usr/bin/open"), arguments: ["-n", appURL.path])
+        NSApp.terminate(nil)
     }
 
     // MARK: - 设置管理

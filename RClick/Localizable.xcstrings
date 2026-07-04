@@ -1,39 +1,6 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "": {
-      "extractionState": "stale",
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ""
-          }
-        }
-      }
-    },
-    "%@": {},
-    "%@（%@）": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$@（%2$@）"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@（%2$@）"
-          }
-        }
-      }
-    },
-    "1. 点击右侧「设置…」按钮打开系统设置": {},
-    "2. 点击左下角锁图标并认证": {},
-    "3. 点击「+」→ 前往「应用程序」→ 选择「RClick」": {},
-    "4. 确保 RClick 旁边的开关已打开": {},
     "About": {
       "extractionState": "manual",
       "localizations": {
@@ -621,7 +588,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あとで"
+            "value": "後で"
           }
         }
       }
@@ -765,6 +732,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "用...打开"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このアプリケーションで開く"
           }
         }
       }
@@ -3789,6 +3762,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "警告"
+          }
+        }
+      }
+    },
+    "Language Change Requires Restart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language Change Requires Restart"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语言切换需要重启"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "言語の変更には再起動が必要です"
+          }
+        }
+      }
+    },
+    "Some interface elements and Finder menus will update after restarting RClick.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some interface elements and Finder menus will update after restarting RClick."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分界面元素和 Finder 菜单会在重启 RClick 后更新。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一部の画面要素とFinderメニューは、RClickの再起動後に更新されます。"
           }
         }
       }

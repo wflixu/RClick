@@ -176,6 +176,12 @@
             "state": "translated",
             "value": "用...打开"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このアプリケーションで開く"
+          }
         }
       }
     },
