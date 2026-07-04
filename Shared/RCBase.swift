@@ -287,6 +287,8 @@ struct ActionMenuItem: Codable {
 
 /// Menu item for creating new files
 struct NewFileMenuItem: Codable {
+    static let customFileId = "__rclick_custom_new_file"
+
     let id: String
     let name: String
     let ext: String

@@ -21,20 +21,33 @@ struct ActionSettingsTabView: View {
                     .onChange(of: appState.foldActionsMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
+            }
 
-                ForEach($appState.actions) { $item in
-                    LabeledContent {
-                        Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
-                            .toggleStyle(.switch)
-                            .onChange(of: item.enabled) {
-                                appState.toggleActionItem()
-                                messager.sendRunningNotification()
+            Section {
+                List {
+                    ForEach($appState.actions) { $item in
+                        LabeledContent {
+                            Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
+                                .toggleStyle(.switch)
+                                .onChange(of: item.enabled) {
+                                    appState.toggleActionItem()
+                                    messager.sendRunningNotification()
+                                }
+                                .labelsHidden()
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "line.3.horizontal")
+                                    .foregroundColor(.secondary)
+                                Label(item.displayName, systemImage: item.icon)
                             }
-                            .labelsHidden()
-                    } label: {
-                        Label(item.displayName, systemImage: item.icon)
+                        }
+                    }
+                    .onMove { source, destination in
+                        appState.moveActions(from: source, to: destination)
+                        messager.sendRunningNotification()
                     }
                 }
+                .frame(minHeight: 180)
             } footer: {
                 HStack {
                     Spacer()

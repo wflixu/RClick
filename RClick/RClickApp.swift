@@ -5,6 +5,7 @@
 //  Created by 李旭 on 2024/4/4.
 //
 import AppKit
+import ApplicationServices
 import Foundation
 import SwiftUI
 import SwiftData
@@ -393,6 +394,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return filePath
     }
 
+    private func targetDirectoryForNewFile(_ target: [String]) -> String? {
+        guard let rawPath = target.first else { return nil }
+        let path = rawPath.removingPercentEncoding ?? rawPath
+        var isDirectory: ObjCBool = false
+
+        if FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) {
+            if isDirectory.boolValue {
+                return path
+            }
+            return URL(fileURLWithPath: path).deletingLastPathComponent().path
+        }
+
+        return path
+    }
+
+    private func revealInFinderAndRename(_ fileURL: URL) {
+        NSWorkspace.shared.activateFileViewerSelecting([fileURL])
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [logger] in
+            let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+            guard AXIsProcessTrustedWithOptions(options) else {
+                logger.warning("Accessibility permission is required to trigger Finder rename for \(fileURL.path)")
+                return
+            }
+
+            NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder").first?.activate()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                let keyCodeReturn: CGKeyCode = 36
+                let source = CGEventSource(stateID: .hidSystemState)
+                let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: true)
+                let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: false)
+                keyDown?.post(tap: .cghidEventTap)
+                keyUp?.post(tap: .cghidEventTap)
+            }
+        }
+    }
+
     func actionHandler(rid: String, target: [String], trigger: String) {
         guard let rcitem = appState.getActionItem(rid: rid) else {
             logger.warning("when createFile, but not have fileType ")
@@ -605,14 +644,32 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func createFile(rid: String, target: [String]) {
-        guard let rcitem = appState.getFileType(rid: rid), let dirPath = target.first else {
+        guard let dirPath = targetDirectoryForNewFile(target) else {
+            logger.warning("when createFile, but not have target directory")
+            return
+        }
+
+        if rid == NewFileMenuItem.customFileId {
+            let filePath = getUniqueFilePath(dir: dirPath, ext: "")
+            let fileURL = URL(fileURLWithPath: filePath)
+            do {
+                try Data().write(to: fileURL)
+                logger.info("created editable file: \(fileURL.path)")
+                revealInFinderAndRename(fileURL)
+            } catch {
+                logger.error("create editable file error: \(error.localizedDescription)")
+            }
+            return
+        }
+
+        guard let rcitem = appState.getFileType(rid: rid) else {
             logger.warning("when createFile, but not have fileType \(rid) ")
             return
         }
 
         let ext = rcitem.ext
         logger.info("create file dir:\(dirPath) -- ext \(ext)")
-        let filePath = getUniqueFilePath(dir: dirPath.removingPercentEncoding ?? dirPath, ext: ext)
+        let filePath = getUniqueFilePath(dir: dirPath, ext: ext)
         let fileURL = URL(fileURLWithPath: filePath)
 
         // 使用完全磁盘访问权限，直接创建文件
@@ -632,6 +689,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     try Data().write(to: fileURL)
                 }
             }
+            revealInFinderAndRename(fileURL)
         } catch let error as NSError {
             switch error.domain {
             case NSCocoaErrorDomain:

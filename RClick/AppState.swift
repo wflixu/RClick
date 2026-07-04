@@ -98,6 +98,11 @@ class AppState: ObservableObject {
         }
     }
 
+    @MainActor func moveApps(from source: IndexSet, to destination: Int) {
+        apps.move(fromOffsets: source, toOffset: destination)
+        persistMenuOrder()
+    }
+
     @MainActor
     func updateApp(id: String, itemName: String, arguments: [String], environment: [String: String]) {
         if let index = apps.firstIndex(where: { $0.id == id }) {
@@ -132,6 +137,11 @@ class AppState: ObservableObject {
             logger.info("save error: \(error.localizedDescription)")
         }
     }
+
+    @MainActor func moveNewFiles(from source: IndexSet, to destination: Int) {
+        newFiles.move(fromOffsets: source, toOffset: destination)
+        persistMenuOrder()
+    }
     
     func getActionItem(rid: String) -> RCAction? {
         actions.first(where: { rcAtion in
@@ -143,6 +153,11 @@ class AppState: ObservableObject {
     @MainActor func toggleActionItem() {
         try? save()
         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+    }
+
+    @MainActor func moveActions(from source: IndexSet, to destination: Int) {
+        actions.move(fromOffsets: source, toOffset: destination)
+        persistMenuOrder()
     }
 
     @MainActor func resetActionItems() {
@@ -164,13 +179,39 @@ class AppState: ObservableObject {
     }
 
     @MainActor
+    private func persistMenuOrder() {
+        reindexMenuItems()
+        do {
+            try save()
+            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        } catch {
+            logger.info("save error: \(error.localizedDescription)")
+        }
+    }
+
+    @MainActor
+    private func reindexMenuItems() {
+        actions = actions.enumerated().map { index, action in
+            var action = action
+            action.idx = index
+            return action
+        }
+        newFiles = newFiles.enumerated().map { index, newFile in
+            var newFile = newFile
+            newFile.idx = index
+            return newFile
+        }
+    }
+
+    @MainActor
     private func save() throws {
         let context = modelContext
+        reindexMenuItems()
 
         // 保存 Apps
         try context.delete(model: AppEntity.self)
-        for app in apps {
-            context.insert(AppEntity(from: app))
+        for (index, app) in apps.enumerated() {
+            context.insert(AppEntity(from: app, sortOrder: index))
         }
 
         // 保存 Actions
