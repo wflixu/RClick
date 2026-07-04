@@ -212,7 +212,7 @@ jobs:
             --hide-extension "${APP_NAME}.app" \
             --app-drop-link 450 200 \
             "$DMG_NAME" \
-            "$APP_PATH"
+            "./${APP_NAME}.app"
 
           codesign --force --sign "$CERT_NAME" "$DMG_NAME"
 
