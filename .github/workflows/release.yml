@@ -253,7 +253,11 @@ jobs:
           VERSION=${{ steps.version.outputs.version }}
           ZIP_NAME="${APP_NAME}-v${VERSION}.app.zip"
 
-          ditto -c -k --sequesterRsrc "$APP_PATH" "$ZIP_NAME"
+          # cd 到 app 所在目录，用 --keepParent 保留 .app 层级
+          APP_DIR=$(dirname "$APP_PATH")
+          APP_NAME_ONLY=$(basename "$APP_PATH")
+          cd "$APP_DIR"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_NAME_ONLY" "$OLDPWD/$ZIP_NAME"
 
           SHA256=$(shasum -a 256 "$ZIP_NAME" | awk '{print $1}')
           printf '%s  %s\n' "$SHA256" "$ZIP_NAME" > "${ZIP_NAME}.sha256"
