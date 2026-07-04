@@ -47,49 +47,58 @@ struct NewFileSettingsTabView: View {
                     }
                 }
 
-                ForEach($appState.newFiles) { $item in
-                    LabeledContent {
-                        HStack(spacing: 12) {
-                            Button {
-                                editingFile = item
-                            } label: {
-                                Image(systemName: "pencil")
-                            }
-                            .buttonStyle(.borderless)
-                            .help(AppLocalization.localized("Edit File Type"))
-
-                            Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
-                                .toggleStyle(.switch)
-                                .onChange(of: item.enabled) {
-                                    appState.toggleActionItem()
-                                    messager.sendRunningNotification()
+                List {
+                    ForEach($appState.newFiles) { $item in
+                        LabeledContent {
+                            HStack(spacing: 12) {
+                                Button {
+                                    editingFile = item
+                                } label: {
+                                    Image(systemName: "pencil")
                                 }
-                                .labelsHidden()
-                        }
-                    } label: {
-                        HStack(spacing: 8) {
-                            // 图标
-                            if let appUrl = item.openApp {
-                                Image(nsImage: IconCache.shared.icon(for: appUrl))
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 24, height: 24)
-                            } else if let sysIcon = FileTypeIconProvider.shared.icon(for: item.ext, fallbackSymbol: item.icon) {
-                                Image(nsImage: sysIcon)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 20, height: 20)
-                            }
+                                .buttonStyle(.borderless)
+                                .help(AppLocalization.localized("Edit File Type"))
 
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(item.name)
-                                Text(String(format: AppLocalization.localized("Extension: %@"), item.ext))
-                                    .font(.caption)
+                                Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
+                                    .toggleStyle(.switch)
+                                    .onChange(of: item.enabled) {
+                                        appState.toggleActionItem()
+                                        messager.sendRunningNotification()
+                                    }
+                                    .labelsHidden()
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "line.3.horizontal")
                                     .foregroundColor(.secondary)
+                                // 图标
+                                if let appUrl = item.openApp {
+                                    Image(nsImage: IconCache.shared.icon(for: appUrl))
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 24, height: 24)
+                                } else if let sysIcon = FileTypeIconProvider.shared.icon(for: item.ext, fallbackSymbol: item.icon) {
+                                    Image(nsImage: sysIcon)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 20, height: 20)
+                                }
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(item.name)
+                                    Text(String(format: AppLocalization.localized("Extension: %@"), item.ext))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
                             }
                         }
                     }
+                    .onMove { source, destination in
+                        appState.moveNewFiles(from: source, to: destination)
+                        messager.sendRunningNotification()
+                    }
                 }
+                .frame(minHeight: 180)
             }
         }
         .formStyle(.grouped)
