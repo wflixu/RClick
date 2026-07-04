@@ -28,7 +28,7 @@ jobs:
 
       - name: Select Xcode
         run: |
-          XCODE_PATH=$(ls -d /Applications/Xcode*.app | head -n 1)
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
           sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
           xcodebuild -version
 
