@@ -656,6 +656,29 @@
         }
       }
     },
+    "Create Blank File": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blank File..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空白文件..."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空のファイル..."
+          }
+        }
+      }
+    },
     "Not Authorized Folder": {
       "extractionState": "stale",
       "localizations": {
