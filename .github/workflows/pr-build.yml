@@ -1,0 +1,57 @@
+name: PR Build & Test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test (macOS)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app | head -n 1)
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+          swift --version
+
+      - name: Build RClick
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project RClick.xcodeproj \
+            -scheme RClick \
+            -configuration Debug \
+            -destination "generic/platform=macOS" \
+            ARCHS=arm64 \
+            MACOSX_DEPLOYMENT_TARGET=15.6 \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            | tee build.log
+
+      - name: Run Unit Tests
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project RClick.xcodeproj \
+            -scheme RClick \
+            -configuration Debug \
+            -destination "generic/platform=macOS" \
+            -only-testing:RClickTests \
+            ARCHS=arm64 \
+            MACOSX_DEPLOYMENT_TARGET=15.6 \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            2>&1 | tee test-output.log
