@@ -329,10 +329,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 // 折叠：使用子菜单
                 let newFilesTitle = AppLocalization.localized("New File")
                 let newFilesSubMenu = NSMenu(title: newFilesTitle)
-                newFilesSubMenu.addItem(customNewFileMenuItem())
-                if !config.newFiles.isEmpty {
-                    newFilesSubMenu.addItem(.separator())
-                }
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
@@ -347,7 +343,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 menu.addItem(newFilesItem)
             } else {
                 // 不折叠：直接显示菜单项
-                menu.addItem(customNewFileMenuItem())
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
@@ -405,20 +400,8 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         return "newfile_\(newFile.id)".hash
     }
 
-    private func hashForCustomNewFile() -> Int {
-        return "newfile_\(NewFileMenuItem.customFileId)".hash
-    }
-
     private func hashForCommonDir(_ commonDir: CommonDirMenuItem) -> Int {
         return "commondir_\(commonDir.id)".hash
-    }
-
-    private func customNewFileMenuItem() -> NSMenuItem {
-        let item = NSMenuItem(title: AppLocalization.localized("Create Blank File"), action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
-        item.tag = hashForCustomNewFile()
-        item.target = self
-        item.image = templateSymbol("doc.badge.plus")
-        return item
     }
 
     // MARK: - Menu Action Handlers
@@ -473,19 +456,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleNewFileClick(_ sender: NSMenuItem) {
-        let itemId: String
-        if sender.tag == hashForCustomNewFile() {
-            itemId = NewFileMenuItem.customFileId
-            logger.debug("Custom New File clicked")
-        } else {
-            guard let config = cachedMenuConfig,
-                  let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
-                logger.warning("NewFile not found for tag: \(sender.tag)")
-                return
-            }
-            itemId = newFile.id
-            logger.debug("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
+        guard let config = cachedMenuConfig,
+              let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
+            logger.warning("NewFile not found for tag: \(sender.tag)")
+            return
         }
+        let itemId = newFile.id
+        logger.debug("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
 
         let event = ClickEventPayload(
             itemId: itemId,
