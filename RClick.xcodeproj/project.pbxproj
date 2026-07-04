@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 100;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -62,13 +62,6 @@
 			remoteGlobalIDString = 5C8A28D92F83D65900FE687C;
 			remoteInfo = RClick;
 		};
-		5C8A28F42F83D65B00FE687C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C8A28D22F83D65900FE687C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5C8A28D92F83D65900FE687C;
-			remoteInfo = RClick;
-		};
 		5C8A291D2F83D74A00FE687C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5C8A28D22F83D65900FE687C /* Project object */;
@@ -93,7 +86,7 @@
 /* Begin PBXFileReference section */
 		5C8A28DA2F83D65900FE687C /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C8A28E92F83D65B00FE687C /* RClickTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RClickTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RClickUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+
 		5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C969FB12F8A494600D022F8 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		5C969FB22F8A494600D022F8 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -123,13 +116,7 @@
 			);
 			target = 5C8A28E82F83D65B00FE687C /* RClickTests */;
 		};
-		5C96A3882F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Assets.xcassets,
-			);
-			target = 5C8A28F22F83D65B00FE687C /* RClickUITests */;
-		};
+
 		5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -144,7 +131,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				5C96A3872F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickTests" target */,
-				5C96A3882F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickUITests" target */,
 				5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */,
 			);
 			path = RClick;
@@ -155,11 +141,7 @@
 			path = RClickTests;
 			sourceTree = "<group>";
 		};
-		5C8A28F62F83D65B00FE687C /* RClickUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RClickUITests;
-			sourceTree = "<group>";
-		};
+
 		5C8A29192F83D74A00FE687C /* FinderSyncExt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -186,11 +168,6 @@
 			files = (
 			);
 		};
-		5C8A28F02F83D65B00FE687C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-			);
-		};
 		5C8A29152F83D74A00FE687C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
@@ -204,7 +181,6 @@
 			children = (
 				5C8A28DC2F83D65900FE687C /* RClick */,
 				5C8A28EC2F83D65B00FE687C /* RClickTests */,
-				5C8A28F62F83D65B00FE687C /* RClickUITests */,
 				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
 				5C8A29302F83D85000FE687C /* Shared */,
 				5C8A28DB2F83D65900FE687C /* Products */,
@@ -220,7 +196,6 @@
 			children = (
 				5C8A28DA2F83D65900FE687C /* RClick.app */,
 				5C8A28E92F83D65B00FE687C /* RClickTests.xctest */,
-				5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */,
 				5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */,
 			);
 			name = Products;
@@ -296,27 +271,7 @@
 			productReference = 5C8A28E92F83D65B00FE687C /* RClickTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		5C8A28F22F83D65B00FE687C /* RClickUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5C8A29032F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickUITests" */;
-			buildPhases = (
-				5C8A28EF2F83D65B00FE687C /* Sources */,
-				5C8A28F02F83D65B00FE687C /* Frameworks */,
-				5C8A28F12F83D65B00FE687C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				5C8A28F52F83D65B00FE687C /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				5C8A28F62F83D65B00FE687C /* RClickUITests */,
-			);
-			name = RClickUITests;
-			productName = RClickUITests;
-			productReference = 5C8A28F32F83D65B00FE687C /* RClickUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
+
 		5C8A29172F83D74A00FE687C /* FinderSyncExt */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5C8A29242F83D74A00FE687C /* Build configuration list for PBXNativeTarget "FinderSyncExt" */;
@@ -353,10 +308,6 @@
 						CreatedOnToolsVersion = 26.4;
 						TestTargetID = 5C8A28D92F83D65900FE687C;
 					};
-					5C8A28F22F83D65B00FE687C = {
-						CreatedOnToolsVersion = 26.4;
-						TestTargetID = 5C8A28D92F83D65900FE687C;
-					};
 					5C8A29172F83D74A00FE687C = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -373,14 +324,13 @@
 			);
 			mainGroup = 5C8A28D12F83D65900FE687C;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 100;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 5C8A28DB2F83D65900FE687C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5C8A28D92F83D65900FE687C /* RClick */,
 				5C8A28E82F83D65B00FE687C /* RClickTests */,
-				5C8A28F22F83D65B00FE687C /* RClickUITests */,
 				5C8A29172F83D74A00FE687C /* FinderSyncExt */,
 			);
 		};
@@ -419,22 +369,6 @@
 				5C969FE62F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 			);
 		};
-		5C8A28F12F83D65B00FE687C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			files = (
-				5C969FB42F8A494600D022F8 /* README.md in Resources */,
-				5C969FB52F8A494600D022F8 /* CLAUDE.md in Resources */,
-				5C969FB62F8A494600D022F8 /* LICENSE in Resources */,
-				5C969FE72F8A496000D022F8 /* 架构重构设计及计划.md in Resources */,
-				5C969FE82F8A496000D022F8 /* 重构计划.md in Resources */,
-				5C969FE92F8A496000D022F8 /* 重构设计.md in Resources */,
-				5C969FEA2F8A496000D022F8 /* communication-protocol.md in Resources */,
-				5C969FEB2F8A496000D022F8 /* data-models.md in Resources */,
-				5C969FEC2F8A496000D022F8 /* extension-reconnect.md in Resources */,
-				5C969FED2F8A496000D022F8 /* git-branch-strategy.md in Resources */,
-				5C969FEE2F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
-			);
-		};
 		5C8A29162F83D74A00FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
@@ -464,11 +398,6 @@
 			files = (
 			);
 		};
-		5C8A28EF2F83D65B00FE687C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			files = (
-			);
-		};
 		5C8A29142F83D74A00FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
@@ -481,11 +410,6 @@
 			isa = PBXTargetDependency;
 			target = 5C8A28D92F83D65900FE687C /* RClick */;
 			targetProxy = 5C8A28EA2F83D65B00FE687C /* PBXContainerItemProxy */;
-		};
-		5C8A28F52F83D65B00FE687C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5C8A28D92F83D65900FE687C /* RClick */;
-			targetProxy = 5C8A28F42F83D65B00FE687C /* PBXContainerItemProxy */;
 		};
 		5C8A291E2F83D74A00FE687C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -739,46 +663,6 @@
 			};
 			name = Release;
 		};
-		5C8A29042F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClickUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 4L3563XCBN;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.2;
-				TEST_TARGET_NAME = RClick;
-			};
-			name = Debug;
-		};
-		5C8A29052F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClickUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 4L3563XCBN;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClickUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.2;
-				TEST_TARGET_NAME = RClick;
-			};
-			name = Release;
-		};
 		5C8A29212F83D74A00FE687C /* Debug configuration for PBXNativeTarget "FinderSyncExt" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -873,14 +757,6 @@
 			buildConfigurations = (
 				5C8A29012F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClickTests" */,
 				5C8A29022F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClickTests" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		5C8A29032F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5C8A29042F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClickUITests" */,
-				5C8A29052F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClickUITests" */,
 			);
 			defaultConfigurationName = Release;
 		};

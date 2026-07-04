@@ -50,17 +50,6 @@
                ReferencedContainer = "container:RClick.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5C8A28F22F83D65B00FE687C"
-               BuildableName = "RClickUITests.xctest"
-               BlueprintName = "RClickUITests"
-               ReferencedContainer = "container:RClick.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

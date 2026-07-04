@@ -1,0 +1,287 @@
+name: Build, Sign, Notarize and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build, Sign, Notarize & Release
+    runs-on: macos-latest
+    env:
+      APP_NAME: RClick
+      EXTENSION_NAME: FinderSyncExt
+      SCHEME: RClick
+      PROJECT: RClick.xcodeproj
+    steps:
+      # --- 0. 准备工作 ---
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+
+      - name: Get Version from Tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Will release version: $VERSION"
+
+      # --- 1. 导入签名证书 ---
+      - name: Import Developer ID Certificate
+        env:
+          CERTIFICATE_P12: ${{ secrets.MACOS_CERT_P12 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: 'rclick_temp_keychain'
+        run: |
+          set -euo pipefail
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+
+          echo "$CERTIFICATE_P12" | base64 --decode > certificate.p12
+          security import certificate.p12 \
+            -k build.keychain \
+            -P "$CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" build.keychain
+
+          security list-keychains -d user -s build.keychain login.keychain
+
+          CERT_NAME=$(security find-identity -v -s 'Developer ID Application' | head -n 1 | awk -F'"' '{print $2}')
+          echo "CERT_NAME=$CERT_NAME" >> $GITHUB_ENV
+          echo "Using certificate: $CERT_NAME"
+
+      # --- 2. 构建 Release App ---
+      - name: Build Release
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          BUILD_NUMBER="$(date +%Y%m%d%H%M)"
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -derivedDataPath build \
+            -destination "generic/platform=macOS" \
+            ARCHS=arm64 \
+            MACOSX_DEPLOYMENT_TARGET=15.6 \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS="" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            MARKETING_VERSION="$VERSION" \
+            | tee build-release.log
+
+          APP_PATH=$(find build -name "${APP_NAME}.app" -type d -path "*/Products/Release/*" | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: App not found in build output"
+            exit 1
+          fi
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+          echo "Built app at: $APP_PATH"
+
+          echo "Main app architecture:"
+          lipo -info "$APP_PATH/Contents/MacOS/${APP_NAME}" || true
+
+      # --- 3. 分层代码签名 ---
+      - name: Code Sign
+        run: |
+          set -euo pipefail
+
+          echo "Signing with: $CERT_NAME"
+
+          # 1) 签名所有 framework
+          if [ -d "$APP_PATH/Contents/Frameworks" ]; then
+            echo "Signing frameworks..."
+            find "$APP_PATH/Contents/Frameworks" -type f -perm +111 \
+              -exec codesign --force --options runtime \
+                --timestamp \
+                --sign "$CERT_NAME" {} \;
+          fi
+
+          # 2) 签名扩展 (FinderSyncExt.appex)
+          echo "Signing FinderSync extension..."
+          EXT_PATH="$APP_PATH/Contents/PlugIns/${EXTENSION_NAME}.appex"
+          if [ -d "$EXT_PATH" ]; then
+            codesign --force --options runtime \
+              --timestamp \
+              --entitlements "${EXTENSION_NAME}/${EXTENSION_NAME}.entitlements" \
+              --sign "$CERT_NAME" \
+              "$EXT_PATH"
+          fi
+
+          # 3) 签名主 App (使用项目 entitlements)
+          echo "Signing main app..."
+          codesign --force --options runtime \
+            --timestamp \
+            --entitlements "${APP_NAME}/${APP_NAME}.entitlements" \
+            --sign "$CERT_NAME" \
+            "$APP_PATH"
+
+          # 验证签名
+          echo "Verifying signatures..."
+          codesign -dv --verbose=4 "$APP_PATH" 2>&1
+          codesign --verify --verbose "$APP_PATH"
+
+      # --- 4. 打包为 ZIP 用于公证 ---
+      - name: Zip for Notarization
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          ZIP_NAME="${APP_NAME}-v${VERSION}.notarize.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$ZIP_NAME"
+          echo "NOTARIZE_ZIP=$ZIP_NAME" >> $GITHUB_ENV
+
+      # --- 5. 公证 ---
+      - name: Notarize
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+          PRIVATE_KEY: ${{ secrets.NOTARY_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+
+          echo "$PRIVATE_KEY" > "AuthKey_${KEY_ID}.p8"
+
+          RESULT=$(xcrun notarytool submit "$NOTARIZE_ZIP" \
+            --key-id "$KEY_ID" \
+            --issuer "$ISSUER_ID" \
+            --key "AuthKey_${KEY_ID}.p8" \
+            --team-id "$TEAM_ID" \
+            --wait \
+            --output-format json)
+
+          echo "$RESULT" | python3 -m json.tool || echo "$RESULT"
+
+          STATUS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status','unknown'))")
+          if [ "$STATUS" != "Accepted" ]; then
+            echo "Notarization failed: $STATUS"
+            SUBMISSION_ID=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))")
+            if [ -n "$SUBMISSION_ID" ]; then
+              xcrun notarytool log "$SUBMISSION_ID" \
+                --key-id "$KEY_ID" \
+                --issuer "$ISSUER_ID" \
+                --key "AuthKey_${KEY_ID}.p8" \
+                --team-id "$TEAM_ID" 2>&1 || true
+            fi
+            exit 1
+          fi
+
+          echo "Notarization successful"
+
+      # --- 6. 绑定公证票据 ---
+      - name: Staple
+        run: |
+          xcrun stapler staple "$APP_PATH"
+          spctl --assess --type execute --verbose=4 "$APP_PATH"
+
+      # --- 7. 创建 DMG ---
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          DMG_NAME="${APP_NAME}-v${VERSION}.dmg"
+
+          cp -R "$APP_PATH" "./${APP_NAME}.app"
+
+          create-dmg \
+            --volname "${APP_NAME}" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "${APP_NAME}.app" 150 200 \
+            --hide-extension "${APP_NAME}.app" \
+            --app-drop-link 450 200 \
+            "$DMG_NAME" \
+            "./${APP_NAME}.app"
+
+          codesign --force --sign "$CERT_NAME" "$DMG_NAME"
+
+          echo "DMG_NAME=$DMG_NAME" >> $GITHUB_ENV
+
+      # --- 7b. DMG 公证 ---
+      - name: Notarize DMG
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+          PRIVATE_KEY: ${{ secrets.NOTARY_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+
+          echo "$PRIVATE_KEY" > "AuthKey_${KEY_ID}.p8"
+
+          RESULT=$(xcrun notarytool submit "$DMG_NAME" \
+            --key-id "$KEY_ID" \
+            --issuer "$ISSUER_ID" \
+            --key "AuthKey_${KEY_ID}.p8" \
+            --team-id "$TEAM_ID" \
+            --wait \
+            --output-format json)
+
+          echo "$RESULT" | python3 -m json.tool || echo "$RESULT"
+
+          STATUS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status','unknown'))")
+          if [ "$STATUS" != "Accepted" ]; then
+            echo "DMG notarization failed: $STATUS"
+            exit 1
+          fi
+
+          xcrun stapler staple "$DMG_NAME"
+          echo "DMG notarized and stapled"
+
+      # --- 8. 创建 .app.zip（给自动更新器用）---
+      - name: Create App ZIP
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          ZIP_NAME="${APP_NAME}-v${VERSION}.app.zip"
+
+          cp -R "$APP_PATH" "./${APP_NAME}.app"
+          ditto -c -k --sequesterRsrc --keepParent "./${APP_NAME}.app" "$ZIP_NAME"
+
+          SHA256=$(shasum -a 256 "$ZIP_NAME" | awk '{print $1}')
+          printf '%s  %s\n' "$SHA256" "$ZIP_NAME" > "${ZIP_NAME}.sha256"
+
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+          ls -lh "$ZIP_NAME" "${ZIP_NAME}.sha256" "$DMG_NAME"
+
+      # --- 9. 创建 GitHub Release ---
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ env.ZIP_NAME }}
+            ${{ env.ZIP_NAME }}.sha256
+            ${{ env.DMG_NAME }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- 10. 失败时删除 Tag ---
+      - name: Cleanup Tag on Failure
+        if: failure()
+        run: |
+          echo "Build failed, deleting tag: ${{ github.ref_name }}"
+          git push origin --delete "${{ github.ref_name }}" || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
