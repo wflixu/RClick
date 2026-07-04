@@ -207,14 +207,14 @@ class UpdateManager: ObservableObject {
         
         guard let release = await githubChecker.checkForUpdate(currentVersion: currentVersion) else {
             print("not release")
-            updateError = "当前已经是最新版本"
+            updateError = AppLocalization.localized("The current version is already up to date.")
             return
         }
             
         // 检查用户是否忽略了此版本
         if !force && preferences.isVersionIgnored(release.version) {
             print("忽略这个版本")
-            updateError = "已忽略版本 \(release.version)"
+            updateError = String(format: AppLocalization.localized("Version %@ is ignored"), release.version)
             return
         }
             
@@ -226,14 +226,14 @@ class UpdateManager: ObservableObject {
     func downloadAndInstallUpdate() async {
         print("start downloadAndInstallUpdate")
         guard let release = availableUpdate else {
-            updateError = "没有可用的更新"
+            updateError = AppLocalization.localized("No update is available.")
             print("没有可用的更新")
             return
         }
         
         // 查找 .app.zip 附件
         guard let appZipAsset = release.assets.first(where: { $0.name.lowercased().hasSuffix(".app.zip") }) else {
-            updateError = "未找到 .app.zip 格式的应用程序包"
+            updateError = AppLocalization.localized("No .app.zip application package was found.")
             print("没有可用的更新")
             return
         }
@@ -259,7 +259,7 @@ class UpdateManager: ObservableObject {
             showInstallationCompleteAlert()
             
         } catch {
-            updateError = "安装失败: \(error.localizedDescription)"
+            updateError = String(format: AppLocalization.localized("Installation failed: %@"), error.localizedDescription)
         }
         
         isDownloading = false
@@ -338,7 +338,7 @@ class UpdateManager: ObservableObject {
         guard process.terminationStatus == 0 else {
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
             let errorString = String(data: errorData, encoding: .utf8) ?? "未知错误"
-            throw InstallationError.zipExtractionFailed("解压失败: \(errorString)")
+            throw InstallationError.zipExtractionFailed(String(format: AppLocalization.localized("Extraction failed: %@"), errorString))
         }
         
         // 查找解压后的 .app 文件
@@ -346,7 +346,7 @@ class UpdateManager: ObservableObject {
         let contents = try fileManager.contentsOfDirectory(at: extractionDir, includingPropertiesForKeys: nil)
         
         guard let appURL = contents.first(where: { $0.pathExtension == "app" }) else {
-            throw InstallationError.noAppFound("在ZIP文件中未找到.app应用程序")
+            throw InstallationError.noAppFound(AppLocalization.localized("No .app application was found in the ZIP file."))
         }
         
         return appURL
@@ -356,8 +356,8 @@ class UpdateManager: ObservableObject {
     @MainActor
     private func requestApplicationsFolderAccess() async throws {
         let openPanel = NSOpenPanel()
-        openPanel.message = "RClick 需要权限以将更新安装到您的“应用程序”文件夹中。"
-        openPanel.prompt = "授予权限"
+        openPanel.message = AppLocalization.localized("RClick needs permission to install the update into your Applications folder.")
+        openPanel.prompt = AppLocalization.localized("Grant Permission")
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
@@ -366,13 +366,13 @@ class UpdateManager: ObservableObject {
         let response = await openPanel.begin()
         
         guard response == .OK, let selectedURL = openPanel.url else {
-            throw InstallationError.permissionDenied("用户取消了授权。")
+            throw InstallationError.permissionDenied(AppLocalization.localized("The user cancelled authorization."))
         }
 
         // 验证用户是否选择了正确的文件夹
         let applicationsURL = FileManager.default.urls(for: .applicationDirectory, in: .localDomainMask).first!
         guard selectedURL.path == applicationsURL.path else {
-            throw InstallationError.permissionDenied("请选择正确的‘应用程序’文件夹。")
+            throw InstallationError.permissionDenied(AppLocalization.localized("Please select the correct Applications folder."))
         }
     }
     // MARK: - 安装应用到应用程序目录
@@ -400,7 +400,7 @@ class UpdateManager: ObservableObject {
             // 验证应用程序是否有效
             guard Bundle(url: destinationAppURL) != nil else {
 //                try fileManager.removeItem(at: destinationAppURL)
-                throw InstallationError.invalidAppBundle("应用程序包无效或损坏")
+                throw InstallationError.invalidAppBundle(AppLocalization.localized("The application bundle is invalid or damaged."))
             }
         } catch {
             print("❌ 安装失败: \(error)")
@@ -412,10 +412,10 @@ class UpdateManager: ObservableObject {
 
     private func showInstallationCompleteAlert() {
         let alert = NSAlert()
-        alert.messageText = "更新安装完成"
-        alert.informativeText = "应用程序已成功更新。需要重启应用来完成更新过程。"
-        alert.addButton(withTitle: "立即重启")
-        alert.addButton(withTitle: "稍后重启")
+        alert.messageText = AppLocalization.localized("Update Installed")
+        alert.informativeText = AppLocalization.localized("The application has been updated successfully. Restart the app to finish the update.")
+        alert.addButton(withTitle: AppLocalization.localized("Restart Now"))
+        alert.addButton(withTitle: AppLocalization.localized("Restart Later"))
         
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {

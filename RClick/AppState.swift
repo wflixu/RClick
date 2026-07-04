@@ -25,6 +25,7 @@ class AppState: ObservableObject {
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
     @Published var hasFullDiskAccess: Bool = false
+    @Published var locale: Locale
 
     // 折叠开关状态 - 每个分类独立控制
     @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
@@ -36,16 +37,38 @@ class AppState: ObservableObject {
 
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
+    @AppStorage(Key.selectedLanguage, store: .group) private var selectedLanguageRawValue = AppLanguage.automatic.rawValue
 
     // SwiftData ModelContext（lazy 复用单个实例）
     private lazy var modelContext = ModelContext(SharedDataManager.sharedModelContainer)
 
     init(inExt: Bool = false) {
         self.inExt = inExt
+        self.locale = AppLocalization.currentLocale
         Task { @MainActor in
             logger.debug("start load")
             try? load()
             checkFullDiskAccess()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: NSLocale.currentLocaleDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self = self, self.selectedLanguage == .automatic else { return }
+                self.locale = AppLocalization.currentLocale
+            }
+        }
+    }
+
+    var selectedLanguage: AppLanguage {
+        get { AppLanguage(rawValue: selectedLanguageRawValue) ?? .automatic }
+        set {
+            selectedLanguageRawValue = newValue.rawValue
+            locale = Locale(identifier: newValue.localeIdentifier)
+            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
         }
     }
 

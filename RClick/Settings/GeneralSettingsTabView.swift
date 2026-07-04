@@ -35,7 +35,7 @@ struct GeneralSettingsTabView: View {
         Form {
             // MARK: - 第一组：主要控制
             Section {
-                Toggle("启用 RClick", isOn: Binding(
+                Toggle(isOn: Binding(
                     get: { finderSyncStatus == .enabled },
                     set: { newValue in
                         if newValue {
@@ -48,15 +48,33 @@ struct GeneralSettingsTabView: View {
                             openFileProviderSettings()
                         }
                     }
-                ))
+                )) {
+                    Text(appLocalized: "Enable RClick")
+                }
 
-                Toggle("在菜单栏显示图标", isOn: $showMenuBarExtra)
+                Toggle(isOn: $showMenuBarExtra) {
+                    Text(appLocalized: "Show icon in menu bar")
+                }
 
-                Toggle("登录时启动", isOn: $launchAtLogin)
+                Toggle(isOn: $launchAtLogin) {
+                    Text(appLocalized: "Launch at login")
+                }
+
+                Picker(selection: Binding(
+                    get: { store.selectedLanguage },
+                    set: { store.selectedLanguage = $0 }
+                )) {
+                    Text(appLocalized: "Automatic").tag(AppLanguage.automatic)
+                    Text(appLocalized: "Simplified Chinese").tag(AppLanguage.simplifiedChinese)
+                    Text(appLocalized: "English").tag(AppLanguage.english)
+                    Text(appLocalized: "Japanese").tag(AppLanguage.japanese)
+                } label: {
+                    Text(appLocalized: "Language")
+                }
             } header: {
-                Text("主要控制")
+                Text(appLocalized: "Main Controls")
             } footer: {
-                Text("在文件提供程序中启用 RClick 以在右键菜单中显示功能")
+                Text(appLocalized: "Enable RClick in File Provider to show its actions in Finder context menus")
             }
 
             // MARK: - 第二组：权限
@@ -66,45 +84,45 @@ struct GeneralSettingsTabView: View {
                     Text(finderSyncStatus.description)
                         .foregroundColor(.secondary)
                 } label: {
-                    Label("Finder 扩展", systemImage: finderSyncStatus.icon)
+                    Label(AppLocalization.localized("Finder Extension"), systemImage: finderSyncStatus.icon)
                         .foregroundColor(finderSyncStatus.color)
                 }
 
                 // 完全磁盘访问权限
                 LabeledContent {
-                    Button("设置…") {
+                    Button(AppLocalization.localized("Settings…")) {
                         openFullDiskAccessSettings()
                     }
                 } label: {
-                    Label("完全磁盘访问权限", systemImage: fullDiskAccessStatus.icon)
+                    Label(AppLocalization.localized("Full Disk Access"), systemImage: fullDiskAccessStatus.icon)
                         .foregroundColor(fullDiskAccessStatus.color)
                 }
 
                 // 辅助功能权限
                 LabeledContent {
-                    Button("设置…") {
+                    Button(AppLocalization.localized("Settings…")) {
                         openAccessibilitySettings()
                     }
                 } label: {
-                    Label("辅助功能", systemImage: accessibilityStatus.icon)
+                    Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
                         .foregroundColor(accessibilityStatus.color)
                 }
             } header: {
-                Text("权限")
+                Text(appLocalized: "Permissions")
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("文件提供程序：在列表中选择「RClick」以启用 Finder 右键菜单")
+                    Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
                         .foregroundColor(.secondary)
-                    Text("完全磁盘访问权限：用于在受保护目录中创建和删除文件")
+                    Text(appLocalized: "Full Disk Access: Required to create and delete files in protected directories")
                         .foregroundColor(.secondary)
                     if fullDiskAccessStatus != .enabled {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("RClick 需要完全磁盘访问权限才能正常操作受保护目录中的文件")
+                            Text(appLocalized: "RClick needs Full Disk Access to work with files in protected directories")
                                 .fontWeight(.medium)
-                            Text("1. 点击右侧「设置…」按钮打开系统设置")
-                            Text("2. 点击左下角锁图标并认证")
-                            Text("3. 点击「+」→ 前往「应用程序」→ 选择「RClick」")
-                            Text("4. 确保 RClick 旁边的开关已打开")
+                            Text(appLocalized: "1. Click \"Settings…\" on the right to open System Settings")
+                            Text(appLocalized: "2. Click the lock icon and authenticate")
+                            Text(appLocalized: "3. Click \"+\" -> open \"Applications\" -> select \"RClick\"")
+                            Text(appLocalized: "4. Make sure the switch next to RClick is turned on")
                         }
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -117,38 +135,38 @@ struct GeneralSettingsTabView: View {
                 // 备份
                 LabeledContent {
                     HStack(spacing: 12) {
-                        Button("导出…") {
+                        Button(AppLocalization.localized("Export…")) {
                             exportSettings()
                         }
-                        Button("导入…") {
+                        Button(AppLocalization.localized("Import…")) {
                             importSettings()
                         }
                     }
                 } label: {
-                    Text("备份")
+                    Text(appLocalized: "Backup")
                 }
 
                 // 日志
                 LabeledContent {
-                    Button("导出日志…") {
+                    Button(AppLocalization.localized("Export Logs…")) {
                         exportLogs()
                     }
                 } label: {
-                    Text("日志")
+                    Text(appLocalized: "Logs")
                 }
 
                 // 重置所有设置
                 HStack {
                     Spacer()
-                    Button("重置所有设置…") {
+                    Button(AppLocalization.localized("Reset All Settings…")) {
                         resetAllSettings()
                     }
                     .foregroundColor(.red)
                 }
             } header: {
-                Text("设置管理")
+                Text(appLocalized: "Settings Management")
             } footer: {
-                Text("重置所有设置将恢复默认配置，此操作不可逆")
+                Text(appLocalized: "Resetting all settings restores the default configuration and cannot be undone")
             }
         }
         .formStyle(.grouped)
@@ -159,24 +177,24 @@ struct GeneralSettingsTabView: View {
             updatePermissionStatus()
         }
         .alert(
-            Text("无效文件夹"),
+            Text(appLocalized: "Invalid Folder"),
             isPresented: $wrongFold
         ) {
-            Button("确定") {
+            Button(AppLocalization.localized("OK")) {
                 showDirImporter = true
             }
         } message: {
-            Text("所选文件夹是已选文件夹的子目录，请选择其他文件夹。")
+            Text(appLocalized: "The selected folder is a subfolder of an already selected folder. Please choose a different folder.")
         }
         .alert(
-            Text("未授权文件夹"),
+            Text(appLocalized: "Unauthorized Folder"),
             isPresented: $showAlert
         ) {
-            Button("确定") {
+            Button(AppLocalization.localized("OK")) {
                 showDirImporter = true
             }
         } message: {
-            Text("必须授予文件夹访问权限才能使用此功能。")
+            Text(appLocalized: "Folder access permission is required to use this feature.")
         }
     }
 
@@ -256,11 +274,11 @@ struct GeneralSettingsTabView: View {
 
     private func resetAllSettings() {
         let alert = NSAlert()
-        alert.messageText = "重置所有设置？"
-        alert.informativeText = "此操作将删除所有自定义配置，恢复到默认状态。此操作不可逆。"
+        alert.messageText = AppLocalization.localized("Reset All Settings?")
+        alert.informativeText = AppLocalization.localized("This will delete all custom configurations and restore the defaults. This action cannot be undone.")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "重置")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: AppLocalization.localized("Reset"))
+        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
         alert.buttons[0].hasDestructiveAction = true
 
         let response = alert.runModal()
@@ -303,11 +321,11 @@ enum PermissionStatus {
     var description: String {
         switch self {
         case .enabled:
-            return "已授权"
+            return AppLocalization.localized("Authorized")
         case .disabled:
-            return "未授权"
+            return AppLocalization.localized("Not Authorized")
         case .unknown:
-            return "未知"
+            return AppLocalization.localized("Unknown")
         }
     }
 }

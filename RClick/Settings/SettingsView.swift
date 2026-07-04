@@ -38,7 +38,11 @@ struct SettingsView: View {
     private var sidebar: some View {
         List(selection: self.$selectedTab) {
             ForEach(Tabs.allCases, id: \.self) { tab in
-                Label(LocalizedStringKey(tab.rawValue), systemImage: tab.icon)
+                Label {
+                    Text(appLocalized: tab.rawValue)
+                } icon: {
+                    Image(systemName: tab.icon)
+                }
                     .labelStyle(.titleAndIcon)
             }
         }
@@ -102,7 +106,7 @@ struct SettingsView: View {
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             return version
         }
-        return "Unknown"
+        return AppLocalization.localized("Unknown")
     }
 }
 

@@ -42,6 +42,7 @@ struct RClickApp: App {
         SettingsWindow(appState: appState, onAppear: {})
             .defaultAppStorage(.group)
             .environmentObject(updateManager)
+            .environment(\.locale, appState.locale)
             .modelContainer(SharedDataManager.sharedModelContainer)
 
         // showMenuBarExtra 为 true 时显示菜单条
@@ -49,7 +50,9 @@ struct RClickApp: App {
             "RClick", image: "MenuBar", isInserted: $showMenuBarExtra
         ) {
             MenuBarView()
-        }.defaultAppStorage(.group)
+        }
+        .defaultAppStorage(.group)
+        .environment(\.locale, appState.locale)
     }
 }
 
@@ -191,7 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
         let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
-        let commonDirMenuItems = appState.showCommonDirs ? appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.name, icon: $0.icon, url: $0.url.path) } : []
+        let commonDirMenuItems = appState.showCommonDirs ? appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.displayName, icon: $0.icon, url: $0.url.path) } : []
 
         // 更新版本号
         menuVersion += 1
@@ -280,12 +283,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(2))
             let alert = NSAlert()
-            alert.messageText = String(localized: "Enable Full Disk Access")
-            alert.informativeText = String(localized: "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")
+            alert.messageText = AppLocalization.localized("Enable Full Disk Access")
+            alert.informativeText = AppLocalization.localized("RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")
             alert.alertStyle = .informational
-            alert.addButton(withTitle: String(localized: "Open Settings"))
-            alert.addButton(withTitle: String(localized: "Later"))
-            alert.addButton(withTitle: String(localized: "Don't Ask Again"))
+            alert.addButton(withTitle: AppLocalization.localized("Open Settings"))
+            alert.addButton(withTitle: AppLocalization.localized("Later"))
+            alert.addButton(withTitle: AppLocalization.localized("Don't Ask Again"))
 
             let response = alert.runModal()
             switch response {
@@ -377,7 +380,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func getUniqueFilePath(dir: String, ext: String) -> String {
         let fileManager = FileManager.default
         let dirURL = URL(fileURLWithPath: dir.hasSuffix("/") ? String(dir.dropLast()) : dir)
-        let baseFileName = String(localized: "Untitled")
+        let baseFileName = AppLocalization.localized("Untitled")
         var filePath = dirURL.appendingPathComponent("\(baseFileName)\(ext)").path
         var counter = 1
 
@@ -419,10 +422,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if trigger == "ctx-container" {
             let alert = NSAlert()
-            alert.messageText = "警告"
-            alert.informativeText = "无法共享当前文件夹，请选择文件或子文件夹进行共享。"
+            alert.messageText = AppLocalization.localized("Warning")
+            alert.informativeText = AppLocalization.localized("The current folder cannot be shared. Please select files or subfolders instead.")
             alert.alertStyle = .warning
-            alert.addButton(withTitle: "确定")
+            alert.addButton(withTitle: AppLocalization.localized("OK"))
             alert.runModal()
             return
         }
@@ -433,10 +436,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             if Utils.isProtectedFolder(decodedPath) {
                 let alert = NSAlert()
-                alert.messageText = "警告"
-                alert.informativeText = "无法分享系统保护文件夹：\(decodedPath)"
+                alert.messageText = AppLocalization.localized("Warning")
+                alert.informativeText = String(format: AppLocalization.localized("Protected system folders cannot be shared: %@"), decodedPath)
                 alert.alertStyle = .warning
-                alert.addButton(withTitle: "确定")
+                alert.addButton(withTitle: AppLocalization.localized("OK"))
                 alert.runModal()
                 logger.warning("试图分享受保护的系统文件夹，操作已被阻止：\(decodedPath)")
                 continue
@@ -447,10 +450,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if isDir.boolValue {
                     logger.warning("不能通过 AirDrop 分享文件夹：\(decodedPath)")
                     let alert = NSAlert()
-                    alert.messageText = "提示"
-                    alert.informativeText = "不能通过 AirDrop 分享文件夹：\(decodedPath)"
+                    alert.messageText = AppLocalization.localized("Notice")
+                    alert.informativeText = String(format: AppLocalization.localized("Folders cannot be shared via AirDrop: %@"), decodedPath)
                     alert.alertStyle = .informational
-                    alert.addButton(withTitle: "确定")
+                    alert.addButton(withTitle: AppLocalization.localized("OK"))
                     alert.runModal()
                     continue
                 } else {
@@ -570,10 +573,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if trigger == "ctx-container" {
             let alert = NSAlert()
-            alert.messageText = "警告"
-            alert.informativeText = "无法删除当前文件夹，请选择文件或子文件夹进行删除。"
+            alert.messageText = AppLocalization.localized("Warning")
+            alert.informativeText = AppLocalization.localized("The current folder cannot be deleted. Please select files or subfolders instead.")
             alert.alertStyle = .warning
-            alert.addButton(withTitle: "确定")
+            alert.addButton(withTitle: AppLocalization.localized("OK"))
             alert.runModal()
             return
         }
@@ -583,10 +586,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             if Utils.isProtectedFolder(decodedPath) {
                 let alert = NSAlert()
-                alert.messageText = "警告"
-                alert.informativeText = "无法删除系统保护文件夹：\(decodedPath)"
+                alert.messageText = AppLocalization.localized("Warning")
+                alert.informativeText = String(format: AppLocalization.localized("Protected system folders cannot be deleted: %@"), decodedPath)
                 alert.alertStyle = .warning
-                alert.addButton(withTitle: "确定")
+                alert.addButton(withTitle: AppLocalization.localized("OK"))
                 alert.runModal()
                 logger.warning("试图删除受保护的系统文件夹，操作已被阻止：\(decodedPath)")
                 continue

@@ -15,9 +15,10 @@ struct SettingsWindow: Scene {
     let onAppear: () -> Void
 
     var body: some Scene {
-        Window("Settings", id: Constants.settingsWindowID) {
+        Window(AppLocalization.localized("Settings"), id: Constants.settingsWindowID) {
             SettingsView()
                 .environmentObject(appState)
+                .environment(\.locale, appState.locale)
                 .onAppear {
                     onAppear()
                 }

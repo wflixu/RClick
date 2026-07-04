@@ -30,7 +30,7 @@ struct UpdateView: View {
         VStack(spacing: 15) {
             ProgressView()
                 .scaleEffect(1.5)
-            Text("正在检查更新...")
+            Text(appLocalized: "Checking for updates...")
                 .font(.headline)
         }
     }
@@ -42,11 +42,11 @@ struct UpdateView: View {
                 .font(.system(size: 50))
                 .foregroundColor(.blue)
             
-            Text("发现新版本")
+            Text(appLocalized: "New Version Available")
                 .font(.title2)
                 .bold()
             
-            Text("版本 \(release.version)")
+            Text(String(format: AppLocalization.localized("Version %@"), release.version))
                 .font(.title3)
                 .foregroundColor(.secondary)
             
@@ -60,17 +60,17 @@ struct UpdateView: View {
             .cornerRadius(8)
             
             HStack {
-                Button("忽略此版本") {
+                Button(AppLocalization.localized("Ignore This Version")) {
                     updateManager.ignoreCurrentUpdate()
                     updateManager.dismissUpdateSheet()
                 }
                 
-                Button("手动下载") {
+                Button(AppLocalization.localized("Download Manually")) {
                     updateManager.openReleasesPage()
                     updateManager.dismissUpdateSheet()
                 }
                 
-                Button("下载并安装") {
+                Button(AppLocalization.localized("Download and Install")) {
                     Task {
                         await updateManager.downloadAndInstallUpdate()
                     }
@@ -86,14 +86,14 @@ struct UpdateView: View {
                 .font(.system(size: 50))
                 .foregroundColor(.green)
             
-            Text("已是最新版本")
+            Text(appLocalized: "Up to Date")
                 .font(.title2)
                 .bold()
             
-            Text("当前版本已是最新，无需更新。")
+            Text(appLocalized: "The current version is already up to date.")
                 .foregroundColor(.secondary)
             
-            Button("确定") {
+            Button(AppLocalization.localized("OK")) {
                 updateManager.dismissUpdateSheet()
             }
             .buttonStyle(.borderedProminent)
@@ -106,7 +106,7 @@ struct UpdateView: View {
                 .font(.system(size: 50))
                 .foregroundColor(.yellow)
             
-            Text("检查更新失败")
+            Text(appLocalized: "Failed to Check for Updates")
                 .font(.title2)
                 .bold()
             
@@ -114,7 +114,7 @@ struct UpdateView: View {
                 .font(.body)
                 .multilineTextAlignment(.center)
             
-            Button("确定") {
+            Button(AppLocalization.localized("OK")) {
                 updateManager.dismissUpdateSheet()
             }
             .buttonStyle(.bordered)

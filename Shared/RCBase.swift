@@ -164,6 +164,17 @@ struct CommonDir: @MainActor RCBase {
         self.url = url
         self.icon = icon
     }
+
+    var displayName: String {
+        switch id {
+        case "desktop": return AppLocalization.localized("Desktop")
+        case "documents": return AppLocalization.localized("Documents")
+        case "downloads": return AppLocalization.localized("Downloads")
+        case "applications": return AppLocalization.localized("Applications")
+        case "home": return AppLocalization.localized("Home")
+        default: return name
+        }
+    }
 }
 
 struct RCAction: @MainActor RCBase {
@@ -310,11 +321,11 @@ extension RCAction {
     /// 本地化显示名称
     var displayName: String {
         switch id {
-        case "copy-path": return String(localized: "Copy Path")
-        case "delete-direct": return String(localized: "Delete Direct")
-        case "hide": return String(localized: "Hide")
-        case "unhide": return String(localized: "Unhide")
-        case "airdrop": return String(localized: "AirDrop")
+        case "copy-path": return AppLocalization.localized("Copy Path")
+        case "delete-direct": return AppLocalization.localized("Delete Direct")
+        case "hide": return AppLocalization.localized("Hide")
+        case "unhide": return AppLocalization.localized("Unhide")
+        case "airdrop": return AppLocalization.localized("AirDrop")
         default: return name
         }
     }

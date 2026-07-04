@@ -24,11 +24,15 @@ struct CommonDirsSettingTabView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("启用常用文件夹", isOn: $store.showCommonDirs)
+                Toggle(isOn: $store.showCommonDirs) {
+                    Text(appLocalized: "Enable common folders")
+                }
                     .onChange(of: store.showCommonDirs) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
-                Toggle("折叠菜单", isOn: $store.foldCommonDirMenu)
+                Toggle(isOn: $store.foldCommonDirMenu) {
+                    Text(appLocalized: "Collapse menu")
+                }
                     .disabled(!store.showCommonDirs)
                     .onChange(of: store.foldCommonDirMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
@@ -41,7 +45,7 @@ struct CommonDirsSettingTabView: View {
                     Button {
                         showCommonDirImporter = true
                     } label: {
-                        Label("添加文件夹", systemImage: "folder.badge.plus")
+                        Label(AppLocalization.localized("Add Folder"), systemImage: "folder.badge.plus")
                     }
                 }
 
@@ -54,11 +58,11 @@ struct CommonDirsSettingTabView: View {
                         }
                         .buttonStyle(.borderless)
                     } label: {
-                        Label(item.url.lastPathComponent, systemImage: item.icon.isEmpty ? "folder" : item.icon)
+                        Label(item.displayName, systemImage: item.icon.isEmpty ? "folder" : item.icon)
                     }
                 }
             } header: {
-                Text("已添加的文件夹")
+                Text(appLocalized: "Added Folders")
             }
         }
         .formStyle(.grouped)

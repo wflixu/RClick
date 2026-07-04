@@ -29,26 +29,26 @@ struct EditAppSheetView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("编辑应用属性")
+            Text(appLocalized: "Edit App Properties")
                 .font(.headline)
                 .padding(.top, 20)
                 .padding(.bottom, 12)
 
             Form {
                 Section {
-                    TextField("显示名称", text: $itemName)
+                    TextField(AppLocalization.localized("Display Name"), text: $itemName)
                         .textFieldStyle(.roundedBorder)
                 } header: {
-                    Text("显示名称")
+                    Text(appLocalized: "Display Name")
                 }
 
                 Section {
-                    TextField("参数（分号分隔）", text: $arguments)
+                    TextField(AppLocalization.localized("Arguments (semicolon separated)"), text: $arguments)
                         .textFieldStyle(.roundedBorder)
                 } header: {
-                    Text("运行参数")
+                    Text(appLocalized: "Run Arguments")
                 } footer: {
-                    Text("多个参数用分号（;）分隔")
+                    Text(appLocalized: "Separate multiple arguments with semicolons (;)")
                         .foregroundColor(.secondary)
                 }
 
@@ -58,21 +58,21 @@ struct EditAppSheetView: View {
                         .frame(height: 100)
                         .border(Color.gray.opacity(0.2))
                 } header: {
-                    Text("环境变量")
+                    Text(appLocalized: "Environment Variables")
                 } footer: {
-                    Text("格式：KEY=VALUE，每行一个")
+                    Text(appLocalized: "Format: KEY=VALUE, one per line")
                         .foregroundColor(.secondary)
                 }
             }
             .formStyle(.grouped)
 
             HStack {
-                Button("取消") {
+                Button(AppLocalization.localized("Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.escape)
 
-                Button("保存") {
+                Button(AppLocalization.localized("Save")) {
                     saveChanges()
                     dismiss()
                 }
