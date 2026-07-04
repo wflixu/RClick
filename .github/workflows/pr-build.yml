@@ -47,7 +47,7 @@ jobs:
             -project RClick.xcodeproj \
             -scheme RClick \
             -configuration Debug \
-            -destination "generic/platform=macOS" \
+            -destination "platform=macOS" \
             -only-testing:RClickTests \
             ARCHS=arm64 \
             MACOSX_DEPLOYMENT_TARGET=15.6 \
