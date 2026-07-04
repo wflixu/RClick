@@ -324,11 +324,15 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         }
 
         // 构建新建文件菜单
-        if !config.newFiles.isEmpty {
+        do {
             if config.newFilesCollapsed {
                 // 折叠：使用子菜单
                 let newFilesTitle = AppLocalization.localized("New File")
                 let newFilesSubMenu = NSMenu(title: newFilesTitle)
+                newFilesSubMenu.addItem(customNewFileMenuItem())
+                if !config.newFiles.isEmpty {
+                    newFilesSubMenu.addItem(.separator())
+                }
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
@@ -343,6 +347,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 menu.addItem(newFilesItem)
             } else {
                 // 不折叠：直接显示菜单项
+                menu.addItem(customNewFileMenuItem())
                 for newFile in config.newFiles {
                     let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
                     item.tag = hashForNewFile(newFile)
@@ -400,8 +405,20 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         return "newfile_\(newFile.id)".hash
     }
 
+    private func hashForCustomNewFile() -> Int {
+        return "newfile_\(NewFileMenuItem.customFileId)".hash
+    }
+
     private func hashForCommonDir(_ commonDir: CommonDirMenuItem) -> Int {
         return "commondir_\(commonDir.id)".hash
+    }
+
+    private func customNewFileMenuItem() -> NSMenuItem {
+        let item = NSMenuItem(title: AppLocalization.localized("Create Blank File"), action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
+        item.tag = hashForCustomNewFile()
+        item.target = self
+        item.image = templateSymbol("doc.badge.plus")
+        return item
     }
 
     // MARK: - Menu Action Handlers
@@ -456,21 +473,24 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleNewFileClick(_ sender: NSMenuItem) {
-        guard let config = cachedMenuConfig,
-              let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
-            logger.warning("NewFile not found for tag: \(sender.tag)")
-            return
+        let itemId: String
+        if sender.tag == hashForCustomNewFile() {
+            itemId = NewFileMenuItem.customFileId
+            logger.debug("Custom New File clicked")
+        } else {
+            guard let config = cachedMenuConfig,
+                  let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
+                logger.warning("NewFile not found for tag: \(sender.tag)")
+                return
+            }
+            itemId = newFile.id
+            logger.debug("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
         }
 
-        logger.debug("NewFile clicked: \(newFile.name) (id: \(newFile.id))")
-
-        let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
-        let itemPaths = selectedItems.map { $0.path }
-
         let event = ClickEventPayload(
-            itemId: newFile.id,
+            itemId: itemId,
             itemType: .newFile,
-            target: itemPaths,
+            target: newFileTargetPaths(),
             trigger: getTriggerForMenuKind()
         )
         messager.sendClickEvent(event)
@@ -513,6 +533,24 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         default:
             return .contextualItems
         }
+    }
+
+    private func newFileTargetPaths() -> [String] {
+        if currentMenuKind == .contextualMenuForContainer,
+           let targetURL = FIFinderSyncController.default().targetedURL() {
+            return [targetURL.path]
+        }
+
+        let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
+        if !selectedItems.isEmpty {
+            return selectedItems.map { $0.path }
+        }
+
+        if let targetURL = FIFinderSyncController.default().targetedURL() {
+            return [targetURL.path]
+        }
+
+        return []
     }
 }
 

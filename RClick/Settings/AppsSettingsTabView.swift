@@ -39,42 +39,51 @@ struct AppsSettingsTabView: View {
                     }
                 }
 
-                ForEach(appState.apps) { item in
-                    LabeledContent {
-                        HStack(spacing: 8) {
-                            Button {
-                                editingApp = item
-                            } label: {
-                                Image(systemName: "pencil")
-                            }
-                            .buttonStyle(.borderless)
-                            .help(AppLocalization.localized("Edit App"))
+                List {
+                    ForEach(appState.apps) { item in
+                        LabeledContent {
+                            HStack(spacing: 8) {
+                                Button {
+                                    editingApp = item
+                                } label: {
+                                    Image(systemName: "pencil")
+                                }
+                                .buttonStyle(.borderless)
+                                .help(AppLocalization.localized("Edit App"))
 
-                            Button {
-                                deleteApp(item)
-                            } label: {
-                                Image(systemName: "trash")
+                                Button {
+                                    deleteApp(item)
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .buttonStyle(.borderless)
+                                .help(AppLocalization.localized("Delete App"))
                             }
-                            .buttonStyle(.borderless)
-                            .help(AppLocalization.localized("Delete App"))
-                        }
-                    } label: {
-                        HStack(spacing: 8) {
-                            Image(nsImage: IconCache.shared.icon(for: item.url))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 24, height: 24)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(item.name)
-                                if !item.arguments.isEmpty || !item.environment.isEmpty {
-                                    Text(appSummary(item))
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "line.3.horizontal")
+                                    .foregroundColor(.secondary)
+                                Image(nsImage: IconCache.shared.icon(for: item.url))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(item.name)
+                                    if !item.arguments.isEmpty || !item.environment.isEmpty {
+                                        Text(appSummary(item))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
                         }
                     }
+                    .onMove { source, destination in
+                        appState.moveApps(from: source, to: destination)
+                        messager.sendRunningNotification()
+                    }
                 }
+                .frame(minHeight: 180)
             }
         }
         .formStyle(.grouped)

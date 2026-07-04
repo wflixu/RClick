@@ -162,6 +162,29 @@
         }
       }
     },
+    "Create Blank File": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blank File..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空白文件..."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空のファイル..."
+          }
+        }
+      }
+    },
     "Open With": {
       "extractionState": "manual",
       "localizations": {
@@ -175,6 +198,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "用...打开"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このアプリケーションで開く"
           }
         }
       }
