@@ -201,7 +201,10 @@ jobs:
           VERSION=${{ steps.version.outputs.version }}
           DMG_NAME="${APP_NAME}-v${VERSION}.dmg"
 
-          cp -R "$APP_PATH" "./${APP_NAME}.app"
+          DMG_STAGING="dmg-staging"
+          rm -rf "$DMG_STAGING"
+          mkdir -p "$DMG_STAGING"
+          ditto "$APP_PATH" "$DMG_STAGING/${APP_NAME}.app"
 
           create-dmg \
             --volname "${APP_NAME}" \
@@ -212,11 +215,11 @@ jobs:
             --hide-extension "${APP_NAME}.app" \
             --app-drop-link 450 200 \
             "$DMG_NAME" \
-            "./${APP_NAME}.app"
+            "$DMG_STAGING/${APP_NAME}.app"
 
           codesign --force --sign "$CERT_NAME" "$DMG_NAME"
 
-          rm -rf "./${APP_NAME}.app"
+          rm -rf "$DMG_STAGING"
 
           echo "DMG_NAME=$DMG_NAME" >> $GITHUB_ENV
 
@@ -257,11 +260,12 @@ jobs:
           VERSION=${{ steps.version.outputs.version }}
           ZIP_NAME="${APP_NAME}-v${VERSION}.app.zip"
 
-          # 先清理可能残留的临时目录，再复制（防御性，避免嵌套）
-          rm -rf "./${APP_NAME}.app"
-          cp -R "$APP_PATH" "./${APP_NAME}.app"
-          ditto -c -k --sequesterRsrc --keepParent "./${APP_NAME}.app" "$ZIP_NAME"
-          rm -rf "./${APP_NAME}.app"
+          ZIP_STAGING="zip-staging"
+          rm -rf "$ZIP_STAGING"
+          mkdir -p "$ZIP_STAGING"
+          ditto "$APP_PATH" "$ZIP_STAGING/${APP_NAME}.app"
+          ditto -c -k --sequesterRsrc --keepParent "$ZIP_STAGING/${APP_NAME}.app" "$ZIP_NAME"
+          rm -rf "$ZIP_STAGING"
 
           SHA256=$(shasum -a 256 "$ZIP_NAME" | awk '{print $1}')
           printf '%s  %s\n' "$SHA256" "$ZIP_NAME" > "${ZIP_NAME}.sha256"
