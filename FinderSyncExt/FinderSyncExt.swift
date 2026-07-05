@@ -280,6 +280,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 }
                 let actionsItem = NSMenuItem(title: actionsTitle, action: nil, keyEquivalent: "")
                 actionsItem.submenu = actionsSubMenu
+                actionsItem.image = templateSymbol("ellipsis.circle")
                 menu.addItem(actionsItem)
             } else {
                 // 不折叠：直接显示菜单项
@@ -310,6 +311,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 }
                 let appsItem = NSMenuItem(title: appsTitle, action: nil, keyEquivalent: "")
                 appsItem.submenu = appsSubMenu
+                appsItem.image = templateSymbol("square.and.arrow.up.on.square")
                 menu.addItem(appsItem)
             } else {
                 // 不折叠：直接显示菜单项
