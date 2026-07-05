@@ -216,6 +216,8 @@ jobs:
 
           codesign --force --sign "$CERT_NAME" "$DMG_NAME"
 
+          rm -rf "./${APP_NAME}.app"
+
           echo "DMG_NAME=$DMG_NAME" >> $GITHUB_ENV
 
       # --- 7b. DMG 公证 ---
@@ -255,7 +257,8 @@ jobs:
           VERSION=${{ steps.version.outputs.version }}
           ZIP_NAME="${APP_NAME}-v${VERSION}.app.zip"
 
-          # 复制到当前目录再压缩，保留 .app 层级
+          # 先清理可能残留的临时目录，再复制（防御性，避免嵌套）
+          rm -rf "./${APP_NAME}.app"
           cp -R "$APP_PATH" "./${APP_NAME}.app"
           ditto -c -k --sequesterRsrc --keepParent "./${APP_NAME}.app" "$ZIP_NAME"
           rm -rf "./${APP_NAME}.app"
