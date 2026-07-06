@@ -25,12 +25,16 @@ public class PermissionChecker {
 
     /// 需要 FDA 才能访问的检测路径
     /// 每个路径下的文件/子目录只有开启了 FDA 才能被读取
+    ///
+    /// Deliberately NOT ~/Library/Mail, Messages or Safari: those are other
+    /// apps' data containers, and on macOS 15+ merely attempting to read them
+    /// fires the TCC "App Data" consent ("RClick" would like to access data
+    /// from other apps) every time the app launches. The TCC store below is
+    /// gated by Full Disk Access itself (kTCCServiceSystemPolicyAllFiles),
+    /// which macOS denies *silently* — an accurate FDA probe with no prompt.
     private static let protectedTestPaths: [(path: String, description: String)] = [
-        ("/Library/Application Support", "System Application Support"),
-        ("/Library/Logs", "System Logs"),
-        (NSString(string: "~/Library/Mail").expandingTildeInPath, "User Mail"),
-        (NSString(string: "~/Library/Messages").expandingTildeInPath, "User Messages"),
-        (NSString(string: "~/Library/Safari").expandingTildeInPath, "User Safari"),
+        (NSString(string: "~/Library/Application Support/com.apple.TCC").expandingTildeInPath,
+         "User TCC store"),
     ]
 
     /// 检测是否拥有完全磁盘访问权限
@@ -57,13 +61,10 @@ public class PermissionChecker {
             return false
         }
 
-        // 使用 POSIX access() 检测实际文件系统权限
-        let result = url.path.withCString { access($0, R_OK) }
-        if result == 0 {
-            return true
-        }
-
-        // access() 失败时，回退到 FileManager 方式（有些情况下 access 也会返回错误）
+        // No POSIX access() fast path here: the probe directory is owned by
+        // the current user, so access(R_OK) succeeds on POSIX permissions
+        // alone and would report FDA as granted when it is not. TCC is only
+        // enforced on the actual read attempt below.
         do {
             // 不用 .skipsHiddenFiles，避免空目录误判
             let _ = try FileManager.default.contentsOfDirectory(
