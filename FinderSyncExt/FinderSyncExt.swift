@@ -71,25 +71,17 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     // MARK: - Directory Observing
 
-    /// 设置监听目录
+    /// 设置监听目录（全盘监听）
+    ///
+    /// Observing "/" covers every reachable folder — /Users, /Applications,
+    /// /opt, /tmp, external and network volumes (mounted under /Volumes) —
+    /// which is what the original per-path list intended but missed for
+    /// anything on the system volume outside /Users. FileProvider-backed
+    /// locations (iCloud Drive, synced Desktop & Documents) still get no
+    /// FinderSync menus; that is a macOS restriction on all FinderSync
+    /// extensions, not something an observation URL can change.
     private func setupObservingDirectories() {
-        var directories: Set<URL> = []
-
-        // 添加 /Users/ 目录
-        if let usersDir = URL(string: "file:///Users/") {
-            directories.insert(usersDir)
-        }
-
-        // 添加外接磁盘目录
-        let volumns = FileManager.default.mountedVolumeURLs(
-            includingResourceValuesForKeys: nil,
-            options: .skipHiddenVolumes
-        ) ?? []
-
-        for volume in volumns.dropFirst() { // dropFirst 跳过系统盘
-            directories.insert(volume)
-        }
-
+        let directories: Set<URL> = [URL(fileURLWithPath: "/")]
         FIFinderSyncController.default().directoryURLs = directories
         logger.info("Observing directories: \(directories.map { $0.path })")
     }
