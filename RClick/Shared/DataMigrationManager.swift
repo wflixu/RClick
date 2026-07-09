@@ -9,6 +9,264 @@ import Foundation
 import SwiftData
 import OSLog
 
+enum SettingsBackupError: LocalizedError {
+    case unsupportedVersion(Int)
+
+    var errorDescription: String? {
+        switch self {
+        case .unsupportedVersion(let version):
+            return "Unsupported settings backup version: \(version)"
+        }
+    }
+}
+
+struct SettingsBackup: Codable {
+    static let currentVersion = 1
+
+    var version: Int
+    var exportedAt: Date
+    var appVersion: String
+    var apps: [SettingsBackupApp]
+    var actions: [SettingsBackupAction]
+    var newFiles: [SettingsBackupNewFile]
+    var commonDirs: [SettingsBackupCommonDir]
+    var preferences: SettingsBackupPreferences
+
+    @MainActor
+    init(appState: AppState) {
+        self.version = Self.currentVersion
+        self.exportedAt = Date()
+        self.appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        self.apps = appState.apps.map { SettingsBackupApp(from: $0) }
+        self.actions = appState.actions.map { SettingsBackupAction(from: $0) }
+        self.newFiles = appState.newFiles.map { SettingsBackupNewFile(from: $0) }
+        self.commonDirs = appState.cdirs.map { SettingsBackupCommonDir(from: $0) }
+        self.preferences = SettingsBackupPreferences(appState: appState)
+    }
+}
+
+struct SettingsBackupApp: Codable {
+    var id: String
+    var path: String
+    var itemName: String
+    var inheritFromGlobalArguments: Bool
+    var inheritFromGlobalEnvironment: Bool
+    var arguments: [String]
+    var environment: [String: String]
+
+    @MainActor
+    init(from app: OpenWithApp) {
+        self.id = app.id
+        self.path = app.url.path(percentEncoded: false)
+        self.itemName = app.itemName
+        self.inheritFromGlobalArguments = app.inheritFromGlobalArguments
+        self.inheritFromGlobalEnvironment = app.inheritFromGlobalEnvironment
+        self.arguments = app.arguments
+        self.environment = app.environment
+    }
+
+    @MainActor
+    func toModel() -> OpenWithApp {
+        var app = OpenWithApp(id: id, appURL: URL(fileURLWithPath: path))
+        app.itemName = itemName
+        app.inheritFromGlobalArguments = inheritFromGlobalArguments
+        app.inheritFromGlobalEnvironment = inheritFromGlobalEnvironment
+        app.arguments = arguments
+        app.environment = environment
+        return app
+    }
+}
+
+struct SettingsBackupAction: Codable {
+    var id: String
+    var name: String
+    var enabled: Bool
+    var idx: Int
+    var icon: String
+
+    @MainActor
+    init(from action: RCAction) {
+        self.id = action.id
+        self.name = action.name
+        self.enabled = action.enabled
+        self.idx = action.idx
+        self.icon = action.icon
+    }
+
+    @MainActor
+    func toModel() -> RCAction {
+        RCAction(id: id, name: name, enabled: enabled, idx: idx, icon: icon)
+    }
+}
+
+struct SettingsBackupNewFile: Codable {
+    var id: String
+    var ext: String
+    var name: String
+    var enabled: Bool
+    var idx: Int
+    var icon: String
+    var openAppPath: String?
+    var templatePath: String?
+
+    @MainActor
+    init(from newFile: NewFile) {
+        self.id = newFile.id
+        self.ext = newFile.ext
+        self.name = newFile.name
+        self.enabled = newFile.enabled
+        self.idx = newFile.idx
+        self.icon = newFile.icon
+        self.openAppPath = newFile.openApp?.path(percentEncoded: false)
+        self.templatePath = newFile.template?.path(percentEncoded: false)
+    }
+
+    @MainActor
+    func toModel() -> NewFile {
+        var newFile = NewFile(ext: ext, name: name, enabled: enabled, idx: idx, icon: icon, id: id)
+        if let openAppPath, !openAppPath.isEmpty {
+            newFile.openApp = URL(fileURLWithPath: openAppPath)
+        }
+        if let templatePath, !templatePath.isEmpty {
+            newFile.template = URL(fileURLWithPath: templatePath)
+        }
+        return newFile
+    }
+}
+
+struct SettingsBackupCommonDir: Codable {
+    var id: String
+    var name: String
+    var path: String
+    var icon: String
+
+    @MainActor
+    init(from commonDir: CommonDir) {
+        self.id = commonDir.id
+        self.name = commonDir.name
+        self.path = commonDir.url.path(percentEncoded: false)
+        self.icon = commonDir.icon
+    }
+
+    @MainActor
+    func toModel() -> CommonDir {
+        CommonDir(id: id, name: name, url: URL(fileURLWithPath: path), icon: icon)
+    }
+}
+
+struct SettingsBackupPreferences: Codable {
+    var launchAtLogin: Bool
+    var foldAppsMenu: Bool
+    var foldActionsMenu: Bool
+    var foldNewFileMenu: Bool
+    var foldCommonDirMenu: Bool
+    var showCommonDirs: Bool
+    var showCopyToCommonDirs: Bool
+    var showMoveToCommonDirs: Bool
+    var showMenuBarExtra: Bool
+    var showInDock: Bool
+    var showDockIcon: Bool
+    var showContextualMenuForItem: Bool
+    var showContextualMenuForContainer: Bool
+    var showContextualMenuForSidebar: Bool
+    var showToolbarItemMenu: Bool
+    var globalApplicationArgumentsString: String
+    var globalApplicationEnvironmentString: String
+    var copySeparator: String
+    var newFileName: String
+    var newFileExtension: String
+    var showSubMenuForApplication: Bool
+    var showSubMenuForAction: Bool
+    var hasSeenFullDiskAccessGuide: Bool
+    var selectedLanguage: String
+    var ignoredVersionDataBase64: String?
+
+    @MainActor
+    init(appState: AppState) {
+        let group = UserDefaults.group
+        let standard = UserDefaults.standard
+
+        self.launchAtLogin = standard.backupBool(forKey: "launchAtLogin", default: false)
+        self.foldAppsMenu = appState.foldAppsMenu
+        self.foldActionsMenu = appState.foldActionsMenu
+        self.foldNewFileMenu = appState.foldNewFileMenu
+        self.foldCommonDirMenu = appState.foldCommonDirMenu
+        self.showCommonDirs = appState.showCommonDirs
+        self.showCopyToCommonDirs = appState.showCopyToCommonDirs
+        self.showMoveToCommonDirs = appState.showMoveToCommonDirs
+        self.showMenuBarExtra = group.backupBool(forKey: Key.showMenuBarExtra, default: true)
+        self.showInDock = group.backupBool(forKey: Key.showInDock, default: false)
+        self.showDockIcon = group.backupBool(forKey: Key.showDockIcon, default: false)
+        self.showContextualMenuForItem = group.backupBool(forKey: Key.showContextualMenuForItem, default: true)
+        self.showContextualMenuForContainer = group.backupBool(forKey: Key.showContextualMenuForContainer, default: true)
+        self.showContextualMenuForSidebar = group.backupBool(forKey: Key.showContextualMenuForSidebar, default: true)
+        self.showToolbarItemMenu = group.backupBool(forKey: Key.showToolbarItemMenu, default: true)
+        self.globalApplicationArgumentsString = group.backupString(forKey: Key.globalApplicationArgumentsString, default: "")
+        self.globalApplicationEnvironmentString = group.backupString(forKey: Key.globalApplicationEnvironmentString, default: "")
+        self.copySeparator = group.backupString(forKey: Key.copySeparator, default: "")
+        self.newFileName = group.backupString(forKey: Key.newFileName, default: "Untitled")
+        self.newFileExtension = group.backupString(forKey: Key.newFileExtension, default: "")
+        self.showSubMenuForApplication = group.backupBool(forKey: Key.showSubMenuForApplication, default: false)
+        self.showSubMenuForAction = group.backupBool(forKey: Key.showSubMenuForAction, default: false)
+        self.hasSeenFullDiskAccessGuide = group.backupBool(forKey: Key.hasSeenFDAGuide, default: false)
+        self.selectedLanguage = appState.selectedLanguage.rawValue
+
+        if let ignoredVersionData = standard.data(forKey: "ignoredVersion"), !ignoredVersionData.isEmpty {
+            self.ignoredVersionDataBase64 = ignoredVersionData.base64EncodedString()
+        }
+    }
+
+    @MainActor
+    func apply(to appState: AppState) {
+        let group = UserDefaults.group
+        let standard = UserDefaults.standard
+
+        standard.set(launchAtLogin, forKey: "launchAtLogin")
+        LaunchAtLogin.isEnabled = launchAtLogin
+
+        appState.foldAppsMenu = foldAppsMenu
+        appState.foldActionsMenu = foldActionsMenu
+        appState.foldNewFileMenu = foldNewFileMenu
+        appState.foldCommonDirMenu = foldCommonDirMenu
+        appState.showCommonDirs = showCommonDirs
+        appState.showCopyToCommonDirs = showCopyToCommonDirs
+        appState.showMoveToCommonDirs = showMoveToCommonDirs
+        appState.showMenuBar = showMenuBarExtra
+
+        group.set(showMenuBarExtra, forKey: Key.showMenuBarExtra)
+        group.set(showInDock, forKey: Key.showInDock)
+        group.set(showDockIcon, forKey: Key.showDockIcon)
+        group.set(showContextualMenuForItem, forKey: Key.showContextualMenuForItem)
+        group.set(showContextualMenuForContainer, forKey: Key.showContextualMenuForContainer)
+        group.set(showContextualMenuForSidebar, forKey: Key.showContextualMenuForSidebar)
+        group.set(showToolbarItemMenu, forKey: Key.showToolbarItemMenu)
+        group.set(globalApplicationArgumentsString, forKey: Key.globalApplicationArgumentsString)
+        group.set(globalApplicationEnvironmentString, forKey: Key.globalApplicationEnvironmentString)
+        group.set(copySeparator, forKey: Key.copySeparator)
+        group.set(newFileName, forKey: Key.newFileName)
+        group.set(newFileExtension, forKey: Key.newFileExtension)
+        group.set(showSubMenuForApplication, forKey: Key.showSubMenuForApplication)
+        group.set(showSubMenuForAction, forKey: Key.showSubMenuForAction)
+        group.set(hasSeenFullDiskAccessGuide, forKey: Key.hasSeenFDAGuide)
+
+        if let language = AppLanguage(rawValue: selectedLanguage) {
+            appState.selectedLanguage = language
+        } else {
+            group.set(selectedLanguage, forKey: Key.selectedLanguage)
+        }
+
+        if let ignoredVersionDataBase64,
+           let ignoredVersionData = Data(base64Encoded: ignoredVersionDataBase64) {
+            standard.set(ignoredVersionData, forKey: "ignoredVersion")
+        } else {
+            standard.removeObject(forKey: "ignoredVersion")
+        }
+
+        standard.synchronize()
+        group.synchronize()
+    }
+}
+
 /// 数据迁移管理器 - 负责将UserDefaults中的数据迁移到SwiftData
 @MainActor
 class DataMigrationManager {
@@ -162,6 +420,52 @@ class DataMigrationManager {
         logger.info("旧数据已清理")
     }
 
+    func exportSettings(to url: URL, appState: AppState = .shared) throws {
+        var targetURL = url
+        if targetURL.pathExtension.isEmpty {
+            targetURL.appendPathExtension("json")
+        }
+
+        let backup = SettingsBackup(appState: appState)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(backup)
+        try data.write(to: targetURL, options: .atomic)
+        logger.info("Settings exported to: \(targetURL.path)")
+    }
+
+    @discardableResult
+    func importSettings(from url: URL, appState: AppState = .shared) throws -> SettingsBackup {
+        let didStartAccessing = url.startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let backup = try decoder.decode(SettingsBackup.self, from: data)
+
+        guard backup.version <= SettingsBackup.currentVersion else {
+            throw SettingsBackupError.unsupportedVersion(backup.version)
+        }
+
+        try appState.replaceAllSettings(
+            apps: backup.apps.map { $0.toModel() },
+            actions: backup.actions.map { $0.toModel() },
+            newFiles: backup.newFiles.map { $0.toModel() },
+            commonDirs: backup.commonDirs.map { $0.toModel() }
+        )
+        backup.preferences.apply(to: appState)
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        logger.info("Settings imported from: \(url.path)")
+
+        return backup
+    }
+
     /// 备份UserDefaults数据到文件
     func backupUserDefaults() -> URL? {
         let dateFormatter = ISO8601DateFormatter()
@@ -197,5 +501,15 @@ class DataMigrationManager {
             logger.error("备份UserDefaults数据失败: \(error)")
             return nil
         }
+    }
+}
+
+private extension UserDefaults {
+    func backupBool(forKey key: String, default defaultValue: Bool) -> Bool {
+        object(forKey: key) as? Bool ?? defaultValue
+    }
+
+    func backupString(forKey key: String, default defaultValue: String) -> String {
+        object(forKey: key) as? String ?? defaultValue
     }
 }

@@ -358,7 +358,32 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
         // 构建常用目录菜单
         if !config.commonDirs.isEmpty {
-            if config.commonDirsCollapsed {
+            if currentMenuKind == .contextualMenuForItems,
+               !(FIFinderSyncController.default().selectedItemURLs() ?? []).isEmpty {
+                if config.shouldShowCopyToCommonDirs {
+                    addCommonDirTransferMenu(
+                        to: menu,
+                        title: AppLocalization.localized("Copy To"),
+                        icon: "doc.on.doc",
+                        commonDirs: config.commonDirs,
+                        action: #selector(handleCopyToCommonDirClick(_:)),
+                        operation: "copy"
+                    )
+                }
+
+                if config.shouldShowMoveToCommonDirs {
+                    addCommonDirTransferMenu(
+                        to: menu,
+                        title: AppLocalization.localized("Move To"),
+                        icon: "folder",
+                        commonDirs: config.commonDirs,
+                        action: #selector(handleMoveToCommonDirClick(_:)),
+                        operation: "move"
+                    )
+                }
+            }
+
+            if config.shouldShowCommonDirs, config.commonDirsCollapsed {
                 // 折叠：使用子菜单
                 let commonDirsTitle = AppLocalization.localized("Common Dirs")
                 let commonDirsSubMenu = NSMenu(title: commonDirsTitle)
@@ -373,7 +398,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 commonDirsItem.submenu = commonDirsSubMenu
                 commonDirsItem.image = templateSymbol("folder")
                 menu.addItem(commonDirsItem)
-            } else {
+            } else if config.shouldShowCommonDirs {
                 // 不折叠：直接显示菜单项
                 for commonDir in config.commonDirs {
                     let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
@@ -404,6 +429,33 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     private func hashForCommonDir(_ commonDir: CommonDirMenuItem) -> Int {
         return "commondir_\(commonDir.id)".hash
+    }
+
+    private func hashForCommonDirTransfer(_ commonDir: CommonDirMenuItem, operation: String) -> Int {
+        return "\(operation)_commondir_\(commonDir.id)".hash
+    }
+
+    private func addCommonDirTransferMenu(
+        to menu: NSMenu,
+        title: String,
+        icon: String,
+        commonDirs: [CommonDirMenuItem],
+        action: Selector,
+        operation: String
+    ) {
+        let subMenu = NSMenu(title: title)
+        for commonDir in commonDirs {
+            let item = NSMenuItem(title: commonDir.name, action: action, keyEquivalent: "")
+            item.tag = hashForCommonDirTransfer(commonDir, operation: operation)
+            item.target = self
+            item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+            subMenu.addItem(item)
+        }
+
+        let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+        item.submenu = subMenu
+        item.image = templateSymbol(icon)
+        menu.addItem(item)
     }
 
     // MARK: - Menu Action Handlers
@@ -496,6 +548,36 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         messager.sendClickEvent(event)
     }
 
+    @objc private func handleCopyToCommonDirClick(_ sender: NSMenuItem) {
+        handleCommonDirTransferClick(sender, itemType: .copyToCommonDir, operation: "copy")
+    }
+
+    @objc private func handleMoveToCommonDirClick(_ sender: NSMenuItem) {
+        handleCommonDirTransferClick(sender, itemType: .moveToCommonDir, operation: "move")
+    }
+
+    private func handleCommonDirTransferClick(_ sender: NSMenuItem, itemType: MenuItemType, operation: String) {
+        guard let config = cachedMenuConfig,
+              let commonDir = config.commonDirs.first(where: { hashForCommonDirTransfer($0, operation: operation) == sender.tag }) else {
+            logger.warning("CommonDir transfer target not found for tag: \(sender.tag)")
+            return
+        }
+
+        let itemPaths = selectedActionTargetPaths()
+        guard !itemPaths.isEmpty else {
+            logger.warning("No selected items for common dir transfer")
+            return
+        }
+
+        let event = ClickEventPayload(
+            itemId: commonDir.id,
+            itemType: itemType,
+            target: itemPaths,
+            trigger: getTriggerForMenuKind()
+        )
+        messager.sendClickEvent(event)
+    }
+
     // MARK: - Helper Methods
 
     /// 获取触发来源
@@ -526,6 +608,20 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         }
 
         if let targetURL = FIFinderSyncController.default().targetedURL() {
+            return [targetURL.path]
+        }
+
+        return []
+    }
+
+    private func selectedActionTargetPaths() -> [String] {
+        let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
+        if !selectedItems.isEmpty {
+            return selectedItems.map { $0.path }
+        }
+
+        if currentMenuKind == .contextualMenuForContainer,
+           let targetURL = FIFinderSyncController.default().targetedURL() {
             return [targetURL.path]
         }
 

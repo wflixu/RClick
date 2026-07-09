@@ -195,7 +195,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
         let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
-        let commonDirMenuItems = appState.showCommonDirs ? appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.displayName, icon: $0.icon, url: $0.url.path) } : []
+        let commonDirMenuItems = appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.displayName, icon: $0.icon, url: $0.url.path) }
 
         // 更新版本号
         menuVersion += 1
@@ -206,6 +206,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             apps: appMenuItems,
             newFiles: newFileMenuItems,
             commonDirs: commonDirMenuItems,
+            showCommonDirs: appState.showCommonDirs,
+            showCopyToCommonDirs: appState.showCopyToCommonDirs,
+            showMoveToCommonDirs: appState.showMoveToCommonDirs,
             actionsCollapsed: appState.foldActionsMenu,
             appsCollapsed: appState.foldAppsMenu,
             newFilesCollapsed: appState.foldNewFileMenu,
@@ -233,6 +236,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.createFile(rid: event.itemId, target: event.target)
         case .commonDir:
             self.openCommonDirs(target: event.target)
+        case .copyToCommonDir:
+            self.copyItemsToCommonDir(rid: event.itemId, target: event.target)
+        case .moveToCommonDir:
+            self.moveItemsToCommonDir(rid: event.itemId, target: event.target)
         }
     }
 
@@ -441,6 +448,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         switch rcitem.id {
         case "copy-path":
             copyPath(target)
+        case "copy-file-name":
+            copyFileName(target)
+        case "copy-parent-path":
+            copyParentPath(target)
+        case "put-into-new-folder":
+            putItemsIntoNewFolder(target, trigger)
         case "delete-direct":
             deleteFoldorFile(target, trigger)
         case "unhide":
@@ -599,11 +612,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func copyPath(_ target: [String]) {
-        if let dirPath = target.first {
-            let pasteboard = NSPasteboard.general
-            pasteboard.clearContents()
-            pasteboard.setString(dirPath.removingPercentEncoding ?? dirPath, forType: .string)
+        copyStringsToPasteboard(target.map { $0.removingPercentEncoding ?? $0 })
+    }
+
+    func copyFileName(_ target: [String]) {
+        let fileNames = target.map { rawPath in
+            URL(fileURLWithPath: rawPath.removingPercentEncoding ?? rawPath).lastPathComponent
         }
+        copyStringsToPasteboard(fileNames)
+    }
+
+    func copyParentPath(_ target: [String]) {
+        let parentPaths = target.map { rawPath in
+            URL(fileURLWithPath: rawPath.removingPercentEncoding ?? rawPath).deletingLastPathComponent().path
+        }
+        copyStringsToPasteboard(parentPaths)
+    }
+
+    private func copyStringsToPasteboard(_ values: [String]) {
+        let cleanedValues = values.filter { !$0.isEmpty }
+        guard !cleanedValues.isEmpty else { return }
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(cleanedValues.joined(separator: UserDefaults.group.copySeparator), forType: .string)
     }
 
     func deleteFoldorFile(_ target: [String], _ trigger: String) {
@@ -641,6 +673,132 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 logger.error("delete \(target) file run error \(error)")
             }
         }
+    }
+
+    func copyItemsToCommonDir(rid: String, target: [String]) {
+        transferItemsToCommonDir(rid: rid, target: target, operation: .copy)
+    }
+
+    func moveItemsToCommonDir(rid: String, target: [String]) {
+        transferItemsToCommonDir(rid: rid, target: target, operation: .move)
+    }
+
+    private enum FileTransferOperation: Equatable {
+        case copy
+        case move
+    }
+
+    private func transferItemsToCommonDir(rid: String, target: [String], operation: FileTransferOperation) {
+        guard let commonDir = appState.getCommonDirItem(rid: rid) else {
+            logger.warning("Common dir not found for transfer: \(rid)")
+            return
+        }
+
+        let destinationDir = commonDir.url
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: destinationDir.path, isDirectory: &isDirectory), isDirectory.boolValue else {
+            showWarning(message: AppLocalization.localized("Destination folder is not available."))
+            logger.warning("Destination folder is not available: \(destinationDir.path)")
+            return
+        }
+
+        for rawPath in target {
+            let sourceURL = URL(fileURLWithPath: rawPath.removingPercentEncoding ?? rawPath)
+            guard FileManager.default.fileExists(atPath: sourceURL.path) else {
+                logger.warning("Transfer source does not exist: \(sourceURL.path)")
+                continue
+            }
+
+            if operation == .move, Utils.isProtectedFolder(sourceURL.path) {
+                showWarning(message: String(format: AppLocalization.localized("Protected system folders cannot be moved: %@"), sourceURL.path))
+                logger.warning("Skip moving protected path: \(sourceURL.path)")
+                continue
+            }
+
+            do {
+                let destinationURL = uniqueDestinationURL(for: sourceURL.lastPathComponent, in: destinationDir)
+                switch operation {
+                case .copy:
+                    try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+                    logger.info("Copied \(sourceURL.path) to \(destinationURL.path)")
+                case .move:
+                    try FileManager.default.moveItem(at: sourceURL, to: destinationURL)
+                    logger.info("Moved \(sourceURL.path) to \(destinationURL.path)")
+                }
+            } catch {
+                logger.error("Transfer failed for \(sourceURL.path): \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func putItemsIntoNewFolder(_ target: [String], _ trigger: String) {
+        guard trigger != "ctx-container" else {
+            showWarning(message: AppLocalization.localized("Please select files or folders first."))
+            return
+        }
+
+        let itemURLs = target.map { URL(fileURLWithPath: $0.removingPercentEncoding ?? $0) }
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+        guard !itemURLs.isEmpty else { return }
+
+        let parentURL = itemURLs[0].deletingLastPathComponent()
+        guard itemURLs.allSatisfy({ $0.deletingLastPathComponent().standardizedFileURL == parentURL.standardizedFileURL }) else {
+            showWarning(message: AppLocalization.localized("Selected items must be in the same folder."))
+            return
+        }
+
+        do {
+            let folderURL = uniqueDestinationURL(for: AppLocalization.localized("New Folder"), in: parentURL)
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: false)
+
+            for itemURL in itemURLs {
+                if Utils.isProtectedFolder(itemURL.path) {
+                    logger.warning("Skip moving protected path into new folder: \(itemURL.path)")
+                    continue
+                }
+
+                let destinationURL = uniqueDestinationURL(for: itemURL.lastPathComponent, in: folderURL)
+                try FileManager.default.moveItem(at: itemURL, to: destinationURL)
+            }
+
+            revealInFinderAndRename(folderURL)
+        } catch {
+            logger.error("Put into new folder failed: \(error.localizedDescription)")
+        }
+    }
+
+    private func uniqueDestinationURL(for fileName: String, in directory: URL) -> URL {
+        let fileManager = FileManager.default
+        let originalURL = directory.appendingPathComponent(fileName)
+        guard fileManager.fileExists(atPath: originalURL.path) else {
+            return originalURL
+        }
+
+        let sourceURL = URL(fileURLWithPath: fileName)
+        let baseName = sourceURL.deletingPathExtension().lastPathComponent
+        let pathExtension = sourceURL.pathExtension
+        var counter = 1
+
+        while true {
+            let suffix = counter == 1 ? " copy" : " copy \(counter)"
+            let candidateName = pathExtension.isEmpty
+                ? "\(baseName)\(suffix)"
+                : "\(baseName)\(suffix).\(pathExtension)"
+            let candidateURL = directory.appendingPathComponent(candidateName)
+            if !fileManager.fileExists(atPath: candidateURL.path) {
+                return candidateURL
+            }
+            counter += 1
+        }
+    }
+
+    private func showWarning(message: String) {
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("Warning")
+        alert.informativeText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("OK"))
+        alert.runModal()
     }
 
     func createFile(rid: String, target: [String]) {

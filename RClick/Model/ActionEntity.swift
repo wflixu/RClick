@@ -48,10 +48,13 @@ final class ActionEntity {
     static func createDefaultActions() -> [ActionEntity] {
         return [
             ActionEntity(id: "copy-path", name: "复制路径", icon: "doc.on.doc", isEnabled: true, sortOrder: 0),
-            ActionEntity(id: "delete-direct", name: "直接删除", icon: "trash", isEnabled: true, sortOrder: 1),
-            ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", isEnabled: false, sortOrder: 2),
-            ActionEntity(id: "unhide", name: "显示", icon: "eye", isEnabled: false, sortOrder: 3),
-            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", isEnabled: false, sortOrder: 4),
+            ActionEntity(id: "copy-file-name", name: "复制文件名", icon: "doc.text", isEnabled: true, sortOrder: 1),
+            ActionEntity(id: "copy-parent-path", name: "复制父目录路径", icon: "folder", isEnabled: true, sortOrder: 2),
+            ActionEntity(id: "put-into-new-folder", name: "放入新文件夹", icon: "folder.badge.plus", isEnabled: true, sortOrder: 3),
+            ActionEntity(id: "delete-direct", name: "直接删除", icon: "trash", isEnabled: true, sortOrder: 4),
+            ActionEntity(id: "hide", name: "隐藏", icon: "eye.slash", isEnabled: false, sortOrder: 5),
+            ActionEntity(id: "unhide", name: "显示", icon: "eye", isEnabled: false, sortOrder: 6),
+            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", isEnabled: false, sortOrder: 7),
         ]
     }
 }

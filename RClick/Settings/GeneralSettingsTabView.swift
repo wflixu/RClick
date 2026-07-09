@@ -270,26 +270,73 @@ struct GeneralSettingsTabView: View {
 
     private func exportSettings() {
         let savePanel = NSSavePanel()
-        savePanel.allowedContentTypes = [.propertyList]
-        savePanel.nameFieldStringValue = "RClick_Settings.plist"
+        savePanel.allowedContentTypes = [.json]
+        savePanel.nameFieldStringValue = "RClick_Settings.json"
         savePanel.begin { response in
             guard response == .OK, let url = savePanel.url else { return }
-            // TODO: 实现设置导出逻辑
-            logger.info("导出设置到：\(url.path)")
+            do {
+                try DataMigrationManager.shared.exportSettings(to: url, appState: store)
+                logger.info("导出设置到：\(url.path)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Settings Exported"),
+                    message: AppLocalization.localized("Settings exported successfully.")
+                )
+            } catch {
+                logger.error("导出设置失败：\(error.localizedDescription)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Export Failed"),
+                    message: String(format: AppLocalization.localized("Export failed: %@"), error.localizedDescription),
+                    style: .warning
+                )
+            }
         }
     }
 
     private func importSettings() {
         let openPanel = NSOpenPanel()
-        openPanel.allowedContentTypes = [.propertyList]
+        openPanel.allowedContentTypes = [.json]
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
         openPanel.begin { response in
             guard response == .OK, let url = openPanel.url else { return }
-            // TODO: 实现设置导入逻辑
-            logger.info("从以下路径导入设置：\(url.path)")
+            guard confirmSettingsImport() else { return }
+
+            do {
+                try DataMigrationManager.shared.importSettings(from: url, appState: store)
+                logger.info("从以下路径导入设置：\(url.path)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Settings Imported"),
+                    message: AppLocalization.localized("Settings imported successfully. Some changes may require restarting RClick.")
+                )
+            } catch {
+                logger.error("导入设置失败：\(error.localizedDescription)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Import Failed"),
+                    message: String(format: AppLocalization.localized("Import failed: %@"), error.localizedDescription),
+                    style: .warning
+                )
+            }
         }
+    }
+
+    private func confirmSettingsImport() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("Import Settings?")
+        alert.informativeText = AppLocalization.localized("Importing will replace your current RClick settings. This action cannot be undone.")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("Replace Settings"))
+        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+
+    private func showSettingsManagementAlert(title: String, message: String, style: NSAlert.Style = .informational) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = style
+        alert.addButton(withTitle: AppLocalization.localized("OK"))
+        alert.runModal()
     }
 
     private func exportLogs() {

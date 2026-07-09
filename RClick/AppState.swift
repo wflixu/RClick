@@ -34,6 +34,8 @@ class AppState: ObservableObject {
     @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = true
     // 常用文件夹总开关（默认关闭）
     @AppStorage("showCommonDirs") var showCommonDirs: Bool = false
+    @AppStorage("showCopyToCommonDirs") var showCopyToCommonDirs: Bool = true
+    @AppStorage("showMoveToCommonDirs") var showMoveToCommonDirs: Bool = true
 
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
@@ -148,6 +150,12 @@ class AppState: ObservableObject {
             rcAtion.id == rid
         })
     }
+
+    func getCommonDirItem(rid: String) -> CommonDir? {
+        cdirs.first(where: { commonDir in
+            commonDir.id == rid
+        })
+    }
     
     // Action
     @MainActor func toggleActionItem() {
@@ -228,8 +236,8 @@ class AppState: ObservableObject {
 
         // 保存 CommonDirs
         try context.delete(model: CommonDirEntity.self)
-        for commonDir in cdirs {
-            context.insert(CommonDirEntity(from: commonDir))
+        for (index, commonDir) in cdirs.enumerated() {
+            context.insert(CommonDirEntity(from: commonDir, sortOrder: index))
         }
 
         try context.save()
@@ -266,12 +274,21 @@ class AppState: ObservableObject {
         // 加载 NewFiles
         let newFileDescriptor = FetchDescriptor<NewFileTypeEntity>(sortBy: [SortDescriptor(\.sortOrder)])
         newFiles = (try? context.fetch(newFileDescriptor))?.map { entity in
-            NewFile(
+            var newFile = NewFile(
                 ext: entity.fileExtension,
                 name: entity.name,
+                enabled: entity.isEnabled,
                 idx: entity.sortOrder,
-                icon: entity.icon
+                icon: entity.icon,
+                id: entity.id
             )
+            if let templatePath = entity.templatePath, !templatePath.isEmpty {
+                newFile.template = URL(fileURLWithPath: templatePath)
+            }
+            if let openAppPath = entity.openAppPath, !openAppPath.isEmpty {
+                newFile.openApp = URL(fileURLWithPath: openAppPath)
+            }
+            return newFile
         } ?? []
 
         // 加载 CommonDirs
@@ -299,6 +316,42 @@ class AppState: ObservableObject {
             try? context.save()
         }
 
+        appendMissingDefaultActionsIfNeeded()
         logger.debug("Load from SwiftData: \(self.apps.count) apps, \(self.actions.count) actions, \(self.newFiles.count) newFiles, \(self.cdirs.count) commonDirs")
+    }
+
+    @MainActor
+    func replaceAllSettings(
+        apps: [OpenWithApp],
+        actions: [RCAction],
+        newFiles: [NewFile],
+        commonDirs: [CommonDir]
+    ) throws {
+        self.apps = apps
+        self.actions = actions
+        self.newFiles = newFiles
+        self.cdirs = commonDirs
+
+        try save()
+        appendMissingDefaultActionsIfNeeded()
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+    }
+
+    @MainActor
+    private func appendMissingDefaultActionsIfNeeded() {
+        let existingIds = Set(actions.map(\.id))
+        let missingActions = RCAction.all.filter { !existingIds.contains($0.id) }
+        guard !missingActions.isEmpty else { return }
+
+        var nextIndex = (actions.map(\.idx).max() ?? -1) + 1
+        let patchedActions = missingActions.map { action in
+            var action = action
+            action.idx = nextIndex
+            nextIndex += 1
+            return action
+        }
+        actions.append(contentsOf: patchedActions)
+        try? save()
+        logger.debug("Appended missing default actions: \(patchedActions.map(\.id).joined(separator: ","))")
     }
 }

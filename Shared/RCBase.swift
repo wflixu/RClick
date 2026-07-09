@@ -202,12 +202,24 @@ struct RCAction: @MainActor RCBase {
 extension RCAction {
 
     static let copyPath = RCAction(id: "copy-path", name: "Copy Path", enabled: true, idx: 0, icon: "doc.on.doc")
-    static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", enabled: true, idx: 1, icon: "trash")
-    static let hideFileDir = RCAction(id: "hide", name: "Hide", enabled: false, idx: 2, icon: "eye.slash")
-    static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", enabled: false, idx: 3, icon: "eye")
-    static let airdrop = RCAction(id: "airdrop", name: "AirDrop", enabled: false, idx: 4, icon: "paperplane")
+    static let copyFileName = RCAction(id: "copy-file-name", name: "Copy File Name", enabled: true, idx: 1, icon: "doc.text")
+    static let copyParentPath = RCAction(id: "copy-parent-path", name: "Copy Parent Path", enabled: true, idx: 2, icon: "folder")
+    static let putIntoNewFolder = RCAction(id: "put-into-new-folder", name: "Put Into New Folder", enabled: true, idx: 3, icon: "folder.badge.plus")
+    static let deleteDirect = RCAction(id: "delete-direct", name: "Delete Direct", enabled: true, idx: 4, icon: "trash")
+    static let hideFileDir = RCAction(id: "hide", name: "Hide", enabled: false, idx: 5, icon: "eye.slash")
+    static let unhideFileDir = RCAction(id: "unhide", name: "Unhide", enabled: false, idx: 6, icon: "eye")
+    static let airdrop = RCAction(id: "airdrop", name: "AirDrop", enabled: false, idx: 7, icon: "paperplane")
 
-    static let all: [RCAction] = [.copyPath, .deleteDirect, .airdrop, .hideFileDir, .unhideFileDir]
+    static let all: [RCAction] = [
+        .copyPath,
+        .copyFileName,
+        .copyParentPath,
+        .putIntoNewFolder,
+        .deleteDirect,
+        .airdrop,
+        .hideFileDir,
+        .unhideFileDir
+    ]
 }
 
 // New File Type
@@ -324,6 +336,9 @@ extension RCAction {
     var displayName: String {
         switch id {
         case "copy-path": return AppLocalization.localized("Copy Path")
+        case "copy-file-name": return AppLocalization.localized("Copy File Name")
+        case "copy-parent-path": return AppLocalization.localized("Copy Parent Path")
+        case "put-into-new-folder": return AppLocalization.localized("Put Into New Folder")
         case "delete-direct": return AppLocalization.localized("Delete Direct")
         case "hide": return AppLocalization.localized("Hide")
         case "unhide": return AppLocalization.localized("Unhide")
