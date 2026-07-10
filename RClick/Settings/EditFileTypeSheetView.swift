@@ -25,6 +25,7 @@ struct EditFileTypeSheetView: View {
 
     @State private var showSelectApp = false
     @State private var showSelectTemplate = false
+    @State private var saveErrorMessage: String?
 
     let messager = Messager.shared
 
@@ -186,8 +187,16 @@ struct EditFileTypeSheetView: View {
                 .keyboardShortcut(.escape)
 
                 Button(AppLocalization.localized(isAdding ? "Add" : "Save")) {
-                    saveChanges()
-                    dismiss()
+                    do {
+                        try saveChanges()
+                        dismiss()
+                    } catch {
+                        if error is TemplateStorageError {
+                            saveErrorMessage = AppLocalization.localized("The template storage folder is unavailable.")
+                        } else {
+                            saveErrorMessage = error.localizedDescription
+                        }
+                    }
                 }
                 .keyboardShortcut(.return)
                 .disabled(name.isEmpty || ext.isEmpty)
@@ -195,9 +204,22 @@ struct EditFileTypeSheetView: View {
             .padding(.bottom, 20)
         }
         .frame(width: 440, height: 580)
+        .alert(
+            Text(appLocalized: "Unable to Save File Type"),
+            isPresented: Binding(
+                get: { saveErrorMessage != nil },
+                set: { if !$0 { saveErrorMessage = nil } }
+            )
+        ) {
+            Button(AppLocalization.localized("OK")) {
+                saveErrorMessage = nil
+            }
+        } message: {
+            Text(saveErrorMessage ?? "")
+        }
     }
 
-    private func saveChanges() {
+    private func saveChanges() throws {
         if isAdding {
             var newFile = NewFile(
                 ext: ext,
@@ -208,14 +230,7 @@ struct EditFileTypeSheetView: View {
             if let app = openApp {
                 newFile.openApp = app
             }
-            if let templateUrl = template {
-                if let templateDir = templatesDir {
-                    try? FileManager.default.createDirectory(at: templateDir, withIntermediateDirectories: true)
-                    let destUrl = templateDir.appendingPathComponent(templateUrl.lastPathComponent)
-                    try? FileManager.default.copyItem(at: templateUrl, to: destUrl)
-                    newFile.template = destUrl
-                }
-            }
+            newFile.template = try storedTemplate(from: template, id: newFile.id, replacing: nil)
             appState.addNewFile(newFile)
         } else {
             if let index = appState.newFiles.firstIndex(where: { $0.id == file.id }) {
@@ -224,20 +239,59 @@ struct EditFileTypeSheetView: View {
                 updatedFile.ext = ext
                 updatedFile.icon = icon
                 updatedFile.openApp = openApp
-                if let templateUrl = template {
-                    if let templateDir = templatesDir {
-                        try? FileManager.default.createDirectory(at: templateDir, withIntermediateDirectories: true)
-                        let destUrl = templateDir.appendingPathComponent(templateUrl.lastPathComponent)
-                        try? FileManager.default.copyItem(at: templateUrl, to: destUrl)
-                        updatedFile.template = destUrl
-                    }
-                }
+                updatedFile.template = try storedTemplate(from: template, id: file.id, replacing: file.template)
                 appState.newFiles[index] = updatedFile
             }
         }
-        Task { @MainActor in
-            appState.sync()
-        }
+        appState.sync()
         messager.sendRunningNotification()
     }
+
+    private func storedTemplate(from sourceURL: URL?, id: String, replacing previousURL: URL?) throws -> URL? {
+        guard let templatesDir else {
+            throw TemplateStorageError.applicationSupportUnavailable
+        }
+        guard let sourceURL else {
+            try removeManagedTemplate(at: previousURL, templatesDir: templatesDir)
+            return nil
+        }
+
+        try FileManager.default.createDirectory(at: templatesDir, withIntermediateDirectories: true)
+        let fileName = sourceURL.pathExtension.isEmpty ? id : "\(id).\(sourceURL.pathExtension)"
+        let destinationURL = templatesDir.appendingPathComponent(fileName)
+        guard sourceURL.standardizedFileURL != destinationURL.standardizedFileURL else {
+            return destinationURL
+        }
+
+        let didStartAccessing = sourceURL.startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                sourceURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        let stagingURL = templatesDir.appendingPathComponent(".\(UUID().uuidString).tmp")
+        defer { try? FileManager.default.removeItem(at: stagingURL) }
+        try FileManager.default.copyItem(at: sourceURL, to: stagingURL)
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+        try FileManager.default.moveItem(at: stagingURL, to: destinationURL)
+
+        if previousURL?.standardizedFileURL != destinationURL.standardizedFileURL {
+            try removeManagedTemplate(at: previousURL, templatesDir: templatesDir)
+        }
+        return destinationURL
+    }
+
+    private func removeManagedTemplate(at url: URL?, templatesDir: URL) throws {
+        guard let url,
+              url.deletingLastPathComponent().standardizedFileURL == templatesDir.standardizedFileURL,
+              FileManager.default.fileExists(atPath: url.path) else { return }
+        try FileManager.default.removeItem(at: url)
+    }
+}
+
+private enum TemplateStorageError: Error {
+    case applicationSupportUnavailable
 }

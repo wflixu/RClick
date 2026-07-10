@@ -25,12 +25,18 @@ public class MessageSecurity {
     // 共享密钥 - 应存储在 Keychain 中，这里使用常量简化实现
     private static let sharedKey = "RClick_IPC_SharedKey_2026_v1"
 
+    private static func encode<T: Codable>(_ payload: T) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        return try encoder.encode(payload)
+    }
+
     /// 为消息载荷添加 HMAC 签名
     /// - Parameter payload: 需要签名的消息载荷
     /// - Returns: 带签名的消息结构
     /// - Throws: 如果编码失败则抛出错误
     public static func sign<T: Codable>(_ payload: T) throws -> SignedPayload<T> {
-        let data = try JSONEncoder().encode(payload)
+        let data = try encode(payload)
         let key = SymmetricKey(data: sharedKey.data(using: .utf8)!)
         let hmac = HMAC<SHA256>.authenticationCode(for: data, using: key)
 
@@ -50,9 +56,10 @@ public class MessageSecurity {
             return false
         }
 
-        // 从保存的 jsonData 恢复原始数据
-        guard let payloadData = Data(base64Encoded: signed.jsonData) else {
-            logger.error("Failed to decode jsonData from base64")
+        guard let storedPayloadData = Data(base64Encoded: signed.jsonData),
+              let payloadData = try? encode(signed.payload),
+              storedPayloadData == payloadData else {
+            logger.error("Signed payload does not match its authenticated data")
             return false
         }
 

@@ -46,12 +46,13 @@ final class CommonDirEntity {
     }
 
     /// 从 CommonDir 转换
-    convenience init(from commonDir: CommonDir) {
+    convenience init(from commonDir: CommonDir, sortOrder: Int = 0) {
         self.init(
             id: commonDir.id,
             name: commonDir.name,
             path: commonDir.url,
-            icon: commonDir.icon
+            icon: commonDir.icon,
+            sortOrder: sortOrder
         )
     }
 

@@ -49,6 +49,12 @@ struct MenuConfigPayload: Codable {
     let newFiles: [NewFileMenuItem]
     /// 常用目录菜单项列表
     let commonDirs: [CommonDirMenuItem]
+    /// 是否显示常用目录打开菜单（nil 表示旧版协议：有常用目录就显示）
+    let showCommonDirs: Bool?
+    /// 是否显示复制到常用目录菜单（nil 表示旧版协议：有常用目录就显示）
+    let showCopyToCommonDirs: Bool?
+    /// 是否显示移动到常用目录菜单（nil 表示旧版协议：有常用目录就显示）
+    let showMoveToCommonDirs: Bool?
     /// 是否折叠动作菜单（默认 false）
     let actionsCollapsed: Bool
     /// 是否折叠应用菜单（默认 false）
@@ -64,6 +70,9 @@ struct MenuConfigPayload: Codable {
         apps: [AppMenuItem] = [],
         newFiles: [NewFileMenuItem] = [],
         commonDirs: [CommonDirMenuItem] = [],
+        showCommonDirs: Bool? = nil,
+        showCopyToCommonDirs: Bool? = nil,
+        showMoveToCommonDirs: Bool? = nil,
         actionsCollapsed: Bool = false,
         appsCollapsed: Bool = false,
         newFilesCollapsed: Bool = true,
@@ -74,10 +83,25 @@ struct MenuConfigPayload: Codable {
         self.apps = apps
         self.newFiles = newFiles
         self.commonDirs = commonDirs
+        self.showCommonDirs = showCommonDirs
+        self.showCopyToCommonDirs = showCopyToCommonDirs
+        self.showMoveToCommonDirs = showMoveToCommonDirs
         self.actionsCollapsed = actionsCollapsed
         self.appsCollapsed = appsCollapsed
         self.newFilesCollapsed = newFilesCollapsed
         self.commonDirsCollapsed = commonDirsCollapsed
+    }
+
+    var shouldShowCommonDirs: Bool {
+        showCommonDirs ?? !commonDirs.isEmpty
+    }
+
+    var shouldShowCopyToCommonDirs: Bool {
+        showCopyToCommonDirs ?? !commonDirs.isEmpty
+    }
+
+    var shouldShowMoveToCommonDirs: Bool {
+        showMoveToCommonDirs ?? !commonDirs.isEmpty
     }
 }
 
@@ -123,6 +147,8 @@ enum MenuItemType: String, Codable {
     case app = "app"  // 应用菜单
     case newFile = "new-file"  // 新建文件
     case commonDir = "common-dir"  // 常用目录
+    case copyToCommonDir = "copy-to-common-dir"  // 复制到常用目录
+    case moveToCommonDir = "move-to-common-dir"  // 移动到常用目录
 }
 
 /// 触发来源

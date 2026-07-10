@@ -25,13 +25,9 @@ public enum LaunchAtLogin {
             observable.objectWillChange.send()
 
             do {
-                if newValue {
-                    if SMAppService.mainApp.status == .enabled {
-                        try? SMAppService.mainApp.unregister()
-                    }
-
+                if newValue, SMAppService.mainApp.status != .enabled {
                     try SMAppService.mainApp.register()
-                } else {
+                } else if !newValue, SMAppService.mainApp.status == .enabled {
                     try SMAppService.mainApp.unregister()
                 }
             } catch {
@@ -139,4 +135,3 @@ extension LaunchAtLogin.Toggle<Text> {
         self.init("Launch at login")
     }
 }
-

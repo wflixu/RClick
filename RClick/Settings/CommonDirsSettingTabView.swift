@@ -25,18 +25,41 @@ struct CommonDirsSettingTabView: View {
         Form {
             Section {
                 Toggle(isOn: $store.showCommonDirs) {
-                    Text(appLocalized: "Enable common folders")
+                    Text(appLocalized: "Show Open Folder menu")
                 }
                     .onChange(of: store.showCommonDirs) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
                 Toggle(isOn: $store.foldCommonDirMenu) {
-                    Text(appLocalized: "Collapse menu")
+                    Text(appLocalized: "Collapse Open Folder menu")
                 }
                     .disabled(!store.showCommonDirs)
                     .onChange(of: store.foldCommonDirMenu) {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
+            } header: {
+                Text(appLocalized: "Open Folder Menu")
+            } footer: {
+                Text(appLocalized: "Shows saved folders as shortcuts that open those folders from the Finder context menu.")
+            }
+
+            Section {
+                Toggle(isOn: $store.showCopyToCommonDirs) {
+                    Text(appLocalized: "Show Copy To menu")
+                }
+                    .onChange(of: store.showCopyToCommonDirs) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
+                Toggle(isOn: $store.showMoveToCommonDirs) {
+                    Text(appLocalized: "Show Move To menu")
+                }
+                    .onChange(of: store.showMoveToCommonDirs) {
+                        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                    }
+            } header: {
+                Text(appLocalized: "Copy and Move Menus")
+            } footer: {
+                Text(appLocalized: "These menus use the saved folders below as destinations and only appear when Finder items are selected.")
             }
 
             Section {

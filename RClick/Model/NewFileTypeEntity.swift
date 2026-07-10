@@ -50,7 +50,9 @@ final class NewFileTypeEntity {
             name: newFile.name,
             icon: newFile.icon,
             isEnabled: newFile.enabled,
-            sortOrder: newFile.idx
+            sortOrder: newFile.idx,
+            templatePath: newFile.template?.path(percentEncoded: false),
+            openAppPath: newFile.openApp?.path(percentEncoded: false)
         )
     }
 
