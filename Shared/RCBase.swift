@@ -314,6 +314,22 @@ struct NewFileMenuItem: Codable {
     }
 }
 
+extension NewFileMenuItem {
+    @MainActor
+    static func configuredItems(from newFiles: [NewFile]) -> [NewFileMenuItem] {
+        let blankFile = NewFileMenuItem(
+            id: customFileId,
+            name: AppLocalization.localized("Create Blank File"),
+            ext: "",
+            icon: "doc.badge.plus"
+        )
+        let enabledFileTypes = newFiles.filter(\.enabled).map {
+            NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon)
+        }
+        return [blankFile] + enabledFileTypes
+    }
+}
+
 /// Menu item for common directories
 struct CommonDirMenuItem: Codable {
     let id: String

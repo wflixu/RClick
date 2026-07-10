@@ -318,8 +318,10 @@ class UpdateManager: ObservableObject {
     private func extractAppZip(zipURL: URL) async throws -> URL {
         let tempDir = FileManager.default.temporaryDirectory
         let extractionDir = tempDir.appendingPathComponent("app_extraction")
-        
-        // 创建解压目录
+
+        if FileManager.default.fileExists(atPath: extractionDir.path) {
+            try FileManager.default.removeItem(at: extractionDir)
+        }
         try FileManager.default.createDirectory(at: extractionDir, withIntermediateDirectories: true)
         
         // 使用系统命令解压
@@ -403,9 +405,8 @@ class UpdateManager: ObservableObject {
                 throw InstallationError.invalidAppBundle(AppLocalization.localized("The application bundle is invalid or damaged."))
             }
         } catch {
-            print("❌ 安装失败: \(error)")
+            throw error
         }
-        
     }
 
     // MARK: - 显示安装完成提示

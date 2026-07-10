@@ -186,7 +186,7 @@ struct SettingsBackupPreferences: Codable {
         let group = UserDefaults.group
         let standard = UserDefaults.standard
 
-        self.launchAtLogin = standard.backupBool(forKey: "launchAtLogin", default: false)
+        self.launchAtLogin = LaunchAtLogin.isEnabled
         self.foldAppsMenu = appState.foldAppsMenu
         self.foldActionsMenu = appState.foldActionsMenu
         self.foldNewFileMenu = appState.foldNewFileMenu
@@ -464,6 +464,66 @@ class DataMigrationManager {
         logger.info("Settings imported from: \(url.path)")
 
         return backup
+    }
+
+    func resetSettings(appState: AppState = .shared) throws {
+        let defaultCommonDirs = CommonDirEntity.createDefaultCommonDirs().map {
+            CommonDir(id: $0.id, name: $0.name, url: $0.path, icon: $0.icon)
+        }
+        try appState.replaceAllSettings(
+            apps: OpenWithApp.defaultApps,
+            actions: RCAction.all,
+            newFiles: NewFile.all,
+            commonDirs: defaultCommonDirs
+        )
+
+        appState.foldAppsMenu = false
+        appState.foldActionsMenu = false
+        appState.foldNewFileMenu = true
+        appState.foldCommonDirMenu = true
+        appState.showCommonDirs = false
+        appState.showCopyToCommonDirs = true
+        appState.showMoveToCommonDirs = true
+        appState.showMenuBar = true
+        appState.selectedLanguage = .automatic
+
+        let standard = UserDefaults.standard
+        standard.removeObject(forKey: "launchAtLogin")
+        standard.removeObject(forKey: "ignoredVersion")
+        LaunchAtLogin.isEnabled = false
+
+        let group = UserDefaults.group
+        let keysToRemove = [
+            Key.showContextualMenuForItem,
+            Key.showContextualMenuForContainer,
+            Key.showContextualMenuForSidebar,
+            Key.showToolbarItemMenu,
+            Key.showDockIcon,
+            Key.globalApplicationArgumentsString,
+            Key.globalApplicationEnvironmentString,
+            Key.copySeparator,
+            Key.newFileName,
+            Key.newFileExtension,
+            Key.showSubMenuForApplication,
+            Key.showSubMenuForAction,
+            Key.showInDock,
+            Key.hasSeenFDAGuide,
+            Key.actionMenuItems,
+            Key.appMenuItems,
+        ]
+        keysToRemove.forEach { group.removeObject(forKey: $0) }
+        group.set(true, forKey: Key.showMenuBarExtra)
+
+        if let applicationSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            let templatesURL = applicationSupport.appendingPathComponent("RClick/Templates")
+            if FileManager.default.fileExists(atPath: templatesURL.path) {
+                try FileManager.default.removeItem(at: templatesURL)
+            }
+        }
+
+        standard.synchronize()
+        group.synchronize()
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
     }
 
     /// 备份UserDefaults数据到文件

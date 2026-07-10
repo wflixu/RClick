@@ -17,7 +17,6 @@ struct GeneralSettingsTabView: View {
     @AppLog(category: "settings-general")
     private var logger
 
-    @AppStorage("launchAtLogin") private var launchAtLogin = false
     @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
     @EnvironmentObject var store: AppState
 
@@ -57,7 +56,7 @@ struct GeneralSettingsTabView: View {
                     Text(appLocalized: "Show icon in menu bar")
                 }
 
-                Toggle(isOn: $launchAtLogin) {
+                LaunchAtLogin.Toggle {
                     Text(appLocalized: "Launch at login")
                 }
 
@@ -345,8 +344,21 @@ struct GeneralSettingsTabView: View {
         savePanel.nameFieldStringValue = "RClick_Log.txt"
         savePanel.begin { response in
             guard response == .OK, let url = savePanel.url else { return }
-            // TODO: 实现日志导出逻辑
-            logger.info("导出日志到：\(url.path)")
+            do {
+                try AppLogExporter.exportCurrentProcess(to: url)
+                logger.info("导出日志到：\(url.path)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Logs Exported"),
+                    message: AppLocalization.localized("Logs exported successfully.")
+                )
+            } catch {
+                logger.error("导出日志失败：\(error.localizedDescription)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Log Export Failed"),
+                    message: String(format: AppLocalization.localized("Log export failed: %@"), error.localizedDescription),
+                    style: .warning
+                )
+            }
         }
     }
 
@@ -361,8 +373,22 @@ struct GeneralSettingsTabView: View {
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
-            // TODO: 实现重置逻辑
-            logger.info("重置所有设置")
+            do {
+                try DataMigrationManager.shared.resetSettings(appState: store)
+                showMenuBarExtra = true
+                logger.info("重置所有设置")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Settings Reset"),
+                    message: AppLocalization.localized("All settings were restored to their defaults.")
+                )
+            } catch {
+                logger.error("重置设置失败：\(error.localizedDescription)")
+                showSettingsManagementAlert(
+                    title: AppLocalization.localized("Reset Failed"),
+                    message: String(format: AppLocalization.localized("Reset failed: %@"), error.localizedDescription),
+                    style: .warning
+                )
+            }
         }
     }
 }

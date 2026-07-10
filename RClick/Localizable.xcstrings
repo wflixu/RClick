@@ -3904,6 +3904,86 @@
         }
       }
     },
+    "All settings were restored to their defaults.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "All settings were restored to their defaults." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "すべての設定を初期値に戻しました。" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "所有设置已恢复为默认值。" } }
+      }
+    },
+    "Log Export Failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Log Export Failed" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ログの書き出しに失敗しました" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "日志导出失败" } }
+      }
+    },
+    "Log export failed: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Log export failed: %@" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ログの書き出しに失敗しました: %@" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "日志导出失败：%@" } }
+      }
+    },
+    "Logs Exported": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Logs Exported" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ログを書き出しました" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "日志已导出" } }
+      }
+    },
+    "Logs exported successfully.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Logs exported successfully." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ログを書き出しました。" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "日志已成功导出。" } }
+      }
+    },
+    "Reset Failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Reset Failed" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "リセットに失敗しました" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "重置失败" } }
+      }
+    },
+    "Reset failed: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Reset failed: %@" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "リセットに失敗しました: %@" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "重置失败：%@" } }
+      }
+    },
+    "Settings Reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Settings Reset" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "設定をリセットしました" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "设置已重置" } }
+      }
+    },
+    "The template storage folder is unavailable.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The template storage folder is unavailable." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "テンプレート保存フォルダを利用できません。" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "模板存储文件夹不可用。" } }
+      }
+    },
+    "Unable to Save File Type": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Unable to Save File Type" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ファイル種類を保存できません" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "无法保存文件类型" } }
+      }
+    },
     "Warning": {
       "extractionState": "manual",
       "localizations": {
