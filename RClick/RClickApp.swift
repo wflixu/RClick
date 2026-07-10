@@ -194,7 +194,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Build menu config from AppState
         let actionMenuItems = appState.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = appState.apps.map { $0.toAppMenuItem() }
-        let newFileMenuItems = appState.newFiles.map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
+        let blankFileMenuItem = NewFileMenuItem(
+            id: NewFileMenuItem.customFileId,
+            name: AppLocalization.localized("Create Blank File"),
+            ext: "",
+            icon: "doc.badge.plus"
+        )
+        let configuredNewFileMenuItems = appState.newFiles.map {
+            NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon)
+        }
+        let newFileMenuItems = [blankFileMenuItem] + configuredNewFileMenuItems
         let commonDirMenuItems = appState.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.displayName, icon: $0.icon, url: $0.url.path) }
 
         // 更新版本号

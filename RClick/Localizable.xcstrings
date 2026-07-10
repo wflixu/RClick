@@ -766,6 +766,29 @@
         }
       }
     },
+    "Create Blank File": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create Blank File"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空のファイルを作成"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新建空白文件"
+          }
+        }
+      }
+    },
     "Copy Path": {
       "extractionState": "manual",
       "localizations": {
