@@ -10,7 +10,6 @@
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/wflixu/RClick)](https://github.com/wflixu/RClick/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/wflixu/RClick/total)](https://github.com/wflixu/RClick/releases)
-[⭐ Star History](https://star-history.com/#wflixu/RClick&Date)
 
 Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2 and SwiftUI for macOS 15.6+. Full dark mode support with adaptive icons.
 
@@ -91,6 +90,22 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 - **FinderSync** framework for Finder extension
 - **DistributedNotificationCenter** for IPC
 
+### 🌐 Localization
+
+RClick supports three languages with the following priority:
+
+| Language | Code | Notes |
+|----------|------|-------|
+| **English** | `en` | Default/base language |
+| **Simplified Chinese** | `zh-Hans` | Primary localization target |
+| **Japanese** | `ja` | Activated when system language is Japanese |
+
+**Principles:**
+- Default language is English (also the fallback for unsupported system languages)
+- All string keys are in English in the code, localized via `Localizable.xcstrings`
+- System language is auto-detected — no manual language picker in the app
+- To add a new language, add an entry to `Localizable.xcstrings` and register it in the Xcode project
+
 ## 👥 Contributors
 
 Thanks to all the people who have contributed to RClick!
@@ -98,10 +113,6 @@ Thanks to all the people who have contributed to RClick!
 <a href="https://github.com/wflixu/RClick/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=wflixu/RClick" />
 </a>
-
-## 📈 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=wflixu/RClick&type=Date)](https://star-history.com/#wflixu/RClick&Date)
 
 ## Similar Projects
 
