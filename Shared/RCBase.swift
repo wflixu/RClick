@@ -240,7 +240,7 @@ extension NewFile {
     static let all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx, .pages, .key, .numbers]
 
     // icon 字段为 SF Symbol 名称，作为 NSWorkspace 获取失败时的 fallback
-    static let json = NewFile(ext: ".json", name: "JSON", idx: 0, icon: "curlybraces")
+    static let json = NewFile(ext: ".json", name: "JSON", enabled: false, idx: 0, icon: "curlybraces")
     static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "doc.text")
     static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "doc.richtext")
     static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "doc.richtext.fill")

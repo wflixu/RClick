@@ -125,6 +125,16 @@ class AppState: ObservableObject {
         })
     }
     
+    @MainActor func deleteNewFile(id: String) {
+        newFiles.removeAll { $0.id == id }
+        do {
+            try save()
+        } catch {
+            logger.info("save error: \(error.localizedDescription)")
+        }
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+    }
+
     @MainActor func addNewFile(_ item: NewFile) {
         logger.debug("start add new file type")
         newFiles.append(item)
@@ -269,6 +279,7 @@ class AppState: ObservableObject {
             NewFile(
                 ext: entity.fileExtension,
                 name: entity.name,
+                enabled: entity.isEnabled,
                 idx: entity.sortOrder,
                 icon: entity.icon
             )
