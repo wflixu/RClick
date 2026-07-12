@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 - Full Disk Access detection, guide alert, and settings UI
 - `PermissionChecker.hasFullDiskAccess()` and related FDA methods
+- Language picker in Settings (language is now fully auto-detected)
+- Custom language detection logic (`AppLanguage` enum, `currentLanguage`, `localizedBundle`)
 
 ## [2.0.4] - 2026-07-05
 

@@ -134,6 +134,14 @@ When working with files outside app sandbox:
 - Category parameter should describe the subsystem
 - Example: `@AppLog(category: "AppState") private var logger`
 
+### Localization
+- Default language is **English** (also the fallback)
+- **Simplified Chinese** (`zh-Hans`) is the primary localization target
+- **Japanese** (`ja`) is supported — activated when system language is Japanese
+- All string keys in code use English, localized via `Localizable.xcstrings` (xcstrings format)
+- Language detection is fully automatic via `Bundle.main.localizedString` — no manual language picker
+- To add a new language: add entries to `Localizable.xcstrings` and register in Xcode project
+
 ### Data Persistence
 - SwiftData models use `@Model` macro
 - Shared container via app group: `.group` `UserDefaults`

@@ -91,6 +91,22 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 - **FinderSync** framework for Finder extension
 - **DistributedNotificationCenter** for IPC
 
+### 🌐 Localization
+
+RClick supports three languages with the following priority:
+
+| Language | Code | Notes |
+|----------|------|-------|
+| **English** | `en` | Default/base language |
+| **Simplified Chinese** | `zh-Hans` | Primary localization target |
+| **Japanese** | `ja` | Activated when system language is Japanese |
+
+**Principles:**
+- Default language is English (also the fallback for unsupported system languages)
+- All string keys are in English in the code, localized via `Localizable.xcstrings`
+- System language is auto-detected — no manual language picker in the app
+- To add a new language, add an entry to `Localizable.xcstrings` and register it in the Xcode project
+
 ## 👥 Contributors
 
 Thanks to all the people who have contributed to RClick!
