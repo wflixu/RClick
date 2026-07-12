@@ -8,24 +8,16 @@
 import Foundation
 import SwiftUI
 
-enum AppLanguage: String, CaseIterable, Identifiable {
-    case automatic = "auto"
+enum AppLanguage: String {
     case simplifiedChinese = "zh-Hans"
     case english = "en"
     case japanese = "ja"
 
-    var id: String { rawValue }
-
     var localeIdentifier: String {
         switch self {
-        case .automatic:
-            AppLocalization.currentLanguage.localeIdentifier
-        case .simplifiedChinese:
-            "zh-Hans"
-        case .english:
-            "en"
-        case .japanese:
-            "ja"
+        case .simplifiedChinese: "zh-Hans"
+        case .english: "en"
+        case .japanese: "ja"
         }
     }
 }
