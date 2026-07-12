@@ -122,7 +122,7 @@ final class BookmarkManager: ObservableObject {
         }
 
         // 保存 bookmark
-        await saveBookmark(for: chosenURL)
+        saveBookmark(for: chosenURL)
         return chosenURL
     }
 
@@ -204,7 +204,7 @@ final class BookmarkManager: ObservableObject {
             return nil
         }
 
-        await saveBookmark(for: chosenURL)
+        saveBookmark(for: chosenURL)
         return chosenURL
     }
 }
