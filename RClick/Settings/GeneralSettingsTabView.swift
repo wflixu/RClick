@@ -28,7 +28,6 @@ struct GeneralSettingsTabView: View {
     @State private var showDirImporter = false
     @State private var wrongFold = false
     @State private var showAlert = false
-    @State private var showLanguageRestartAlert = false
 
     let messager = Messager.shared
 
@@ -59,22 +58,6 @@ struct GeneralSettingsTabView: View {
 
                 Toggle(isOn: $launchAtLogin) {
                     Text(appLocalized: "Launch at login")
-                }
-
-                Picker(selection: Binding(
-                    get: { store.selectedLanguage },
-                    set: { newValue in
-                        guard newValue != store.selectedLanguage else { return }
-                        store.selectedLanguage = newValue
-                        showLanguageRestartAlert = true
-                    }
-                )) {
-                    Text(appLocalized: "Automatic").tag(AppLanguage.automatic)
-                    Text(appLocalized: "Simplified Chinese").tag(AppLanguage.simplifiedChinese)
-                    Text(appLocalized: "English").tag(AppLanguage.english)
-                    Text(appLocalized: "Japanese").tag(AppLanguage.japanese)
-                } label: {
-                    Text(appLocalized: "Language")
                 }
             } header: {
                 Text(appLocalized: "Main Controls")
@@ -194,17 +177,6 @@ struct GeneralSettingsTabView: View {
         .sheet(isPresented: $showFolderPermissionsSheet) {
             FolderPermissionsSheetView(bookmarkManager: store.bookmarkManager)
         }
-        .alert(
-            Text(appLocalized: "Language Change Requires Restart"),
-            isPresented: $showLanguageRestartAlert
-        ) {
-            Button(AppLocalization.localized("Restart Now")) {
-                restartApplication()
-            }
-            Button(AppLocalization.localized("Later"), role: .cancel) {}
-        } message: {
-            Text(appLocalized: "Some interface elements and Finder menus will update after restarting RClick.")
-        }
     }
 
     // MARK: - 权限状态检测
@@ -230,12 +202,6 @@ struct GeneralSettingsTabView: View {
 
     private func openAccessibilitySettings() {
         PermissionChecker.openAccessibilitySettings()
-    }
-
-    private func restartApplication() {
-        let appURL = Bundle.main.bundleURL
-        try? Process.run(URL(fileURLWithPath: "/usr/bin/open"), arguments: ["-n", appURL.path])
-        NSApp.terminate(nil)
     }
 
     // MARK: - 设置管理

@@ -19,7 +19,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     var localeIdentifier: String {
         switch self {
         case .automatic:
-            AppLocalization.systemLanguage.localeIdentifier
+            AppLocalization.currentLanguage.localeIdentifier
         case .simplifiedChinese:
             "zh-Hans"
         case .english:
@@ -32,12 +32,8 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 
 enum AppLocalization {
     static let tableName = "Localizable"
-    private static let selectedLanguageKey = "SELECTED_LANGUAGE"
-    private static var groupDefaults: UserDefaults {
-        UserDefaults(suiteName: "group.cn.wflixu.RClick") ?? .standard
-    }
 
-    static var systemLanguage: AppLanguage {
+    static var currentLanguage: AppLanguage {
         let preferred = Locale.preferredLanguages.first?.lowercased() ?? "en"
         if preferred.hasPrefix("zh") {
             return .simplifiedChinese
@@ -46,15 +42,6 @@ enum AppLocalization {
             return .japanese
         }
         return .english
-    }
-
-    static var currentLanguage: AppLanguage {
-        guard let rawValue = groupDefaults.string(forKey: selectedLanguageKey),
-              let language = AppLanguage(rawValue: rawValue)
-        else {
-            return .automatic
-        }
-        return language
     }
 
     static var currentLocale: Locale {

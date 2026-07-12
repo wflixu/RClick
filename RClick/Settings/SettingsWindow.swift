@@ -18,7 +18,6 @@ struct SettingsWindow: Scene {
         Window(AppLocalization.localized("Settings"), id: Constants.settingsWindowID) {
             SettingsView()
                 .environmentObject(appState)
-                .environment(\.locale, appState.locale)
                 .onAppear {
                     onAppear()
                 }

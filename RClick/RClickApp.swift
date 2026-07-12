@@ -43,7 +43,6 @@ struct RClickApp: App {
         SettingsWindow(appState: appState, onAppear: {})
             .defaultAppStorage(.group)
             .environmentObject(updateManager)
-            .environment(\.locale, appState.locale)
             .modelContainer(SharedDataManager.sharedModelContainer)
 
         // showMenuBarExtra 为 true 时显示菜单条
@@ -53,7 +52,6 @@ struct RClickApp: App {
             MenuBarView()
         }
         .defaultAppStorage(.group)
-        .environment(\.locale, appState.locale)
     }
 }
 
