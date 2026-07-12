@@ -22,8 +22,8 @@ struct GeneralSettingsTabView: View {
     @EnvironmentObject var store: AppState
 
     @State private var finderSyncStatus: PermissionStatus = .unknown
-    @State private var fullDiskAccessStatus: PermissionStatus = .unknown
     @State private var accessibilityStatus: PermissionStatus = .unknown
+    @State private var showFolderPermissionsSheet = false
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
@@ -94,14 +94,17 @@ struct GeneralSettingsTabView: View {
                         .foregroundColor(finderSyncStatus.color)
                 }
 
-                // 完全磁盘访问权限
+                // 文件夹权限（Bookmark）
                 LabeledContent {
-                    Button(AppLocalization.localized("Settings…")) {
-                        openFullDiskAccessSettings()
+                    HStack(spacing: 8) {
+                        Text("\(store.bookmarkManager.authorizedDirectories.count)")
+                            .foregroundColor(.secondary)
+                        Button(AppLocalization.localized("Manage…")) {
+                            showFolderPermissionsSheet = true
+                        }
                     }
                 } label: {
-                    Label(AppLocalization.localized("Full Disk Access"), systemImage: fullDiskAccessStatus.icon)
-                        .foregroundColor(fullDiskAccessStatus.color)
+                    Label(AppLocalization.localized("Folder Permissions"), systemImage: "folder.badge.person.crop")
                 }
 
                 // 辅助功能权限
@@ -116,31 +119,9 @@ struct GeneralSettingsTabView: View {
             } header: {
                 Text(appLocalized: "Permissions")
             } footer: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text(appLocalized: "Full Disk Access: Required to create and delete files in protected directories")
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if fullDiskAccessStatus != .enabled {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(appLocalized: "RClick needs Full Disk Access to work with files in protected directories")
-                                .fontWeight(.medium)
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "1. Click \"Settings…\" on the right to open System Settings")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "2. Click the lock icon and authenticate")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "3. Click \"+\" -> open \"Applications\" -> select \"RClick\"")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "4. Make sure the switch next to RClick is turned on")
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-                }
+                Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             // MARK: - 第三组：设置管理
@@ -210,6 +191,9 @@ struct GeneralSettingsTabView: View {
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
+        .sheet(isPresented: $showFolderPermissionsSheet) {
+            FolderPermissionsSheetView(bookmarkManager: store.bookmarkManager)
+        }
         .alert(
             Text(appLocalized: "Language Change Requires Restart"),
             isPresented: $showLanguageRestartAlert
@@ -229,16 +213,8 @@ struct GeneralSettingsTabView: View {
         // Finder 扩展状态
         finderSyncStatus = FIFinderSyncController.isExtensionEnabled ? .enabled : .disabled
 
-        // 完全磁盘访问权限检测（同步到 AppState）
-        store.checkFullDiskAccess()
-        fullDiskAccessStatus = store.hasFullDiskAccess ? .enabled : .disabled
-
-        // 辅助功能权限检测（使用 PermissionChecker）
+        // 辅助功能权限检测
         accessibilityStatus = PermissionChecker.hasAccessibilityPermission() ? .enabled : .disabled
-    }
-
-    private func hasFullDiskAccess() -> Bool {
-        return PermissionChecker.hasFullDiskAccess()
     }
 
     private func hasAccessibilityPermission() -> Bool {
@@ -250,10 +226,6 @@ struct GeneralSettingsTabView: View {
     private func openFileProviderSettings() {
         // 打开系统设置的"文件提供程序"扩展管理界面
         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.AppleFileProvider")!)
-    }
-
-    private func openFullDiskAccessSettings() {
-        PermissionChecker.openFullDiskAccessSettings()
     }
 
     private func openAccessibilitySettings() {

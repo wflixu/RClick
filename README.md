@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/wflixu/RClick)](https://github.com/wflixu/RClick/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/wflixu/RClick/total)](https://github.com/wflixu/RClick/releases)
-[![Star History](https://api.star-history.com/svg?repos=wflixu/RClick&type=Date)](https://star-history.com/#wflixu/RClick&Date)
+[⭐ Star History](https://star-history.com/#wflixu/RClick&Date)
 
 Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2 and SwiftUI for macOS 15.6+. Full dark mode support with adaptive icons.
 
@@ -69,7 +69,7 @@ open RClick.xcodeproj
 
 | Requirement | Details |
 |-------------|---------|
-| **Full Disk Access** | Required for file operations in protected directories |
+| **Folder Access** | Per-folder authorization for file operations (prompted automatically) |
 | **Accessibility** | Required for certain automation features |
 | **Finder Extension** | Must be enabled in System Settings |
 

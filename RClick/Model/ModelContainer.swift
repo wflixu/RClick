@@ -42,6 +42,7 @@ class SharedDataManager {
                      ActionEntity.self,
                      NewFileTypeEntity.self,
                      CommonDirEntity.self,
+                     BookmarkEntity.self,
                      DataVersion.self,
                 configurations: configuration
             )

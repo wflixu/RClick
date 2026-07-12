@@ -138,7 +138,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             messager.onExtensionMessage(.click) { [weak self] data in
                 guard let self = self else { return }
                 if let event: ClickEventPayload = messager.decodeSignedData(data) {
-                    self.handleClickEvent(event)
+                    Task { @MainActor in
+                        await self.handleClickEvent(event)
+                    }
                 } else {
                     logger.warning("Invalid click event data")
                 }
@@ -164,7 +166,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             startRunningMessageRetry()
 
             sendObserveDirMessage()
-            checkFDAAndGuideIfNeeded()
         }
     }
 
@@ -221,16 +222,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         logger.debug("Sent menu configuration to extension: \(actionMenuItems.count) actions, \(appMenuItems.count) apps")
     }
 
-    func handleClickEvent(_ event: ClickEventPayload) {
+    func handleClickEvent(_ event: ClickEventPayload) async {
         logger.debug("Handling click event: \(event.itemId) type=\(event.itemType.rawValue) trigger=\(event.trigger.rawValue) target=\(event.target)")
 
         switch event.itemType {
         case .app:
             self.openApp(rid: event.itemId, target: event.target)
         case .action:
-            self.actionHandler(rid: event.itemId, target: event.target, trigger: event.trigger.rawValue)
+            await self.actionHandler(rid: event.itemId, target: event.target, trigger: event.trigger.rawValue)
         case .newFile:
-            self.createFile(rid: event.itemId, target: event.target)
+            await self.createFile(rid: event.itemId, target: event.target)
         case .commonDir:
             self.openCommonDirs(target: event.target)
         }
@@ -268,38 +269,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.logger.debug("Sending running message retry \(retryCount + 1)/\(self.maxRunningMessageRetryCount)")
             }
             logger.debug("Running message retry completed")
-        }
-    }
-
-    // MARK: - FDA Permission Guide
-
-    private func checkFDAAndGuideIfNeeded() {
-        let hasSeenGuide = UserDefaults.group.bool(forKey: Key.hasSeenFDAGuide)
-        guard !hasSeenGuide else { return }
-
-        let hasFDA = PermissionChecker.hasFullDiskAccess()
-        appState.hasFullDiskAccess = hasFDA
-        guard !hasFDA else { return }
-
-        Task { @MainActor in
-            try? await Task.sleep(for: .seconds(2))
-            let alert = NSAlert()
-            alert.messageText = AppLocalization.localized("Enable Full Disk Access")
-            alert.informativeText = AppLocalization.localized("RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON")
-            alert.alertStyle = .informational
-            alert.addButton(withTitle: AppLocalization.localized("Open Settings"))
-            alert.addButton(withTitle: AppLocalization.localized("Later"))
-            alert.addButton(withTitle: AppLocalization.localized("Don't Ask Again"))
-
-            let response = alert.runModal()
-            switch response {
-            case .alertFirstButtonReturn:
-                PermissionChecker.openFullDiskAccessSettings()
-            case .alertThirdButtonReturn:
-                UserDefaults.group.set(true, forKey: Key.hasSeenFDAGuide)
-            default:
-                break
-            }
         }
     }
 
@@ -432,7 +401,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func actionHandler(rid: String, target: [String], trigger: String) {
+    func actionHandler(rid: String, target: [String], trigger: String) async {
         guard let rcitem = appState.getActionItem(rid: rid) else {
             logger.warning("when createFile, but not have fileType ")
             return
@@ -442,19 +411,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         case "copy-path":
             copyPath(target)
         case "delete-direct":
-            deleteFoldorFile(target, trigger)
+            await deleteFoldorFile(target, trigger)
         case "unhide":
-            unhideFilesAndDirs(target, trigger)
+            await unhideFilesAndDirs(target, trigger)
         case "hide":
-            hideFilesAndDirs(target, trigger)
+            await hideFilesAndDirs(target, trigger)
         case "airdrop":
-            showAirDrop(target, trigger)
+            await showAirDrop(target, trigger)
         default:
             logger.warning("no action id matched")
         }
     }
 
-    func showAirDrop(_ target: [String], _ trigger: String) {
+    func showAirDrop(_ target: [String], _ trigger: String) async {
         logger.info("---- showAirDrop trigger:\(trigger)")
         let fm = FileManager.default
         var fileURLs: [URL] = []
@@ -496,7 +465,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     alert.runModal()
                     continue
                 } else {
-                    fileURLs.append(URL(fileURLWithPath: decodedPath))
+                    // 确保有文件所在目录的访问权限
+                    let fileURL = URL(fileURLWithPath: decodedPath)
+                    let dirURL = fileURL.deletingLastPathComponent()
+                    if !appState.bookmarkManager.hasAccess(to: dirURL) {
+                        guard let _ = await appState.bookmarkManager.promptForPermission(for: dirURL) else {
+                            logger.warning("用户取消授权，跳过 AirDrop：\(decodedPath)")
+                            continue
+                        }
+                    }
+                    fileURLs.append(fileURL)
                 }
             }
         }
@@ -511,13 +489,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func unhideFilesAndDirs(_ target: [String], _ trigger: String) {
+    func unhideFilesAndDirs(_ target: [String], _ trigger: String) async {
         logger.info("开始取消隐藏文件和目录，目标路径：\(target)")
         if let dirPath = target.first {
             let fileManager = FileManager.default
             let path = dirPath.removingPercentEncoding ?? dirPath
             logger.info("处理主目录：\(path)")
-            var url = URL(fileURLWithPath: path)
+            let url = URL(fileURLWithPath: path)
+
+            // 确保有目录的访问权限
+            if !appState.bookmarkManager.hasAccess(to: url) {
+                guard let _ = await appState.bookmarkManager.promptForPermission(for: url) else {
+                    logger.warning("用户取消授权，跳过取消隐藏：\(path)")
+                    return
+                }
+            }
 
             do {
                 let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isHiddenKey], options: [.skipsPackageDescendants])
@@ -538,7 +524,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             do {
                 var resourceValues = URLResourceValues()
                 resourceValues.isHidden = false
-                try url.setResourceValues(resourceValues)
+                var targetURL = url
+                try targetURL.setResourceValues(resourceValues)
                 logger.info("成功取消隐藏主目录：\(path)")
             } catch {
                 logger.error("取消隐藏主目录失败：\(path): \(error)")
@@ -547,7 +534,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func hideFilesAndDirs(_ target: [String], _ trigger: String) {
+    func hideFilesAndDirs(_ target: [String], _ trigger: String) async {
         logger.info("开始隐藏文件和目录，目标路径：\(target), 触发器：\(trigger)")
         let fileManager = FileManager.default
 
@@ -555,6 +542,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let path = dirPath.removingPercentEncoding ?? dirPath
             logger.info("处理主目录：\(path)")
             let url = URL(fileURLWithPath: path)
+
+            // 确保有目录的访问权限
+            if !appState.bookmarkManager.hasAccess(to: url) {
+                guard let _ = await appState.bookmarkManager.promptForPermission(for: url) else {
+                    logger.warning("用户取消授权，跳过隐藏：\(path)")
+                    return
+                }
+            }
 
             do {
                 let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsPackageDescendants])
@@ -579,16 +574,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             for dirPath in target {
                 let path = dirPath.removingPercentEncoding ?? dirPath
                 logger.info("处理路径：\(path)")
-                var url = URL(fileURLWithPath: path)
+                let url = URL(fileURLWithPath: path)
 
                 if Utils.isProtectedFolder(path) {
                     logger.warning("跳过受保护的文件路径：\(path)")
                     continue
                 }
+
+                // 确保有文件所在目录的访问权限
+                let dirURL = url.deletingLastPathComponent()
+                if !appState.bookmarkManager.hasAccess(to: dirURL) {
+                    guard let _ = await appState.bookmarkManager.promptForPermission(for: dirURL) else {
+                        logger.warning("用户取消授权，跳过隐藏：\(path)")
+                        continue
+                    }
+                }
+
                 do {
                     var resourceValues = URLResourceValues()
                     resourceValues.isHidden = true
-                    try url.setResourceValues(resourceValues)
+                    var targetURL = url
+                    try targetURL.setResourceValues(resourceValues)
                     logger.info("成功隐藏：\(path)")
                 } catch {
                     logger.error("隐藏失败：\(path): \(error)")
@@ -606,7 +612,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func deleteFoldorFile(_ target: [String], _ trigger: String) {
+    func deleteFoldorFile(_ target: [String], _ trigger: String) async {
         logger.info("---- deleteFoldorFile trigger:\(trigger)")
         let fm = FileManager.default
 
@@ -634,19 +640,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 continue
             }
 
-            // 使用完全磁盘访问权限，直接删除
+            // 确保有父目录的访问权限
+            let url = URL(fileURLWithPath: decodedPath)
+            let dirURL = url.deletingLastPathComponent()
+            if !appState.bookmarkManager.hasAccess(to: dirURL) {
+                guard let _ = await appState.bookmarkManager.promptForPermission(for: dirURL) else {
+                    logger.warning("用户取消授权，跳过删除：\(decodedPath)")
+                    continue
+                }
+            }
+
             do {
-                try fm.removeItem(atPath: item.removingPercentEncoding ?? item)
+                try fm.removeItem(atPath: decodedPath)
             } catch {
                 logger.error("delete \(target) file run error \(error)")
             }
         }
     }
 
-    func createFile(rid: String, target: [String]) {
+    func createFile(rid: String, target: [String]) async {
         guard let dirPath = targetDirectoryForNewFile(target) else {
             logger.warning("when createFile, but not have target directory")
             return
+        }
+
+        let dirURL = URL(fileURLWithPath: dirPath)
+
+        // 确保有目标目录的访问权限
+        if !appState.bookmarkManager.hasAccess(to: dirURL) {
+            guard let _ = await appState.bookmarkManager.promptForPermission(for: dirURL) else {
+                logger.warning("用户取消授权，跳过创建文件")
+                return
+            }
         }
 
         if rid == NewFileMenuItem.customFileId {
@@ -672,7 +697,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let filePath = getUniqueFilePath(dir: dirPath, ext: ext)
         let fileURL = URL(fileURLWithPath: filePath)
 
-        // 使用完全磁盘访问权限，直接创建文件
         do {
             let fileManager = FileManager.default
 

@@ -24,8 +24,9 @@ class AppState: ObservableObject {
     @Published var newFiles: [NewFile] = []
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
-    @Published var hasFullDiskAccess: Bool = false
     @Published var locale: Locale
+
+    let bookmarkManager = BookmarkManager()
 
     // 折叠开关状态 - 每个分类独立控制
     @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
@@ -48,7 +49,7 @@ class AppState: ObservableObject {
         Task { @MainActor in
             logger.debug("start load")
             try? load()
-            checkFullDiskAccess()
+            bookmarkManager.restoreBookmarks(context: modelContext)
         }
 
         NotificationCenter.default.addObserver(
@@ -72,11 +73,6 @@ class AppState: ObservableObject {
         }
     }
 
-    func checkFullDiskAccess() {
-        hasFullDiskAccess = PermissionChecker.hasFullDiskAccess()
-        logger.debug("Full Disk Access status: \(self.hasFullDiskAccess)")
-    }
-    
     // Apps
     @MainActor func deleteApp(index: Int) {
         apps.remove(at: index)

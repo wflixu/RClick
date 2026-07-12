@@ -5,6 +5,17 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-07-12
+
+### Changed
+- Replace Full Disk Access (FDA) with Security-Scoped Bookmark permission model
+- File operations (delete, create, hide, unhide, AirDrop) now prompt for per-folder authorization
+- Settings: "Full Disk Access" row replaced with "Folder Permissions" management
+
+### Removed
+- Full Disk Access detection, guide alert, and settings UI
+- `PermissionChecker.hasFullDiskAccess()` and related FDA methods
+
 ## [2.0.4] - 2026-07-05
 
 ### Fixed
