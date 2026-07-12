@@ -94,6 +94,16 @@ struct GeneralSettingsTabView: View {
                         .foregroundColor(finderSyncStatus.color)
                 }
 
+                // 辅助功能权限
+                LabeledContent {
+                    Button(AppLocalization.localized("Settings…")) {
+                        openAccessibilitySettings()
+                    }
+                } label: {
+                    Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
+                        .foregroundColor(accessibilityStatus.color)
+                }
+
                 // 文件夹权限（Bookmark）
                 LabeledContent {
                     HStack(spacing: 8) {
@@ -105,16 +115,6 @@ struct GeneralSettingsTabView: View {
                     }
                 } label: {
                     Label(AppLocalization.localized("Folder Permissions"), systemImage: "folder.badge.person.crop")
-                }
-
-                // 辅助功能权限
-                LabeledContent {
-                    Button(AppLocalization.localized("Settings…")) {
-                        openAccessibilitySettings()
-                    }
-                } label: {
-                    Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
-                        .foregroundColor(accessibilityStatus.color)
                 }
             } header: {
                 Text(appLocalized: "Permissions")
