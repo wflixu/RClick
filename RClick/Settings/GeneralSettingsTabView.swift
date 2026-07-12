@@ -20,6 +20,7 @@ struct GeneralSettingsTabView: View {
     @AppStorage("launchAtLogin") private var launchAtLogin = false
     @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
     @EnvironmentObject var store: AppState
+    @ObservedObject private var bookmarkManager = AppState.shared.bookmarkManager
 
     @State private var finderSyncStatus: PermissionStatus = .unknown
     @State private var accessibilityStatus: PermissionStatus = .unknown
@@ -90,7 +91,7 @@ struct GeneralSettingsTabView: View {
                 // 文件夹权限（Bookmark）
                 LabeledContent {
                     HStack(spacing: 8) {
-                        Text("\(store.bookmarkManager.authorizedDirectories.count)")
+                        Text("\(bookmarkManager.authorizedDirectories.count)")
                             .foregroundColor(.secondary)
                         Button(AppLocalization.localized("Manage…")) {
                             showFolderPermissionsSheet = true
@@ -175,7 +176,7 @@ struct GeneralSettingsTabView: View {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
         .sheet(isPresented: $showFolderPermissionsSheet) {
-            FolderPermissionsSheetView(bookmarkManager: store.bookmarkManager)
+            FolderPermissionsSheetView(bookmarkManager: bookmarkManager)
         }
     }
 
