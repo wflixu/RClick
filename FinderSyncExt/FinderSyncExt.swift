@@ -155,12 +155,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     override func requestBadgeIdentifier(for url: URL) {
-        logger.debug("requestBadgeIdentifierForURL: \(url.path)")
-
-        // 示例：根据文件状态设置徽章
-        let whichBadge = abs(url.path.hash) % 3
-        let badgeIdentifier = ["", "One", "Two"][whichBadge]
-        FIFinderSyncController.default().setBadgeIdentifier(badgeIdentifier, for: url)
+        // 不设置任何徽章标识，避免 Finder 在项目上叠加 RClick 图标。
+        // 非空徽章 ID 会使 Finder 在文件/磁盘图标上显示扩展的图标叠加层，
+        // 这会导致移动磁盘和光盘等外部卷的图标被 RClick 图标覆盖。
+        FIFinderSyncController.default().setBadgeIdentifier("", for: url)
     }
 
     // MARK: - Menu and toolbar item support
