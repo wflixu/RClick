@@ -17,6 +17,7 @@ struct NewFileSettingsTabView: View {
     
     @EnvironmentObject var appState: AppState
     @State private var editingFile: NewFile?
+    @State private var fileToDelete: NewFile?
 
     let messager = Messager.shared
 
@@ -58,6 +59,14 @@ struct NewFileSettingsTabView: View {
                                 }
                                 .buttonStyle(.borderless)
                                 .help(AppLocalization.localized("Edit File Type"))
+
+                                Button {
+                                    fileToDelete = item
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .buttonStyle(.borderless)
+                                .help(AppLocalization.localized("Delete File Type"))
 
                                 Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
                                     .toggleStyle(.switch)
@@ -104,6 +113,24 @@ struct NewFileSettingsTabView: View {
         .formStyle(.grouped)
         .sheet(item: $editingFile) { file in
             EditFileTypeSheetView(file: file, appState: appState)
+        }
+        .confirmationDialog(
+            AppLocalization.localized("Delete File Type"),
+            isPresented: Binding(
+                get: { fileToDelete != nil },
+                set: { if !$0 { fileToDelete = nil } }
+            ),
+            presenting: fileToDelete
+        ) { file in
+            Button(AppLocalization.localized("Delete"), role: .destructive) {
+                appState.deleteNewFile(id: file.id)
+                messager.sendRunningNotification()
+            }
+            Button(AppLocalization.localized("Cancel"), role: .cancel) {
+                fileToDelete = nil
+            }
+        } message: { file in
+            Text(String(format: AppLocalization.localized("Are you sure you want to delete \"%@\" (%@)? This action cannot be undone."), file.name, file.ext))
         }
     }
 

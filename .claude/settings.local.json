@@ -29,7 +29,8 @@
       "Bash(/usr/bin/log show *)",
       "Bash(xcodebuild -project RClick.xcodeproj -scheme RClick -destination 'platform=macOS' build)",
       "WebSearch",
-      "WebFetch(domain:stackoverflow.com)"
+      "WebFetch(domain:stackoverflow.com)",
+      "Bash(pluginkit *)"
     ]
   }
 }

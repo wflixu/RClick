@@ -24,8 +24,8 @@ class AppState: ObservableObject {
     @Published var newFiles: [NewFile] = []
     @Published var cdirs: [CommonDir] = []
     @Published var inExt: Bool
-    @Published var hasFullDiskAccess: Bool = false
-    @Published var locale: Locale
+
+    let bookmarkManager = BookmarkManager()
 
     // 折叠开关状态 - 每个分类独立控制
     @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
@@ -37,46 +37,19 @@ class AppState: ObservableObject {
 
     // 菜单栏显示
     @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
-    @AppStorage(Key.selectedLanguage, store: .group) private var selectedLanguageRawValue = AppLanguage.automatic.rawValue
 
     // SwiftData ModelContext（lazy 复用单个实例）
     private lazy var modelContext = ModelContext(SharedDataManager.sharedModelContainer)
 
     init(inExt: Bool = false) {
         self.inExt = inExt
-        self.locale = AppLocalization.currentLocale
         Task { @MainActor in
             logger.debug("start load")
             try? load()
-            checkFullDiskAccess()
-        }
-
-        NotificationCenter.default.addObserver(
-            forName: NSLocale.currentLocaleDidChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor in
-                guard let self = self, self.selectedLanguage == .automatic else { return }
-                self.locale = AppLocalization.currentLocale
-            }
+            bookmarkManager.restoreBookmarks(context: modelContext)
         }
     }
 
-    var selectedLanguage: AppLanguage {
-        get { AppLanguage(rawValue: selectedLanguageRawValue) ?? .automatic }
-        set {
-            selectedLanguageRawValue = newValue.rawValue
-            locale = Locale(identifier: newValue.localeIdentifier)
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-        }
-    }
-
-    func checkFullDiskAccess() {
-        hasFullDiskAccess = PermissionChecker.hasFullDiskAccess()
-        logger.debug("Full Disk Access status: \(self.hasFullDiskAccess)")
-    }
-    
     // Apps
     @MainActor func deleteApp(index: Int) {
         apps.remove(at: index)
@@ -125,6 +98,16 @@ class AppState: ObservableObject {
         })
     }
     
+    @MainActor func deleteNewFile(id: String) {
+        newFiles.removeAll { $0.id == id }
+        do {
+            try save()
+        } catch {
+            logger.info("save error: \(error.localizedDescription)")
+        }
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+    }
+
     @MainActor func addNewFile(_ item: NewFile) {
         logger.debug("start add new file type")
         newFiles.append(item)
@@ -269,6 +252,7 @@ class AppState: ObservableObject {
             NewFile(
                 ext: entity.fileExtension,
                 name: entity.name,
+                enabled: entity.isEnabled,
                 idx: entity.sortOrder,
                 icon: entity.icon
             )

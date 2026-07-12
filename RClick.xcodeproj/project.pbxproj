@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5C8A291F2F83D74A00FE687C /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5C969FB42F8A494600D022F8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB32F8A494600D022F8 /* README.md */; };
-		5C969FB52F8A494600D022F8 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB12F8A494600D022F8 /* CLAUDE.md */; };
-		5C969FB62F8A494600D022F8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB22F8A494600D022F8 /* LICENSE */; };
 		5C969FB72F8A494600D022F8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB32F8A494600D022F8 /* README.md */; };
 		5C969FB82F8A494600D022F8 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB12F8A494600D022F8 /* CLAUDE.md */; };
 		5C969FB92F8A494600D022F8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB22F8A494600D022F8 /* LICENSE */; };
@@ -44,14 +41,6 @@
 		5C969FE42F8A496000D022F8 /* extension-reconnect.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC72F8A496000D022F8 /* extension-reconnect.md */; };
 		5C969FE52F8A496000D022F8 /* git-branch-strategy.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC82F8A496000D022F8 /* git-branch-strategy.md */; };
 		5C969FE62F8A496000D022F8 /* 设置界面重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */; };
-		5C969FE72F8A496000D022F8 /* 架构重构设计及计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */; };
-		5C969FE82F8A496000D022F8 /* 重构计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCC2F8A496000D022F8 /* 重构计划.md */; };
-		5C969FE92F8A496000D022F8 /* 重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCD2F8A496000D022F8 /* 重构设计.md */; };
-		5C969FEA2F8A496000D022F8 /* communication-protocol.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC52F8A496000D022F8 /* communication-protocol.md */; };
-		5C969FEB2F8A496000D022F8 /* data-models.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC62F8A496000D022F8 /* data-models.md */; };
-		5C969FEC2F8A496000D022F8 /* extension-reconnect.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC72F8A496000D022F8 /* extension-reconnect.md */; };
-		5C969FED2F8A496000D022F8 /* git-branch-strategy.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC82F8A496000D022F8 /* git-branch-strategy.md */; };
-		5C969FEE2F8A496000D022F8 /* 设置界面重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,19 +63,20 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		5C8A29202F83D74A00FE687C /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolder = PlugIns;
+			dstSubfolderSpec = 13;
 			files = (
 				5C8A291F2F83D74A00FE687C /* FinderSyncExt.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5C8A28DA2F83D65900FE687C /* RClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C8A28E92F83D65B00FE687C /* RClickTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RClickTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-
 		5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderSyncExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C969FB12F8A494600D022F8 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		5C969FB22F8A494600D022F8 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -116,7 +106,6 @@
 			);
 			target = 5C8A28E82F83D65B00FE687C /* RClickTests */;
 		};
-
 		5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -141,7 +130,6 @@
 			path = RClickTests;
 			sourceTree = "<group>";
 		};
-
 		5C8A29192F83D74A00FE687C /* FinderSyncExt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -160,18 +148,24 @@
 /* Begin PBXFrameworksBuildPhase section */
 		5C8A28D72F83D65900FE687C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A28E62F83D65B00FE687C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A29152F83D74A00FE687C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -271,7 +265,6 @@
 			productReference = 5C8A28E92F83D65B00FE687C /* RClickTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-
 		5C8A29172F83D74A00FE687C /* FinderSyncExt */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5C8A29242F83D74A00FE687C /* Build configuration list for PBXNativeTarget "FinderSyncExt" */;
@@ -281,6 +274,8 @@
 				5C8A29162F83D74A00FE687C /* Resources */,
 			);
 			buildRules = (
+			);
+			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
 				5C8A29192F83D74A00FE687C /* FinderSyncExt */,
@@ -339,6 +334,7 @@
 /* Begin PBXResourcesBuildPhase section */
 		5C8A28D82F83D65900FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				5C969FB72F8A494600D022F8 /* README.md in Resources */,
 				5C969FB82F8A494600D022F8 /* CLAUDE.md in Resources */,
@@ -352,9 +348,11 @@
 				5C969FDE2F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 				5C969FB92F8A494600D022F8 /* LICENSE in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A28E72F83D65B00FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				5C969FBA2F8A494600D022F8 /* README.md in Resources */,
 				5C969FBB2F8A494600D022F8 /* CLAUDE.md in Resources */,
@@ -368,9 +366,11 @@
 				5C969FE52F8A496000D022F8 /* git-branch-strategy.md in Resources */,
 				5C969FE62F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A29162F83D74A00FE687C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				5C969FBD2F8A494600D022F8 /* README.md in Resources */,
 				5C969FBE2F8A494600D022F8 /* CLAUDE.md in Resources */,
@@ -384,24 +384,31 @@
 				5C969FD52F8A496000D022F8 /* git-branch-strategy.md in Resources */,
 				5C969FD62F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5C8A28D62F83D65900FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A28E52F83D65B00FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5C8A29142F83D74A00FE687C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -419,7 +426,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		5C8A28FB2F83D65B00FE687C /* Debug configuration for PBXProject "RClick" */ = {
+		5C8A28FB2F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -485,7 +492,7 @@
 			};
 			name = Debug;
 		};
-		5C8A28FC2F83D65B00FE687C /* Release configuration for PBXProject "RClick" */ = {
+		5C8A28FC2F83D65B00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -543,7 +550,7 @@
 			};
 			name = Release;
 		};
-		5C8A28FE2F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClick" */ = {
+		5C8A28FE2F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -581,7 +588,7 @@
 			};
 			name = Debug;
 		};
-		5C8A28FF2F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClick" */ = {
+		5C8A28FF2F83D65B00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -619,7 +626,7 @@
 			};
 			name = Release;
 		};
-		5C8A29012F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClickTests" */ = {
+		5C8A29012F83D65B00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -641,7 +648,7 @@
 			};
 			name = Debug;
 		};
-		5C8A29022F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClickTests" */ = {
+		5C8A29022F83D65B00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -663,7 +670,7 @@
 			};
 			name = Release;
 		};
-		5C8A29212F83D74A00FE687C /* Debug configuration for PBXNativeTarget "FinderSyncExt" */ = {
+		5C8A29212F83D74A00FE687C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
@@ -698,7 +705,7 @@
 			};
 			name = Debug;
 		};
-		5C8A29222F83D74A00FE687C /* Release configuration for PBXNativeTarget "FinderSyncExt" */ = {
+		5C8A29222F83D74A00FE687C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
@@ -739,33 +746,37 @@
 		5C8A28D52F83D65900FE687C /* Build configuration list for PBXProject "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C8A28FB2F83D65B00FE687C /* Debug configuration for PBXProject "RClick" */,
-				5C8A28FC2F83D65B00FE687C /* Release configuration for PBXProject "RClick" */,
+				5C8A28FB2F83D65B00FE687C /* Debug */,
+				5C8A28FC2F83D65B00FE687C /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		5C8A28FD2F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C8A28FE2F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClick" */,
-				5C8A28FF2F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClick" */,
+				5C8A28FE2F83D65B00FE687C /* Debug */,
+				5C8A28FF2F83D65B00FE687C /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		5C8A29002F83D65B00FE687C /* Build configuration list for PBXNativeTarget "RClickTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C8A29012F83D65B00FE687C /* Debug configuration for PBXNativeTarget "RClickTests" */,
-				5C8A29022F83D65B00FE687C /* Release configuration for PBXNativeTarget "RClickTests" */,
+				5C8A29012F83D65B00FE687C /* Debug */,
+				5C8A29022F83D65B00FE687C /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		5C8A29242F83D74A00FE687C /* Build configuration list for PBXNativeTarget "FinderSyncExt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5C8A29212F83D74A00FE687C /* Debug configuration for PBXNativeTarget "FinderSyncExt" */,
-				5C8A29222F83D74A00FE687C /* Release configuration for PBXNativeTarget "FinderSyncExt" */,
+				5C8A29212F83D74A00FE687C /* Debug */,
+				5C8A29222F83D74A00FE687C /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

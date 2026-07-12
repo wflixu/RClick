@@ -20,15 +20,15 @@ struct GeneralSettingsTabView: View {
     @AppStorage("launchAtLogin") private var launchAtLogin = false
     @AppStorage(Key.showMenuBarExtra, store: .group) private var showMenuBarExtra = true
     @EnvironmentObject var store: AppState
+    @ObservedObject private var bookmarkManager = AppState.shared.bookmarkManager
 
     @State private var finderSyncStatus: PermissionStatus = .unknown
-    @State private var fullDiskAccessStatus: PermissionStatus = .unknown
     @State private var accessibilityStatus: PermissionStatus = .unknown
+    @State private var showFolderPermissionsSheet = false
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
     @State private var showAlert = false
-    @State private var showLanguageRestartAlert = false
 
     let messager = Messager.shared
 
@@ -60,22 +60,6 @@ struct GeneralSettingsTabView: View {
                 Toggle(isOn: $launchAtLogin) {
                     Text(appLocalized: "Launch at login")
                 }
-
-                Picker(selection: Binding(
-                    get: { store.selectedLanguage },
-                    set: { newValue in
-                        guard newValue != store.selectedLanguage else { return }
-                        store.selectedLanguage = newValue
-                        showLanguageRestartAlert = true
-                    }
-                )) {
-                    Text(appLocalized: "Automatic").tag(AppLanguage.automatic)
-                    Text(appLocalized: "Simplified Chinese").tag(AppLanguage.simplifiedChinese)
-                    Text(appLocalized: "English").tag(AppLanguage.english)
-                    Text(appLocalized: "Japanese").tag(AppLanguage.japanese)
-                } label: {
-                    Text(appLocalized: "Language")
-                }
             } header: {
                 Text(appLocalized: "Main Controls")
             } footer: {
@@ -94,16 +78,6 @@ struct GeneralSettingsTabView: View {
                         .foregroundColor(finderSyncStatus.color)
                 }
 
-                // 完全磁盘访问权限
-                LabeledContent {
-                    Button(AppLocalization.localized("Settings…")) {
-                        openFullDiskAccessSettings()
-                    }
-                } label: {
-                    Label(AppLocalization.localized("Full Disk Access"), systemImage: fullDiskAccessStatus.icon)
-                        .foregroundColor(fullDiskAccessStatus.color)
-                }
-
                 // 辅助功能权限
                 LabeledContent {
                     Button(AppLocalization.localized("Settings…")) {
@@ -113,34 +87,25 @@ struct GeneralSettingsTabView: View {
                     Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
                         .foregroundColor(accessibilityStatus.color)
                 }
+
+                // 文件夹权限（Bookmark）
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        Text("\(bookmarkManager.authorizedDirectories.count)")
+                            .foregroundColor(.secondary)
+                        Button(AppLocalization.localized("Manage…")) {
+                            showFolderPermissionsSheet = true
+                        }
+                    }
+                } label: {
+                    Label(AppLocalization.localized("Folder Permissions"), systemImage: "folder.badge.person.crop")
+                }
             } header: {
                 Text(appLocalized: "Permissions")
             } footer: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text(appLocalized: "Full Disk Access: Required to create and delete files in protected directories")
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if fullDiskAccessStatus != .enabled {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(appLocalized: "RClick needs Full Disk Access to work with files in protected directories")
-                                .fontWeight(.medium)
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "1. Click \"Settings…\" on the right to open System Settings")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "2. Click the lock icon and authenticate")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "3. Click \"+\" -> open \"Applications\" -> select \"RClick\"")
-                                .fixedSize(horizontal: false, vertical: true)
-                            Text(appLocalized: "4. Make sure the switch next to RClick is turned on")
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-                }
+                Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             // MARK: - 第三组：设置管理
@@ -210,16 +175,8 @@ struct GeneralSettingsTabView: View {
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
-        .alert(
-            Text(appLocalized: "Language Change Requires Restart"),
-            isPresented: $showLanguageRestartAlert
-        ) {
-            Button(AppLocalization.localized("Restart Now")) {
-                restartApplication()
-            }
-            Button(AppLocalization.localized("Later"), role: .cancel) {}
-        } message: {
-            Text(appLocalized: "Some interface elements and Finder menus will update after restarting RClick.")
+        .sheet(isPresented: $showFolderPermissionsSheet) {
+            FolderPermissionsSheetView(bookmarkManager: bookmarkManager)
         }
     }
 
@@ -229,16 +186,8 @@ struct GeneralSettingsTabView: View {
         // Finder 扩展状态
         finderSyncStatus = FIFinderSyncController.isExtensionEnabled ? .enabled : .disabled
 
-        // 完全磁盘访问权限检测（同步到 AppState）
-        store.checkFullDiskAccess()
-        fullDiskAccessStatus = store.hasFullDiskAccess ? .enabled : .disabled
-
-        // 辅助功能权限检测（使用 PermissionChecker）
+        // 辅助功能权限检测
         accessibilityStatus = PermissionChecker.hasAccessibilityPermission() ? .enabled : .disabled
-    }
-
-    private func hasFullDiskAccess() -> Bool {
-        return PermissionChecker.hasFullDiskAccess()
     }
 
     private func hasAccessibilityPermission() -> Bool {
@@ -252,18 +201,8 @@ struct GeneralSettingsTabView: View {
         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.AppleFileProvider")!)
     }
 
-    private func openFullDiskAccessSettings() {
-        PermissionChecker.openFullDiskAccessSettings()
-    }
-
     private func openAccessibilitySettings() {
         PermissionChecker.openAccessibilitySettings()
-    }
-
-    private func restartApplication() {
-        let appURL = Bundle.main.bundleURL
-        try? Process.run(URL(fileURLWithPath: "/usr/bin/open"), arguments: ["-n", appURL.path])
-        NSApp.terminate(nil)
     }
 
     // MARK: - 设置管理
