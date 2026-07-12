@@ -283,6 +283,7 @@ jobs:
             ${{ env.ZIP_NAME }}.sha256
             ${{ env.DMG_NAME }}
           generate_release_notes: true
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
