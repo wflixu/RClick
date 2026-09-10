@@ -92,13 +92,15 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 
 ### 🌐 Localization
 
-RClick supports three languages with the following priority:
+RClick supports five languages with the following priority:
 
 | Language | Code | Notes |
 |----------|------|-------|
 | **English** | `en` | Default/base language |
 | **Simplified Chinese** | `zh-Hans` | Primary localization target |
 | **Japanese** | `ja` | Activated when system language is Japanese |
+| **Spanish** | `es` | Activated when system language is Spanish |
+| **French** | `fr` | Activated when system language is French |
 
 **Principles:**
 - Default language is English (also the fallback for unsupported system languages)
