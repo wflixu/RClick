@@ -22,6 +22,12 @@
             "value": "%1$@（%2$@）"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@)"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -44,6 +50,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1. Haz clic en “Ajustes…” a la derecha para abrir Ajustes del Sistema"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Cliquez sur « Réglages… » à droite pour ouvrir Réglages Système"
           }
         },
         "ja": {
@@ -75,6 +87,12 @@
             "value": "2. Haz clic en el icono del candado y autentícate"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Cliquez sur l’icône de cadenas et authentifiez-vous"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -102,6 +120,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "3. Haz clic en “+” -> abre “Aplicaciones” -> selecciona “RClick”"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Cliquez sur « + » -> ouvrez « Applications » -> sélectionnez « RClick »"
           }
         },
         "ja": {
@@ -133,6 +157,12 @@
             "value": "4. Asegúrate de que el interruptor junto a RClick esté activado"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Vérifiez que l’interrupteur à côté de RClick est activé"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -160,6 +190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Acerca de"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos"
           }
         },
         "ja": {
@@ -191,6 +227,12 @@
             "value": "Accesibilidad"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accessibilité"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -218,6 +260,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Acciones"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions"
           }
         },
         "ja": {
@@ -249,6 +297,12 @@
             "value": "Agregar"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -276,6 +330,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Agregar una carpeta…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un dossier…"
           }
         },
         "ja": {
@@ -307,6 +367,12 @@
             "value": "Agregar aplicación"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une app"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -334,6 +400,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Agregar tipo de archivo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un type de fichier"
           }
         },
         "ja": {
@@ -365,6 +437,12 @@
             "value": "Agregar carpeta"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un dossier"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -394,6 +472,12 @@
             "value": "Carpetas agregadas"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dossiers ajoutés"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -418,6 +502,12 @@
           }
         },
         "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirDrop"
+          }
+        },
+        "fr": {
           "stringUnit": {
             "state": "translated",
             "value": "AirDrop"
@@ -452,6 +542,12 @@
             "value": "Aplicaciones"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applications"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -476,6 +572,12 @@
           }
         },
         "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps"
+          }
+        },
+        "fr": {
           "stringUnit": {
             "state": "translated",
             "value": "Apps"
@@ -510,6 +612,12 @@
             "value": "¿Seguro que quieres eliminar “%@” (%@)? Esta acción no se puede deshacer."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voulez-vous vraiment supprimer « %@ » (%@) ? Cette action est irréversible."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -537,6 +645,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Argumentos (separados por punto y coma)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arguments (séparés par des points-virgules)"
           }
         },
         "ja": {
@@ -568,6 +682,12 @@
             "value": "Argumentos: %@"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arguments : %@"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -595,6 +715,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autoriza carpetas para que RClick pueda crear, eliminar y administrar archivos en ellas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorisez des dossiers pour permettre à RClick d’y créer, supprimer et gérer des fichiers."
           }
         },
         "ja": {
@@ -626,6 +752,12 @@
             "value": "Autorizado"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorisé"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -653,6 +785,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Respaldo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauvegarde"
           }
         },
         "ja": {
@@ -684,6 +822,12 @@
             "value": "Cancelar"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -711,6 +855,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cambiar aplicación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changer d’app"
           }
         },
         "ja": {
@@ -742,6 +892,12 @@
             "value": "Cambiar plantilla"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changer de modèle"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -769,6 +925,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Buscar actualizaciones"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher des mises à jour"
           }
         },
         "ja": {
@@ -800,6 +962,12 @@
             "value": "Buscando actualizaciones..."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche de mises à jour…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -827,6 +995,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Elige una carpeta a la que RClick pueda acceder."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez un dossier auquel RClick pourra accéder."
           }
         },
         "ja": {
@@ -858,6 +1032,12 @@
             "value": "Elegir aplicación predeterminada"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir l’app par défaut"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -885,6 +1065,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Elegir archivo de plantilla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir un fichier modèle"
           }
         },
         "ja": {
@@ -916,6 +1102,12 @@
             "value": "Contraer el menú de acciones"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réduire le menu Actions"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -943,6 +1135,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contraer el menú de aplicaciones"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réduire le menu Apps"
           }
         },
         "ja": {
@@ -974,6 +1172,12 @@
             "value": "Contraer el menú"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réduire le menu"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1001,6 +1205,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contraer el menú de nuevo archivo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réduire le menu Nouveau fichier"
           }
         },
         "ja": {
@@ -1032,6 +1242,12 @@
             "value": "Carpetas frecuentes"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dossiers courants"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1059,6 +1275,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiar ruta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier le chemin"
           }
         },
         "ja": {
@@ -1090,6 +1312,12 @@
             "value": "Aplicación predeterminada"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App d’ouverture par défaut"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1117,6 +1345,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eliminar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer"
           }
         },
         "ja": {
@@ -1148,6 +1382,12 @@
             "value": "Eliminar aplicación"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l’app"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1175,6 +1415,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eliminar directamente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer immédiatement"
           }
         },
         "ja": {
@@ -1206,6 +1452,12 @@
             "value": "Eliminar tipo de archivo"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le type de fichier"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1233,6 +1485,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escritorio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bureau"
           }
         },
         "ja": {
@@ -1264,6 +1522,12 @@
             "value": "Nombre visible"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom affiché"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1291,6 +1555,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Documentos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documents"
           }
         },
         "ja": {
@@ -1322,6 +1592,12 @@
             "value": "No preguntar de nuevo"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne plus demander"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1349,6 +1625,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Listo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminé"
           }
         },
         "ja": {
@@ -1380,6 +1662,12 @@
             "value": "Descargar e instalar"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger et installer"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1407,6 +1695,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "La descarga falló"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec du téléchargement"
           }
         },
         "ja": {
@@ -1438,6 +1732,12 @@
             "value": "Descargar manualmente"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger manuellement"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1465,6 +1765,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Descargas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargements"
           }
         },
         "ja": {
@@ -1496,6 +1802,12 @@
             "value": "Editar aplicación"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier l’app"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1523,6 +1835,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Editar propiedades de la aplicación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier les propriétés de l’app"
           }
         },
         "ja": {
@@ -1554,6 +1872,12 @@
             "value": "Editar tipo de archivo"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le type de fichier"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1581,6 +1905,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Activar carpetas frecuentes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer les dossiers courants"
           }
         },
         "ja": {
@@ -1612,6 +1942,12 @@
             "value": "Activar Acceso total al disco"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer l’accès complet au disque"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1639,6 +1975,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Activar RClick"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer RClick"
           }
         },
         "ja": {
@@ -1670,6 +2012,12 @@
             "value": "Activa RClick en Proveedor de archivos para que sus acciones aparezcan en los menús contextuales del Finder"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activez RClick dans Fournisseur de fichiers pour afficher ses actions dans les menus contextuels du Finder"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1697,6 +2045,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Activado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activé"
           }
         },
         "ja": {
@@ -1728,6 +2082,12 @@
             "value": "Escribe el nombre de un SF Symbol, por ejemplo doc.text o curlybraces"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisissez un nom de symbole SF, par exemple doc.text ou curlybraces"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1755,6 +2115,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Variables de entorno"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Variables d’environnement"
           }
         },
         "ja": {
@@ -1786,6 +2152,12 @@
             "value": "Variables de entorno: %lld"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Variables d’environnement : %lld"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1813,6 +2185,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Exportar registros…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter les journaux…"
           }
         },
         "ja": {
@@ -1844,6 +2222,12 @@
             "value": "Exportar…"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1871,6 +2255,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Extensión: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extension : %@"
           }
         },
         "ja": {
@@ -1902,6 +2292,12 @@
             "value": "Error al descomprimir: %@"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec de l’extraction : %@"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1929,6 +2325,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No se pudieron buscar actualizaciones"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec de la recherche de mises à jour"
           }
         },
         "ja": {
@@ -1960,6 +2362,12 @@
             "value": "Extensión de archivo"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extension de fichier"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -1987,6 +2395,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Proveedor de archivos: selecciona “RClick” en la lista para activar el menú contextual del Finder"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fournisseur de fichiers : sélectionnez « RClick » dans la liste pour activer le menu contextuel du Finder"
           }
         },
         "ja": {
@@ -2018,6 +2432,12 @@
             "value": "Extensión del Finder"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extension Finder"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2045,6 +2465,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Se necesita permiso de acceso a la carpeta para usar esta función."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’autorisation d’accès au dossier est requise pour utiliser cette fonctionnalité."
           }
         },
         "ja": {
@@ -2076,6 +2502,12 @@
             "value": "Permisos de carpetas"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorisations de dossiers"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2103,6 +2535,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Las carpetas no se pueden compartir por AirDrop: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les dossiers ne peuvent pas être partagés via AirDrop : %@"
           }
         },
         "ja": {
@@ -2134,6 +2572,12 @@
             "value": "Por ejemplo: txt, md, json"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par exemple : txt, md, json"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2161,6 +2605,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Formato: CLAVE=VALOR, uno por línea"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format : CLÉ=VALEUR, une par ligne"
           }
         },
         "ja": {
@@ -2192,6 +2642,12 @@
             "value": "Acceso total al disco"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accès complet au disque"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2219,6 +2675,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Acceso total al disco: se necesita para crear y eliminar archivos en directorios protegidos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accès complet au disque : requis pour créer et supprimer des fichiers dans les dossiers protégés"
           }
         },
         "ja": {
@@ -2250,6 +2712,12 @@
             "value": "General"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Général"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2271,6 +2739,12 @@
             "state": "translated",
             "value": "github.com/wflixu/RClick"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "github.com/wflixu/RClick"
+          }
         }
       }
     },
@@ -2287,6 +2761,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Permitir acceso"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autoriser l’accès"
           }
         },
         "ja": {
@@ -2318,6 +2798,12 @@
             "value": "Otorgar permiso"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accorder l’autorisation"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2345,6 +2831,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otorga a RClick acceso a esta carpeta para realizar operaciones con archivos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorisez RClick à accéder à ce dossier pour effectuer des opérations sur les fichiers."
           }
         },
         "ja": {
@@ -2376,6 +2868,12 @@
             "value": "Ocultar"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2403,6 +2901,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Carpeta de inicio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Départ"
           }
         },
         "ja": {
@@ -2434,6 +2938,12 @@
             "value": "Icono"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icône"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2461,6 +2971,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ignorar esta versión"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignorer cette version"
           }
         },
         "ja": {
@@ -2492,6 +3008,12 @@
             "value": "Importar…"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importer…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2519,6 +3041,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Error al instalar: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec de l’installation : %@"
           }
         },
         "ja": {
@@ -2550,6 +3078,12 @@
             "value": "Carpeta no válida"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dossier non valide"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2577,6 +3111,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir al iniciar sesión"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir à la connexion"
           }
         },
         "ja": {
@@ -2608,6 +3148,12 @@
             "value": "Registros"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Journaux"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2635,6 +3181,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controles principales"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commandes principales"
           }
         },
         "ja": {
@@ -2666,6 +3218,12 @@
             "value": "Administrar…"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gérer…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2693,6 +3251,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nombre"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom"
           }
         },
         "ja": {
@@ -2724,6 +3288,12 @@
             "value": "Nuevo archivo"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau fichier"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2751,6 +3321,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nueva versión disponible"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle version disponible"
           }
         },
         "ja": {
@@ -2782,6 +3358,12 @@
             "value": "No se encontró ninguna aplicación .app en el archivo ZIP."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune application .app n’a été trouvée dans le fichier ZIP."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2809,6 +3391,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No se encontró ningún paquete de aplicación .app.zip."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun paquet d’application .app.zip n’a été trouvé."
           }
         },
         "ja": {
@@ -2840,6 +3428,12 @@
             "value": "No hay carpetas autorizadas"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun dossier autorisé"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2867,6 +3461,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No hay actualizaciones disponibles."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune mise à jour disponible."
           }
         },
         "ja": {
@@ -2898,6 +3498,12 @@
             "value": "Sin autorización"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non autorisé"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2927,6 +3533,12 @@
             "value": "Aviso"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avis"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -2951,6 +3563,12 @@
           }
         },
         "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "fr": {
           "stringUnit": {
             "state": "translated",
             "value": "OK"
@@ -2985,6 +3603,12 @@
             "value": "Abrir Ajustes"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir les réglages"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3014,6 +3638,12 @@
             "value": "Abrir con"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir avec"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -3037,6 +3667,12 @@
             "value": "Abrir con %@"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir avec %@"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -3058,6 +3694,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Permisos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorisations"
           }
         },
         "ja": {
@@ -3089,6 +3731,12 @@
             "value": "Selecciona la carpeta Aplicaciones correcta."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veuillez sélectionner le bon dossier Applications."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3118,6 +3766,12 @@
             "value": "PPTX"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PPTX"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -3139,6 +3793,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vista previa:"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aperçu :"
           }
         },
         "ja": {
@@ -3170,6 +3830,12 @@
             "value": "No se pueden eliminar las carpetas protegidas del sistema: %@"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les dossiers système protégés ne peuvent pas être supprimés : %@"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3197,6 +3863,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No se pueden compartir las carpetas protegidas del sistema: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les dossiers système protégés ne peuvent pas être partagés : %@"
           }
         },
         "ja": {
@@ -3228,6 +3900,12 @@
             "value": "Salir"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitter"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3256,6 +3934,12 @@
             "value": "RClick"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -3277,6 +3961,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "RClick (cargando...)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick (chargement…)"
           }
         },
         "ja": {
@@ -3308,6 +3998,12 @@
             "value": "RClick es una extensión del menú contextual que te permite agregar aplicaciones para abrir carpetas e incluye algunas acciones frecuentes."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick est une extension du menu clic droit qui vous permet d’ajouter des applications pour ouvrir des dossiers et inclut quelques actions courantes !"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -3329,6 +4025,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "RClick es una extensión del menú contextual que te permite agregar aplicaciones para abrir carpetas e incluye algunas acciones frecuentes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick est une extension du menu clic droit qui vous permet d’ajouter des applications pour ouvrir des dossiers et inclut quelques actions courantes."
           }
         },
         "ja": {
@@ -3360,6 +4062,12 @@
             "value": "RClick necesita Acceso total al disco para crear archivos, eliminar archivos y administrar archivos ocultos en carpetas protegidas, como Escritorio, Documentos y Descargas.\n\nSin este permiso, algunas operaciones pueden fallar en los directorios protegidos.\n\nPara activarlo:\n1. Haz clic en “Abrir Ajustes” más abajo\n2. Haz clic en el icono del candado y autentícate\n3. Haz clic en “+” y agrega RClick desde tu carpeta Aplicaciones\n4. Activa el interruptor junto a RClick"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick a besoin de l’accès complet au disque pour créer et supprimer des fichiers, et gérer les fichiers masqués dans les dossiers protégés (comme Bureau, Documents et Téléchargements).\n\nSans cette autorisation, certaines opérations peuvent échouer dans les dossiers protégés.\n\nPour l’activer :\n1. Cliquez sur « Ouvrir les réglages » ci-dessous\n2. Cliquez sur l’icône de cadenas et authentifiez-vous\n3. Cliquez sur « + » et ajoutez RClick depuis votre dossier Applications\n4. Activez l’interrupteur à côté de RClick"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3387,6 +4095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "RClick necesita Acceso total al disco para trabajar con archivos en directorios protegidos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick a besoin de l’accès complet au disque pour manipuler les fichiers des dossiers protégés"
           }
         },
         "ja": {
@@ -3418,6 +4132,12 @@
             "value": "RClick necesita permiso para instalar la actualización en tu carpeta Aplicaciones."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick a besoin d’une autorisation pour installer la mise à jour dans votre dossier Applications."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3445,6 +4165,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quitar el permiso de la carpeta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer l’autorisation du dossier"
           }
         },
         "ja": {
@@ -3476,6 +4202,12 @@
             "value": "Restablecer"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3503,6 +4235,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "¿Restablecer todos los ajustes?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser tous les réglages ?"
           }
         },
         "ja": {
@@ -3534,6 +4272,12 @@
             "value": "Restablecer todos los ajustes…"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser tous les réglages…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3561,6 +4305,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restablecer todos los ajustes restaura la configuración predeterminada y no se puede deshacer"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La réinitialisation de tous les réglages restaure la configuration par défaut et est irréversible"
           }
         },
         "ja": {
@@ -3592,6 +4342,12 @@
             "value": "Reiniciar más tarde"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrer plus tard"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3619,6 +4375,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reiniciar ahora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrer maintenant"
           }
         },
         "ja": {
@@ -3650,6 +4412,12 @@
             "value": "Restaurar valores predeterminados"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rétablir les valeurs par défaut"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3677,6 +4445,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Argumentos de ejecución"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arguments d’exécution"
           }
         },
         "ja": {
@@ -3708,6 +4482,12 @@
             "value": "Guardar"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrer"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3735,6 +4515,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Separa varios argumentos con punto y coma (;)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparez les arguments par des points-virgules (;)"
           }
         },
         "ja": {
@@ -3766,6 +4552,12 @@
             "value": "Ajustes"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3793,6 +4585,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Administración de ajustes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestion des réglages"
           }
         },
         "ja": {
@@ -3824,6 +4622,12 @@
             "value": "Ajustes…"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages…"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3851,6 +4655,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nombre del SF Symbol"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom du symbole SF"
           }
         },
         "ja": {
@@ -3882,6 +4692,12 @@
             "value": "Mostrar el icono en la barra de menús"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher l’icône dans la barre des menus"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3909,6 +4725,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Plantilla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modèle"
           }
         },
         "ja": {
@@ -3940,6 +4762,12 @@
             "value": "El paquete de la aplicación no es válido o está dañado."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le paquet de l’application est non valide ou endommagé."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -3967,6 +4795,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "La aplicación se actualizó correctamente. Reinicia la app para finalizar la actualización."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’application a été mise à jour avec succès. Redémarrez l’app pour terminer la mise à jour."
           }
         },
         "ja": {
@@ -3998,6 +4832,12 @@
             "value": "No se puede eliminar la carpeta actual. En su lugar, selecciona archivos o subcarpetas."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le dossier actuel ne peut pas être supprimé. Sélectionnez plutôt des fichiers ou des sous-dossiers."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4025,6 +4865,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No se puede compartir la carpeta actual. En su lugar, selecciona archivos o subcarpetas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le dossier actuel ne peut pas être partagé. Sélectionnez plutôt des fichiers ou des sous-dossiers."
           }
         },
         "ja": {
@@ -4056,6 +4902,12 @@
             "value": "La versión actual ya está actualizada."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La version actuelle est déjà à jour."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4083,6 +4935,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "La carpeta seleccionada es una subcarpeta de otra que ya elegiste. Elige una carpeta diferente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le dossier sélectionné est un sous-dossier d’un dossier déjà sélectionné. Veuillez choisir un autre dossier."
           }
         },
         "ja": {
@@ -4114,6 +4972,12 @@
             "value": "El usuario canceló la autorización."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’utilisateur a annulé l’autorisation."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4141,6 +5005,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Se eliminarán todas las configuraciones personalizadas y se restaurarán los valores predeterminados. Esta acción no se puede deshacer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les configurations personnalisées seront supprimées et les valeurs par défaut rétablies. Cette action est irréversible."
           }
         },
         "ja": {
@@ -4172,6 +5042,12 @@
             "value": "Carpeta sin autorización"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dossier non autorisé"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4199,6 +5075,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher"
           }
         },
         "ja": {
@@ -4230,6 +5112,12 @@
             "value": "Desconocido"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inconnu"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4257,6 +5145,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Error desconocido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erreur inconnue"
           }
         },
         "ja": {
@@ -4288,6 +5182,12 @@
             "value": "Sin título"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans titre"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4315,6 +5215,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todo actualizado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À jour"
           }
         },
         "ja": {
@@ -4346,6 +5252,12 @@
             "value": "Actualización instalada"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mise à jour installée"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4373,6 +5285,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Versión %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
           }
         },
         "ja": {
@@ -4404,6 +5322,12 @@
             "value": "Versión %@ (%@)"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@ (%@)"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4431,6 +5355,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Se ignoró la versión %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La version %@ est ignorée"
           }
         },
         "ja": {
@@ -4462,6 +5392,12 @@
             "value": "¿Quieres proponer una función? Envía tus comentarios aquí."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envie d’une nouvelle fonctionnalité ? Donnez votre avis ici."
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
@@ -4483,6 +5419,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Advertencia"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avertissement"
           }
         },
         "ja": {
@@ -4514,6 +5456,12 @@
             "value": "Iniciar sesión automáticamente está pendiente de aprobación en Ajustes del Sistema"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’ouverture à la connexion est en attente d’approbation dans Réglages Système"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4541,6 +5489,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Para iniciar sesión automáticamente, RClick debe instalarse en /Applications"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’ouverture à la connexion nécessite que RClick soit installé dans /Applications"
           }
         },
         "ja": {
@@ -4572,6 +5526,12 @@
             "value": "Actualizar desde la Mac App Store"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mettre à jour via le Mac App Store"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4599,6 +5559,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "RClick se instaló desde la Mac App Store. Actualízalo desde la App Store."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick a été installé depuis le Mac App Store. Veuillez le mettre à jour depuis l’App Store."
           }
         },
         "ja": {
@@ -4630,6 +5596,12 @@
             "value": "Abrir App Store"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir l’App Store"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4657,6 +5629,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Más tarde"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus tard"
           }
         },
         "ja": {
@@ -4688,6 +5666,12 @@
             "value": "RClick necesita acceso a esta carpeta para eliminar, crear y modificar archivos. Elige esta carpeta o una carpeta principal más amplia para cubrir también sus subcarpetas. Puedes administrar estos permisos en Ajustes → Permisos de carpetas."
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RClick a besoin d’accéder à ce dossier pour supprimer, créer et modifier des fichiers. Choisissez ce dossier ou un dossier parent plus large pour couvrir ses sous-dossiers. Vous pouvez gérer ces autorisations dans Réglages → Autorisations de dossiers."
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4715,6 +5699,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autoriza esta carpeta y todas sus subcarpetas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autorise ce dossier et tous ses sous-dossiers"
           }
         },
         "ja": {
@@ -4746,6 +5736,12 @@
             "value": "Abrir en una nueva ventana"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir dans une nouvelle fenêtre"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4775,6 +5771,12 @@
             "value": "Ventana"
           }
         },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenêtre"
+          }
+        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -4802,6 +5804,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Para apps tipo navegador, lanza una nueva instancia en lugar de abrir una pestaña en la ya abierta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour les apps de type navigateur, lance une nouvelle instance au lieu d’ouvrir un nouvel onglet dans celle en cours"
           }
         },
         "ja": {
