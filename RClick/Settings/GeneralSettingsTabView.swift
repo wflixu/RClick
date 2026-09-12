@@ -24,6 +24,8 @@ struct GeneralSettingsTabView: View {
     @State private var finderSyncStatus: PermissionStatus = .unknown
     @State private var accessibilityStatus: PermissionStatus = .unknown
     @State private var showFolderPermissionsSheet = false
+    @State private var menuConfigError: String?
+    @State private var showMenuConfigError = false
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
@@ -90,6 +92,26 @@ struct GeneralSettingsTabView: View {
                 Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
                     .foregroundColor(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Section {
+                HStack {
+                    Button(AppLocalization.localized("Open Config")) {
+                        openMenuConfig(reveal: false)
+                    }
+                    Button(AppLocalization.localized("Reveal in Finder")) {
+                        openMenuConfig(reveal: true)
+                    }
+                }
+            } header: {
+                Text(appLocalized: "Advanced Menu Layout")
+            } footer: {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(appLocalized: "Customize top-level items and nested submenus with custom_menu.json. 💡 Tip: Give this file to an AI assistant (such as ChatGPT / Claude) to help arrange your menu.")
+                    Text(appLocalized: "Changes appear after reopening the menu within 10 seconds. Remove the file to restore the default layout.")
+                }
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
 
             // MARK: - 第三组：设置管理
@@ -159,8 +181,34 @@ struct GeneralSettingsTabView: View {
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
+        .alert(AppLocalization.localized("Unable to Open Menu Config"), isPresented: $showMenuConfigError) {
+            Button(AppLocalization.localized("OK"), role: .cancel) {}
+        } message: {
+            Text(menuConfigError ?? "")
+        }
         .sheet(isPresented: $showFolderPermissionsSheet) {
             FolderPermissionsSheetView(bookmarkManager: bookmarkManager)
+        }
+    }
+
+    private func openMenuConfig(reveal: Bool) {
+        do {
+            guard let url = MenuService.customMenuURL else {
+                menuConfigError = AppLocalization.localized("The shared configuration folder is unavailable.")
+                showMenuConfigError = true
+                return
+            }
+            try MenuService.prepareCustomMenu(at: url, config: RCRuntime.shared.menuService.buildConfig(from: store))
+            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+            if reveal {
+                NSWorkspace.shared.activateFileViewerSelecting([url])
+            } else if !NSWorkspace.shared.open(url) {
+                menuConfigError = AppLocalization.localized("No application could open the configuration file. Try Reveal in Finder and choose a text editor.")
+                showMenuConfigError = true
+            }
+        } catch {
+            menuConfigError = error.localizedDescription
+            showMenuConfigError = true
         }
     }
 

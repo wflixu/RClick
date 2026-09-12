@@ -164,4 +164,36 @@ struct CustomMenuTests {
         #expect(try encoder.encode(decoded) == data)
         #expect(decoded.customMenu?[0].id == "vscode-id")
     }
+    @Test func preparesUsableExampleWithoutOverwritingExistingConfig() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("rclick-seed-\(UUID()).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try MenuService.prepareCustomMenu(at: url, config: catalog)
+        let nodes = try #require(try CustomMenu.load(from: url, config: catalog))
+        #expect(nodes.prefix(3).map(\.id) == ["vscode-id", "warp-id", "copy-path"])
+        #expect(nodes[3].type == .separator)
+        let more = try #require(nodes.last?.children)
+        #expect(more.first?.children?.map(\.id) == ["txt-id", "md-id"])
+
+        // Even malformed user content is preserved for editing, never replaced by a seed.
+        let edited = Data("unfinished user edit".utf8)
+        try edited.write(to: url)
+        try MenuService.prepareCustomMenu(at: url, config: catalog)
+        #expect(try Data(contentsOf: url) == edited)
+    }
+
+    @Test func emptyCatalogProducesValidExampleAndWriteErrorsPropagate() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("rclick-empty-\(UUID()).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try MenuService.prepareCustomMenu(at: url, config: MenuConfigPayload())
+        let nodes = try #require(try CustomMenu.load(from: url, config: MenuConfigPayload()))
+        #expect(nodes.count == 1)
+        #expect(nodes.first?.type == .submenu)
+        #expect(nodes.first?.children?.isEmpty == true)
+        let missingParent = FileManager.default.temporaryDirectory
+            .appendingPathComponent("absent-\(UUID())/custom_menu.json")
+        #expect(throws: (any Error).self) {
+            try MenuService.prepareCustomMenu(at: missingParent, config: catalog)
+        }
+    }
+
 }

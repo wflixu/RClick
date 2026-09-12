@@ -18,6 +18,43 @@ final class MenuService {
 
     var lastSnapshot: Data? { lastMenuSnapshot }
 
+    static var customMenuURL: URL? {
+        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.suitName)?
+            .appendingPathComponent("custom_menu.json")
+    }
+
+    /// Seed only once, using configured IDs so the example works on this installation.
+    static func prepareCustomMenu(at url: URL, config: MenuConfigPayload) throws {
+        if FileManager.default.fileExists(atPath: url.path) { return }
+        var nodes = config.apps.map { MenuNode(type: .item, itemType: .app, id: $0.id) }
+        nodes += config.actions.map { MenuNode(type: .item, itemType: .action, id: $0.id) }
+        var groups: [MenuNode] = []
+        if !config.newFiles.isEmpty {
+            groups.append(MenuNode(type: .submenu, title: AppLocalization.localized("New File"),
+                                   icon: "doc.badge.plus", children: config.newFiles.map {
+                MenuNode(type: .item, itemType: .newFile, id: $0.id)
+            }))
+        }
+        if !config.commonDirs.isEmpty {
+            groups.append(MenuNode(type: .submenu, title: AppLocalization.localized("Common Dirs"),
+                                   icon: "folder", children: config.commonDirs.map {
+                MenuNode(type: .item, itemType: .commonDir, id: $0.id)
+            }))
+        }
+        if !nodes.isEmpty { nodes.append(MenuNode(type: .separator)) }
+        nodes.append(MenuNode(type: .submenu, title: AppLocalization.localized("More"),
+                              icon: "ellipsis.circle", children: groups))
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        let data = try encoder.encode(nodes)
+        do {
+            // Exclusive creation also protects edits if another writer wins the race.
+            try data.write(to: url, options: .withoutOverwriting)
+        } catch CocoaError.fileWriteFileExists {
+            return
+        }
+    }
+
     /// 从 AppState 实时构建菜单配置
     func buildConfig(from state: AppState) -> MenuConfigPayload {
         let actionMenuItems = state.actions.filter(\.enabled).map { $0.toActionMenuItem() }
@@ -39,10 +76,10 @@ final class MenuService {
             commonDirsCollapsed: state.foldCommonDirMenu
         )
 
-        if let directory = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.suitName) {
+        if let url = Self.customMenuURL {
             do {
                 config.customMenu = try CustomMenu.load(
-                    from: directory.appendingPathComponent("custom_menu.json"), config: config
+                    from: url, config: config
                 )
             } catch {
                 Logger(subsystem: "RClick", category: "MenuService").error("Invalid custom_menu.json; using default menu: \(String(describing: error), privacy: .public)")
