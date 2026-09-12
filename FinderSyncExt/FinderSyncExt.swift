@@ -23,6 +23,8 @@ private let logger = Logger(
 /// 只负责菜单渲染和事件转发，不读取 SwiftData
 class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
+    private var volumeObserver: MountedVolumeObserver?
+
     // MARK: - Properties
 
     /// 菜单配置缓存（内存缓存，从 Main App 推送）
@@ -84,19 +86,17 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     // MARK: - Directory Observing
 
-    /// 设置监听目录（全盘监听）
-    ///
-    /// Observing "/" covers every reachable folder — /Users, /Applications,
-    /// /opt, /tmp, external and network volumes (mounted under /Volumes) —
-    /// which is what the original per-path list intended but missed for
-    /// anything on the system volume outside /Users. FileProvider-backed
-    /// locations (iCloud Drive, synced Desktop & Documents) still get no
-    /// FinderSync menus; that is a macOS restriction on all FinderSync
-    /// extensions, not something an observation URL can change.
+    /// Register each mounted volume explicitly; filesystem ancestry alone is not
+    /// a reliable observation boundary for Finder Sync across mount points.
     private func setupObservingDirectories() {
-        let directories: Set<URL> = [URL(fileURLWithPath: "/")]
-        FIFinderSyncController.default().directoryURLs = directories
-        logger.info("Observing directories: \(directories.map { $0.path })")
+        // Finder Sync requires an initial set during extension startup.
+        FIFinderSyncController.default().directoryURLs = [URL(fileURLWithPath: "/")]
+        Task { @MainActor [weak self] in
+            self?.volumeObserver = MountedVolumeObserver { directories in
+                FIFinderSyncController.default().directoryURLs = directories
+                logger.info("Observing \(directories.count) filesystem roots")
+            }
+        }
     }
 
     // MARK: - Message Handling
