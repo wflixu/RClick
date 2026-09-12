@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import OSLog
 
 @MainActor
 final class MenuService {
@@ -26,7 +27,7 @@ final class MenuService {
 
         menuVersion += 1
 
-        let config = MenuConfigPayload(
+        var config = MenuConfigPayload(
             version: menuVersion,
             actions: actionMenuItems,
             apps: appMenuItems,
@@ -37,6 +38,16 @@ final class MenuService {
             newFilesCollapsed: state.foldNewFileMenu,
             commonDirsCollapsed: state.foldCommonDirMenu
         )
+
+        if let directory = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.suitName) {
+            do {
+                config.customMenu = try CustomMenu.load(
+                    from: directory.appendingPathComponent("custom_menu.json"), config: config
+                )
+            } catch {
+                Logger(subsystem: "RClick", category: "MenuService").error("Invalid custom_menu.json; using default menu: \(String(describing: error), privacy: .public)")
+            }
+        }
 
         lastMenuSnapshot = try? JSONEncoder().encode(config)
         return config
