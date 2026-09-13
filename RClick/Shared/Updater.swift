@@ -93,6 +93,18 @@ class UpdatePreferences: ObservableObject {
 
 // MARK: - GitHub API 服务
 
+/// 一次更新检查的结果。
+///
+/// 以前 `checkForUpdate` 返回 `GitHubRelease?`，那一个 `nil` 同时背着三种含义：
+/// 网络失败、最新 release 是草稿/预发布、确实已是最新。而 `catch` 又把真实的网络
+/// 错误吞成一句 `print`，上层拿到 `nil` 只能一律当成「已是最新」——所以断网会被
+/// 报成「已是最新」。三种情况不拆开，界面就没法说实话。
+enum UpdateCheckResult {
+    case updateAvailable(GitHubRelease)
+    case upToDate
+    case failed(String)
+}
+
 class GitHubReleaseChecker {
     private let owner: String
     private let repo: String
@@ -119,29 +131,48 @@ class GitHubReleaseChecker {
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(GitHubRelease.self, from: data)
     }
-    
-    // 检查是否需要更新
-    func checkForUpdate(currentVersion: String, includePrereleases: Bool = false) async -> GitHubRelease? {
-        print(currentVersion)
+
+    /// 拉仓库的星标数。走 `/repos/{owner}/{repo}`，和 release 是两个端点。
+    func fetchStarCount() async throws -> Int {
+        let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)")!
+        var request = URLRequest(url: url)
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        struct Repository: Decodable {
+            let stargazersCount: Int
+            enum CodingKeys: String, CodingKey { case stargazersCount = "stargazers_count" }
+        }
+        return try JSONDecoder().decode(Repository.self, from: data).stargazersCount
+    }
+
+    // 检查是否需要更新。
+    // 返回枚举而不是 `GitHubRelease?`：那个 `nil` 原来同时背着「网络失败」
+    // 「最新 release 是草稿或预发布」「确实已是最新」三种含义，而 `catch` 又把
+    // 真实的网络错误吞成一句 `print`，上层只能一律当成「已是最新」——
+    // 于是断网会被报成「已是最新」。三种情况分开，界面才可能说实话。
+    func checkForUpdate(currentVersion: String, includePrereleases: Bool = false) async -> UpdateCheckResult {
         do {
             let latestRelease = try await fetchLatestRelease()
-            
-            // 跳过草稿版和预发布版（除非明确包含）
+
+            // 草稿版和预发布版不算可更新版本，但这是一次成功的检查
             if latestRelease.draft || (!includePrereleases && latestRelease.prerelease) {
-                return nil
+                return .upToDate
             }
-            
-            // 比较版本
+
             if compareVersions(currentVersion, latestRelease.version) == .orderedAscending {
-                return latestRelease
-            } else {
-                print("the last verison \(latestRelease.version)")
+                return .updateAvailable(latestRelease)
             }
+
+            return .upToDate
         } catch {
-            print("检查更新失败: \(error)")
+            return .failed(error.localizedDescription)
         }
-        
-        return nil
     }
     
     // 语义化版本比较
@@ -176,13 +207,24 @@ class UpdateManager: ObservableObject {
     @Published var availableUpdate: GitHubRelease?
     @Published var isChecking = false
     @Published var updateError: String?
+    /// 上一次检查的结论是「已是最新」。
+    ///
+    /// 单独一个字段，不再借用 `updateError`：借用会让界面无法区分「检查成功且已是最新」
+    /// 和「检查失败」，弹窗里那张绿色「Up to Date」卡片也因此永远走不到。
+    @Published var isUpToDate = false
     @Published var isDownloading = false
     @Published var downloadProgress: Double = 0
     @Published var showUpdateSheet = false
+
+    /// 仓库星标数。nil 表示还没拿到——界面就不显示数字，不占位、不报错。
+    @Published private(set) var starCount: Int?
     
     private let githubChecker: GitHubReleaseChecker
     private let preferences: UpdatePreferences
     private let currentVersion: String
+    /// 存下来只为拼仓库/Issues 地址，别处不再硬编码 URL。
+    private let owner: String
+    private let repo: String
 
     /// 是否来自 Mac App Store（通过 `Contents/_MASReceipt/receipt` 是否存在判断）。
     /// App Store 构建禁止自更新（MAS 审核要求），改为引导用户去 App Store 更新。
@@ -195,37 +237,81 @@ class UpdateManager: ObservableObject {
         self.githubChecker = GitHubReleaseChecker(owner: owner, repo: repo)
         self.preferences = UpdatePreferences()
         self.currentVersion = currentVersion
+        self.owner = owner
+        self.repo = repo
+    }
+
+    // MARK: - 星标数
+
+    private enum StarCache {
+        static let count = "githubStarCount"
+        static let fetchedAt = "githubStarCountFetchedAt"
+        /// 一天拉一次。星数不是实时指标，没必要每次打开「关于」都请求一次。
+        static let lifetime: TimeInterval = 24 * 60 * 60
+    }
+
+    /// 取星标数：优先用缓存，过期或没有才请求。
+    ///
+    /// 失败不打扰用户——有旧值就继续用（别让数字忽然消失），没有就保持 nil，
+    /// 「关于」页那一行只会少一个数字，不会多一条错误。
+    func loadStarCount() async {
+        let defaults = UserDefaults.group
+        let cachedAt = defaults.object(forKey: StarCache.fetchedAt) as? Date
+        let cached = defaults.object(forKey: StarCache.count) as? Int
+
+        if let cachedAt, let cached, Date().timeIntervalSince(cachedAt) < StarCache.lifetime {
+            starCount = cached
+            return
+        }
+
+        if let fresh = try? await githubChecker.fetchStarCount() {
+            starCount = fresh
+            defaults.set(fresh, forKey: StarCache.count)
+            defaults.set(Date(), forKey: StarCache.fetchedAt)
+        } else if let cached {
+            starCount = cached
+        }
     }
     
-    // 关闭更新提示
+    // 关闭更新提示。
+    // 只关窗，**不清空检查结果**：清空会让「关于」页的状态行在关窗后退回「尚未检查」，
+    // 把用户刚拿到的信息抹掉；再用「查看详情…」打开时也会看到一张空白的卡片。
     func dismissUpdateSheet() {
         showUpdateSheet = false
-        availableUpdate = nil
-        updateError = nil
+    }
+
+    /// 打开更新弹窗展示上次的检查结果，不重新发起检查。
+    func showUpdateDetails() {
+        showUpdateSheet = true
     }
       
     // 检查更新
     func checkForUpdates(force: Bool = false) async {
         isChecking = true
         updateError = nil
+        isUpToDate = false
         showUpdateSheet = true
-        
+
         defer { isChecking = false }
-        
-        guard let release = await githubChecker.checkForUpdate(currentVersion: currentVersion) else {
-            print("not release")
-            updateError = AppLocalization.localized("The current version is already up to date.")
-            return
+
+        switch await githubChecker.checkForUpdate(currentVersion: currentVersion) {
+        case .failed(let reason):
+            // 真失败。从此不再和「已是最新」共用 updateError，弹窗标题才对得上内容。
+            updateError = reason
+
+        case .upToDate:
+            // 单独置位。updateError 保持 nil，弹窗因此会走到它原本走不到的 else 分支，
+            // 显示作者早就写好、却从未显示过的绿色「Up to Date」卡片。
+            isUpToDate = true
+
+        case .updateAvailable(let release):
+            // 检查用户是否忽略了此版本
+            if !force && preferences.isVersionIgnored(release.version) {
+                updateError = String(format: AppLocalization.localized("Version %@ is ignored"), release.version)
+                return
+            }
+            availableUpdate = release
         }
-            
-        // 检查用户是否忽略了此版本
-        if !force && preferences.isVersionIgnored(release.version) {
-            print("忽略这个版本")
-            updateError = String(format: AppLocalization.localized("Version %@ is ignored"), release.version)
-            return
-        }
-            
-        availableUpdate = release
     }
     
     // MARK: - 下载和安装方法
@@ -482,12 +568,20 @@ class UpdateManager: ObservableObject {
         }
     }
     
-    // 打开GitHub发布页面
-    func openReleasesPage() {
-        if let url = URL(string: "https://github.com/wflixu/RClick/releases") {
-            NSWorkspace.shared.open(url)
-        }
+    /// 统一的仓库地址拼接：owner/repo 来自 init，不在各处再硬编码一遍。
+    private func openGitHub(_ path: String = "") {
+        guard let url = URL(string: "https://github.com/\(owner)/\(repo)\(path)") else { return }
+        NSWorkspace.shared.open(url)
     }
+
+    // 打开GitHub发布页面
+    func openReleasesPage() { openGitHub("/releases") }
+
+    /// 打开仓库主页（「关于」页的「加星」走这里）。
+    func openRepositoryPage() { openGitHub() }
+
+    /// 打开 Issues 列表（「关于」页的「反馈问题」走这里）。
+    func openIssuesPage() { openGitHub("/issues") }
     
     // MARK: - 错误类型
 

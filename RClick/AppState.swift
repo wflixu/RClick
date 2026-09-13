@@ -29,20 +29,56 @@ class AppState: ObservableObject, ActionStateProviding {
     let bookmarkManager = BookmarkManager()
 
     // 折叠开关状态 - 每个分类独立控制
-    @AppStorage("foldAppsMenu") var foldAppsMenu: Bool = false
-    @AppStorage("foldActionsMenu") var foldActionsMenu: Bool = false
-    @AppStorage("foldNewFileMenu") var foldNewFileMenu: Bool = true
-    @AppStorage("foldCommonDirMenu") var foldCommonDirMenu: Bool = true
+    //
+    // 全部存在 App Group 里，和 showMenuBarExtra 一致，全项目只剩一个 store。
+    // 注意收益仅止于"不再有两个 store"：扩展并不读这些键，它拿到的是 MenuService
+    // 算好的 MenuConfigPayload，所以这不是功能性改进，别高估它。
+    //
+    // 它们原本在 UserDefaults.standard，靠 init 里那一次 migrateLayoutToggles 搬过来。
+    @AppStorage("foldAppsMenu", store: .group) var foldAppsMenu: Bool = false
+    @AppStorage("foldActionsMenu", store: .group) var foldActionsMenu: Bool = false
+    @AppStorage("foldNewFileMenu", store: .group) var foldNewFileMenu: Bool = true
+    @AppStorage("foldCommonDirMenu", store: .group) var foldCommonDirMenu: Bool = true
     // 常用文件夹总开关（默认关闭）
-    @AppStorage("showCommonDirs") var showCommonDirs: Bool = false
+    @AppStorage("showCommonDirs", store: .group) var showCommonDirs: Bool = false
 
-    // 菜单栏显示
-    @AppStorage(Key.showMenuBarExtra) var showMenuBar: Bool = true
+    // 菜单栏显示走 RClickApp / GeneralSettingsTabView 里的那份（store: .group）。
+    // 这里曾有一份重复声明，没有任何地方读它；两份 store 不同，留着就是个陷阱。
 
     /// 配置持久化服务
     let configService = ConfigService()
 
+    /// Layout toggles that used to live in `UserDefaults.standard`.
+    ///
+    /// Listed by name because the migration has to find them in the old store, and
+    /// because renaming one without updating this list would silently strand the
+    /// user's value there.
+    nonisolated static let layoutToggleKeys = [
+        "foldAppsMenu", "foldActionsMenu", "foldNewFileMenu", "foldCommonDirMenu", "showCommonDirs",
+    ]
+
+    /// Moves the layout toggles into the shared group, once.
+    ///
+    /// Splitting these across two stores is the defect this fixes. It needs a
+    /// migration rather than a plain store swap because the old values would
+    /// otherwise become invisible and every switch would fall back to its
+    /// declaration default. "Enable common folders" going back to off is the one
+    /// that bites: it empties `payload.commonDirs`, so any custom menu referencing a
+    /// common folder stops resolving and the whole custom layout reverts.
+    ///
+    /// Takes both stores explicitly so a test can drive it with throwaway suites
+    /// rather than the real ones.
+    nonisolated static func migrateLayoutToggles(from old: UserDefaults, to new: UserDefaults) {
+        for key in layoutToggleKeys {
+            guard new.object(forKey: key) == nil, let existing = old.object(forKey: key) else { continue }
+            new.set(existing, forKey: key)
+            old.removeObject(forKey: key)
+        }
+    }
+
     init(inExt: Bool = false) {
+        // Before anything reads the switches above.
+        Self.migrateLayoutToggles(from: .standard, to: .group)
         self.inExt = inExt
         Task { @MainActor in
             logger.debug("start load")
@@ -55,27 +91,19 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func deleteApp(index: Int) {
         apps.remove(at: index)
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func addApp(item: OpenWithApp) {
         logger.debug("start add app")
         apps.append(item)
 
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func moveApps(from source: IndexSet, to destination: Int) {
         apps.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     @MainActor
@@ -87,12 +115,12 @@ class AppState: ObservableObject, ActionStateProviding {
             updatedApp.environment = environment
             updatedApp.opensNewInstance = opensNewInstance
             apps[index] = updatedApp
-            try? save()
+            persist()
         }
     }
 
     func getAppItem(rid: String) -> OpenWithApp? {
-        return apps.first { rid.contains($0.id) }
+        return apps.first { rid == $0.id }
     }
 
     func getFileType(rid: String) -> NewFile? {
@@ -105,28 +133,19 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func deleteNewFile(id: String) {
         newFiles.removeAll { $0.id == id }
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
-        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        persist()
     }
 
     @MainActor func addNewFile(_ item: NewFile) {
         logger.debug("start add new file type")
         newFiles.append(item)
 
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func moveNewFiles(from source: IndexSet, to destination: Int) {
         newFiles.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     // MARK: - Actions
@@ -138,23 +157,22 @@ class AppState: ObservableObject, ActionStateProviding {
     }
 
     @MainActor func toggleActionItem() {
-        try? save()
-        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        persist()
     }
 
     @MainActor func moveActions(from source: IndexSet, to destination: Int) {
         actions.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
-        try? save()
+        persist()
     }
 
     @MainActor func resetFiletypeItems() {
         newFiles = NewFile.all
-        try? save()
+        persist()
     }
 
     @MainActor func refresh() {
@@ -166,20 +184,50 @@ class AppState: ObservableObject, ActionStateProviding {
     }
 
     @MainActor func sync() {
-        try? save()
+        persist()
     }
 
     // MARK: - 持久化
 
+    /// Set when the last write to SwiftData failed, cleared on the next success.
+    ///
+    /// Persistence failures used to be logged at `.info`, which never reaches the
+    /// log store: a failed save looked exactly like a successful one, and the only
+    /// symptom was a setting that had silently not been kept.
+    @Published private(set) var lastSaveError: String?
+
+    /// Dismisses the alert in the settings window and arms it for the next failure.
     @MainActor
-    private func persistMenuOrder() {
+    func clearSaveError() {
+        lastSaveError = nil
+    }
+
+    /// Writes the in-memory configuration to SwiftData and tells the app to rebuild
+    /// the menu from it.
+    ///
+    /// One entry point on purpose. Every mutation used to persist and notify by
+    /// hand and the call sites disagreed about both halves: most dropped the error,
+    /// and several skipped the notification entirely - adding an app, adding a file
+    /// type, resetting either list and syncing common folders all stayed invisible
+    /// until the next heartbeat. Doing both here means a mutation cannot get one
+    /// without the other.
+    ///
+    /// Deliberately non-throwing; a failure lands in `lastSaveError` for the
+    /// settings window to show, and is logged at `.error`.
+    @MainActor
+    private func persist() {
         reindexMenuItems()
         do {
-            try save()
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+            try configService.save(AppConfigData(apps: apps, actions: actions, newFiles: newFiles, commonDirs: cdirs))
+            lastSaveError = nil
         } catch {
-            logger.info("save error: \(error.localizedDescription)")
+            lastSaveError = error.localizedDescription
+            logger.error("save error: \(error.localizedDescription)")
         }
+        // Posted even when persisting failed: the menu is built from these in-memory
+        // arrays, so suppressing it would leave the app and the menu disagreeing
+        // about what is configured.
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
     }
 
     @MainActor
@@ -194,11 +242,5 @@ class AppState: ObservableObject, ActionStateProviding {
             newFile.idx = index
             return newFile
         }
-    }
-
-    @MainActor
-    private func save() throws {
-        reindexMenuItems()
-        try configService.save(AppConfigData(apps: apps, actions: actions, newFiles: newFiles, commonDirs: cdirs))
     }
 }

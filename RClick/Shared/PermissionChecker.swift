@@ -26,8 +26,17 @@ public class PermissionChecker {
     /// 打开辅助功能权限设置
     @MainActor
     public static func openAccessibilitySettings() {
-        if let url = URL(string: "x-apple.systemsettings:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility") {
-            NSWorkspace.shared.open(url)
+        let candidates = [
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility",
+            "x-apple.systemsettings:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility"
+        ]
+        for path in candidates {
+            if let url = URL(string: path), NSWorkspace.shared.open(url) {
+                return
+            }
+        }
+        if let settingsUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.systemsettings") {
+            NSWorkspace.shared.open(settingsUrl)
         }
     }
 

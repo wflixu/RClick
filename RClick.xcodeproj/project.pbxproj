@@ -8,39 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5C8A291F2F83D74A00FE687C /* FinderSyncExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5C8A29182F83D74A00FE687C /* FinderSyncExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5C969FB72F8A494600D022F8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB32F8A494600D022F8 /* README.md */; };
-		5C969FB82F8A494600D022F8 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB12F8A494600D022F8 /* CLAUDE.md */; };
 		5C969FB92F8A494600D022F8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB22F8A494600D022F8 /* LICENSE */; };
-		5C969FBA2F8A494600D022F8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB32F8A494600D022F8 /* README.md */; };
-		5C969FBB2F8A494600D022F8 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB12F8A494600D022F8 /* CLAUDE.md */; };
 		5C969FBC2F8A494600D022F8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB22F8A494600D022F8 /* LICENSE */; };
-		5C969FBD2F8A494600D022F8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB32F8A494600D022F8 /* README.md */; };
-		5C969FBE2F8A494600D022F8 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB12F8A494600D022F8 /* CLAUDE.md */; };
 		5C969FBF2F8A494600D022F8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FB22F8A494600D022F8 /* LICENSE */; };
-		5C969FCF2F8A496000D022F8 /* 架构重构设计及计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */; };
-		5C969FD02F8A496000D022F8 /* 重构计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCC2F8A496000D022F8 /* 重构计划.md */; };
-		5C969FD12F8A496000D022F8 /* 重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCD2F8A496000D022F8 /* 重构设计.md */; };
-		5C969FD22F8A496000D022F8 /* communication-protocol.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC52F8A496000D022F8 /* communication-protocol.md */; };
-		5C969FD32F8A496000D022F8 /* data-models.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC62F8A496000D022F8 /* data-models.md */; };
-		5C969FD42F8A496000D022F8 /* extension-reconnect.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC72F8A496000D022F8 /* extension-reconnect.md */; };
-		5C969FD52F8A496000D022F8 /* git-branch-strategy.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC82F8A496000D022F8 /* git-branch-strategy.md */; };
-		5C969FD62F8A496000D022F8 /* 设置界面重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */; };
-		5C969FD72F8A496000D022F8 /* 架构重构设计及计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */; };
-		5C969FD82F8A496000D022F8 /* 重构计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCC2F8A496000D022F8 /* 重构计划.md */; };
-		5C969FD92F8A496000D022F8 /* 重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCD2F8A496000D022F8 /* 重构设计.md */; };
-		5C969FDA2F8A496000D022F8 /* communication-protocol.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC52F8A496000D022F8 /* communication-protocol.md */; };
-		5C969FDB2F8A496000D022F8 /* data-models.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC62F8A496000D022F8 /* data-models.md */; };
-		5C969FDC2F8A496000D022F8 /* extension-reconnect.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC72F8A496000D022F8 /* extension-reconnect.md */; };
-		5C969FDD2F8A496000D022F8 /* git-branch-strategy.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC82F8A496000D022F8 /* git-branch-strategy.md */; };
-		5C969FDE2F8A496000D022F8 /* 设置界面重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */; };
-		5C969FDF2F8A496000D022F8 /* 架构重构设计及计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */; };
-		5C969FE02F8A496000D022F8 /* 重构计划.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCC2F8A496000D022F8 /* 重构计划.md */; };
-		5C969FE12F8A496000D022F8 /* 重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCD2F8A496000D022F8 /* 重构设计.md */; };
-		5C969FE22F8A496000D022F8 /* communication-protocol.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC52F8A496000D022F8 /* communication-protocol.md */; };
-		5C969FE32F8A496000D022F8 /* data-models.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC62F8A496000D022F8 /* data-models.md */; };
-		5C969FE42F8A496000D022F8 /* extension-reconnect.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC72F8A496000D022F8 /* extension-reconnect.md */; };
-		5C969FE52F8A496000D022F8 /* git-branch-strategy.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FC82F8A496000D022F8 /* git-branch-strategy.md */; };
-		5C969FE62F8A496000D022F8 /* 设置界面重构设计.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,14 +51,7 @@
 		5C969FB12F8A494600D022F8 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		5C969FB22F8A494600D022F8 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		5C969FB32F8A494600D022F8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		5C969FC52F8A496000D022F8 /* communication-protocol.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "communication-protocol.md"; sourceTree = "<group>"; };
-		5C969FC62F8A496000D022F8 /* data-models.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "data-models.md"; sourceTree = "<group>"; };
-		5C969FC72F8A496000D022F8 /* extension-reconnect.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "extension-reconnect.md"; sourceTree = "<group>"; };
 		5C969FC82F8A496000D022F8 /* git-branch-strategy.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "git-branch-strategy.md"; sourceTree = "<group>"; };
-		5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "架构重构设计及计划.md"; sourceTree = "<group>"; };
-		5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "设置界面重构设计.md"; sourceTree = "<group>"; };
-		5C969FCC2F8A496000D022F8 /* 重构计划.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "重构计划.md"; sourceTree = "<group>"; };
-		5C969FCD2F8A496000D022F8 /* 重构设计.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "重构设计.md"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -198,9 +161,6 @@
 		5C969FC92F8A496000D022F8 /* contracts */ = {
 			isa = PBXGroup;
 			children = (
-				5C969FC52F8A496000D022F8 /* communication-protocol.md */,
-				5C969FC62F8A496000D022F8 /* data-models.md */,
-				5C969FC72F8A496000D022F8 /* extension-reconnect.md */,
 				5C969FC82F8A496000D022F8 /* git-branch-strategy.md */,
 			);
 			path = contracts;
@@ -210,10 +170,6 @@
 			isa = PBXGroup;
 			children = (
 				5C969FC92F8A496000D022F8 /* contracts */,
-				5C969FCA2F8A496000D022F8 /* 架构重构设计及计划.md */,
-				5C969FCB2F8A496000D022F8 /* 设置界面重构设计.md */,
-				5C969FCC2F8A496000D022F8 /* 重构计划.md */,
-				5C969FCD2F8A496000D022F8 /* 重构设计.md */,
 			);
 			path = specs;
 			sourceTree = "<group>";
@@ -317,6 +273,7 @@
 				"zh-Hans",
 				ja,
 				es,
+				fr,
 			);
 			mainGroup = 5C8A28D12F83D65900FE687C;
 			minimizedProjectReferenceProxies = 1;
@@ -337,16 +294,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C969FB72F8A494600D022F8 /* README.md in Resources */,
-				5C969FB82F8A494600D022F8 /* CLAUDE.md in Resources */,
-				5C969FD72F8A496000D022F8 /* 架构重构设计及计划.md in Resources */,
-				5C969FD82F8A496000D022F8 /* 重构计划.md in Resources */,
-				5C969FD92F8A496000D022F8 /* 重构设计.md in Resources */,
-				5C969FDA2F8A496000D022F8 /* communication-protocol.md in Resources */,
-				5C969FDB2F8A496000D022F8 /* data-models.md in Resources */,
-				5C969FDC2F8A496000D022F8 /* extension-reconnect.md in Resources */,
-				5C969FDD2F8A496000D022F8 /* git-branch-strategy.md in Resources */,
-				5C969FDE2F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 				5C969FB92F8A494600D022F8 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,17 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C969FBA2F8A494600D022F8 /* README.md in Resources */,
-				5C969FBB2F8A494600D022F8 /* CLAUDE.md in Resources */,
 				5C969FBC2F8A494600D022F8 /* LICENSE in Resources */,
-				5C969FDF2F8A496000D022F8 /* 架构重构设计及计划.md in Resources */,
-				5C969FE02F8A496000D022F8 /* 重构计划.md in Resources */,
-				5C969FE12F8A496000D022F8 /* 重构设计.md in Resources */,
-				5C969FE22F8A496000D022F8 /* communication-protocol.md in Resources */,
-				5C969FE32F8A496000D022F8 /* data-models.md in Resources */,
-				5C969FE42F8A496000D022F8 /* extension-reconnect.md in Resources */,
-				5C969FE52F8A496000D022F8 /* git-branch-strategy.md in Resources */,
-				5C969FE62F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,17 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C969FBD2F8A494600D022F8 /* README.md in Resources */,
-				5C969FBE2F8A494600D022F8 /* CLAUDE.md in Resources */,
 				5C969FBF2F8A494600D022F8 /* LICENSE in Resources */,
-				5C969FCF2F8A496000D022F8 /* 架构重构设计及计划.md in Resources */,
-				5C969FD02F8A496000D022F8 /* 重构计划.md in Resources */,
-				5C969FD12F8A496000D022F8 /* 重构设计.md in Resources */,
-				5C969FD22F8A496000D022F8 /* communication-protocol.md in Resources */,
-				5C969FD32F8A496000D022F8 /* data-models.md in Resources */,
-				5C969FD42F8A496000D022F8 /* extension-reconnect.md in Resources */,
-				5C969FD52F8A496000D022F8 /* git-branch-strategy.md in Resources */,
-				5C969FD62F8A496000D022F8 /* 设置界面重构设计.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,7 +489,7 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClickDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260823001;
+				CURRENT_PROJECT_VERSION = 20260913002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -577,7 +504,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -599,7 +526,7 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260823001;
+				CURRENT_PROJECT_VERSION = 20260913002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -614,7 +541,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -677,7 +604,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260823001;
+				CURRENT_PROJECT_VERSION = 20260913002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -693,7 +620,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -712,7 +639,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20260823001;
+				CURRENT_PROJECT_VERSION = 20260913002;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -728,7 +655,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 2.2.0;
+				MARKETING_VERSION = 2.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.wflixu.RClick.FinderSyncExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

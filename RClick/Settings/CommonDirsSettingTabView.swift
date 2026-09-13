@@ -31,7 +31,7 @@ struct CommonDirsSettingTabView: View {
                         NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
                     }
                 Toggle(isOn: $store.foldCommonDirMenu) {
-                    Text(appLocalized: "Collapse menu")
+                    Text(appLocalized: "Collapse common folders menu")
                 }
                     .disabled(!store.showCommonDirs)
                     .onChange(of: store.foldCommonDirMenu) {

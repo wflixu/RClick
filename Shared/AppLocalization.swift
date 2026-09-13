@@ -8,7 +8,10 @@
 import Foundation
 import SwiftUI
 
-enum AppLocalization {
+// `nonisolated` because lookup is thread-safe and the default main-actor isolation
+// makes it unreachable from `LocalizedError.errorDescription`, which has to stay
+// nonisolated.
+nonisolated enum AppLocalization {
     static let tableName = "Localizable"
 
     static func localized(_ key: String) -> String {

@@ -57,6 +57,8 @@ struct MenuConfigPayload: Codable {
     let newFilesCollapsed: Bool
     /// 是否折叠常用目录菜单（默认 true）
     let commonDirsCollapsed: Bool
+    /// nil preserves the legacy layout; [] intentionally renders no items.
+    var customMenu: [MenuNode]?
 
     init(
         version: Int = 1,

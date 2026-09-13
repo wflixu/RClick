@@ -92,13 +92,15 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 
 ### 🌐 Localization
 
-RClick supports three languages with the following priority:
+RClick supports five languages with the following priority:
 
 | Language | Code | Notes |
 |----------|------|-------|
 | **English** | `en` | Default/base language |
 | **Simplified Chinese** | `zh-Hans` | Primary localization target |
 | **Japanese** | `ja` | Activated when system language is Japanese |
+| **Spanish** | `es` | Activated when system language is Spanish |
+| **French** | `fr` | Activated when system language is French |
 
 **Principles:**
 - Default language is English (also the fallback for unsupported system languages)
@@ -113,6 +115,16 @@ Thanks to all the people who have contributed to RClick!
 <a href="https://github.com/wflixu/RClick/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=wflixu/RClick" />
 </a>
+
+Recent contributions:
+
+- **[@Juns-g](https://github.com/Juns-g)** — declarative hierarchical tree menus ([#151](https://github.com/wflixu/RClick/pull/151)), and watching mounted volumes so external and network drives show the menu ([#152](https://github.com/wflixu/RClick/pull/152))
+- **[@Dam0rt](https://github.com/Dam0rt)** — French localization ([#149](https://github.com/wflixu/RClick/pull/149))
+- **[@stors789](https://github.com/stors789)** — App Groups provisioning in the release pipeline ([#141](https://github.com/wflixu/RClick/pull/141))
+- **[@EliasMatDev](https://github.com/EliasMatDev)** — Latin American Spanish localization ([#138](https://github.com/wflixu/RClick/pull/138))
+- **[@shoal-rat](https://github.com/shoal-rat)** — Finder observation fix, so the menu appears in every folder ([#126](https://github.com/wflixu/RClick/pull/126))
+- **[@P013onEr](https://github.com/P013onEr)** — string catalogs and trilingual localization ([#120](https://github.com/wflixu/RClick/pull/120)), draggable menu ordering ([#121](https://github.com/wflixu/RClick/pull/121))
+- **[@chunyang-wen](https://github.com/chunyang-wen)** — removed a needless `await` ([#21](https://github.com/wflixu/RClick/pull/21))
 
 ## Similar Projects
 
@@ -131,3 +143,11 @@ We welcome contributions! Here's how you can help:
 - **[Security Policy](SECURITY.md)** — How to responsibly report vulnerabilities.
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
+
+## Hierarchical Custom Menus
+
+Top-level items can be mixed with arbitrarily nested submenus, separators, and custom titles and icons.
+
+Drop a declarative `custom_menu.json` into the App Group container, then go to **Settings → General → Custom Menu** and press "Apply" for it to take effect. Editing the file on its own changes nothing, so an edit that is still half-written cannot break your menu. With no file present the default layout is used; with an invalid one the menu stays exactly as it was and Settings shows which element failed to parse.
+
+See [configuration examples and usage](examples/README.md).
