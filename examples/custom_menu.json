@@ -1,0 +1,32 @@
+[
+  {
+    "type": "item",
+    "itemType": "app",
+    "appPath": "/Applications/Visual Studio Code.app",
+    "title": "用 VS Code 打开"
+  },
+  {
+    "type": "item",
+    "itemType": "app",
+    "appPath": "/Applications/Warp.app"
+  },
+  { "type": "separator" },
+  {
+    "type": "submenu",
+    "title": "更多",
+    "icon": "ellipsis.circle",
+    "children": [
+      { "type": "item", "itemType": "action", "id": "copy-path" },
+      { "type": "separator" },
+      {
+        "type": "submenu",
+        "title": "新建文件",
+        "icon": "doc.badge.plus",
+        "children": [
+          { "type": "item", "itemType": "new-file", "fileExtension": ".txt" },
+          { "type": "item", "itemType": "new-file", "fileExtension": ".md" }
+        ]
+      }
+    ]
+  }
+]

@@ -92,13 +92,15 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 
 ### 🌐 Localization
 
-RClick supports three languages with the following priority:
+RClick supports five languages with the following priority:
 
 | Language | Code | Notes |
 |----------|------|-------|
 | **English** | `en` | Default/base language |
 | **Simplified Chinese** | `zh-Hans` | Primary localization target |
 | **Japanese** | `ja` | Activated when system language is Japanese |
+| **Spanish** | `es` | Activated when system language is Spanish |
+| **French** | `fr` | Activated when system language is French |
 
 **Principles:**
 - Default language is English (also the fallback for unsupported system languages)
@@ -131,3 +133,9 @@ We welcome contributions! Here's how you can help:
 - **[Security Policy](SECURITY.md)** — How to responsibly report vulnerabilities.
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
+
+## 自定义菜单层级
+
+支持一级常用项与任意嵌套子菜单混排、分隔线及自定义标题/图标。
+将声明式 `custom_menu.json` 放入 App Group 容器即可生效；缺失或无效时保留原有菜单。
+参见 [配置示例与使用说明](examples/README.md)。

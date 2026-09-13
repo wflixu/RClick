@@ -23,7 +23,11 @@ final class ConfigService {
     @AppLog(category: "ConfigService")
     private var logger
 
-    let modelContext = ModelContext(SharedDataManager.sharedModelContainer)
+    let modelContext: ModelContext
+
+    init(modelContext: ModelContext? = nil) {
+        self.modelContext = modelContext ?? ModelContext(SharedDataManager.sharedModelContainer)
+    }
 
     /// 从 SwiftData 读取全部配置
     func load() -> AppConfigData {
@@ -57,13 +61,17 @@ final class ConfigService {
         // NewFiles
         let newFileDescriptor = FetchDescriptor<NewFileTypeEntity>(sortBy: [SortDescriptor(\.sortOrder)])
         data.newFiles = (try? modelContext.fetch(newFileDescriptor))?.map { entity in
-            NewFile(
+            var file = NewFile(
                 ext: entity.fileExtension,
                 name: entity.name,
                 enabled: entity.isEnabled,
                 idx: entity.sortOrder,
-                icon: entity.icon
+                icon: entity.icon,
+                id: entity.id
             )
+            file.template = entity.templatePath.map { URL(fileURLWithPath: $0) }
+            file.openApp = entity.openAppPath.map { URL(fileURLWithPath: $0) }
+            return file
         } ?? []
 
         // CommonDirs（含旧图标自动修复）
