@@ -13,10 +13,6 @@ import OSLog
 final class MenuService {
     /// 菜单版本号（防重复 / 防乱序）
     private var menuVersion = 0
-    /// 最近一次构建的配置快照（编码后，供诊断/兜底）
-    private var lastMenuSnapshot: Data?
-
-    var lastSnapshot: Data? { lastMenuSnapshot }
 
     static var customMenuURL: URL? {
         FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.suitName)?
@@ -86,7 +82,6 @@ final class MenuService {
             }
         }
 
-        lastMenuSnapshot = try? JSONEncoder().encode(config)
         return config
     }
 }
