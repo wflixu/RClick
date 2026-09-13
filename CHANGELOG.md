@@ -5,6 +5,33 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.1] - 2026-09-13
+
+### Added
+- Custom menu layout: arrange top-level and nested items in `custom_menu.json`
+- French localization
+- Simplified Chinese, Japanese and Spanish names for the built-in new-file types (Word 文档 / Excel 表格 / PowerPoint 演示文稿)
+- About: live star count and a link to the issue tracker
+
+### Changed
+- Settings: the custom menu is applied only when you press "Apply", so editing the file no longer changes the Finder menu mid-keystroke
+- Settings: the About tab is rebuilt around the update status, with the description folded into the identity block
+- Settings: launch-at-login now leads the General toggles
+- Menu layout switches moved into the shared app group, alongside the other preferences
+
+### Fixed
+- Adding or deleting an app could leave the Finder menu unchanged until the next heartbeat
+- A failed save was silent; it now surfaces in the settings window
+- Checking for updates reported "Failed to Check for Updates" even when the app was simply up to date
+- A network failure during an update check was reported as "already up to date"
+- The Japanese "Open With" submenu fell back to English
+- AirDrop was untranslated in Simplified Chinese
+- A one-time migration preserves existing menu layout settings after their move to the app group
+
+### Removed
+- 20 localization keys that nothing referenced
+- The extension's string catalog no longer carries 131 unused copies of the app's strings
+
 ## [2.1.0] - 2026-07-12
 
 ### Changed
