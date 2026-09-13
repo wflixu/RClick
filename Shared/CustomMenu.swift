@@ -84,11 +84,15 @@ enum CustomMenuError: Error, CustomStringConvertible, LocalizedError {
     case invalid(String)
     /// A validation failure pinned to a 1-based menu item path, e.g. "3" or "2.1".
     case invalidAt(path: String, message: String)
+    /// The App Group container is missing, so there is nothing to read or write.
+    case containerUnavailable
 
     var description: String {
         switch self {
         case .invalid(let message): return message
         case .invalidAt(let path, let message): return "[\(path)] \(message)"
+        case .containerUnavailable:
+            return AppLocalization.localized("The shared configuration folder is unavailable.")
         }
     }
 

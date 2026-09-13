@@ -4,9 +4,8 @@ import Testing
 @testable import RClick
 
 /// Covers what the custom menu file currently *means*, and how failures are
-/// explained. Every case passes an explicit URL: under the test host
-/// `MenuService.customMenuURL` resolves to the real App Group container, which
-/// tests must never touch.
+/// explained. Every case passes an explicit URL: under the test host the default
+/// URL resolves to the real App Group container, which tests must never touch.
 @MainActor
 struct CustomMenuStatusTests {
     private var catalog: MenuConfigPayload {
@@ -34,10 +33,19 @@ struct CustomMenuStatusTests {
             .appendingPathComponent("rclick-status-\(UUID())")
     }
 
-    private func status(of json: String) throws -> CustomMenuStatus {
+    /// The settled state: the file on disk is exactly what is in effect.
+    private func appliedStatus(of json: String, config: MenuConfigPayload? = nil) throws -> CustomMenuStatus {
         let url = try temporaryFile(json)
         defer { try? FileManager.default.removeItem(at: url) }
-        return MenuService.customMenuStatus(at: url, config: catalog)
+        return MenuService.customMenuStatus(at: url, appliedData: Data(json.utf8),
+                                            config: config ?? catalog)
+    }
+
+    /// The file exists but was never applied, so nothing of it is in effect.
+    private func draftStatus(of json: String, config: MenuConfigPayload? = nil) throws -> CustomMenuStatus {
+        let url = try temporaryFile(json)
+        defer { try? FileManager.default.removeItem(at: url) }
+        return MenuService.customMenuStatus(at: url, appliedData: nil, config: config ?? catalog)
     }
 
     /// Loads `json` expecting rejection, and hands back the error it raised.
@@ -50,32 +58,70 @@ struct CustomMenuStatusTests {
         return try #require(thrown)
     }
 
-    // MARK: - The three states must stay distinguishable
+    // MARK: - What the menu is rendering
 
     @Test func noFileMeansDefaultLayout() {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent("rclick-absent-\(UUID()).json")
-        #expect(MenuService.customMenuStatus(at: url, config: catalog) == .defaultLayout)
+        #expect(MenuService.customMenuStatus(at: url, appliedData: nil, config: catalog)
+            == CustomMenuStatus(applied: .defaultLayout, notice: .none))
     }
 
     @Test func noContainerMeansUnavailable() {
         // Previously indistinguishable from "no file": both produced a nil payload.
-        #expect(MenuService.customMenuStatus(at: nil, config: catalog) == .unavailable)
+        #expect(MenuService.customMenuStatus(at: nil, appliedData: nil, config: catalog)
+            == CustomMenuStatus(applied: .unavailable, notice: .none))
     }
 
     @Test func emptyArrayIsEmptyNotInvalid() throws {
         // An empty array is a deliberate request for an empty menu, not a failure.
-        #expect(try status(of: "[]") == .empty)
+        #expect(try appliedStatus(of: "[]") == CustomMenuStatus(applied: .empty, notice: .none))
     }
 
-    @Test func validLayoutReportsTopLevelCount() throws {
+    @Test func appliedLayoutReportsTopLevelCount() throws {
         let json = #"[{"type":"item","itemType":"action","id":"copy-path"},{"type":"separator"}]"#
-        #expect(try status(of: json) == .active(topLevelItems: 2))
+        #expect(try appliedStatus(of: json)
+            == CustomMenuStatus(applied: .custom(topLevelItems: 2), notice: .none))
     }
 
-    @Test func malformedFileIsInvalidWithAReason() throws {
-        guard case .invalid(let reason) = try status(of: "not JSON") else {
-            Issue.record("expected .invalid")
+    // MARK: - The file relative to what is applied
+
+    @Test func aFileThatWasNeverAppliedIsPendingAndChangesNothing() throws {
+        // Generating the file no longer switches the layout, so this is what a
+        // first-time user sees: a file, and a menu that has not moved.
+        let status = try draftStatus(of: #"[{"type":"separator"}]"#)
+        #expect(status == CustomMenuStatus(applied: .defaultLayout, notice: .edited))
+    }
+
+    @Test func editingAnAppliedFileIsPendingUntilItIsAppliedAgain() throws {
+        let url = try temporaryFile(#"[{"type":"separator"}]"#)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let applied = try Data(contentsOf: url)
+
+        try Data(#"[{"type":"separator"},{"type":"separator"}]"#.utf8).write(to: url)
+
+        // Editing the file is not enough: the applied bytes still describe one item.
+        #expect(MenuService.customMenuStatus(at: url, appliedData: applied, config: catalog)
+            == CustomMenuStatus(applied: .custom(topLevelItems: 1), notice: .edited))
+        // Once the new bytes are applied, the menu catches up and nothing is pending.
+        let reapplied = try Data(contentsOf: url)
+        #expect(MenuService.customMenuStatus(at: url, appliedData: reapplied, config: catalog)
+            == CustomMenuStatus(applied: .custom(topLevelItems: 2), notice: .none))
+    }
+
+    @Test func deletingTheFileReturnsToTheDefaultLayout() throws {
+        // The documented escape hatch, and it must survive explicit-apply: a
+        // snapshot that outlives its file would strand the user on a layout they
+        // cannot get rid of.
+        let url = temporaryDirectory().appendingPathComponent("custom_menu.json")
+        let applied = Data(#"[{"type":"separator"}]"#.utf8)
+        #expect(MenuService.customMenuStatus(at: url, appliedData: applied, config: catalog)
+            == CustomMenuStatus(applied: .defaultLayout, notice: .none))
+    }
+
+    @Test func malformedFileIsBrokenWithAReason() throws {
+        guard case .broken(let reason) = try draftStatus(of: "not JSON").notice else {
+            Issue.record("expected .broken")
             return
         }
         #expect(!reason.isEmpty)
@@ -88,19 +134,33 @@ struct CustomMenuStatusTests {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directory) }
 
-        guard case .invalid(let reason) = MenuService.customMenuStatus(at: directory, config: catalog) else {
-            Issue.record("expected .invalid")
+        guard case .broken(let reason) = MenuService.customMenuStatus(
+            at: directory, appliedData: nil, config: catalog
+        ).notice else {
+            Issue.record("expected .broken")
             return
         }
         #expect(reason != AppLocalization.localized("The JSON file is malformed."))
     }
 
-    @Test(arguments: [CustomMenuStatus.unavailable, .invalid(reason: "boom")])
+    // MARK: - isProblem
+
+    @Test(arguments: [
+        CustomMenuStatus(applied: .unavailable, notice: .none),
+        CustomMenuStatus(applied: .defaultLayout, notice: .broken(reason: "boom")),
+        CustomMenuStatus(applied: .custom(topLevelItems: 1), notice: .broken(reason: "boom"))
+    ])
     func problemStatesAreFlagged(status: CustomMenuStatus) {
         #expect(status.isProblem)
     }
 
-    @Test(arguments: [CustomMenuStatus.defaultLayout, .empty, .active(topLevelItems: 1)])
+    @Test(arguments: [
+        CustomMenuStatus(applied: .defaultLayout, notice: .none),
+        CustomMenuStatus(applied: .empty, notice: .none),
+        CustomMenuStatus(applied: .custom(topLevelItems: 1), notice: .none),
+        // An edit waiting to be applied is the normal working state, not a problem.
+        CustomMenuStatus(applied: .custom(topLevelItems: 1), notice: .edited)
+    ])
     func normalStatesAreNotFlagged(status: CustomMenuStatus) {
         #expect(!status.isProblem)
     }
@@ -157,25 +217,32 @@ struct CustomMenuStatusTests {
         #expect(!FileManager.default.fileExists(atPath: url.path))
     }
 
-    // MARK: - Interaction with the common folders toggle
+    // MARK: - A settings change can invalidate an applied file
 
     @Test func hidingCommonFoldersTakesDownAConfigThatReferencesThem() throws {
         // "Enable common folders" is not a pure layout switch: MenuService only
         // fills payload.commonDirs when it is on. A custom menu referencing a
         // common dir therefore stops resolving once the switch is turned off, and
         // the whole custom layout falls back - not just the common dir entries.
+        //
+        // The file itself is untouched, which is why the reason has to be surfaced:
+        // otherwise the menu would simply change with nothing to explain it.
         let json = #"[{"type":"item","itemType":"common-dir","id":"desktop"}]"#
         let url = try temporaryFile(json)
         defer { try? FileManager.default.removeItem(at: url) }
+        let applied = Data(json.utf8)
 
         let shown = MenuConfigPayload(commonDirs: [
             CommonDirMenuItem(id: "desktop", name: "Desktop", icon: "folder", url: "/Users/x/Desktop")
         ])
-        #expect(MenuService.customMenuStatus(at: url, config: shown) == .active(topLevelItems: 1))
+        #expect(MenuService.customMenuStatus(at: url, appliedData: applied, config: shown)
+            == CustomMenuStatus(applied: .custom(topLevelItems: 1), notice: .none))
 
         let hidden = MenuConfigPayload(commonDirs: [])
-        guard case .invalid(let reason) = MenuService.customMenuStatus(at: url, config: hidden) else {
-            Issue.record("expected .invalid once common folders are hidden")
+        let status = MenuService.customMenuStatus(at: url, appliedData: applied, config: hidden)
+        #expect(status.applied == .defaultLayout)
+        guard case .broken(let reason) = status.notice else {
+            Issue.record("expected .broken once common folders are hidden")
             return
         }
         #expect(reason.contains("matched 0 enabled items"))

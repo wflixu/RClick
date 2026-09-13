@@ -493,41 +493,6 @@
         }
       }
     },
-    "Advanced Menu Layout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Advanced Menu Layout"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diseño avanzado del menú"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disposition avancée du menu"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細なメニューレイアウト"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "高级菜单布局"
-          }
-        }
-      }
-    },
     "AirDrop" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -983,37 +948,37 @@
         }
       }
     },
-    "Changes appear after reopening the menu within 10 seconds. Remove the file to restore the default layout." : {
+    "Changed since it was applied, so the menu still shows the previous layout." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changes appear after reopening the menu within 10 seconds. Remove the file to restore the default layout."
+            "value" : "Changed since it was applied, so the menu still shows the previous layout."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los cambios aparecerán al volver a abrir el menú, en un plazo de 10 segundos. Elimina el archivo para restaurar el diseño predeterminado."
+            "value" : "Se modificó después de aplicarse, así que el menú sigue mostrando el diseño anterior."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les modifications apparaissent à la réouverture du menu, dans un délai de 10 secondes. Supprimez le fichier pour rétablir la disposition par défaut."
+            "value" : "Modifié depuis son application : le menu affiche toujours la disposition précédente."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "変更は10秒以内に反映されます。メニューを開き直してください。ファイルを削除すると標準のレイアウトに戻ります。"
+            "value" : "適用後に変更されたため、メニューは前回のレイアウトのままです。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更改会在 10 秒内重新打开菜单时生效。删除此文件即可恢复默认布局。"
+            "value" : "文件已修改，尚未应用，菜单仍是上一次生效的布局。"
           }
         }
       }
@@ -1399,6 +1364,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "复制路径"
+          }
+        }
+      }
+    },
+    "Custom Menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Menu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menú personalizado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu personnalisé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムメニュー"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义菜单"
           }
         }
       }
@@ -3414,6 +3414,41 @@
         }
       }
     },
+    "Locates custom_menu.json in Finder so you can open it with the editor you prefer. Creates it first if it does not exist yet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locates custom_menu.json in Finder so you can open it with the editor you prefer. Creates it first if it does not exist yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localiza custom_menu.json en el Finder para que lo abras con el editor que prefieras. Si aún no existe, lo crea primero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localise custom_menu.json dans le Finder pour que vous puissiez l'ouvrir avec l'éditeur de votre choix. Le crée d'abord s'il n'existe pas encore."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "custom_menu.json を Finder で表示するので、お好みのエディタで開けます。存在しない場合は先に作成します。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在访达中定位 custom_menu.json，让你用自己习惯的编辑器打开。文件不存在时会先生成一份。"
+          }
+        }
+      }
+    },
     "Logs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3729,41 +3764,6 @@
         }
       }
     },
-    "No application could open the configuration file. Try Reveal in Finder and choose a text editor." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No application could open the configuration file. Try Reveal in Finder and choose a text editor."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ninguna aplicación pudo abrir el archivo de configuración. Usa «Mostrar en Finder» y elige un editor de texto."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune application n’a pu ouvrir le fichier de configuration. Utilisez « Afficher dans le Finder » et choisissez un éditeur de texte."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定ファイルを開けるアプリケーションがありません。「Finderに表示」を使い、テキストエディタを選択してください。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有应用能够打开配置文件。请使用“在访达中显示”，然后选择文本编辑器打开。"
-          }
-        }
-      }
-    },
     "No folders authorized" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3970,41 +3970,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开 App Store"
-          }
-        }
-      }
-    },
-    "Open Config" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Config"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir configuración"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir la configuration"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定ファイルを開く"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开配置"
           }
         }
       }
@@ -4678,6 +4643,41 @@
         }
       }
     },
+    "Reads the file again and puts it into effect. If it has errors the menu is left as it was." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reads the file again and puts it into effect. If it has errors the menu is left as it was."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelve a leer el archivo y lo aplica. Si contiene errores, el menú se deja tal como estaba."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relit le fichier et l'applique. En cas d'erreur, le menu reste inchangé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルを読み直して反映します。エラーがある場合はメニューを変更しません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新读取文件并生效。如果文件有错误，菜单保持不变。"
+          }
+        }
+      }
+    },
     "Remove folder permission" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4954,41 +4954,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢复默认"
-          }
-        }
-      }
-    },
-    "Reveal in Finder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reveal in Finder"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar en Finder"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher dans le Finder"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finderに表示"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在访达中显示"
           }
         }
       }
@@ -5483,6 +5448,41 @@
         }
       }
     },
+    "The menu is unchanged." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The menu is unchanged."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El menú no ha cambiado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le menu reste inchangé."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューは変更されていません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单保持不变。"
+          }
+        }
+      }
+    },
     "The selected folder is a subfolder of an already selected folder. Please choose a different folder." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5653,7 +5653,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法打开菜单配置"
+            "value" : "无法打开配置文件夹"
           }
         }
       }
@@ -6175,7 +6175,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "应用自定义菜单"
+            "value" : "应用配置"
           }
         }
       }
@@ -6210,112 +6210,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "恢复默认布局"
-          }
-        }
-      }
-    },
-    "Creates the file from your current menu the first time, then just opens it. Neither changes its contents." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creates the file from your current menu the first time, then just opens it. Neither changes its contents."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La primera vez crea el archivo a partir de tu menú actual y luego solo lo abre. Ninguna de las dos acciones cambia su contenido."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La première fois, crée le fichier à partir de votre menu actuel, puis ne fait que l'ouvrir. Ni l'une ni l'autre ne modifie son contenu."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "初回は現在のメニューからファイルを作成し、以降は開くだけです。どちらも内容は変更しません。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "首次会按当前菜单生成该文件，之后仅打开它。两者都不会改动文件内容。"
-          }
-        }
-      }
-    },
-    "Shows the file in Finder. Changes nothing." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shows the file in Finder. Changes nothing."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muestra el archivo en el Finder. No cambia nada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiche le fichier dans le Finder. Ne modifie rien."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finder でファイルを表示します。何も変更しません。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在访达中显示该文件。不做任何改动。"
-          }
-        }
-      }
-    },
-    "Applies now instead of waiting up to 10 seconds. Does not change the file." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Applies now instead of waiting up to 10 seconds. Does not change the file."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aplica ahora en lugar de esperar hasta 10 segundos. No modifica el archivo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Applique immédiatement au lieu d'attendre jusqu'à 10 secondes. Ne modifie pas le fichier."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最大10秒待たずにすぐ適用します。ファイルは変更しません。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "立即生效，无需等待最多 10 秒。不会修改文件。"
+            "value" : "恢复默认…"
           }
         }
       }
@@ -6351,41 +6246,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除该文件并恢复默认布局，同时保留一份备份。"
-          }
-        }
-      }
-    },
-    "Changes apply on their own within 10 seconds. Removing the file restores the default layout." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changes apply on their own within 10 seconds. Removing the file restores the default layout."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los cambios se aplican solos en 10 segundos. Eliminar el archivo restaura el diseño predeterminado."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les modifications s'appliquent d'elles-mêmes sous 10 secondes. Supprimer le fichier restaure la disposition par défaut."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "変更は10秒以内に自動で適用されます。ファイルを削除するとデフォルトのレイアウトに戻ります。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "改动会在 10 秒内自动生效。删除该文件即可恢复默认布局。"
           }
         }
       }
@@ -6526,6 +6386,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在使用默认布局"
+          }
+        }
+      }
+    },
+    "Edit Menu Config…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Menu Config…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar configuración del menú…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier la configuration du menu…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニュー設定を編集…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑菜单配置…"
+          }
+        }
+      }
+    },
+    "Editing the file changes nothing until you apply it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editing the file changes nothing until you apply it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar el archivo no cambia nada hasta que lo apliques."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier le fichier ne change rien tant que vous ne l'appliquez pas."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルを編集しても、適用するまで何も変わりません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改完文件后，点「应用配置」才会生效。"
           }
         }
       }
@@ -6911,111 +6841,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "常用文件夹"
-          }
-        }
-      }
-    },
-    "No custom menu configuration yet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No custom menu configuration yet"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aún no hay configuración de menú personalizado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune configuration de menu personnalisé"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カスタムメニューの設定がまだありません"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "尚无自定义菜单配置"
-          }
-        }
-      }
-    },
-    "RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick generará una a partir de tu menú actual y cambiará al diseño personalizado de inmediato, por lo que el menú contextual cambiará para reflejarlo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick en générera une à partir de votre menu actuel et passera immédiatement à la disposition personnalisée ; le menu contextuel changera en conséquence."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "現在のメニューから生成し、すぐにカスタムレイアウトに切り替わります。右クリックメニューもそのレイアウトに変わります。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick 将基于你当前的菜单生成一份，并立即切换到自定义布局，右键菜单也会随之改变。"
-          }
-        }
-      }
-    },
-    "Generate and Enable" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generate and Enable"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generar y activar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Générer et activer"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成して有効にする"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成并启用"
           }
         }
       }

@@ -7,6 +7,7 @@
 
 import AppKit
 import Cocoa
+import Combine
 import FinderSync
 import Foundation
 import OSLog
@@ -27,7 +28,7 @@ struct GeneralSettingsTabView: View {
     @State private var menuConfigError: String?
     @State private var menuConfigErrorTitle = "Unable to Open Menu Config"
     @State private var showMenuConfigError = false
-    @State private var customMenuStatus: CustomMenuStatus = .defaultLayout
+    @State private var customMenuStatus = CustomMenuStatus(applied: .defaultLayout, notice: .none)
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
@@ -106,45 +107,54 @@ struct GeneralSettingsTabView: View {
                         .foregroundStyle(customMenuStatusColor)
                 }
 
-                if case .invalid(let reason) = customMenuStatus {
-                    Text(reason)
+                switch customMenuStatus.notice {
+                case .none:
+                    EmptyView()
+                case .edited:
+                    Text(appLocalized: "Changed since it was applied, so the menu still shows the previous layout.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
+                case .broken(let reason):
+                    Label {
+                        Text(reason)
+                            .textSelection(.enabled)
+                    } icon: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
 
                 HStack {
-                    Button(AppLocalization.localized("Open Config")) {
-                        openMenuConfig(reveal: false)
+                    Button(AppLocalization.localized("Edit Menu Config…")) {
+                        revealMenuConfig()
                     }
-                    .help(AppLocalization.localized("Creates the file from your current menu the first time, then just opens it. Neither changes its contents."))
+                    .help(AppLocalization.localized("Locates custom_menu.json in Finder so you can open it with the editor you prefer. Creates it first if it does not exist yet."))
 
-                    Button(AppLocalization.localized("Reveal in Finder")) {
-                        openMenuConfig(reveal: true)
-                    }
-                    .help(AppLocalization.localized("Shows the file in Finder. Changes nothing."))
-                }
-
-                HStack {
                     Button(AppLocalization.localized("Apply Custom Menu")) {
                         applyCustomMenu()
                     }
-                    .disabled(!customMenuIsPresent)
-                    .help(AppLocalization.localized("Applies now instead of waiting up to 10 seconds. Does not change the file."))
+                    .disabled(!customMenuHasPendingChanges)
+                    .help(AppLocalization.localized("Reads the file again and puts it into effect. If it has errors the menu is left as it was."))
+
+                    Spacer()
 
                     Button(AppLocalization.localized("Restore Default Layout")) {
                         restoreDefaultLayout()
                     }
-                    .disabled(!customMenuIsPresent)
+                    .disabled(!customMenuFileExists)
                     .help(AppLocalization.localized("Deletes the file and returns to the default layout, keeping a backup."))
                 }
             } header: {
-                Text(appLocalized: "Advanced Menu Layout")
+                Text(appLocalized: "Custom Menu")
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(appLocalized: "Customize top-level items and nested submenus with custom_menu.json. 💡 Tip: Give this file to an AI assistant (such as ChatGPT / Claude) to help arrange your menu.")
-                    Text(appLocalized: "Changes apply on their own within 10 seconds. Removing the file restores the default layout.")
+                    if customMenuStatus.applied == .defaultLayout {
+                        Text(appLocalized: "Customize top-level items and nested submenus with custom_menu.json. 💡 Tip: Give this file to an AI assistant (such as ChatGPT / Claude) to help arrange your menu.")
+                    }
+                    Text(appLocalized: "Editing the file changes nothing until you apply it.")
                 }
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -199,6 +209,13 @@ struct GeneralSettingsTabView: View {
             updatePermissionStatus()
             refreshCustomMenuStatus()
         }
+        // Keeps the Apply button's enabled state honest. App activation covers the
+        // normal "edit elsewhere, switch back" path; this covers a writer that never
+        // takes activation away - a script, a sync tool, another process. Without
+        // it a stale status would leave the button disabled and unclickable.
+        .onReceive(Timer.publish(every: 2, on: .main, in: .common).autoconnect()) { _ in
+            refreshCustomMenuStatus()
+        }
         .alert(
             Text(appLocalized: "Invalid Folder"),
             isPresented: $wrongFold
@@ -229,96 +246,95 @@ struct GeneralSettingsTabView: View {
         }
     }
 
-    private func openMenuConfig(reveal: Bool) {
+    /// Locates the file in Finder so the user can open it with an editor they chose.
+    ///
+    /// Deliberately does not open it: the system default editor is whatever happens
+    /// to be installed, which is not a choice the user made. A missing file is
+    /// seeded first so there is something to reveal - and that no longer changes
+    /// the menu, which now waits for Apply.
+    private func revealMenuConfig() {
+        guard let url = RCRuntime.shared.menuService.customMenuURL else {
+            presentConfigError(
+                title: "Unable to Open Menu Config",
+                message: AppLocalization.localized("The shared configuration folder is unavailable.")
+            )
+            return
+        }
         do {
-            guard let url = MenuService.customMenuURL else {
-                presentConfigError(
-                    title: "Unable to Open Menu Config",
-                    message: AppLocalization.localized("The shared configuration folder is unavailable.")
-                )
-                return
-            }
-            // Generating the file also switches the menu over to the custom layout,
-            // so the user decides rather than discovering it in Finder.
-            if !FileManager.default.fileExists(atPath: url.path), !confirmGeneratingCustomMenu() {
-                return
-            }
-            // Seeding only reads the current configuration, so the payload is built
-            // without bumping the menu version or re-reading the file we are about
-            // to open.
             try MenuService.prepareCustomMenu(at: url, config: MenuService.makePayload(from: store))
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-            if reveal {
-                NSWorkspace.shared.activateFileViewerSelecting([url])
-            } else if !NSWorkspace.shared.open(url) {
-                presentConfigError(
-                    title: "Unable to Open Menu Config",
-                    message: AppLocalization.localized("No application could open the configuration file. Try Reveal in Finder and choose a text editor.")
-                )
-            }
         } catch {
             presentConfigError(title: "Unable to Open Menu Config", message: CustomMenuDiagnostics.message(for: error))
         }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
         refreshCustomMenuStatus()
     }
 
     // MARK: - 自定义菜单
 
-    private var customMenuIsPresent: Bool {
-        switch customMenuStatus {
-        case .defaultLayout, .unavailable: false
-        case .empty, .active, .invalid: true
+    private var customMenuFileExists: Bool {
+        guard let url = RCRuntime.shared.menuService.customMenuURL else { return false }
+        return FileManager.default.fileExists(atPath: url.path)
+    }
+
+    /// Whether the file differs from what is in effect. Also what makes the button
+    /// going grey a form of confirmation that applying worked.
+    private var customMenuHasPendingChanges: Bool {
+        switch customMenuStatus.notice {
+        case .edited, .broken: true
+        case .none: false
         }
     }
 
+    private var customMenuIsBroken: Bool {
+        if case .broken = customMenuStatus.notice { return true }
+        return false
+    }
+
     private var customMenuStatusTitle: String {
-        switch customMenuStatus {
-        case .unavailable: AppLocalization.localized("Unavailable")
-        case .defaultLayout: AppLocalization.localized("Not enabled")
-        case .empty, .active: AppLocalization.localized("Enabled")
-        case .invalid: AppLocalization.localized("Configuration invalid")
+        switch customMenuStatus.applied {
+        case .unavailable:
+            AppLocalization.localized("Unavailable")
+        case .defaultLayout:
+            customMenuIsBroken
+                ? AppLocalization.localized("Configuration invalid")
+                : AppLocalization.localized("Not enabled")
+        case .empty, .custom:
+            AppLocalization.localized("Enabled")
         }
     }
 
     private var customMenuStatusDetail: String {
-        switch customMenuStatus {
+        switch customMenuStatus.applied {
         case .unavailable: ""
-        case .defaultLayout, .invalid: AppLocalization.localized("Using the default layout")
+        case .defaultLayout: AppLocalization.localized("Using the default layout")
         case .empty: AppLocalization.localized("Empty menu")
-        case .active(let count): String(format: AppLocalization.localized("%lld items"), count)
+        case .custom(let count): String(format: AppLocalization.localized("%lld items"), count)
         }
     }
 
     private var customMenuStatusIcon: String {
-        switch customMenuStatus {
-        case .unavailable, .invalid: "exclamationmark.triangle.fill"
-        case .defaultLayout: "circle.dashed"
-        case .empty, .active: "checkmark.circle.fill"
+        switch customMenuStatus.applied {
+        case .unavailable: "exclamationmark.triangle.fill"
+        case .defaultLayout: customMenuIsBroken ? "exclamationmark.triangle.fill" : "circle.dashed"
+        case .empty, .custom: "checkmark.circle.fill"
         }
     }
 
     private var customMenuStatusColor: Color {
-        switch customMenuStatus {
-        case .unavailable, .invalid: .orange
-        case .defaultLayout: .secondary
-        case .empty, .active: .green
+        switch customMenuStatus.applied {
+        case .unavailable: .orange
+        case .defaultLayout: customMenuIsBroken ? .orange : .secondary
+        case .empty, .custom: .green
         }
     }
 
+    /// Guarded by an equality check so the polling timer does not dirty the view on
+    /// every tick.
     private func refreshCustomMenuStatus() {
-        customMenuStatus = RCRuntime.shared.menuService.customMenuStatus(from: store)
-    }
-
-    /// Generating the config also enables the custom layout, so ask first: a
-    /// tooltip is not enough for an action with a side effect the user cannot see.
-    private func confirmGeneratingCustomMenu() -> Bool {
-        let alert = NSAlert()
-        alert.messageText = AppLocalization.localized("No custom menu configuration yet")
-        alert.informativeText = AppLocalization.localized("RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it.")
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: AppLocalization.localized("Generate and Enable"))
-        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
-        return alert.runModal() == .alertFirstButtonReturn
+        let fresh = RCRuntime.shared.menuService.customMenuStatus(from: store)
+        if fresh != customMenuStatus {
+            customMenuStatus = fresh
+        }
     }
 
     private func presentConfigError(title: String, message: String) {
@@ -327,22 +343,26 @@ struct GeneralSettingsTabView: View {
         showMenuConfigError = true
     }
 
-    /// Applies the file immediately.
+    /// Re-reads the file and only then commits it.
     ///
-    /// Deliberately the same path the extension heartbeat drives, so pressing this
-    /// and waiting 10 seconds must yield identical menus - this is an accelerator,
-    /// not a second way of applying configuration.
+    /// Nothing is pushed unless the file validated, so a bad edit leaves the live
+    /// menu exactly as it was instead of taking it down behind the user's back.
     private func applyCustomMenu() {
-        let status = RCRuntime.shared.menuService.customMenuStatus(from: store)
-        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-        customMenuStatus = status
-        if case .invalid(let reason) = status {
-            presentConfigError(title: "Configuration Not Applied", message: reason)
+        do {
+            try RCRuntime.shared.menuService.applyCustomMenu(from: store)
+            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        } catch {
+            presentConfigError(
+                title: "Configuration Not Applied",
+                message: CustomMenuDiagnostics.message(for: error)
+                    + "\n\n" + AppLocalization.localized("The menu is unchanged.")
+            )
         }
+        refreshCustomMenuStatus()
     }
 
     private func restoreDefaultLayout() {
-        guard let url = MenuService.customMenuURL else {
+        guard let url = RCRuntime.shared.menuService.customMenuURL else {
             presentConfigError(
                 title: "Unable to Restore Default Layout",
                 message: AppLocalization.localized("The shared configuration folder is unavailable.")
@@ -362,6 +382,10 @@ struct GeneralSettingsTabView: View {
 
         do {
             try MenuService.removeCustomMenu(at: url)
+            // Forgetting the snapshot matters: without it, recreating the file with
+            // the same bytes (restoring the backup, say) would silently bring the
+            // custom layout back without an Apply.
+            RCRuntime.shared.menuService.discardAppliedCustomMenu()
             NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
         } catch {
             presentConfigError(title: "Unable to Restore Default Layout", message: CustomMenuDiagnostics.message(for: error))

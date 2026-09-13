@@ -9,25 +9,45 @@
 import Foundation
 import OSLog
 
-/// What the on-disk custom menu file means for this installation right now.
-enum CustomMenuStatus: Equatable {
-    /// The App Group container is unavailable (signing or entitlement problem).
-    case unavailable
-    /// No file: the default categorized layout applies. Not a problem.
-    case defaultLayout
-    /// An empty array: the user asked for an intentionally empty menu. Not a problem.
-    case empty
-    /// Parsed and resolved; carries the number of top-level entries.
-    case active(topLevelItems: Int)
-    /// Present but unusable, so the default layout applies instead.
-    case invalid(reason: String)
+/// What the settings page reports about the custom menu.
+///
+/// Two axes rather than one, because the menu and the file can disagree: an
+/// external editor can change the file without it taking effect, and a change in
+/// Settings can invalidate an applied file without the file itself changing.
+struct CustomMenuStatus: Equatable {
+    /// What the Finder menu is rendering right now.
+    enum Applied: Equatable {
+        /// The App Group container is unavailable (signing or entitlement problem).
+        case unavailable
+        /// The default categorized layout. Not a problem.
+        case defaultLayout
+        /// An empty array is in effect: an intentionally empty menu. Not a problem.
+        case empty
+        /// In effect, carrying the number of top-level entries.
+        case custom(topLevelItems: Int)
+    }
 
-    /// Whether this state is worth telling the user about.
+    /// How the file on disk relates to what is in effect.
+    enum Notice: Equatable {
+        /// Nothing to report.
+        case none
+        /// Edited since it was applied, so the menu still shows the old layout.
+        case edited
+        /// Unusable: it does not parse, or no longer matches the enabled items.
+        case broken(reason: String)
+    }
+
+    var applied: Applied
+    var notice: Notice
+
+    /// Whether this state is worth flagging as something going wrong.
+    ///
+    /// `.edited` is deliberately not one: an edit waiting to be applied is the
+    /// normal working state this whole screen is built around, not a fault.
     var isProblem: Bool {
-        switch self {
-        case .unavailable, .invalid: true
-        case .defaultLayout, .empty, .active: false
-        }
+        if applied == .unavailable { return true }
+        if case .broken = notice { return true }
+        return false
     }
 }
 
@@ -36,10 +56,36 @@ final class MenuService {
     /// 菜单版本号（防重复 / 防乱序）
     private var menuVersion = 0
 
+    /// Bytes of the custom menu currently in effect; `nil` means the default layout.
+    ///
+    /// Raw bytes rather than resolved nodes, because `AppState` keeps moving
+    /// underneath: disabling an app, or turning common folders off, empties part of
+    /// the payload and the layout has to be re-resolved against it. Bytes also turn
+    /// "has the file been edited since?" into a comparison instead of a re-read.
+    private var appliedCustomMenuData: Data?
+
+    /// Separate from the data being `nil`, because "nothing is applied" must not
+    /// re-read the disk on every one of the three build triggers.
+    private var hasLoadedAppliedCustomMenu = false
+
     /// Copy kept beside the live file when the custom layout is removed.
     static let customMenuBackupName = "custom_menu.backup.json"
 
-    static var customMenuURL: URL? {
+    /// The file the menu is built from. `nil` means there is no container at all,
+    /// so the default layout always applies.
+    ///
+    /// Explicitly injectable so tests can point at a temporary file: nothing in this
+    /// type may reach the real App Group container while a test runs. There is
+    /// deliberately no default argument, because `nil` is a meaningful value here
+    /// and would otherwise be indistinguishable from "use the real container".
+    let customMenuURL: URL?
+
+    init(customMenuURL: URL?) {
+        self.customMenuURL = customMenuURL
+    }
+
+    /// The real location, in the shared App Group container.
+    static var defaultCustomMenuURL: URL? {
         FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.suitName)?
             .appendingPathComponent("custom_menu.json")
     }
@@ -103,40 +149,156 @@ final class MenuService {
     func buildConfig(from state: AppState) -> MenuConfigPayload {
         menuVersion += 1
         var config = Self.makePayload(from: state, version: menuVersion)
-
-        if let url = Self.customMenuURL {
-            do {
-                config.customMenu = try CustomMenu.load(from: url, config: config)
-            } catch {
-                // Fall back to the default layout, but keep the reason readable in
-                // the log. `.private` because messages can quote user paths.
-                Logger(subsystem: "RClick", category: "MenuService")
-                    .error("Invalid custom_menu.json; using default menu: \(CustomMenuDiagnostics.message(for: error), privacy: .private)")
-            }
-        }
-
+        config.customMenu = customMenu(for: config)
         return config
+    }
+
+    /// The custom layout to render for `config`, or `nil` for the default one.
+    ///
+    /// Takes the payload rather than reading `AppState`, so tests can drive it
+    /// against a temporary file instead of the real SwiftData store.
+    func customMenu(for config: MenuConfigPayload) -> [MenuNode]? {
+        guard let data = currentAppliedCustomMenuData() else { return nil }
+        do {
+            return try CustomMenu.decode(data, config: config)
+        } catch {
+            // Fall back to the default layout, but keep the reason readable in the
+            // log. `.private` because messages can quote user paths.
+            Logger(subsystem: "RClick", category: "MenuService")
+                .error("Invalid custom_menu.json; using default menu: \(CustomMenuDiagnostics.message(for: error), privacy: .private)")
+            return nil
+        }
+    }
+
+    /// The bytes to render from, or `nil` for the default layout.
+    ///
+    /// The file is read only on first use and when the user applies it. Edits made
+    /// in an external editor are deliberately ignored until then, so a
+    /// half-written file cannot take the menu down mid-edit. Deleting the file is
+    /// the one exception: that is unambiguous and non-transient, so it still means
+    /// "back to the default layout" right away.
+    private func currentAppliedCustomMenuData() -> Data? {
+        ensureAppliedCustomMenuLoaded()
+        guard let url = customMenuURL,
+              FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return appliedCustomMenuData
     }
 
     // MARK: - Custom menu status
 
-    /// Reports what the custom menu file currently means for this installation.
+    /// Reports what the custom menu means for this installation right now.
     ///
-    /// Derived on demand rather than cached inside `buildConfig`: that method only
-    /// runs when the extension asks for a config, which never happens while the
-    /// extension is disabled - exactly when someone opens Settings to investigate.
-    static func customMenuStatus(at url: URL?, config: MenuConfigPayload) -> CustomMenuStatus {
-        guard let url else { return .unavailable }
+    /// Takes the applied snapshot as a parameter rather than reading the property,
+    /// so tests can drive it without an App Group container.
+    static func customMenuStatus(at url: URL?, appliedData: Data?, config: MenuConfigPayload) -> CustomMenuStatus {
+        guard let url else { return CustomMenuStatus(applied: .unavailable, notice: .none) }
+
+        let fileData: Data
         do {
-            guard let nodes = try CustomMenu.load(from: url, config: config) else { return .defaultLayout }
-            return nodes.isEmpty ? .empty : .active(topLevelItems: nodes.count)
+            fileData = try Data(contentsOf: url)
+        } catch CocoaError.fileReadNoSuchFile {
+            // No file, so nothing is in effect and there is nothing to apply.
+            return CustomMenuStatus(applied: .defaultLayout, notice: .none)
         } catch {
-            return .invalid(reason: CustomMenuDiagnostics.message(for: error))
+            // Unreadable for some other reason - a folder where a file was expected,
+            // say. That is not a missing file, and sending the user off to fix the
+            // JSON syntax of something that has none would be a wrong turn.
+            return CustomMenuStatus(applied: .defaultLayout,
+                                    notice: .broken(reason: CustomMenuDiagnostics.message(for: error)))
+        }
+
+        // The snapshot only counts while the file is still there: deleting the file
+        // is the documented way back to the default layout.
+        var appliedReason: String?
+        let applied: CustomMenuStatus.Applied
+        if let appliedData {
+            switch resolve(appliedData, config: config) {
+            case .unusable(let reason):
+                applied = .defaultLayout
+                appliedReason = reason
+            case .usable(let nodes):
+                applied = nodes.isEmpty ? .empty : .custom(topLevelItems: nodes.count)
+            }
+        } else {
+            applied = .defaultLayout
+        }
+
+        switch resolve(fileData, config: config) {
+        case .unusable(let reason):
+            return CustomMenuStatus(applied: applied, notice: .broken(reason: reason))
+        case .usable:
+            guard fileData == appliedData else {
+                return CustomMenuStatus(applied: applied, notice: .edited)
+            }
+            // Same bytes. If they no longer resolve, the menu fell back anyway and
+            // this reason is the only explanation the user is going to get.
+            return CustomMenuStatus(applied: applied,
+                                    notice: appliedReason.map { .broken(reason: $0) } ?? .none)
         }
     }
 
     func customMenuStatus(from state: AppState) -> CustomMenuStatus {
-        Self.customMenuStatus(at: Self.customMenuURL, config: Self.makePayload(from: state))
+        ensureAppliedCustomMenuLoaded()
+        return Self.customMenuStatus(at: customMenuURL,
+                                     appliedData: appliedCustomMenuData,
+                                     config: Self.makePayload(from: state))
+    }
+
+    /// Deliberately not named `.none`: that would shadow `Optional.none` and make
+    /// every use site ambiguous.
+    private enum Resolution {
+        case unusable(reason: String)
+        case usable([MenuNode])
+    }
+
+    private static func resolve(_ data: Data, config: MenuConfigPayload) -> Resolution {
+        do {
+            return .usable(try CustomMenu.decode(data, config: config))
+        } catch {
+            return .unusable(reason: CustomMenuDiagnostics.message(for: error))
+        }
+    }
+
+    // MARK: - Custom menu application
+
+    /// Re-reads the file, validates it against `config`, and only then makes it the
+    /// layout in effect.
+    ///
+    /// Throws without touching the snapshot, so a bad edit leaves the menu exactly
+    /// as it was instead of falling back to the default layout behind the user's back.
+    func applyCustomMenu(at url: URL, config: MenuConfigPayload) throws {
+        let data = try Data(contentsOf: url)
+        // Validate against the payload the extension will actually receive, so a
+        // reference that no longer matches enabled items is rejected here instead
+        // of quietly dropping out of the menu.
+        _ = try CustomMenu.decode(data, config: config)
+        appliedCustomMenuData = data
+        hasLoadedAppliedCustomMenu = true
+    }
+
+    /// Applies whatever is at `customMenuURL`, or throws when there is no container.
+    func applyCustomMenu(config: MenuConfigPayload) throws {
+        guard let url = customMenuURL else {
+            throw CustomMenuError.containerUnavailable
+        }
+        try applyCustomMenu(at: url, config: config)
+    }
+
+    func applyCustomMenu(from state: AppState) throws {
+        try applyCustomMenu(config: Self.makePayload(from: state))
+    }
+
+    /// Forgets the applied layout so a stale snapshot cannot bring it back.
+    func discardAppliedCustomMenu() {
+        appliedCustomMenuData = nil
+        hasLoadedAppliedCustomMenu = true
+    }
+
+    private func ensureAppliedCustomMenuLoaded() {
+        guard !hasLoadedAppliedCustomMenu else { return }
+        hasLoadedAppliedCustomMenu = true
+        guard let url = customMenuURL else { return }
+        appliedCustomMenuData = try? Data(contentsOf: url)
     }
 
     // MARK: - Custom menu removal
