@@ -91,27 +91,19 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func deleteApp(index: Int) {
         apps.remove(at: index)
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func addApp(item: OpenWithApp) {
         logger.debug("start add app")
         apps.append(item)
 
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func moveApps(from source: IndexSet, to destination: Int) {
         apps.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     @MainActor
@@ -123,7 +115,7 @@ class AppState: ObservableObject, ActionStateProviding {
             updatedApp.environment = environment
             updatedApp.opensNewInstance = opensNewInstance
             apps[index] = updatedApp
-            try? save()
+            persist()
         }
     }
 
@@ -141,28 +133,19 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func deleteNewFile(id: String) {
         newFiles.removeAll { $0.id == id }
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
-        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        persist()
     }
 
     @MainActor func addNewFile(_ item: NewFile) {
         logger.debug("start add new file type")
         newFiles.append(item)
 
-        do {
-            try save()
-        } catch {
-            logger.info("save error: \(error.localizedDescription)")
-        }
+        persist()
     }
 
     @MainActor func moveNewFiles(from source: IndexSet, to destination: Int) {
         newFiles.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     // MARK: - Actions
@@ -174,23 +157,22 @@ class AppState: ObservableObject, ActionStateProviding {
     }
 
     @MainActor func toggleActionItem() {
-        try? save()
-        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        persist()
     }
 
     @MainActor func moveActions(from source: IndexSet, to destination: Int) {
         actions.move(fromOffsets: source, toOffset: destination)
-        persistMenuOrder()
+        persist()
     }
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
-        try? save()
+        persist()
     }
 
     @MainActor func resetFiletypeItems() {
         newFiles = NewFile.all
-        try? save()
+        persist()
     }
 
     @MainActor func refresh() {
@@ -202,20 +184,50 @@ class AppState: ObservableObject, ActionStateProviding {
     }
 
     @MainActor func sync() {
-        try? save()
+        persist()
     }
 
     // MARK: - 持久化
 
+    /// Set when the last write to SwiftData failed, cleared on the next success.
+    ///
+    /// Persistence failures used to be logged at `.info`, which never reaches the
+    /// log store: a failed save looked exactly like a successful one, and the only
+    /// symptom was a setting that had silently not been kept.
+    @Published private(set) var lastSaveError: String?
+
+    /// Dismisses the alert in the settings window and arms it for the next failure.
     @MainActor
-    private func persistMenuOrder() {
+    func clearSaveError() {
+        lastSaveError = nil
+    }
+
+    /// Writes the in-memory configuration to SwiftData and tells the app to rebuild
+    /// the menu from it.
+    ///
+    /// One entry point on purpose. Every mutation used to persist and notify by
+    /// hand and the call sites disagreed about both halves: most dropped the error,
+    /// and several skipped the notification entirely - adding an app, adding a file
+    /// type, resetting either list and syncing common folders all stayed invisible
+    /// until the next heartbeat. Doing both here means a mutation cannot get one
+    /// without the other.
+    ///
+    /// Deliberately non-throwing; a failure lands in `lastSaveError` for the
+    /// settings window to show, and is logged at `.error`.
+    @MainActor
+    private func persist() {
         reindexMenuItems()
         do {
-            try save()
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+            try configService.save(AppConfigData(apps: apps, actions: actions, newFiles: newFiles, commonDirs: cdirs))
+            lastSaveError = nil
         } catch {
-            logger.info("save error: \(error.localizedDescription)")
+            lastSaveError = error.localizedDescription
+            logger.error("save error: \(error.localizedDescription)")
         }
+        // Posted even when persisting failed: the menu is built from these in-memory
+        // arrays, so suppressing it would leave the app and the menu disagreeing
+        // about what is configured.
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
     }
 
     @MainActor
@@ -230,11 +242,5 @@ class AppState: ObservableObject, ActionStateProviding {
             newFile.idx = index
             return newFile
         }
-    }
-
-    @MainActor
-    private func save() throws {
-        reindexMenuItems()
-        try configService.save(AppConfigData(apps: apps, actions: actions, newFiles: newFiles, commonDirs: cdirs))
     }
 }

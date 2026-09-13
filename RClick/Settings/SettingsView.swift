@@ -146,6 +146,19 @@ struct SettingsView: View {
         }
         .navigationTitle(AppLocalization.localized(selectedTab.rawValue))
         .background(Color(NSColor.windowBackgroundColor))
+        // A failed write used to be invisible: the change stayed on screen but was
+        // never stored, so the only way to notice was losing it on the next launch.
+        .alert(
+            Text(appLocalized: "Settings could not be saved"),
+            isPresented: Binding(
+                get: { appState.lastSaveError != nil },
+                set: { if !$0 { appState.clearSaveError() } }
+            )
+        ) {
+            Button(AppLocalization.localized("OK"), role: .cancel) { appState.clearSaveError() }
+        } message: {
+            Text(appState.lastSaveError ?? "")
+        }
     }
 
     func getAppVersion() -> String {
