@@ -14,7 +14,20 @@ struct MenuNode: Codable {
     var children: [MenuNode]?
 
     /// Resolve human-friendly selectors to the same IDs used by existing click handlers.
-    func resolved(using config: MenuConfigPayload) throws -> MenuNode {
+    ///
+    /// `path` is a 1-based menu item path such as "3" or "2.1". It is attached to
+    /// validation errors so the settings UI can point at the offending entry.
+    func resolved(using config: MenuConfigPayload, path: String = "") throws -> MenuNode {
+        do {
+            return try resolveBody(using: config, path: path)
+        } catch let error as CustomMenuError {
+            // Children already carry their full path, so only wrap the innermost message.
+            guard case .invalid(let message) = error, !path.isEmpty else { throw error }
+            throw CustomMenuError.invalidAt(path: path, message: message)
+        }
+    }
+
+    private func resolveBody(using config: MenuConfigPayload, path: String) throws -> MenuNode {
         var node = self
         let selectors = [id, appPath, fileExtension].compactMap { $0 }
         switch type {
@@ -27,7 +40,12 @@ struct MenuNode: Codable {
                   let children, itemType == nil, selectors.isEmpty else {
                 throw CustomMenuError.invalid("submenu requires a title and children, without an item reference")
             }
-            node.children = try children.map { try $0.resolved(using: config) }
+            node.children = try children.enumerated().map { index, child in
+                try child.resolved(
+                    using: config,
+                    path: path.isEmpty ? "\(index + 1)" : "\(path).\(index + 1)"
+                )
+            }
         case .item:
             guard let itemType, children == nil, selectors.count == 1,
                   !selectors[0].isEmpty else {
@@ -62,11 +80,21 @@ struct MenuNode: Codable {
     }
 }
 
-enum CustomMenuError: Error, CustomStringConvertible {
+enum CustomMenuError: Error, CustomStringConvertible, LocalizedError {
     case invalid(String)
+    /// A validation failure pinned to a 1-based menu item path, e.g. "3" or "2.1".
+    case invalidAt(path: String, message: String)
+
     var description: String {
-        switch self { case .invalid(let message): return message }
+        switch self {
+        case .invalid(let message): return message
+        case .invalidAt(let path, let message): return "[\(path)] \(message)"
+        }
     }
+
+    /// Without this, `error.localizedDescription` degrades to the generic
+    /// "The operation couldn't be completed." and the real reason is lost.
+    var errorDescription: String? { description }
 }
 
 enum CustomMenu {
@@ -78,8 +106,16 @@ enum CustomMenu {
         } catch CocoaError.fileReadNoSuchFile {
             return nil
         }
+        return try decode(data, config: config)
+    }
+
+    /// In-memory counterpart of `load`, so callers that already hold the bytes
+    /// (validation, transfer) do not read the file twice.
+    static func decode(_ data: Data, config: MenuConfigPayload) throws -> [MenuNode] {
         let nodes = try JSONDecoder().decode([MenuNode].self, from: data)
-        return try nodes.map { try $0.resolved(using: config) }
+        return try nodes.enumerated().map { index, node in
+            try node.resolved(using: config, path: "\(index + 1)")
+        }
     }
 
     /// Both nested and top-level leaves use the extension's existing item factories.
