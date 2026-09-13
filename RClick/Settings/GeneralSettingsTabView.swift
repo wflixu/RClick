@@ -25,7 +25,9 @@ struct GeneralSettingsTabView: View {
     @State private var accessibilityStatus: PermissionStatus = .unknown
     @State private var showFolderPermissionsSheet = false
     @State private var menuConfigError: String?
+    @State private var menuConfigErrorTitle = "Unable to Open Menu Config"
     @State private var showMenuConfigError = false
+    @State private var customMenuStatus: CustomMenuStatus = .defaultLayout
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
@@ -95,20 +97,54 @@ struct GeneralSettingsTabView: View {
             }
 
             Section {
+                LabeledContent {
+                    Text(customMenuStatusDetail)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.trailing)
+                } label: {
+                    Label(customMenuStatusTitle, systemImage: customMenuStatusIcon)
+                        .foregroundStyle(customMenuStatusColor)
+                }
+
+                if case .invalid(let reason) = customMenuStatus {
+                    Text(reason)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 HStack {
                     Button(AppLocalization.localized("Open Config")) {
                         openMenuConfig(reveal: false)
                     }
+                    .help(AppLocalization.localized("Creates the file from your current menu the first time, then just opens it. Neither changes its contents."))
+
                     Button(AppLocalization.localized("Reveal in Finder")) {
                         openMenuConfig(reveal: true)
                     }
+                    .help(AppLocalization.localized("Shows the file in Finder. Changes nothing."))
+                }
+
+                HStack {
+                    Button(AppLocalization.localized("Apply Custom Menu")) {
+                        applyCustomMenu()
+                    }
+                    .disabled(!customMenuIsPresent)
+                    .help(AppLocalization.localized("Applies now instead of waiting up to 10 seconds. Does not change the file."))
+
+                    Button(AppLocalization.localized("Restore Default Layout")) {
+                        restoreDefaultLayout()
+                    }
+                    .disabled(!customMenuIsPresent)
+                    .help(AppLocalization.localized("Deletes the file and returns to the default layout, keeping a backup."))
                 }
             } header: {
                 Text(appLocalized: "Advanced Menu Layout")
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(appLocalized: "Customize top-level items and nested submenus with custom_menu.json. 💡 Tip: Give this file to an AI assistant (such as ChatGPT / Claude) to help arrange your menu.")
-                    Text(appLocalized: "Changes appear after reopening the menu within 10 seconds. Remove the file to restore the default layout.")
+                    Text(appLocalized: "Changes apply on their own within 10 seconds. Removing the file restores the default layout.")
                 }
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -157,9 +193,11 @@ struct GeneralSettingsTabView: View {
         .formStyle(.grouped)
         .onAppear {
             updatePermissionStatus()
+            refreshCustomMenuStatus()
         }
         .onForeground {
             updatePermissionStatus()
+            refreshCustomMenuStatus()
         }
         .alert(
             Text(appLocalized: "Invalid Folder"),
@@ -181,7 +219,7 @@ struct GeneralSettingsTabView: View {
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
-        .alert(AppLocalization.localized("Unable to Open Menu Config"), isPresented: $showMenuConfigError) {
+        .alert(menuConfigErrorTitle, isPresented: $showMenuConfigError) {
             Button(AppLocalization.localized("OK"), role: .cancel) {}
         } message: {
             Text(menuConfigError ?? "")
@@ -194,22 +232,124 @@ struct GeneralSettingsTabView: View {
     private func openMenuConfig(reveal: Bool) {
         do {
             guard let url = MenuService.customMenuURL else {
-                menuConfigError = AppLocalization.localized("The shared configuration folder is unavailable.")
-                showMenuConfigError = true
+                presentConfigError(
+                    title: "Unable to Open Menu Config",
+                    message: AppLocalization.localized("The shared configuration folder is unavailable.")
+                )
                 return
             }
-            try MenuService.prepareCustomMenu(at: url, config: RCRuntime.shared.menuService.buildConfig(from: store))
+            // Seeding only reads the current configuration, so the payload is built
+            // without bumping the menu version or re-reading the file we are about
+            // to open.
+            try MenuService.prepareCustomMenu(at: url, config: MenuService.makePayload(from: store))
             NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
             if reveal {
                 NSWorkspace.shared.activateFileViewerSelecting([url])
             } else if !NSWorkspace.shared.open(url) {
-                menuConfigError = AppLocalization.localized("No application could open the configuration file. Try Reveal in Finder and choose a text editor.")
-                showMenuConfigError = true
+                presentConfigError(
+                    title: "Unable to Open Menu Config",
+                    message: AppLocalization.localized("No application could open the configuration file. Try Reveal in Finder and choose a text editor.")
+                )
             }
         } catch {
-            menuConfigError = error.localizedDescription
-            showMenuConfigError = true
+            presentConfigError(title: "Unable to Open Menu Config", message: CustomMenuDiagnostics.message(for: error))
         }
+        refreshCustomMenuStatus()
+    }
+
+    // MARK: - 自定义菜单
+
+    private var customMenuIsPresent: Bool {
+        switch customMenuStatus {
+        case .defaultLayout, .unavailable: false
+        case .empty, .active, .invalid: true
+        }
+    }
+
+    private var customMenuStatusTitle: String {
+        switch customMenuStatus {
+        case .unavailable: AppLocalization.localized("Unavailable")
+        case .defaultLayout: AppLocalization.localized("Not enabled")
+        case .empty, .active: AppLocalization.localized("Enabled")
+        case .invalid: AppLocalization.localized("Configuration invalid")
+        }
+    }
+
+    private var customMenuStatusDetail: String {
+        switch customMenuStatus {
+        case .unavailable: ""
+        case .defaultLayout, .invalid: AppLocalization.localized("Using the default layout")
+        case .empty: AppLocalization.localized("Empty menu")
+        case .active(let count): String(format: AppLocalization.localized("%lld items"), count)
+        }
+    }
+
+    private var customMenuStatusIcon: String {
+        switch customMenuStatus {
+        case .unavailable, .invalid: "exclamationmark.triangle.fill"
+        case .defaultLayout: "circle.dashed"
+        case .empty, .active: "checkmark.circle.fill"
+        }
+    }
+
+    private var customMenuStatusColor: Color {
+        switch customMenuStatus {
+        case .unavailable, .invalid: .orange
+        case .defaultLayout: .secondary
+        case .empty, .active: .green
+        }
+    }
+
+    private func refreshCustomMenuStatus() {
+        customMenuStatus = RCRuntime.shared.menuService.customMenuStatus(from: store)
+    }
+
+    private func presentConfigError(title: String, message: String) {
+        menuConfigErrorTitle = AppLocalization.localized(title)
+        menuConfigError = message
+        showMenuConfigError = true
+    }
+
+    /// Applies the file immediately.
+    ///
+    /// Deliberately the same path the extension heartbeat drives, so pressing this
+    /// and waiting 10 seconds must yield identical menus - this is an accelerator,
+    /// not a second way of applying configuration.
+    private func applyCustomMenu() {
+        let status = RCRuntime.shared.menuService.customMenuStatus(from: store)
+        NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        customMenuStatus = status
+        if case .invalid(let reason) = status {
+            presentConfigError(title: "Configuration Not Applied", message: reason)
+        }
+    }
+
+    private func restoreDefaultLayout() {
+        guard let url = MenuService.customMenuURL else {
+            presentConfigError(
+                title: "Unable to Restore Default Layout",
+                message: AppLocalization.localized("The shared configuration folder is unavailable.")
+            )
+            return
+        }
+
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("Restore the default layout?")
+        alert.informativeText = AppLocalization.localized("This deletes custom_menu.json and returns to the default menu. A copy is kept as custom_menu.backup.json.")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("Restore"))
+        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
+        alert.buttons[0].hasDestructiveAction = true
+
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+
+        do {
+            try MenuService.removeCustomMenu(at: url)
+            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+        } catch {
+            presentConfigError(title: "Unable to Restore Default Layout", message: CustomMenuDiagnostics.message(for: error))
+        }
+        refreshCustomMenuStatus()
     }
 
     // MARK: - 权限状态检测

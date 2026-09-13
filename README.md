@@ -137,5 +137,5 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
 ## 自定义菜单层级
 
 支持一级常用项与任意嵌套子菜单混排、分隔线及自定义标题/图标。
-将声明式 `custom_menu.json` 放入 App Group 容器即可生效；缺失或无效时保留原有菜单。
+将声明式 `custom_menu.json` 放入 App Group 容器即可生效；保存后 10 秒内自动应用，也可在设置中点「应用自定义菜单」立即生效。缺失时使用默认布局；配置无效时回退默认布局，并在设置中显示具体出错项。
 参见 [配置示例与使用说明](examples/README.md)。
