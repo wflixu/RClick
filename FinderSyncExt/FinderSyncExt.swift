@@ -269,8 +269,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         if let appURL = app.appURL {
             let cacheKey = "app:\(appURL)"
             if let cached = iconCache[cacheKey] { return cached }
-            let icon: NSImage = DispatchQueue.main.sync {
-                NSWorkspace.shared.icon(forFile: appURL)
+            let icon: NSImage
+            if Thread.isMainThread {
+                icon = MainActor.assumeIsolated { NSWorkspace.shared.icon(forFile: appURL) }
+            } else {
+                icon = DispatchQueue.main.sync { NSWorkspace.shared.icon(forFile: appURL) }
             }
             if icon.size.width > 0 {
                 iconCache[cacheKey] = icon
@@ -342,6 +345,18 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             return menu
         }
 
+        if let nodes = config.customMenu {
+            CustomMenu.render(nodes, into: menu, makeItem: { type, id in
+                switch type {
+                case .action: return config.actions.first { $0.id == id }.map(self.makeActionItem)
+                case .app: return config.apps.first { $0.id == id }.map(self.makeAppItem)
+                case .newFile: return config.newFiles.first { $0.id == id }.map(self.makeNewFileItem)
+                case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
+                }
+            }, loadIcon: { self.loadIcon(named: $0, accessibilityDescription: $0) })
+            return menu
+        }
+
         // 构建动作菜单
         if !config.actions.isEmpty {
             if config.actionsCollapsed {
@@ -349,12 +364,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 let actionsTitle = AppLocalization.localized("Actions")
                 let actionsSubMenu = NSMenu(title: actionsTitle)
                 for action in config.actions {
-                    let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
-                    item.tag = hashForAction(action)
-                    item.target = self
-                    if let icon = templateSymbol(action.icon) {
-                        item.image = icon
-                    }
+                    let item = makeActionItem(action)
                     actionsSubMenu.addItem(item)
                 }
                 let actionsItem = NSMenuItem(title: actionsTitle, action: nil, keyEquivalent: "")
@@ -364,12 +374,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             } else {
                 // 不折叠：直接显示菜单项
                 for action in config.actions {
-                    let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
-                    item.tag = hashForAction(action)
-                    item.target = self
-                    if let icon = templateSymbol(action.icon) {
-                        item.image = icon
-                    }
+                    let item = makeActionItem(action)
                     menu.addItem(item)
                 }
             }
@@ -382,10 +387,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 let appsTitle = AppLocalization.localized("Open With")
                 let appsSubMenu = NSMenu(title: appsTitle)
                 for app in config.apps {
-                    let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
-                    item.tag = hashForApp(app)
-                    item.target = self
-                    item.image = cachedAppIcon(app: app)
+                    let item = makeAppItem(app)
                     appsSubMenu.addItem(item)
                 }
                 let appsItem = NSMenuItem(title: appsTitle, action: nil, keyEquivalent: "")
@@ -395,10 +397,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             } else {
                 // 不折叠：直接显示菜单项
                 for app in config.apps {
-                    let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
-                    item.tag = hashForApp(app)
-                    item.target = self
-                    item.image = cachedAppIcon(app: app)
+                    let item = makeAppItem(app)
                     menu.addItem(item)
                 }
             }
@@ -411,11 +410,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 let newFilesTitle = AppLocalization.localized("New File")
                 let newFilesSubMenu = NSMenu(title: newFilesTitle)
                 for newFile in config.newFiles {
-                    let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
-                    item.tag = hashForNewFile(newFile)
-                    item.target = self
-                    item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
-                    item.image?.accessibilityDescription = newFile.name
+                    let item = makeNewFileItem(newFile)
                     newFilesSubMenu.addItem(item)
                 }
                 let newFilesItem = NSMenuItem(title: newFilesTitle, action: nil, keyEquivalent: "")
@@ -425,11 +420,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             } else {
                 // 不折叠：直接显示菜单项
                 for newFile in config.newFiles {
-                    let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
-                    item.tag = hashForNewFile(newFile)
-                    item.target = self
-                    item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
-                    item.image?.accessibilityDescription = newFile.name
+                    let item = makeNewFileItem(newFile)
                     menu.addItem(item)
                 }
             }
@@ -442,10 +433,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 let commonDirsTitle = AppLocalization.localized("Common Dirs")
                 let commonDirsSubMenu = NSMenu(title: commonDirsTitle)
                 for commonDir in config.commonDirs {
-                    let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
-                    item.tag = hashForCommonDir(commonDir)
-                    item.target = self
-                    item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+                    let item = makeCommonDirItem(commonDir)
                     commonDirsSubMenu.addItem(item)
                 }
                 let commonDirsItem = NSMenuItem(title: commonDirsTitle, action: nil, keyEquivalent: "")
@@ -455,16 +443,48 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             } else {
                 // 不折叠：直接显示菜单项
                 for commonDir in config.commonDirs {
-                    let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
-                    item.tag = hashForCommonDir(commonDir)
-                    item.target = self
-                    item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+                    let item = makeCommonDirItem(commonDir)
                     menu.addItem(item)
                 }
             }
         }
 
         return menu
+    }
+
+    private func makeActionItem(_ action: ActionMenuItem) -> NSMenuItem {
+        let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
+        item.tag = hashForAction(action)
+        item.target = self
+        if let icon = templateSymbol(action.icon) {
+            item.image = icon
+        }
+        return item
+    }
+
+    private func makeAppItem(_ app: AppMenuItem) -> NSMenuItem {
+        let item = NSMenuItem(title: app.name, action: #selector(handleAppClick(_:)), keyEquivalent: "")
+        item.tag = hashForApp(app)
+        item.target = self
+        item.image = cachedAppIcon(app: app)
+        return item
+    }
+
+    private func makeNewFileItem(_ newFile: NewFileMenuItem) -> NSMenuItem {
+        let item = NSMenuItem(title: newFile.name, action: #selector(handleNewFileClick(_:)), keyEquivalent: "")
+        item.tag = hashForNewFile(newFile)
+        item.target = self
+        item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
+        item.image?.accessibilityDescription = newFile.name
+        return item
+    }
+
+    private func makeCommonDirItem(_ commonDir: CommonDirMenuItem) -> NSMenuItem {
+        let item = NSMenuItem(title: commonDir.name, action: #selector(handleCommonDirClick(_:)), keyEquivalent: "")
+        item.tag = hashForCommonDir(commonDir)
+        item.target = self
+        item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+        return item
     }
 
     // MARK: - Menu Item Hash Functions

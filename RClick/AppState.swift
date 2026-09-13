@@ -92,7 +92,7 @@ class AppState: ObservableObject, ActionStateProviding {
     }
 
     func getAppItem(rid: String) -> OpenWithApp? {
-        return apps.first { rid.contains($0.id) }
+        return apps.first { rid == $0.id }
     }
 
     func getFileType(rid: String) -> NewFile? {

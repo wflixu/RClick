@@ -94,4 +94,24 @@ final class ActionServiceTests {
         let fetched = try context.fetch(FetchDescriptor<AppEntity>())
         #expect(fetched.first?.opensNewInstance == true)
     }
+    @Test func fileTemplateSurvivesSaveAndReload() throws {
+        let container = try ModelContainer(
+            for: AppEntity.self, ActionEntity.self, NewFileTypeEntity.self, CommonDirEntity.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let service = ConfigService(modelContext: container.mainContext)
+        var file = NewFile(ext: ".txt", name: "Template", idx: 0, id: "stable-template-id")
+        file.template = URL(fileURLWithPath: "/tmp/template with spaces.txt")
+        file.openApp = URL(fileURLWithPath: "/Applications/TextEdit.app")
+        try service.save(AppConfigData(newFiles: [file]))
+
+        for _ in 0..<2 {
+            let loaded = try #require(service.load().newFiles.first)
+            #expect(loaded.id == file.id)
+            #expect(loaded.template == file.template)
+            #expect(loaded.openApp == file.openApp)
+            try service.save(AppConfigData(newFiles: [loaded]))
+        }
+    }
+
 }
