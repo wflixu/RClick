@@ -1,182 +1,8 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        }
-      }
-    },
-    "%@（%@）" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@（%2$@）"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ (%2$@)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@（%2$@）"
-          }
-        }
-      }
-    },
     "%lld" : {
 
-    },
-    "1. Click \"Settings…\" on the right to open System Settings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1. Click \"Settings…\" on the right to open System Settings"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1. Haz clic en “Ajustes…” a la derecha para abrir Ajustes del Sistema"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1. Cliquez sur « Réglages… » à droite pour ouvrir Réglages Système"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1. 右側の「設定…」をクリックしてシステム設定を開きます"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1. 点击右侧“设置…”按钮打开系统设置"
-          }
-        }
-      }
-    },
-    "2. Click the lock icon and authenticate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2. Click the lock icon and authenticate"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2. Haz clic en el icono del candado y autentícate"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2. Cliquez sur l’icône de cadenas et authentifiez-vous"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2. 左下の鍵アイコンをクリックして認証します"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2. 点击左下角锁图标并认证"
-          }
-        }
-      }
-    },
-    "3. Click \"+\" -> open \"Applications\" -> select \"RClick\"" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3. Click \"+\" -> open \"Applications\" -> select \"RClick\""
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3. Haz clic en “+” -> abre “Aplicaciones” -> selecciona “RClick”"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3. Cliquez sur « + » -> ouvrez « Applications » -> sélectionnez « RClick »"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3. 「+」を押して「アプリケーション」から「RClick」を選択します"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3. 点击“+”并前往“应用程序”，选择“RClick”"
-          }
-        }
-      }
-    },
-    "4. Make sure the switch next to RClick is turned on" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4. Make sure the switch next to RClick is turned on"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4. Asegúrate de que el interruptor junto a RClick esté activado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4. Vérifiez que l’interrupteur à côté de RClick est activé"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4. RClick の横にあるスイッチがオンになっていることを確認します"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4. 确保 RClick 旁边的开关已打开"
-          }
-        }
-      }
     },
     "About" : {
       "extractionState" : "manual",
@@ -523,7 +349,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AirDrop"
+            "value" : "隔空投送"
           }
         }
       }
@@ -1718,37 +1544,37 @@
         }
       }
     },
-    "Don't Ask Again" : {
+    "DOCX" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Don't Ask Again"
+            "value" : "DOCX"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No preguntar de nuevo"
+            "value" : "Documento de Word"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ne plus demander"
+            "value" : "Document Word"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "今後表示しない"
+            "value" : "Word 文書"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不再询问"
+            "value" : "Word 文档"
           }
         }
       }
@@ -2064,111 +1890,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用常用文件夹"
-          }
-        }
-      }
-    },
-    "Enable Full Disk Access" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable Full Disk Access"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar Acceso total al disco"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer l’accès complet au disque"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フルディスクアクセスを有効にする"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用完全磁盘访问权限"
-          }
-        }
-      }
-    },
-    "Enable RClick" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable RClick"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activar RClick"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer RClick"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick を有効にする"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用 RClick"
-          }
-        }
-      }
-    },
-    "Enable RClick in File Provider to show its actions in Finder context menus" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enable RClick in File Provider to show its actions in Finder context menus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activa RClick en Proveedor de archivos para que sus acciones aparezcan en los menús contextuales del Finder"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activez RClick dans Fournisseur de fichiers pour afficher ses actions dans les menus contextuels du Finder"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイルプロバイダで RClick を有効にすると Finder の右クリックメニューに表示されます"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在文件提供程序中启用 RClick 以在 Finder 右键菜单中显示功能"
           }
         }
       }
@@ -2838,41 +2559,6 @@
         }
       }
     },
-    "Full Disk Access: Required to create and delete files in protected directories" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full Disk Access: Required to create and delete files in protected directories"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acceso total al disco: se necesita para crear y eliminar archivos en directorios protegidos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accès complet au disque : requis pour créer et supprimer des fichiers dans les dossiers protégés"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フルディスクアクセスは保護されたディレクトリでのファイル作成と削除に必要です"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完全磁盘访问权限：用于在受保护目录中创建和删除文件"
-          }
-        }
-      }
-    },
     "General" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2990,41 +2676,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授予权限"
-          }
-        }
-      }
-    },
-    "Grant RClick access to this folder to perform file operations." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grant RClick access to this folder to perform file operations."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otorga a RClick acceso a esta carpeta para realizar operaciones con archivos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autorisez RClick à accéder à ce dossier pour effectuer des opérations sur les fichiers."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイル操作を実行するために、RClick にこのフォルダへのアクセスを許可してください。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授权 RClick 访问此文件夹以执行文件操作。"
           }
         }
       }
@@ -4009,99 +3660,6 @@
         }
       }
     },
-    "Open Settings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Settings"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Ajustes"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir les réglages"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定を開く"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开设置"
-          }
-        }
-      }
-    },
-    "Open With" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open With"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir con"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir avec"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用...打开"
-          }
-        }
-      }
-    },
-    "Open With %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open With %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir con %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir avec %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用 %@ 打开"
-          }
-        }
-      }
-    },
     "Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4191,6 +3749,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PPTX"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PowerPoint プレゼンテーション"
           }
         },
         "zh-Hans" : {
@@ -4369,70 +3933,6 @@
         }
       }
     },
-    "RClick (loading...)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick (loading...)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick (cargando...)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick (chargement…)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick（読み込み中...）"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick（加载中...）"
-          }
-        }
-      }
-    },
-    "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick es una extensión del menú contextual que te permite agregar aplicaciones para abrir carpetas e incluye algunas acciones frecuentes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick est une extension du menu clic droit qui vous permet d’ajouter des applications pour ouvrir des dossiers et inclut quelques actions courantes !"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick 是一个右键菜单扩展，可以添加打开文件夹的应用，可以添加一些常用的操作！"
-          }
-        }
-      }
-    },
     "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4534,76 +4034,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RClick 需要访问此文件夹以删除、创建和修改文件。请选择此文件夹或更上层的父文件夹以覆盖其子文件夹。可在 设置 → 文件夹权限 中管理这些授权。"
-          }
-        }
-      }
-    },
-    "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick needs Full Disk Access to create files, delete files, and manage hidden files in protected folders (like Desktop, Documents, and Downloads).\n\nWithout this permission, some operations may fail on protected directories.\n\nTo enable:\n1. Click \"Open Settings\" below\n2. Click the lock icon and authenticate\n3. Click \"+\" and add RClick from your Applications folder\n4. Toggle the switch next to RClick to ON"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick necesita Acceso total al disco para crear archivos, eliminar archivos y administrar archivos ocultos en carpetas protegidas, como Escritorio, Documentos y Descargas.\n\nSin este permiso, algunas operaciones pueden fallar en los directorios protegidos.\n\nPara activarlo:\n1. Haz clic en “Abrir Ajustes” más abajo\n2. Haz clic en el icono del candado y autentícate\n3. Haz clic en “+” y agrega RClick desde tu carpeta Aplicaciones\n4. Activa el interruptor junto a RClick"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick a besoin de l’accès complet au disque pour créer et supprimer des fichiers, et gérer les fichiers masqués dans les dossiers protégés (comme Bureau, Documents et Téléchargements).\n\nSans cette autorisation, certaines opérations peuvent échouer dans les dossiers protégés.\n\nPour l’activer :\n1. Cliquez sur « Ouvrir les réglages » ci-dessous\n2. Cliquez sur l’icône de cadenas et authentifiez-vous\n3. Cliquez sur « + » et ajoutez RClick depuis votre dossier Applications\n4. Activez l’interrupteur à côté de RClick"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick がデスクトップ、書類、ダウンロードなどの保護されたフォルダでファイルの作成、削除、隠しファイルの管理を行うには、フルディスクアクセスが必要です。\n\nこの権限がない場合、保護されたディレクトリで一部の操作が失敗することがあります。\n\n有効にするには:\n1. 下の「設定を開く」をクリックします\n2. 鍵アイコンをクリックして認証します\n3. 「+」をクリックし、アプリケーションフォルダから RClick を追加します\n4. RClick の横にあるスイッチをオンにします"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick 需要完全磁盘访问权限，才能在受保护文件夹中创建文件、删除文件和管理隐藏文件，例如桌面、文稿和下载。\n\n没有此权限时，某些操作可能会在受保护目录中失败。\n\n启用方法：\n1. 点击下方“打开设置”\n2. 点击锁图标并认证\n3. 点击“+”，从“应用程序”文件夹添加 RClick\n4. 打开 RClick 旁边的开关"
-          }
-        }
-      }
-    },
-    "RClick needs Full Disk Access to work with files in protected directories" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick needs Full Disk Access to work with files in protected directories"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick necesita Acceso total al disco para trabajar con archivos en directorios protegidos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick a besoin de l’accès complet au disque pour manipuler les fichiers des dossiers protégés"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick が保護されたディレクトリ内のファイルを操作するにはフルディスクアクセスが必要です"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "RClick 需要完全磁盘访问权限才能正常操作受保护目录中的文件"
           }
         }
       }
@@ -6081,35 +5511,6 @@
         }
       }
     },
-    "Want to add a feature? Give feedback here." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Want to add a feature? Give feedback here."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Quieres proponer una función? Envía tus comentarios aquí."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Envie d’une nouvelle fonctionnalité ? Donnez votre avis ici."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要添加新功能，在这里反馈"
-          }
-        }
-      }
-    },
     "Warning" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6876,6 +6277,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "常用文件夹"
+          }
+        }
+      }
+    },
+    "XLSX" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "XLSX"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoja de cálculo de Excel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feuille de calcul Excel"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excel ワークシート"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excel 表格"
           }
         }
       }

@@ -129,7 +129,7 @@ final class MenuService {
     static func makePayload(from state: AppState, version: Int = 0) -> MenuConfigPayload {
         let actionMenuItems = state.actions.filter(\.enabled).map { $0.toActionMenuItem() }
         let appMenuItems = state.apps.map { $0.toAppMenuItem() }
-        let newFileMenuItems = state.newFiles.filter(\.enabled).map { NewFileMenuItem(id: $0.id, name: $0.name, ext: $0.ext, icon: $0.icon) }
+        let newFileMenuItems = state.newFiles.filter(\.enabled).map { NewFileMenuItem(id: $0.id, name: $0.displayName, ext: $0.ext, icon: $0.icon) }
         let commonDirMenuItems = state.showCommonDirs ? state.cdirs.map { CommonDirMenuItem(id: $0.id, name: $0.displayName, icon: $0.icon, url: $0.url.path) } : []
 
         return MenuConfigPayload(

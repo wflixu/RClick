@@ -241,16 +241,46 @@ struct NewFile: @MainActor RCBase {
 extension NewFile {
     static let all: [NewFile] = [.txt, .md, .json, .docx, .pptx, .xlsx, .pages, .key, .numbers]
 
+    // `id` 必须逐字对上 `NewFileTypeEntity.createDefaultFileTypes()`。
+    // 这几个字面量原本不传 id，于是全都取了 init 的默认值 `UUID()`——「恢复默认」
+    // 写回数据库的就是一排随机 id，和种子数据对不上，`displayName` 查译文也就没了依据。
+    //
     // icon 字段为 SF Symbol 名称，作为 NSWorkspace 获取失败时的 fallback
-    static let json = NewFile(ext: ".json", name: "JSON", enabled: false, idx: 0, icon: "curlybraces")
-    static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "doc.text")
-    static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "doc.richtext")
-    static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "doc.richtext.fill")
-    static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "rectangle.on.rectangle.fill")
-    static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "tablecells")
-    static let pages = NewFile(ext: ".pages", name: "Pages", idx: 6, icon: "doc.richtext")
-    static let key = NewFile(ext: ".key", name: "Keynote", idx: 7, icon: "rectangle.on.rectangle")
-    static let numbers = NewFile(ext: ".numbers", name: "Numbers", idx: 8, icon: "tablecells")
+    static let json = NewFile(ext: ".json", name: "JSON", enabled: false, idx: 0, icon: "curlybraces", id: "json")
+    static let txt = NewFile(ext: ".txt", name: "TXT", idx: 1, icon: "doc.text", id: "txt")
+    static let md = NewFile(ext: ".md", name: "Markdown", idx: 2, icon: "doc.richtext", id: "md")
+    static let docx = NewFile(ext: ".docx", name: "DOCX", idx: 3, icon: "doc.richtext.fill", id: "docx")
+    static let pptx = NewFile(ext: ".pptx", name: "PPTX", idx: 4, icon: "rectangle.on.rectangle.fill", id: "pptx")
+    static let xlsx = NewFile(ext: ".xlsx", name: "XLSX", idx: 5, icon: "tablecells", id: "xlsx")
+    static let pages = NewFile(ext: ".pages", name: "Pages", idx: 6, icon: "doc.richtext", id: "pages")
+    static let key = NewFile(ext: ".key", name: "Keynote", idx: 7, icon: "rectangle.on.rectangle", id: "key")
+    static let numbers = NewFile(ext: ".numbers", name: "Numbers", idx: 8, icon: "tablecells", id: "numbers")
+}
+
+extension NewFile {
+    /// 本地化显示名称。
+    ///
+    /// 内置类型按 id 取译文；用户自己添加的类型走 `name`，用户填的名字不该被翻译。
+    /// 和 `RCAction.displayName`、`CommonDir.displayName` 是同一个模式——NewFile
+    /// 此前是唯一没有这个属性的模型，所以「新建文件」子菜单在每个语言下都是英文原文。
+    ///
+    /// JSON / TXT / Markdown / Pages / Keynote / Numbers 刻意不进字符串目录：它们是
+    /// 格式缩写和 Apple 产品名，各语言都不翻译，`localized` 查不到就回落到 key 本身，
+    /// 正好是想要的显示文本。只有三个 Office 格式有各语言通用的描述性叫法。
+    var displayName: String {
+        switch id {
+        case "json": return AppLocalization.localized("JSON")
+        case "txt": return AppLocalization.localized("TXT")
+        case "md": return AppLocalization.localized("Markdown")
+        case "docx": return AppLocalization.localized("DOCX")
+        case "pptx": return AppLocalization.localized("PPTX")
+        case "xlsx": return AppLocalization.localized("XLSX")
+        case "pages": return AppLocalization.localized("Pages")
+        case "key": return AppLocalization.localized("Keynote")
+        case "numbers": return AppLocalization.localized("Numbers")
+        default: return name
+        }
+    }
 }
 
 // MARK: - Menu Item Models for Extension Communication

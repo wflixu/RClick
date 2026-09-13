@@ -94,7 +94,7 @@ struct NewFileSettingsTabView: View {
                                 }
 
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(item.name)
+                                    Text(item.displayName)
                                     Text(String(format: AppLocalization.localized("Extension: %@"), item.ext))
                                         .font(.caption)
                                         .foregroundColor(.secondary)
@@ -130,7 +130,7 @@ struct NewFileSettingsTabView: View {
                 fileToDelete = nil
             }
         } message: { file in
-            Text(String(format: AppLocalization.localized("Are you sure you want to delete \"%@\" (%@)? This action cannot be undone."), file.name, file.ext))
+            Text(String(format: AppLocalization.localized("Are you sure you want to delete \"%@\" (%@)? This action cannot be undone."), file.displayName, file.ext))
         }
     }
 
