@@ -40,12 +40,12 @@ struct GeneralSettingsTabView: View {
         Form {
             // MARK: - 第一组：主要控制
             Section {
-                Toggle(isOn: $showMenuBarExtra) {
-                    Text(appLocalized: "Show icon in menu bar")
-                }
-
                 LaunchAtLogin.Toggle {
                     Text(appLocalized: "Launch at login")
+                }
+
+                Toggle(isOn: $showMenuBarExtra) {
+                    Text(appLocalized: "Show icon in menu bar")
                 }
             } header: {
                 Text(appLocalized: "Main Controls")
@@ -87,7 +87,7 @@ struct GeneralSettingsTabView: View {
                         }
                     }
                 } label: {
-                    Label(AppLocalization.localized("Folder Permissions"), systemImage: "folder.badge.person.crop")
+                    Label(AppLocalization.localized("Folder Permissions"), systemImage: "folder.badge.gearshape")
                 }
             } header: {
                 Text(appLocalized: "Permissions")
