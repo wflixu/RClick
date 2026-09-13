@@ -116,6 +116,16 @@ Thanks to all the people who have contributed to RClick!
   <img src="https://contrib.rocks/image?repo=wflixu/RClick" />
 </a>
 
+Recent contributions:
+
+- **[@Juns-g](https://github.com/Juns-g)** — declarative hierarchical tree menus ([#151](https://github.com/wflixu/RClick/pull/151)), and watching mounted volumes so external and network drives show the menu ([#152](https://github.com/wflixu/RClick/pull/152))
+- **[@Dam0rt](https://github.com/Dam0rt)** — French localization ([#149](https://github.com/wflixu/RClick/pull/149))
+- **[@stors789](https://github.com/stors789)** — App Groups provisioning in the release pipeline ([#141](https://github.com/wflixu/RClick/pull/141))
+- **[@EliasMatDev](https://github.com/EliasMatDev)** — Latin American Spanish localization ([#138](https://github.com/wflixu/RClick/pull/138))
+- **[@shoal-rat](https://github.com/shoal-rat)** — Finder observation fix, so the menu appears in every folder ([#126](https://github.com/wflixu/RClick/pull/126))
+- **[@P013onEr](https://github.com/P013onEr)** — string catalogs and trilingual localization ([#120](https://github.com/wflixu/RClick/pull/120)), draggable menu ordering ([#121](https://github.com/wflixu/RClick/pull/121))
+- **[@chunyang-wen](https://github.com/chunyang-wen)** — removed a needless `await` ([#21](https://github.com/wflixu/RClick/pull/21))
+
 ## Similar Projects
 
 - [SzContext](https://github.com/RoadToDream/SzContext)
@@ -134,8 +144,10 @@ We welcome contributions! Here's how you can help:
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
 
-## 自定义菜单层级
+## Hierarchical Custom Menus
 
-支持一级常用项与任意嵌套子菜单混排、分隔线及自定义标题/图标。
-把声明式 `custom_menu.json` 放进 App Group 容器后，需到 **设置 → 通用 → 自定义菜单** 点「应用配置」才会生效——改动文件本身不会自动应用，这样编辑到一半的半成品不至于把菜单弄坏。缺失文件时使用默认布局；配置无效时菜单保持原样，并在设置中显示具体出错项。
-参见 [配置示例与使用说明](examples/README.md)。
+Top-level items can be mixed with arbitrarily nested submenus, separators, and custom titles and icons.
+
+Drop a declarative `custom_menu.json` into the App Group container, then go to **Settings → General → Custom Menu** and press "Apply" for it to take effect. Editing the file on its own changes nothing, so an edit that is still half-written cannot break your menu. With no file present the default layout is used; with an invalid one the menu stays exactly as it was and Settings shows which element failed to parse.
+
+See [configuration examples and usage](examples/README.md).

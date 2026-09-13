@@ -136,10 +136,13 @@ When working with files outside the sandbox container (required for the App Stor
 ### Localization
 - Default language is **English** (also the fallback)
 - **Simplified Chinese** (`zh-Hans`) is the primary localization target
-- **Japanese** (`ja`) is supported — activated when system language is Japanese
+- **Japanese** (`ja`), **Spanish** (`es`) and **French** (`fr`) are also supported, activated when the system language matches
 - All string keys in code use English, localized via `Localizable.xcstrings` (xcstrings format)
 - Language detection is fully automatic via `Bundle.main.localizedString` — no manual language picker
 - To add a new language: add entries to `Localizable.xcstrings` and register in Xcode project
+- There are **two** catalogs — `RClick/` (app) and `FinderSyncExt/` (extension). Each target resolves against its own via `Bundle.main`, so a key the extension renders must exist in the extension's catalog too
+- `scripts/check-localization.py` verifies the catalogs; run it before a release
+- Edit the catalogs with exact-string text edits. Re-serializing the JSON rewrites the whole file and does not round-trip byte-for-byte
 
 ### Data Persistence
 - SwiftData models use `@Model` macro
