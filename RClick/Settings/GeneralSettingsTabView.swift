@@ -238,6 +238,11 @@ struct GeneralSettingsTabView: View {
                 )
                 return
             }
+            // Generating the file also switches the menu over to the custom layout,
+            // so the user decides rather than discovering it in Finder.
+            if !FileManager.default.fileExists(atPath: url.path), !confirmGeneratingCustomMenu() {
+                return
+            }
             // Seeding only reads the current configuration, so the payload is built
             // without bumping the menu version or re-reading the file we are about
             // to open.
@@ -302,6 +307,18 @@ struct GeneralSettingsTabView: View {
 
     private func refreshCustomMenuStatus() {
         customMenuStatus = RCRuntime.shared.menuService.customMenuStatus(from: store)
+    }
+
+    /// Generating the config also enables the custom layout, so ask first: a
+    /// tooltip is not enough for an action with a side effect the user cannot see.
+    private func confirmGeneratingCustomMenu() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("No custom menu configuration yet")
+        alert.informativeText = AppLocalization.localized("RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it.")
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: AppLocalization.localized("Generate and Enable"))
+        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
+        return alert.runModal() == .alertFirstButtonReturn
     }
 
     private func presentConfigError(title: String, message: String) {

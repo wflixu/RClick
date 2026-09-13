@@ -170,7 +170,10 @@ struct CustomMenuTests {
         try MenuService.prepareCustomMenu(at: url, config: catalog)
         let nodes = try #require(try CustomMenu.load(from: url, config: catalog))
         #expect(nodes.prefix(3).map(\.id) == ["vscode-id", "warp-id", "copy-path"])
-        #expect(nodes[3].type == .separator)
+        // No separator before "More": it drew a stray blank line above a single
+        // trailing submenu, which grouped nothing and read as a glitch.
+        #expect(nodes.count == 4)
+        #expect(nodes[3].type == .submenu)
         let more = try #require(nodes.last?.children)
         #expect(more.first?.children?.map(\.id) == ["txt-id", "md-id"])
 

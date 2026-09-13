@@ -62,7 +62,6 @@ final class MenuService {
                 MenuNode(type: .item, itemType: .commonDir, id: $0.id)
             }))
         }
-        if !nodes.isEmpty { nodes.append(MenuNode(type: .separator)) }
         nodes.append(MenuNode(type: .submenu, title: AppLocalization.localized("More"),
                               icon: "ellipsis.circle", children: groups))
         let encoder = JSONEncoder()

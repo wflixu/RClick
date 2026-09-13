@@ -156,4 +156,28 @@ struct CustomMenuStatusTests {
         try MenuService.removeCustomMenu(at: url)
         #expect(!FileManager.default.fileExists(atPath: url.path))
     }
+
+    // MARK: - Interaction with the common folders toggle
+
+    @Test func hidingCommonFoldersTakesDownAConfigThatReferencesThem() throws {
+        // "Enable common folders" is not a pure layout switch: MenuService only
+        // fills payload.commonDirs when it is on. A custom menu referencing a
+        // common dir therefore stops resolving once the switch is turned off, and
+        // the whole custom layout falls back - not just the common dir entries.
+        let json = #"[{"type":"item","itemType":"common-dir","id":"desktop"}]"#
+        let url = try temporaryFile(json)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let shown = MenuConfigPayload(commonDirs: [
+            CommonDirMenuItem(id: "desktop", name: "Desktop", icon: "folder", url: "/Users/x/Desktop")
+        ])
+        #expect(MenuService.customMenuStatus(at: url, config: shown) == .active(topLevelItems: 1))
+
+        let hidden = MenuConfigPayload(commonDirs: [])
+        guard case .invalid(let reason) = MenuService.customMenuStatus(at: url, config: hidden) else {
+            Issue.record("expected .invalid once common folders are hidden")
+            return
+        }
+        #expect(reason.contains("matched 0 enabled items"))
+    }
 }

@@ -1263,37 +1263,37 @@
         }
       }
     },
-    "Collapse menu" : {
+    "Collapse common folders menu" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Collapse menu"
+            "value" : "Collapse common folders menu"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Contraer el menú"
+            "value" : "Contraer el menú de carpetas frecuentes"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réduire le menu"
+            "value" : "Réduire le menu Dossiers courants"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メニューを折りたたむ"
+            "value" : "よく使うフォルダメニューを折りたたむ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "折叠菜单"
+            "value" : "折叠常用文件夹菜单"
           }
         }
       }
@@ -6876,6 +6876,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "JSON 文件格式有误。"
+          }
+        }
+      }
+    },
+    "Common Dirs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Folders"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpetas frecuentes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dossiers courants"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "よく使うフォルダ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常用文件夹"
+          }
+        }
+      }
+    },
+    "No custom menu configuration yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No custom menu configuration yet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay configuración de menú personalizado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune configuration de menu personnalisé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムメニューの設定がまだありません"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚无自定义菜单配置"
+          }
+        }
+      }
+    },
+    "RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick will generate one from your current menu and switch to the custom layout right away, so the right-click menu will change to match it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick generará una a partir de tu menú actual y cambiará al diseño personalizado de inmediato, por lo que el menú contextual cambiará para reflejarlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick en générera une à partir de votre menu actuel et passera immédiatement à la disposition personnalisée ; le menu contextuel changera en conséquence."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在のメニューから生成し、すぐにカスタムレイアウトに切り替わります。右クリックメニューもそのレイアウトに変わります。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick 将基于你当前的菜单生成一份，并立即切换到自定义布局，右键菜单也会随之改变。"
+          }
+        }
+      }
+    },
+    "Generate and Enable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate and Enable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generar y activar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Générer et activer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成して有効にする"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成并启用"
           }
         }
       }
