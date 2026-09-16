@@ -236,11 +236,17 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.debug("endObservingDirectoryAtURL: \(url.path)")
     }
 
+    /// Finder 会为观察范围内的每个项目回调这里，问它该显示什么徽章。
+    ///
+    /// RClick 不使用徽章，所以这里**什么都不做** —— 要紧的是不要调用
+    /// `setBadgeIdentifier`。扩展包里没有任何 badge 图（FinderSync 只认
+    /// Resources 下的 `<id>.png` 散文件，不认 asset catalog），一旦调用，
+    /// Finder 就退回拿扩展自己的图标去画叠加层，把外置盘和 DMG 的卷图标整个盖掉。
+    ///
+    /// 这里原本传的是空字符串，当作"没有徽章"用。#128 那样修完，#155 又报了同一
+    /// 现象，说明空串同样触发叠加。不调用才是「不画」。
     override func requestBadgeIdentifier(for url: URL) {
-        // 不设置任何徽章标识，避免 Finder 在项目上叠加 RClick 图标。
-        // 非空徽章 ID 会使 Finder 在文件/磁盘图标上显示扩展的图标叠加层，
-        // 这会导致移动磁盘和光盘等外部卷的图标被 RClick 图标覆盖。
-        FIFinderSyncController.default().setBadgeIdentifier("", for: url)
+        // 故意留空，见上。
     }
 
     // MARK: - Menu and toolbar item support
