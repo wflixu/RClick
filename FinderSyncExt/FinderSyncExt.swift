@@ -236,11 +236,18 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.debug("endObservingDirectoryAtURL: \(url.path)")
     }
 
+    /// Finder 会为观察范围内的每个项目回调这里，问它该显示什么徽章。
+    ///
+    /// RClick 不使用徽章，所以留空：扩展包里没有任何 badge 图（FinderSync 只认
+    /// Resources 下的 `<id>.png` 散文件，不认 asset catalog），没有可设的标识。
+    ///
+    /// ⚠️ 这两行**不是**"外置盘图标变成 RClick 图标"的修复。#155 那个现象在这里
+    /// 被误判过两次：25b69e8 把随机标识改成空串，b697cc3 改成干脆不调用 —— 两次
+    /// 都没有解决，第二次还实测过"不调用时图标照旧"。真正的原因在别处：扩展把
+    /// 每个卷根都放进了 `directoryURLs`（见 setupObservingDirectories），Finder
+    /// 因而重新渲染这些卷的侧边栏图标。别再往 badge 上找了。
     override func requestBadgeIdentifier(for url: URL) {
-        // 不设置任何徽章标识，避免 Finder 在项目上叠加 RClick 图标。
-        // 非空徽章 ID 会使 Finder 在文件/磁盘图标上显示扩展的图标叠加层，
-        // 这会导致移动磁盘和光盘等外部卷的图标被 RClick 图标覆盖。
-        FIFinderSyncController.default().setBadgeIdentifier("", for: url)
+        // 故意留空，见上。
     }
 
     // MARK: - Menu and toolbar item support

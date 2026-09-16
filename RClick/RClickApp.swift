@@ -60,7 +60,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @AppLog(category: "AppDelegate")
     private var logger
 
-    var appState: AppState = .shared
+    /// 惰性求值：`AppState.shared` 会一路构造到 `ModelContext(sharedModelContainer)`，
+    /// 所以必须等 `init` 里 `bootstrap()` 成功之后才碰它。写成默认值属性会在 init 体
+    /// 之前求值，正好把顺序反过来。
+    lazy var appState: AppState = .shared
     var pluginRunning: Bool = false
     var heartBeatCount = 0
 
@@ -68,6 +71,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var showMenuBarExtra = UserDefaults.group.bool(forKey: Key.showMenuBarExtra)
     var showInDock = UserDefaults.group.bool(forKey: Key.showInDock)
     var settingsWindow: NSWindow!
+
+    override init() {
+        super.init()
+
+        // 先把共享库打开：失败就带着原因退出，而不是等到 AppState 构造时才崩。
+        // 这是启动路径上唯一一处主动打开容器的地方，其余访问都指望它先跑过。
+        do {
+            try SharedDataManager.bootstrap()
+        } catch {
+            StartupFailure.presentAndExit(error)
+        }
+    }
 
     // MARK: - 重连机制状态
 
@@ -82,8 +97,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             forName: .menuConfigShouldUpdate,
             object: nil,
             queue: .main
-        ) { _ in
-            Task { @MainActor [weak self] in
+        ) { [weak self] _ in
+            Task { @MainActor in
                 self?.sendMenuConfigurationUpdate()
             }
         }
@@ -98,7 +113,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         migrateLegacyLaunchAtLoginSetting()
 
         // 执行数据迁移
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
+
             // 初始化默认数据
             let context = ModelContext(SharedDataManager.sharedModelContainer)
             await SharedDataManager.initializeDefaultData(context: context)

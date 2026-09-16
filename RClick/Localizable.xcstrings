@@ -4477,6 +4477,41 @@
         }
       }
     },
+    "RClick could not access its shared App Group container, so it cannot read its settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick could not access its shared App Group container, so it cannot read its settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick no pudo acceder a su contenedor compartido de App Group, por lo que no puede leer su configuración."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick n'a pas pu accéder à son conteneur App Group partagé et ne peut donc pas lire sa configuration."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick は共有 App Group コンテナにアクセスできないため、設定を読み込めません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick 无法访问共享的 App Group 容器，因此读不到配置数据。"
+          }
+        }
+      }
+    },
     "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5667,6 +5702,41 @@
         }
       }
     },
+    "The most likely cause is that this build is not properly signed. Rebuild it with a valid signing identity — a build signed to run locally cannot reach the App Group container." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The most likely cause is that this build is not properly signed. Rebuild it with a valid signing identity — a build signed to run locally cannot reach the App Group container."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La causa más probable es que esta compilación no está firmada correctamente. Vuelve a compilarla con una identidad de firma válida: una compilación firmada para ejecutarse localmente no puede acceder al contenedor de App Group."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cause la plus probable est que cette version n'est pas correctement signée. Recompilez-la avec une identité de signature valide : une version signée pour s'exécuter localement ne peut pas accéder au conteneur App Group."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最も可能性が高い原因は、このビルドが正しく署名されていないことです。有効な署名 ID で再ビルドしてください。「ローカルで実行」用に署名されたビルドは App Group コンテナにアクセスできません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最可能的原因是这个构建没有正确签名。请用有效的签名身份重新构建 —— 以「本地运行」方式签名的构建访问不了 App Group 容器。"
+          }
+        }
+      }
+    },
     "The selected folder is a subfolder of an already selected folder. Please choose a different folder." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5908,6 +5978,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法恢复默认布局"
+          }
+        }
+      }
+    },
+    "Unable to open the configuration database" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to open the configuration database"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede abrir la base de datos de configuración"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d'ouvrir la base de données de configuration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定データベースを開けません"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法打开配置数据库"
           }
         }
       }

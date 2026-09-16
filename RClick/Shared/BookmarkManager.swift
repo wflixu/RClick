@@ -93,15 +93,28 @@ final class BookmarkManager: ObservableObject {
 
     /// 检查某个文件/目录是否在已授权的目录下
     func hasAccess(to url: URL) -> Bool {
-        let target = url.resolvingSymlinksInPath().path
-        for dir in authorizedDirectories {
-            let dirPath = dir.resolvingSymlinksInPath().path
-            // 自身或子路径匹配
-            if target == dirPath || target.hasPrefix(dirPath + "/") {
-                return true
-            }
-        }
-        return false
+        let target = url.resolvingSymlinksInPath()
+        return authorizedDirectories.contains { Self.covers($0, target) }
+    }
+
+    /// `directory` 是否覆盖 `url`（自身，或 `url` 的某个祖先）。
+    ///
+    /// 按路径分量比较，而不是把路径拼成字符串做前缀匹配。字符串前缀在根目录上会
+    /// 失效：`dirPath + "/"` 对 `/` 拼出 `"//"`，而没有任何路径以 `//` 开头 ——
+    /// 于是"把 `/` 加进授权目录"恰好命中唯一一个永远不匹配的边界，用户越授权越
+    /// 用不了（Issue #155）。分量比较天然处理它：`/` 的 `pathComponents` 是 `["/"]`。
+    ///
+    /// 按分量比较同时也挡住了字符串前缀的另一个坑：`/Users/lixu` 不该覆盖
+    /// `/Users/lixu2`，而 `hasPrefix("/Users/lixu")` 会误判为覆盖。
+    ///
+    /// 两个入参都必须是**已解析符号链接**的路径 —— 调用点负责这一步
+    /// （`authorizedDirectories` 在写入时就已 `resolvingSymlinksInPath`）。
+    /// 这样这个函数是纯函数，可以脱离 `@MainActor` 状态直接单测。
+    nonisolated static func covers(_ directory: URL, _ url: URL) -> Bool {
+        let dirParts = directory.pathComponents
+        let targetParts = url.pathComponents
+        guard targetParts.count >= dirParts.count else { return false }
+        return Array(targetParts.prefix(dirParts.count)) == dirParts
     }
 
     // MARK: - 授权弹窗

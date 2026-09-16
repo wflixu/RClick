@@ -46,8 +46,12 @@ struct MenuBarView: View {
     private func actionQuit() {
         messager.sendQuitNotification()
 
+        // 等一拍让菜单栏弹出面板收起，再退出。
+        //
+        // 这里唯一的抛出是任务被取消；用户点的是"退出"，不该因为一次取消就被留在这里，
+        // 所以显式吞掉取消、继续走完 —— 而不是让错误悄悄丢掉（这条警告说的正是后者）。
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: UInt64(1.0 * 1e9))
+            try? await Task.sleep(for: .seconds(1))
 
             NSApplication.shared.terminate(self)
         }

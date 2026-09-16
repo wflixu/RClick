@@ -5,6 +5,14 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] - 2026-09-16
+
+### Changed
+- Builds clean against the macOS 27 SDK with Xcode 27, with no compiler warnings
+
+### Fixed
+- RClick quit instantly and silently whenever it could not open its configuration database. It now reports the cause and exits cleanly instead of trapping. The case seen in the wild is a build that is not properly code-signed, which cannot reach the shared App Group container
+
 ## [2.2.1] - 2026-09-13
 
 ### Added
