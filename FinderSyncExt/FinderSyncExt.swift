@@ -88,6 +88,12 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     /// Register each mounted volume explicitly; filesystem ancestry alone is not
     /// a reliable observation boundary for Finder Sync across mount points.
+    ///
+    /// This is also what makes Finder redraw those volumes' sidebar icons with
+    /// RClick's app icon (#158) — a trade-off, not an oversight: a sandboxed
+    /// extension cannot read a volume root (`/Volumes` is readable, `/Volumes/<a
+    /// volume>` is not), so it cannot discover the volume's contents to observe
+    /// anything narrower. See specs/external-volumes-observation.md.
     private func setupObservingDirectories() {
         // Finder Sync requires an initial set during extension startup.
         FIFinderSyncController.default().directoryURLs = [URL(fileURLWithPath: "/")]
@@ -243,9 +249,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     ///
     /// ⚠️ 这两行**不是**"外置盘图标变成 RClick 图标"的修复。#155 那个现象在这里
     /// 被误判过两次：25b69e8 把随机标识改成空串，b697cc3 改成干脆不调用 —— 两次
-    /// 都没有解决，第二次还实测过"不调用时图标照旧"。真正的原因在别处：扩展把
-    /// 每个卷根都放进了 `directoryURLs`（见 setupObservingDirectories），Finder
-    /// 因而重新渲染这些卷的侧边栏图标。别再往 badge 上找了。
+    /// 都没有解决，第二次还实测过"不调用时图标照旧"。真正的原因在观察根：Finder
+    /// 会把扩展的图标画到每个**被当作根观察**的文件夹上，扩展则把每个卷根放进了
+    /// `directoryURLs`，于是这些卷的侧边栏图标被重画（见 setupObservingDirectories）。
+    /// 换成像"只观察卷内一级子目录"这种绕法行不通：沙盒下扩展读不到卷根。
+    /// 别再往 badge 上找了。
     override func requestBadgeIdentifier(for url: URL) {
         // 故意留空，见上。
     }
