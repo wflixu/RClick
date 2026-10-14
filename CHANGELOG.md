@@ -5,6 +5,11 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.3.1] - 2026-10-14
+
+### Fixed
+- RClick no longer shows up in the Dock. The app declared no `LSUIElement` and left the Dock by switching its activation policy from inside `applicationDidFinishLaunching`, so any launch that failed before reaching that call — a startup failure, or a bad first launch after installation — stayed a foreground app with a Dock icon until the Dock was restarted. It is declared as an agent now, so it never appears there at all
+
 ## [2.3.0] - 2026-09-16
 
 ### Changed
