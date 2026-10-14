@@ -69,7 +69,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     let messager = Messager.shared
     var showMenuBarExtra = UserDefaults.group.bool(forKey: Key.showMenuBarExtra)
-    var showInDock = UserDefaults.group.bool(forKey: Key.showInDock)
     var settingsWindow: NSWindow!
 
     override init() {
@@ -103,11 +102,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        if showInDock {
-            NSApp.setActivationPolicy(.regular)
-        } else {
-            NSApp.setActivationPolicy(.accessory)
-        }
+        // RClick 是菜单栏应用，Dock 里不该出现它。这件事由 Info.plist 的
+        // `LSUIElement`（构建设置 `INFOPLIST_KEY_LSUIElement`）声明，进程从第一
+        // 瞬间就是 agent —— 不再像以前那样先作为普通 App 启动、再在这里用
+        // `setActivationPolicy(.accessory)` 补救：那条路要求本次启动走到这一行，
+        // 而启动早期的失败路径（见 AppDelegate.init）和首启异常都会留下一个带
+        // Dock 图标的普通 App。曾经读 `SHOW_IN_DOCK` 做开关，但没有任何代码写过
+        // 那个键、设置页也没有开关，只有"看起来可配"的假象，一并删掉了。
 
         // 迁移旧的"开机登录"设置（修复前该开关只写入 UserDefaults，未真正注册登录项）
         migrateLegacyLaunchAtLoginSetting()

@@ -19,7 +19,6 @@ enum Key {
     static let showContextualMenuForContainer = "SHOW_CONTEXTUAL_MENU_FOR_CONTAINER"
     static let showContextualMenuForSidebar = "SHOW_CONTEXTUAL_MENU_FOR_SIDEBAR"
     static let showToolbarItemMenu = "SHOW_TOOLBAR_ITEM_MENU"
-    static let showDockIcon = "SHOW_DOCK_ICON"
 
     static let globalApplicationArgumentsString = "GLOBAL_APPLICATION_ARGUMENTS_STRING"
     static let globalApplicationEnvironmentString = "GLOBAL_APPLICATION_ENVIRONMENT_STRING"
@@ -36,7 +35,6 @@ enum Key {
     static let fileTypes = "RCLICK_FILE_TYPES"
     static let commonDirs = "RCLICK_COMMON_DIRS"
     static let showMenuBarExtra = "showMenuBarExtra"
-    static let showInDock = "SHOW_IN_DOCK"
     static let actionMenuItems = "RCLICK_ACTION_MENU_ITEMS"
     static let appMenuItems = "RCLICK_APP_MENU_ITEMS"
 
