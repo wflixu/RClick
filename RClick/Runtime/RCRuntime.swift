@@ -30,7 +30,7 @@ final class RCRuntime {
         self.configService = state.configService
         self.permissionService = PermissionService(bookmarkManager: state.bookmarkManager)
         self.menuService = MenuService(customMenuURL: MenuService.defaultCustomMenuURL)
-        self.actionService = ActionService(state: state, permission: permissionService)
+        self.actionService = ActionService(state: state, permission: permissionService, confirmation: AlertDeleteConfirmation())
         self.messager = Messager.shared
     }
 }

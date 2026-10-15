@@ -39,6 +39,41 @@
         }
       }
     },
+    "...and %lld more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...and %lld more"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...y %lld más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...et %lld de plus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...ほか %lld 件"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "……以及其他 %lld 项"
+          }
+        }
+      }
+    },
     "About" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1365,6 +1400,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "配置未生效"
+          }
+        }
+      }
+    },
+    "Confirm before delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm before delete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar antes de eliminar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmer avant de supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除時に再確認"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除时二次确认"
           }
         }
       }
@@ -4204,6 +4274,76 @@
         }
       }
     },
+    "Permanently delete %lld items?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete %lld items?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar permanentemente %lld elementos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement %lld éléments ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 項目を完全に削除しますか？"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要永久删除 %lld 项吗？"
+          }
+        }
+      }
+    },
+    "Permanently delete “%@”?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete “%@”?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar permanentemente “%@”?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement « %@ » ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”を完全に削除しますか？"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要永久删除“%@”吗？"
+          }
+        }
+      }
+    },
     "Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5842,6 +5982,41 @@
         }
       }
     },
+    "This cannot be undone and will not move items to Trash." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This cannot be undone and will not move items to Trash."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta acción no se puede deshacer y no moverá los elementos a la Papelera."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette action est irréversible et n’enverra pas les éléments dans la Corbeille."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この操作は取り消せません。項目はゴミ箱に移動されません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此操作无法撤销，也不会将项目移到废纸篓。"
+          }
+        }
+      }
+    },
     "This deletes custom_menu.json and returns to the default menu. A copy is kept as custom_menu.backup.json." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6363,6 +6538,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在使用默认布局"
+          }
+        }
+      }
+    },
+    "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si está activado, RClick pide confirmación antes de eliminar permanentemente. La eliminación directa omite la Papelera y no se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si activé, RClick demande confirmation avant une suppression définitive. La suppression directe ignore la Corbeille et est irréversible."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、完全削除の前に確認します。直接削除はゴミ箱を経由せず、元に戻せません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，永久删除前会弹出确认。直接删除会绕过废纸篓且无法撤销。"
           }
         }
       }
