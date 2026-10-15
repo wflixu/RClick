@@ -5,6 +5,11 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
+
 ## [2.3.1] - 2026-10-14
 
 ### Fixed
