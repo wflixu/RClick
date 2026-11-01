@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
 
+### Removed
+- The `custom_menu.json` layout and the Settings → General → Custom Menu controls. The menu is now always built from the apps, actions, new-file types and common folders configured in Settings
+
 ## [2.3.1] - 2026-10-14
 
 ### Fixed

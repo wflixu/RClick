@@ -360,18 +360,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             return menu
         }
 
-        if let nodes = config.customMenu {
-            CustomMenu.render(nodes, into: menu, makeItem: { type, id in
-                switch type {
-                case .action: return config.actions.first { $0.id == id }.map(self.makeActionItem)
-                case .app: return config.apps.first { $0.id == id }.map(self.makeAppItem)
-                case .newFile: return config.newFiles.first { $0.id == id }.map(self.makeNewFileItem)
-                case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
-                }
-            }, loadIcon: { self.loadIcon(named: $0, accessibilityDescription: $0) })
-            return menu
-        }
-
         // 构建动作菜单
         if !config.actions.isEmpty {
             if config.actionsCollapsed {

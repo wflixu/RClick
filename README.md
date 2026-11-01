@@ -143,11 +143,3 @@ We welcome contributions! Here's how you can help:
 - **[Security Policy](SECURITY.md)** — How to responsibly report vulnerabilities.
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
-
-## Hierarchical Custom Menus
-
-Top-level items can be mixed with arbitrarily nested submenus, separators, and custom titles and icons.
-
-Drop a declarative `custom_menu.json` into the App Group container, then go to **Settings → General → Custom Menu** and press "Apply" for it to take effect. Editing the file on its own changes nothing, so an edit that is still half-written cannot break your menu. With no file present the default layout is used; with an invalid one the menu stays exactly as it was and Settings shows which element failed to parse.
-
-See [configuration examples and usage](examples/README.md).
