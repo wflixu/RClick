@@ -41,6 +41,9 @@ class AppState: ObservableObject, ActionStateProviding {
     @AppStorage("foldCommonDirMenu", store: .group) var foldCommonDirMenu: Bool = true
     // 常用文件夹总开关（默认关闭）
     @AppStorage("showCommonDirs", store: .group) var showCommonDirs: Bool = false
+    // 直接删除前二次确认（默认开启：绕过废纸篓，误删不可恢复）
+    // Keep in sync with the default assigned in resetActionItems().
+    @AppStorage(Key.confirmBeforeDelete, store: .group) var confirmBeforeDelete: Bool = true
 
     // 菜单栏显示走 RClickApp / GeneralSettingsTabView 里的那份（store: .group）。
     // 这里曾有一份重复声明，没有任何地方读它；两份 store 不同，留着就是个陷阱。
@@ -167,6 +170,8 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
+        // Keep in sync with @AppStorage confirmBeforeDelete default above.
+        confirmBeforeDelete = true
         persist()
     }
 
