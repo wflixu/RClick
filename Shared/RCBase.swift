@@ -321,6 +321,25 @@ struct AppMenuItem: Codable {
         self.showInContextMenu = showInContextMenu
         self.opensContainingDir = opensContainingDir
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, icon, tag, appURL, opensNewInstance
+        case showInToolbar, showInContextMenu, opensContainingDir
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(String.self, forKey: .id)
+        name = try values.decode(String.self, forKey: .name)
+        icon = try values.decode(String.self, forKey: .icon)
+        tag = try values.decode(Int.self, forKey: .tag)
+        appURL = try values.decodeIfPresent(String.self, forKey: .appURL)
+        opensNewInstance = try values.decodeIfPresent(Bool.self, forKey: .opensNewInstance) ?? false
+        showInToolbar = try values.decodeIfPresent(Bool.self, forKey: .showInToolbar) ?? true
+        showInContextMenu = try values.decodeIfPresent(Bool.self, forKey: .showInContextMenu) ?? true
+        opensContainingDir = try values.decodeIfPresent(Bool.self, forKey: .opensContainingDir)
+    }
+
 }
 
 /// Menu item for custom actions (copy path, delete, etc.)
@@ -428,7 +447,7 @@ enum HintClickLaunch {
     private static var fileURL: URL? {
         // 与主程序侧 Constants.suitName 一致；Shared/ 同时编译进扩展，
         // 引用不到那个常量
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.xr.cn.wflixu.RClick")?
+        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: SharedAppGroup.identifier)?
             .appendingPathComponent("hintClickLaunchAt")
     }
 
@@ -445,5 +464,32 @@ enum HintClickLaunch {
               let modifiedAt = attributes[.modificationDate] as? Date
         else { return false }
         return now.timeIntervalSince(modifiedAt) < window
+    }
+}
+
+
+/// Shared by both targets so launch markers and the host settings use one ID.
+nonisolated enum SharedAppGroup {
+    static let identifier = "group.cn.wflixu.RClick"
+}
+
+/// A liveness cache; receiving a heartbeat must not invalidate a live peer.
+nonisolated struct PeerActivity {
+    private var lastActivity = Date.distantPast
+    static let timeout: TimeInterval = 30
+
+    func isActive(now: Date = Date()) -> Bool {
+        now.timeIntervalSince(lastActivity) < Self.timeout
+    }
+
+    /// Returns true only when this message reconnects an offline peer.
+    mutating func receive(now: Date = Date()) -> Bool {
+        let reconnected = !isActive(now: now)
+        lastActivity = now
+        return reconnected
+    }
+
+    mutating func disconnect() {
+        lastActivity = .distantPast
     }
 }

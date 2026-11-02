@@ -87,6 +87,29 @@ struct MenuConfigPayload: Codable {
         self.commonDirsCollapsed = commonDirsCollapsed
         self.iconStyle = iconStyle
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case version, actions, apps, newFiles, commonDirs
+        case actionsCollapsed, appsCollapsed, newFilesCollapsed, commonDirsCollapsed
+        case iconStyle, customMenu
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        version = try values.decode(Int.self, forKey: .version)
+        actions = try values.decode([ActionMenuItem].self, forKey: .actions)
+        apps = try values.decode([AppMenuItem].self, forKey: .apps)
+        newFiles = try values.decode([NewFileMenuItem].self, forKey: .newFiles)
+        commonDirs = try values.decode([CommonDirMenuItem].self, forKey: .commonDirs)
+        actionsCollapsed = try values.decode(Bool.self, forKey: .actionsCollapsed)
+        appsCollapsed = try values.decode(Bool.self, forKey: .appsCollapsed)
+        newFilesCollapsed = try values.decode(Bool.self, forKey: .newFilesCollapsed)
+        commonDirsCollapsed = try values.decode(Bool.self, forKey: .commonDirsCollapsed)
+        // Payloads produced before icon styles existed used original app icons.
+        iconStyle = try values.decodeIfPresent(Int.self, forKey: .iconStyle) ?? RCAppIconStyle.original.rawValue
+        customMenu = try values.decodeIfPresent([MenuNode].self, forKey: .customMenu)
+    }
+
 }
 
 /// 点击事件消息载荷

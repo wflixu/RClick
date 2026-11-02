@@ -51,7 +51,7 @@ enum AppPresets {
         AppPreset(nameKey: "Nova", bundleID: "com.panic.Nova", symbol: "chevron.left.forwardslash.chevron.right"),
         AppPreset(nameKey: "IntelliJ IDEA", bundleID: "com.jetbrains.intellij", symbol: "pencil.tip"),
         AppPreset(nameKey: "PyCharm", bundleID: "com.jetbrains.pycharm", symbol: "pencil.tip"),
-        AppPreset(nameKey: "WebStorm", bundleID: "com.jetbrains.php", symbol: "pencil.tip"),
+        AppPreset(nameKey: "WebStorm", bundleID: "com.jetbrains.WebStorm", symbol: "pencil.tip"),
         AppPreset(nameKey: "GoLand", bundleID: "com.jetbrains.goland", symbol: "pencil.tip"),
         AppPreset(nameKey: "Android Studio", bundleID: "com.google.android.studio", symbol: "pencil.tip"),
         // Git 客户端
@@ -80,7 +80,7 @@ enum AppPresets {
     }
 
     /// 「简单图标」的 symbol 名缓存：只缓存 bundleID→symbol 查表结果（要打开 Info.plist，
-    /// 菜单构建在主线程上，不能每次都读盘），NSImage 本体不缓存。
+    /// 菜单构建在主线程上，不能每次都读盘）。
     private static let symbolNameCache = LockedSymbolNameCache()
 
     /// 查表（带缓存）：bundleID 读取要打开 Info.plist，预热与菜单构建共用同一份缓存
@@ -97,18 +97,14 @@ enum AppPresets {
         return simpleIcon(symbolName: symbolName(forAppPath: appPath))
     }
 
-    /// 每次调用现做 NSImage（颜色与缓存策略见 MenuSymbolIcon 注释）
     private static func simpleIcon(symbolName: String?) -> NSImage? {
-        guard let symbolName else { return nil }  // 未收录：简单档回落原始图标（由调用方处理）
+        guard let symbolName else { return nil }
         return MenuSymbolIcon.image(named: symbolName, pointSize: 16)
     }
 
-    /// 后台预热（配置到达时调用，避免磁盘读取落在首次菜单构建）：
-    /// 1. symbol 名查表（每个未收录路径要读一次 Info.plist）
-    /// 2. 创建一个 symbol 图像，触发 SF Symbol 渲染管线初始化（首次约 5ms）
+    /// Metadata I/O can run in the background; image rendering stays on main.
     static func prewarm(forAppPaths paths: [String]) {
         for path in paths { _ = symbolName(forAppPath: path) }
-        _ = MenuSymbolIcon.image(named: "folder", pointSize: 16)
     }
 
     /// 「用指定应用打开」的目标解析（主程序 ActionService 与扩展快链路共用）：

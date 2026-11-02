@@ -12,10 +12,12 @@ import AppKit
 final class ToastController {
     static let shared = ToastController()
 
+    private var generation = 0
     private var panel: NSPanel?
     private var hideTask: Task<Void, Never>?
 
     func show(_ message: String) {
+        generation += 1
         let panel = ensurePanel()
         updateContent(of: panel, message: message)
         panel.alphaValue = 0
@@ -33,11 +35,15 @@ final class ToastController {
     }
 
     private func dismiss(_ panel: NSPanel) {
+        let dismissedGeneration = generation
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = 0.25
             panel.animator().alphaValue = 0
         }, completionHandler: {
-            panel.orderOut(nil)
+            Task { @MainActor [weak self] in
+                guard self?.generation == dismissedGeneration else { return }
+                panel.orderOut(nil)
+            }
         })
     }
 

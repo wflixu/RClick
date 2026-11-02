@@ -54,11 +54,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     // MARK: - 连接状态（UX 优化，非可靠性机制）
 
     /// 最近一次收到主程序消息的时间
-    private var lastMainActivity = Date()
+    private var mainActivity = PeerActivity()
 
     /// 是否认为主程序可通信（连续 3 次心跳未收到即判离线）
     private var isHostAppRunning: Bool {
-        Date().timeIntervalSince(lastMainActivity) < 30
+        mainActivity.isActive()
     }
 
     /// 待确认的点击事件 ack 计时器
@@ -112,10 +112,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的菜单配置
         messager.onMainMessage(.menuConfig) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             // 使用 decodeSignedData 解码签名数据
             if let config = self.messager.decodeSignedData(data, as: MenuConfigPayload.self) {
-                self.handleMenuConfig(config)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    _ = self.mainActivity.receive()
+                    self.handleMenuConfig(config)
+                }
             } else {
                 logger.warning("Invalid menu config data")
             }
@@ -124,9 +127,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的 running 通知
         messager.onMainMessage(.running) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             if let payload = self.messager.decodeSignedData(data, as: RunningPayload.self) {
-                logger.info("Received running notification: \(payload.directories)")
+                self.markMainActivity()
+                logger.debug("Received running notification: \(payload.directories)")
                 // 可以根据 payload 更新监听目录
             }
         }
@@ -150,14 +153,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 记录主程序最近活动（统一到主线程，避免 DNC 回调线程写 / menu 主线程读竞争）
     private func markMainActivity() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = Date()
+            _ = self?.mainActivity.receive()
         }
     }
 
     /// 标记主程序离线（收到 .quit 时立即生效）
     private func markMainOffline() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = .distantPast
+            self?.mainActivity.disconnect()
         }
     }
 
@@ -229,7 +232,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     private func preloadIcons(for config: MenuConfigPayload) {
         let apps = config.apps
         let newFiles = config.newFiles
-        DispatchQueue.global(qos: .utility).async {
+        DispatchQueue.global(qos: .utility).async { [weak self] in
             var warmed: [String: NSImage] = [:]
             for app in apps {
                 guard let url = app.appURL else { continue }
@@ -244,13 +247,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 : FileTypeIconProvider.shared.computeWorkspaceIcons(forExts: newFiles.map { $0.ext })
             // symbol 名查表（Info.plist 磁盘读取）+ SF Symbol 渲染管线初始化
             AppPresets.prewarm(forAppPaths: apps.compactMap { $0.appURL })
-            guard !warmed.isEmpty || !warmedFiles.isEmpty else { return }
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 for (key, icon) in warmed where self.iconCache[key] == nil {
                     self.iconCache[key] = icon
                 }
                 FileTypeIconProvider.shared.mergeWarmedIcons(warmedFiles)
+                for app in apps { _ = AppPresets.simpleIcon(forAppPath: app.appURL) }
                 logger.debug("图标预热完成: app \(warmed.count) 项, file \(warmedFiles.count) 项")
             }
         }
@@ -349,7 +352,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         return templateSymbol(app.icon)
     }
 
-    /// 加载 SF Symbol 作为菜单图标（每次现做，不走缓存——见 MenuSymbolIcon 注释）
+    /// 加载 SF Symbol，缓存按名称、尺寸与外观区分。
     private func templateSymbol(_ name: String) -> NSImage? {
         MenuSymbolIcon.image(named: name)
     }
@@ -363,7 +366,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             iconCache[cacheKey] = icon
             return icon
         }
-        // SF Symbol 兜底：颜色依赖系统当前主题，实例不能缓存（见 MenuSymbolIcon 注释）
+        // SF Symbol 兜底：MenuSymbolIcon 使用外观感知缓存。
         if let icon = templateSymbol(iconName) { return icon }
         if let fallback = iconFallbackMap[iconName] {
             return templateSymbol(fallback)

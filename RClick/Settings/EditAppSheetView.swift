@@ -17,7 +17,7 @@ struct EditAppSheetView: View {
     @State private var arguments: String
     @State private var environment: String
     @State private var opensNewInstance: Bool
-    @State private var opensContainingDir: Bool
+    @State private var opensContainingDir: Bool?
 
     let messager = Messager.shared
 
@@ -28,7 +28,7 @@ struct EditAppSheetView: View {
         _arguments = State(initialValue: app.arguments.joined(separator: "; "))
         _environment = State(initialValue: app.environment.map { "\($0.key)=\($0.value)" }.joined(separator: "\n"))
         _opensNewInstance = State(initialValue: app.opensNewInstance)
-        _opensContainingDir = State(initialValue: app.opensContainingDir ?? Self.presetOpensContainingDir(app))
+        _opensContainingDir = State(initialValue: app.opensContainingDir)
     }
 
     var body: some View {
@@ -80,7 +80,11 @@ struct EditAppSheetView: View {
                 }
 
                 Section {
-                    Toggle(isOn: $opensContainingDir) {
+                    Picker(selection: $opensContainingDir) {
+                        Text(appLocalized: "Follow App Preset").tag(nil as Bool?)
+                        Text(appLocalized: "On").tag(true as Bool?)
+                        Text(appLocalized: "Off").tag(false as Bool?)
+                    } label: {
                         Text(appLocalized: "Open Containing Folder")
                     }
                 } footer: {
@@ -106,12 +110,6 @@ struct EditAppSheetView: View {
             .padding(.bottom, 20)
         }
         .frame(width: 400, height: 480)
-    }
-
-    /// 预设终端分类兜底：未手动设置时，终端类应用默认开启「打开所在目录」
-    private static func presetOpensContainingDir(_ app: OpenWithApp) -> Bool {
-        guard let bundleID = Bundle(url: app.url)?.bundleIdentifier else { return false }
-        return AppPresets.terminalBundleIDs.contains(bundleID)
     }
 
     private func saveChanges() {

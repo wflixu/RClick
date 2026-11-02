@@ -58,7 +58,7 @@ final class FileTypeIconProvider: @unchecked Sendable {
         }
 
         // 3. SF Symbol 回退：先解析旧 PNG 图标名映射，再尝试直接匹配。
-        //    不缓存——符号图颜色依赖系统主题，缓存的实例会把颜色固化（明暗切换后过期）
+        //    MenuSymbolIcon caches separately for each system appearance.
         let resolvedSymbol = iconFallbackMap[fallbackSymbol] ?? fallbackSymbol
         return MenuSymbolIcon.image(named: resolvedSymbol, pointSize: iconSize)
             ?? MenuSymbolIcon.image(named: "doc", pointSize: iconSize)
@@ -81,7 +81,8 @@ final class FileTypeIconProvider: @unchecked Sendable {
             let icon = NSWorkspace.shared.icon(for: contentType)
             // 与 workspaceIcon 相同的判定：拿不到专属图标（通用灰图标）就跳过
             guard icon !== NSWorkspace.shared.icon(for: .data) else { continue }
-            result[ext] = icon.resized(to: NSSize(width: iconSize, height: iconSize))
+            // Return the workspace image untouched; resizing/drawing happens on main.
+            result[ext] = icon
         }
         return result
     }
@@ -89,7 +90,7 @@ final class FileTypeIconProvider: @unchecked Sendable {
     /// 合并后台预热结果（主线程调用）；已有缓存不覆盖
     func mergeWarmedIcons(_ icons: [String: NSImage]) {
         for (ext, icon) in icons where cache[ext] == nil {
-            cache[ext] = icon
+            cache[ext] = icon.resized(to: NSSize(width: iconSize, height: iconSize))
         }
     }
 
@@ -137,18 +138,37 @@ final class FileTypeIconProvider: @unchecked Sendable {
 
 // MARK: - Menu Symbol Icon
 
-/// FinderSync 菜单符号图标：菜单由 Finder 跨进程渲染，缓存的图片实例会把首次解析的
-/// 颜色固化，系统明暗切换后不刷新；template / labelColor 等动态方案在跨进程下同样不可靠。
-/// 因此每次调用现做图片，颜色按系统当前主题（AppleInterfaceStyle 全局偏好）显式选死。
-enum MenuSymbolIcon {
+/// Finder renders these images across process boundaries. Cache explicit colors per
+/// appearance so repeated builds are cheap and switching appearance never reuses
+/// a symbol colored for the previous theme.
+nonisolated enum MenuSymbolIcon {
+    nonisolated private struct Key: Hashable {
+        let name: String
+        let pointSize: CGFloat?
+        let isDark: Bool
+    }
+
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var cache: [Key: NSImage] = [:]
+
     static func image(named name: String, pointSize: CGFloat? = nil) -> NSImage? {
         let isDark = (CFPreferencesCopyAppValue("AppleInterfaceStyle" as CFString, kCFPreferencesAnyApplication) as? String) == "Dark"
+        return image(named: name, pointSize: pointSize, isDark: isDark)
+    }
+
+    static func image(named name: String, pointSize: CGFloat?, isDark: Bool) -> NSImage? {
+        let key = Key(name: name, pointSize: pointSize, isDark: isDark)
+        lock.lock()
+        defer { lock.unlock() }
+        if let cached = cache[key] { return cached }
         var config = NSImage.SymbolConfiguration(paletteColors: [isDark ? NSColor.white : NSColor.black])
         if let pointSize {
             config = config.applying(NSImage.SymbolConfiguration(pointSize: pointSize, weight: .regular))
         }
-        return NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-            .withSymbolConfiguration(config)
+        guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return nil }
+        cache[key] = image
+        return image
     }
 }
 
