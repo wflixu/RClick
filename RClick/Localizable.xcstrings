@@ -39,6 +39,41 @@
         }
       }
     },
+    "...and %lld more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...and %lld more"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...y %lld más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...et %lld de plus"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "...ほか %lld 件"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "……以及其他 %lld 项"
+          }
+        }
+      }
+    },
     "About" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -179,41 +214,41 @@
         }
       }
     },
-      "Add Preset App" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Add Preset App"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "添加常用应用"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Añadir app predefinida"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ajouter une app prédéfinie"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "プリセットアプリを追加"
-            }
+    "Add Preset App" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Preset App"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加常用应用"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir app predefinida"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter une app prédéfinie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プリセットアプリを追加"
           }
         }
-      },
+      }
+    },
     "Add a Folder…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -389,41 +424,41 @@
         }
       }
     },
-      "Added" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Added"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "已添加"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Añadida"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ajoutée"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "追加済み"
-            }
+    "Added" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已添加"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadida"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoutée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加済み"
           }
         }
-      },
+      }
+    },
     "Added Folders" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -494,76 +529,76 @@
         }
       }
     },
-      "Alacritty" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Alacritty"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Alacritty"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Alacritty"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Alacritty"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Alacritty"
-            }
+    "Alacritty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alacritty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alacritty"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alacritty"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alacritty"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alacritty"
           }
         }
-      },
-      "Android Studio" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Android Studio"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Android Studio"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Android Studio"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Android Studio"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Android Studio"
-            }
+      }
+    },
+    "Android Studio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android Studio"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android Studio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android Studio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android Studio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android Studio"
           }
         }
-      },
+      }
+    },
     "Applications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -599,41 +634,41 @@
         }
       }
     },
-      "Applies to app icons in the Open With menu: none / simple (monochrome) / original" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Applies to app icons in the Open With menu: none / simple (monochrome) / original"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "作用于「打开方式」菜单中应用项的图标：无图标 / 简单图标（单色）/ 原始图标"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Se aplica a los iconos de las apps del menú Abrir con: ninguno / simple (monocromo) / original"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "S’applique aux icônes des apps du menu Ouvrir avec : aucune / simple (monochrome) / originale"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "「このアプリケーションで開く」のアイコン：なし／シンプル（単色）／オリジナル"
-            }
+    "Applies to app icons in the Open With menu: none / simple (monochrome) / original" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to app icons in the Open With menu: none / simple (monochrome) / original"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作用于「打开方式」菜单中应用项的图标：无图标 / 简单图标（单色）/ 原始图标"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica a los iconos de las apps del menú Abrir con: ninguno / simple (monocromo) / original"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S’applique aux icônes des apps du menu Ouvrir avec : aucune / simple (monochrome) / originale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「このアプリケーションで開く」のアイコン：なし／シンプル（単色）／オリジナル"
           }
         }
-      },
+      }
+    },
     "Apply Custom Menu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -914,41 +949,41 @@
         }
       }
     },
-      "BBEdit" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "BBEdit"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "BBEdit"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "BBEdit"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "BBEdit"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "BBEdit"
-            }
+    "BBEdit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BBEdit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BBEdit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BBEdit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BBEdit"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BBEdit"
           }
         }
-      },
+      }
+    },
     "Backup" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1579,41 +1614,76 @@
         }
       }
     },
-      "Context Menu" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Context Menu"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "右键菜单"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Menú contextual"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Menu contextuel"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "コンテキストメニュー"
-            }
+    "Confirm before delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm before delete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar antes de eliminar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmer avant de supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除時に再確認"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除时二次确认"
           }
         }
-      },
+      }
+    },
+    "Context Menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Context Menu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键菜单"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menú contextual"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu contextuel"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンテキストメニュー"
+          }
+        }
+      }
+    },
     "Copy Path" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1649,76 +1719,76 @@
         }
       }
     },
-      "CotEditor" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "CotEditor"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "CotEditor"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "CotEditor"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "CotEditor"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "CotEditor"
-            }
+    "CotEditor" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CotEditor"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CotEditor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CotEditor"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CotEditor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CotEditor"
           }
         }
-      },
-      "Cursor" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Cursor"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Cursor"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Cursor"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Cursor"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Cursor"
-            }
+      }
+    },
+    "Cursor" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
           }
         }
-      },
+      }
+    },
     "Custom Menu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1964,41 +2034,6 @@
         }
       }
     },
-      "Delete Permanently?" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Delete Permanently?"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "¿Eliminar permanentemente?"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Supprimer définitivement ?"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "完全に削除しますか？"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "永久删除？"
-            }
-          }
-        }
-      },
     "Deletes the file and returns to the default layout, keeping a backup." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2069,41 +2104,41 @@
         }
       }
     },
-      "Device Control & Data Access" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Device Control & Data Access"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Control de dispositivos y acceso a datos"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Contrôle des appareils et accès aux données"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "デバイスコントロールとデータアクセス"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "设备控制和数据访问"
-            }
+    "Device Control & Data Access" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Device Control & Data Access"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control de dispositivos y acceso a datos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle des appareils et accès aux données"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバイスコントロールとデータアクセス"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设备控制和数据访问"
           }
         }
-      },
+      }
+    },
     "Display Name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2874,41 +2909,41 @@
         }
       }
     },
-      "Extensions" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Extensions"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Extensiones"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Extensions"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "拡張機能"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "扩展"
-            }
+    "Extensions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extensions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extensiones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extensions"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拡張機能"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扩展"
           }
         }
-      },
+      }
+    },
     "Extraction failed: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3084,41 +3119,41 @@
         }
       }
     },
-      "Finder" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "访达"
-            }
+    "Finder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访达"
           }
         }
-      },
+      }
+    },
     "Finder Extension" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3154,41 +3189,41 @@
         }
       }
     },
-      "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@." : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Extensión del Finder: active \"RClick\" en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@. Accesibilidad: %@ > %@."
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@. Accessibilité : %@ > %@."
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。アクセシビリティ：%@ > %@。"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。辅助功能：在「系统设置 → %@ → %@」中授权。"
-            }
+    "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extensión del Finder: active \"RClick\" en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@. Accesibilidad: %@ > %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@. Accessibilité : %@ > %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。アクセシビリティ：%@ > %@。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。辅助功能：在「系统设置 → %@ → %@」中授权。"
           }
         }
-      },
+      }
+    },
     "Folder access permission is required to use this feature." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3294,41 +3329,41 @@
         }
       }
     },
-      "Follow App Preset" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Follow App Preset"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Seguir el ajuste predefinido"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Suivre le préréglage de l’app"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "アプリのプリセットに従う"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "跟随应用预设"
-            }
+    "Follow App Preset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow App Preset"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir el ajuste predefinido"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivre le préréglage de l’app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのプリセットに従う"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随应用预设"
           }
         }
-      },
+      }
+    },
     "For browser-like apps, launch a new instance instead of opening a new tab in the running one" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3399,41 +3434,41 @@
         }
       }
     },
-      "Fork" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Fork"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Fork"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Fork"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Fork"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Fork"
-            }
+    "Fork" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fork"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fork"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fork"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fork"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fork"
           }
         }
-      },
+      }
+    },
     "Format: KEY=VALUE, one per line" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3539,111 +3574,111 @@
         }
       }
     },
-      "Ghostty" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ghostty"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ghostty"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ghostty"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ghostty"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ghostty"
-            }
+    "Ghostty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghostty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghostty"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghostty"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghostty"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghostty"
           }
         }
-      },
-      "GitHub Desktop" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GitHub Desktop"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GitHub Desktop"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GitHub Desktop"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GitHub Desktop"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GitHub Desktop"
-            }
+      }
+    },
+    "GitHub Desktop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Desktop"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Desktop"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Desktop"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Desktop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Desktop"
           }
         }
-      },
-      "GoLand" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GoLand"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GoLand"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GoLand"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GoLand"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "GoLand"
-            }
+      }
+    },
+    "GoLand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GoLand"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GoLand"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GoLand"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GoLand"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GoLand"
           }
         }
-      },
+      }
+    },
     "Grant Access" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3749,41 +3784,41 @@
         }
       }
     },
-      "Hold ⌘ and click again to delete" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "⚠️ Hold ⌘ and click again to delete"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "⚠️ Mantén pulsada ⌘ y vuelve a hacer clic para eliminar"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "⚠️ Maintenez ⌘ et cliquez à nouveau pour supprimer"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "⚠️ ⌘ を押しながらもう一度クリックして削除"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "⚠️ 请按住 ⌘ 键再点击删除"
-            }
+    "Hold ⌘ and click again to delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Hold ⌘ and click again to delete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Mantén pulsada ⌘ y vuelve a hacer clic para eliminar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Maintenez ⌘ et cliquez à nouveau pour supprimer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ ⌘ を押しながらもう一度クリックして削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 请按住 ⌘ 键再点击删除"
           }
         }
-      },
+      }
+    },
     "Home" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3819,41 +3854,41 @@
         }
       }
     },
-      "Hyper" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Hyper"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Hyper"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Hyper"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Hyper"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Hyper"
-            }
+    "Hyper" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hyper"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hyper"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hyper"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hyper"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hyper"
           }
         }
-      },
+      }
+    },
     "Icon" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3889,41 +3924,41 @@
         }
       }
     },
-      "Icon Style" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Icon Style"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "图标样式"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Estilo de iconos"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Style des icônes"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "アイコンのスタイル"
-            }
+    "Icon Style" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icon Style"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图标样式"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo de iconos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style des icônes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイコンのスタイル"
           }
         }
-      },
+      }
+    },
     "Ignore This Version" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4029,76 +4064,76 @@
         }
       }
     },
-      "Installed" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Installed"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Instalada"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Installée"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "インストール済み"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "已安装"
-            }
+    "Installed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール済み"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装"
           }
         }
-      },
-      "IntelliJ IDEA" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "IntelliJ IDEA"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "IntelliJ IDEA"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "IntelliJ IDEA"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "IntelliJ IDEA"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "IntelliJ IDEA"
-            }
+      }
+    },
+    "IntelliJ IDEA" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IntelliJ IDEA"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IntelliJ IDEA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IntelliJ IDEA"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IntelliJ IDEA"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IntelliJ IDEA"
           }
         }
-      },
+      }
+    },
     "Invalid Folder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4694,41 +4729,41 @@
         }
       }
     },
-      "No Icons" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "No Icons"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "无图标"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sin iconos"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sans icônes"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "アイコンなし"
-            }
+    "No Icons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Icons"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无图标"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin iconos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans icônes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイコンなし"
           }
         }
-      },
+      }
+    },
     "No folders authorized" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4834,41 +4869,41 @@
         }
       }
     },
-      "Not Installed" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Not Installed"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "未安装"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "No instalada"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Non installée"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "未インストール"
-            }
+    "Not Installed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Installed"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未安装"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No instalada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non installée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未インストール"
           }
         }
-      },
+      }
+    },
     "Not checked yet" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4974,41 +5009,41 @@
         }
       }
     },
-      "Nova" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Nova"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Nova"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Nova"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Nova"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Nova"
-            }
+    "Nova" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
           }
         }
-      },
+      }
+    },
     "OK" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5044,76 +5079,76 @@
         }
       }
     },
-      "Off" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Off"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Desactivado"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Désactivé"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "オフ"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "关闭"
-            }
+    "Off" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
           }
         }
-      },
-      "On" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "On"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Activado"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Activé"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "オン"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "开启"
-            }
+      }
+    },
+    "On" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オン"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启"
           }
         }
-      },
+      }
+    },
     "Open App Store" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5149,41 +5184,41 @@
         }
       }
     },
-      "Open Containing Folder" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Open Containing Folder"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Abrir carpeta contenedora"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ouvrir le dossier contenant"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "親フォルダを開く"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "打开所在目录"
-            }
+    "Open Containing Folder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Containing Folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir carpeta contenedora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le dossier contenant"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "親フォルダを開く"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开所在目录"
           }
         }
-      },
+      }
+    },
     "Open in a new window" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5254,41 +5289,111 @@
         }
       }
     },
-      "Original Icons" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Original Icons"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "原始图标"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Iconos originales"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Icônes originales"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "オリジナルアイコン"
-            }
+    "Original Icons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original Icons"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始图标"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iconos originales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icônes originales"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナルアイコン"
           }
         }
-      },
+      }
+    },
+    "Permanently delete %lld items?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete %lld items?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar permanentemente %lld elementos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement %lld éléments ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 項目を完全に削除しますか？"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要永久删除 %lld 项吗？"
+          }
+        }
+      }
+    },
+    "Permanently delete “%@”?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete “%@”?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar permanentemente “%@”?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement « %@ » ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@”を完全に削除しますか？"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要永久删除“%@”吗？"
+          }
+        }
+      }
+    },
     "Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5429,76 +5534,76 @@
         }
       }
     },
-      "Privacy & Security" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Privacy & Security"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Privacidad y seguridad"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Confidentialité et sécurité"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "プライバシーとセキュリティ"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "隐私与安全性"
-            }
+    "Privacy & Security" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy & Security"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad y seguridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confidentialité et sécurité"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシーとセキュリティ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私与安全性"
           }
         }
-      },
-      "Privacy & Security (macOS 27)" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Privacy & Security"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Privacidad y seguridad"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Confidentialité et sécurité"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "プライバシーとセキュリティ"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "隐私与安全"
-            }
+      }
+    },
+    "Privacy & Security (macOS 27)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy & Security"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad y seguridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confidentialité et sécurité"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシーとセキュリティ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私与安全"
           }
         }
-      },
+      }
+    },
     "Protected system folders cannot be deleted: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5569,41 +5674,41 @@
         }
       }
     },
-      "PyCharm" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "PyCharm"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "PyCharm"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "PyCharm"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "PyCharm"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "PyCharm"
-            }
+    "PyCharm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PyCharm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PyCharm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PyCharm"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PyCharm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PyCharm"
           }
         }
-      },
+      }
+    },
     "Quit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6583,41 +6688,41 @@
         }
       }
     },
-      "Show In" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Show In"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "显示位置"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Mostrar en"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Afficher dans"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "表示先"
-            }
+    "Show In" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show In"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示位置"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示先"
           }
         }
-      },
+      }
+    },
     "Show icon in menu bar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6653,146 +6758,146 @@
         }
       }
     },
-      "Simple Icons" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Simple Icons"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "简单图标"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Iconos simples"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Icônes simples"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "シンプルアイコン"
-            }
+    "Simple Icons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simple Icons"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "简单图标"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iconos simples"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icônes simples"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シンプルアイコン"
           }
         }
-      },
-      "SourceTree" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "SourceTree"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "SourceTree"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "SourceTree"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "SourceTree"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "SourceTree"
-            }
+      }
+    },
+    "SourceTree" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SourceTree"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SourceTree"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SourceTree"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SourceTree"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SourceTree"
           }
         }
-      },
-      "Sublime Text" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sublime Text"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sublime Text"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sublime Text"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sublime Text"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Sublime Text"
-            }
+      }
+    },
+    "Sublime Text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublime Text"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublime Text"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublime Text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublime Text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublime Text"
           }
         }
-      },
-      "Tabby" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tabby"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tabby"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tabby"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tabby"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tabby"
-            }
+      }
+    },
+    "Tabby" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabby"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabby"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabby"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabby"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabby"
           }
         }
-      },
+      }
+    },
     "Template" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6828,41 +6933,41 @@
         }
       }
     },
-      "Terminal" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Terminal"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Terminal"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Terminal"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "ターミナル"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "终端"
-            }
+    "Terminal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ターミナル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "终端"
           }
         }
-      },
+      }
+    },
     "The application bundle is invalid or damaged." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7248,41 +7353,41 @@
         }
       }
     },
-      "These items will be permanently deleted without moving to Trash. This cannot be undone.\n\n%@" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "These items will be permanently deleted without moving to Trash. This cannot be undone.\n\n%@"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Estos elementos se eliminarán permanentemente sin pasar por la Papelera. Esta acción no se puede deshacer.\n\n%@"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Ces éléments seront supprimés définitivement sans passer par la Corbeille. Cette action est irréversible.\n\n%@"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "これらの項目はゴミ箱に移動せず完全に削除されます。この操作は取り消せません。\n\n%@"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "以下项目将被永久删除，不会移到废纸篓。此操作无法撤销。\n\n%@"
-            }
+    "This cannot be undone and will not move items to Trash." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This cannot be undone and will not move items to Trash."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta acción no se puede deshacer y no moverá los elementos a la Papelera."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette action est irréversible et n’enverra pas les éléments dans la Corbeille."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この操作は取り消せません。項目はゴミ箱に移動されません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此操作无法撤销，也不会将项目移到废纸篓。"
           }
         }
-      },
+      }
+    },
     "This deletes custom_menu.json and returns to the default menu. A copy is kept as custom_menu.backup.json." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7353,111 +7458,111 @@
         }
       }
     },
-      "Toolbar" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Toolbar"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "工具栏"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Barra de herramientas"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Barre d’outils"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "ツールバー"
-            }
+    "Toolbar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toolbar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具栏"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra de herramientas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barre d’outils"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツールバー"
           }
         }
-      },
-      "Tower" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tower"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tower"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tower"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tower"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Tower"
-            }
+      }
+    },
+    "Tower" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tower"
           }
         }
-      },
-      "Typora" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Typora"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Typora"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Typora"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Typora"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Typora"
-            }
+      }
+    },
+    "Typora" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typora"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typora"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typora"
           }
         }
-      },
+      }
+    },
     "Unable to Open Menu Config" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7913,286 +8018,321 @@
         }
       }
     },
-      "Visual Studio Code" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Visual Studio Code"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Visual Studio Code"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Visual Studio Code"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Visual Studio Code"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Visual Studio Code"
-            }
+    "Visual Studio Code" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visual Studio Code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visual Studio Code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visual Studio Code"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visual Studio Code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visual Studio Code"
           }
         }
-      },
-      "Warp" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Warp"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Warp"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Warp"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Warp"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Warp"
-            }
+      }
+    },
+    "Warp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warp"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warp"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warp"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warp"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warp"
           }
         }
-      },
-      "WebStorm" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WebStorm"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WebStorm"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WebStorm"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WebStorm"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WebStorm"
-            }
+      }
+    },
+    "WebStorm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebStorm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebStorm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebStorm"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebStorm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebStorm"
           }
         }
-      },
-      "WezTerm" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WezTerm"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WezTerm"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WezTerm"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WezTerm"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "WezTerm"
-            }
+      }
+    },
+    "WezTerm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WezTerm"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WezTerm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WezTerm"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WezTerm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WezTerm"
           }
         }
-      },
-      "When a file is selected, open its containing folder instead" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "When a file is selected, open its containing folder instead"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Al seleccionar un archivo, abre su carpeta contenedora"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Lorsqu’un fichier est sélectionné, ouvre son dossier parent"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "ファイル選択時はその親フォルダを開きます"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "选中文件时，改为打开其所在目录"
-            }
+      }
+    },
+    "When a file is selected, open its containing folder instead" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When a file is selected, open its containing folder instead"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al seleccionar un archivo, abre su carpeta contenedora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsqu’un fichier est sélectionné, ouvre son dossier parent"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル選択時はその親フォルダを開きます"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选中文件时，改为打开其所在目录"
           }
         }
-      },
-      "Xcode" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Xcode"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Xcode"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Xcode"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Xcode"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "Xcode"
-            }
+      }
+    },
+    "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si está activado, RClick pide confirmación antes de eliminar permanentemente. La eliminación directa omite la Papelera y no se puede deshacer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si activé, RClick demande confirmation avant une suppression définitive. La suppression directe ignore la Corbeille et est irréversible."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、完全削除の前に確認します。直接削除はゴミ箱を経由せず、元に戻せません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，永久删除前会弹出确认。直接删除会绕过废纸篓且无法撤销。"
           }
         }
-      },
-      "iTerm2" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "iTerm2"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "iTerm2"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "iTerm2"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "iTerm2"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "iTerm2"
-            }
+      }
+    },
+    "Xcode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xcode"
           }
         }
-      },
-      "kitty" : {
-        "extractionState" : "manual",
-        "localizations" : {
-          "en" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "kitty"
-            }
-          },
-          "es" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "kitty"
-            }
-          },
-          "fr" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "kitty"
-            }
-          },
-          "ja" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "kitty"
-            }
-          },
-          "zh-Hans" : {
-            "stringUnit" : {
-              "state" : "translated",
-              "value" : "kitty"
-            }
+      }
+    },
+    "iTerm2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTerm2"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTerm2"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTerm2"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTerm2"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iTerm2"
           }
         }
-      },
+      }
+    },
+    "kitty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kitty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kitty"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kitty"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kitty"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kitty"
+          }
+        }
+      }
+    },
     "v%@" : {
       "localizations" : {
         "en" : {

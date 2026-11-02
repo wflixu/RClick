@@ -26,19 +26,31 @@ struct ActionSettingsTabView: View {
             Section {
                 List {
                     ForEach($appState.actions) { $item in
-                        LabeledContent {
-                            Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
-                                .toggleStyle(.checkbox)
-                                .labelsHidden()
-                                .onChange(of: item.enabled) {
-                                    appState.toggleActionItem()
-                                    messager.sendRunningNotification()
+                        VStack(alignment: .leading, spacing: 8) {
+                            LabeledContent {
+                                Toggle(AppLocalization.localized("Enabled"), isOn: $item.enabled)
+                                    .toggleStyle(.checkbox)
+                                    .labelsHidden()
+                                    .onChange(of: item.enabled) {
+                                        appState.toggleActionItem()
+                                        messager.sendRunningNotification()
+                                    }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "line.3.horizontal")
+                                        .foregroundColor(.secondary)
+                                    Label(item.displayName, systemImage: item.icon)
                                 }
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "line.3.horizontal")
-                                    .foregroundColor(.secondary)
-                                Label(item.displayName, systemImage: item.icon)
+                            }
+
+                            // Nested under Direct Delete: only when that action is enabled.
+                            if item.id == RCAction.deleteDirect.id, item.enabled {
+                                Toggle(isOn: $appState.confirmBeforeDelete) {
+                                    Text(appLocalized: "Confirm before delete")
+                                }
+                                .toggleStyle(.checkbox)
+                                .padding(.leading, 28)
+                                .help(AppLocalization.localized("When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone."))
                             }
                         }
                         .listRowInsets(EdgeInsets(top: 8, leading: 2, bottom: 8, trailing: 2))
