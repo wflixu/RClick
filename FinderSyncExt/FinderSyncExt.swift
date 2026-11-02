@@ -277,6 +277,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 当前菜单触发类型（工具栏 or 右键）
     private var currentMenuKind: FIMenuKind = .contextualMenuForItems
 
+    /// 快链路动作 id：主程序离线时仍可在扩展内完成的操作
+    private static let copyPathActionId = "copy-path"
+
     // MARK: - Icon Helpers
 
     /// 获取 App 图标（带缓存）
@@ -345,18 +348,23 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.info("构建菜单，触发方式: \(menuKindLabel)")
 
         let menu = NSMenu(title: "RClick")
+        // 关闭自动校验：FIFinderSync 的菜单跨进程交给 Finder 显示，跟踪循环在 Finder
+        // 进程里执行，扩展侧的 validateMenuItem 不会被回调——启用状态必须在构建时
+        // （menu(for:) 调用时刻）通过显式 isEnabled 定死。
+        menu.autoenablesItems = false
 
-        // 连接状态缓存：主程序离线时，显示置灰提示而非可点击菜单（避免"点了没反应"）
-        guard isHostAppRunning else {
-            menu.addItem(withTitle: AppLocalization.localized("RClick is not running"), action: nil, keyEquivalent: "")
-            menu.addItem(withTitle: AppLocalization.localized("Restart RClick to restore the menu"), action: nil, keyEquivalent: "")
-            return menu
-        }
+        // 主程序离线时快链路项（复制路径）照常可用，其余项由 make*Item 置灰，
+        // 菜单尾部追加说明。
+        let offline = !isHostAppRunning
 
         // 如果缓存为空，触发请求并返回加载中的菜单
         guard let config = cachedMenuConfig else {
-            requestMenuConfig()
-            menu.addItem(withTitle: AppLocalization.localized("RClick (loading...)"), action: nil, keyEquivalent: "")
+            if offline {
+                appendOfflineHint(menu, offline: true)
+            } else {
+                requestMenuConfig()
+                menu.addItem(withTitle: AppLocalization.localized("RClick (loading...)"), action: nil, keyEquivalent: "")
+            }
             return menu
         }
 
@@ -369,6 +377,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
                 }
             }, loadIcon: { self.loadIcon(named: $0, accessibilityDescription: $0) })
+            appendOfflineHint(menu, offline: offline)
             return menu
         }
 
@@ -464,7 +473,47 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             }
         }
 
+        appendOfflineHint(menu, offline: offline)
         return menu
+    }
+
+    /// 主程序离线时在菜单尾部追加持灰说明（快链路项不受影响，仍可点击）。
+    /// 两行提示均可点击：启动主程序（仅菜单栏常驻，不弹设置窗口）。
+    private func appendOfflineHint(_ menu: NSMenu, offline: Bool) {
+        guard offline else { return }
+        menu.addItem(NSMenuItem.separator())
+        let gray = [NSAttributedString.Key.foregroundColor: NSColor.secondaryLabelColor]
+        let titles = [
+            AppLocalization.localized("RClick is not running"),
+            AppLocalization.localized("Restart RClick to restore the menu"),
+        ]
+        for title in titles {
+            let item = menu.addItem(withTitle: "", action: #selector(handleLaunchHostClick(_:)), keyEquivalent: "")
+            item.attributedTitle = NSAttributedString(string: title, attributes: gray)
+            item.target = self
+        }
+    }
+
+    /// 点击离线提示：启动主程序。不带任何文档 URL，纯启动不受 TCC 文件弹窗限制；
+    /// activates = false 不抢焦点。主程序对这种启动保持静默（不打开设置窗口），
+    /// 识别信号见 HintClickLaunch。
+    @objc private func handleLaunchHostClick(_ sender: NSMenuItem) {
+        let hostURL = Bundle.main.bundleURL
+            .deletingLastPathComponent()   // PlugIns/
+            .deletingLastPathComponent()   // Contents/
+            .deletingLastPathComponent()   // RClick.app
+        let config = NSWorkspace.OpenConfiguration()
+        config.activates = false
+        // RC_QUIET_LAUNCH=1 只在「本次真的拉起新进程」时送达主程序；App 已在运行
+        // （刚点过退出还没退完、或启动后菜单尚未刷新）时系统会忽略环境变量、只
+        // 派发 reopen——所以同时写一个时间戳，主程序在两条路径上都能识别提示点击
+        config.environment = ["RC_QUIET_LAUNCH": "1"]
+        HintClickLaunch.mark()
+        NSWorkspace.shared.openApplication(at: hostURL, configuration: config) { _, error in
+            if let error {
+                logger.warning("Launch host app failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     }
 
     private func makeActionItem(_ action: ActionMenuItem) -> NSMenuItem {
@@ -474,6 +523,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         if let icon = templateSymbol(action.icon) {
             item.image = icon
         }
+        // 主程序离线时只有复制路径是快链路，其余动作需要主程序的授权与执行，置灰
+        if !isHostAppRunning && action.id != Self.copyPathActionId {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -482,6 +535,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.tag = hashForApp(app)
         item.target = self
         item.image = cachedAppIcon(app: app)
+        // 沙盒限制：扩展内 NSWorkspace.open 传递文件 URL 必触发 TCC 弹窗，
+        // 离线快开不可行，维持与主程序一致的离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -491,6 +549,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.target = self
         item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
         item.image?.accessibilityDescription = newFile.name
+        // 新建文件需要往目标目录写入，必须由主程序执行，离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -499,6 +561,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.tag = hashForCommonDir(commonDir)
         item.target = self
         item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+        // 打开目录需要主程序执行，离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -536,7 +602,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         let itemPaths = selectedItems.map { $0.path }
         logger.info("[Action] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
-        // 发送点击事件到主程序
+        // 快链路：复制路径是纯剪贴板操作，扩展内直接完成（零 IPC）
+        if action.id == Self.copyPathActionId {
+            copyPathsLocally(itemPaths)
+            return
+        }
+
+        // 慢链路：删除/隐藏/取消隐藏/AirDrop 需要主程序的 bookmark 授权与执行
         let event = ClickEventPayload(
             itemId: action.id,
             itemType: .action,
@@ -544,6 +616,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             trigger: getTriggerForMenuKind()
         )
         sendClickEvent(event)
+    }
+
+    /// 快链路：复制路径（与主程序 ActionService.copyPath 语义一致，取第一项）
+    private func copyPathsLocally(_ itemPaths: [String]) {
+        guard let first = itemPaths.first else { return }
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(first.removingPercentEncoding ?? first, forType: .string)
     }
 
     @objc private func handleAppClick(_ sender: NSMenuItem) {
@@ -598,13 +678,12 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
         logger.debug("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
 
-        // 使用常用目录自身的路径，而不是 Finder 当前选中的路径
-        let target = commonDir.url.map { [$0] } ?? []
-
+        // 打开目录统一交给主程序，由 ActionService 检查 bookmark 权限，
+        // 必要时请求用户授权；扩展只转发目标路径。
         let event = ClickEventPayload(
             itemId: commonDir.id,
             itemType: .commonDir,
-            target: target,
+            target: commonDir.url.map { [$0] } ?? [],
             trigger: getTriggerForMenuKind()
         )
         sendClickEvent(event)

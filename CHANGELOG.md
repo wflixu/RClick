@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
+- Offline Copy Path and a clickable hint that quietly relaunches the host
+- Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 
 ## [2.3.1] - 2026-10-14
 
