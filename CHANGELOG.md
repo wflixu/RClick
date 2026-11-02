@@ -10,13 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
 
-## [Unreleased]
-
-### Added
 - Built-in app presets, per-app toolbar and context-menu visibility, and none/simple/original app icon styles
 - A per-app automatic/on/off option for opening a selected file's containing folder, enabled automatically for terminal presets
 - Offline Copy Path and a clickable offline hint that relaunches RClick quietly
-- A Command-key hint before Direct Delete, followed by the existing permanent-delete confirmation by default
 
 ### Changed
 - Keep Finder icon caches warm, preload workspace icon lookups, and cache SF Symbols separately for light and dark appearances
@@ -28,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Correct the shared App Group used by the quiet-launch marker
 - Refresh permission status while settings are visible and update System Settings links
 - Complete preset/settings translations and distinguish missing translations from English values equal to their keys
-- Prevent an earlier toast's fade-out callback from closing a newer toast
 
 ## [2.3.1] - 2026-10-14
 

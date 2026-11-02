@@ -595,41 +595,6 @@
           }
         }
       }
-    },
-    "Hold ⌘ and click to delete directly": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⌘ + Click to delete directly"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⌘ + clic para eliminar directamente"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⌘ + clic pour supprimer directement"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⌘ + クリックで直接削除"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⌘ + 点击，直接删除"
-          }
-        }
-      }
     }
   },
   "version": "1.0"

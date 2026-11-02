@@ -327,9 +327,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 快链路动作 id：主程序离线时仍可在扩展内完成的操作
     private static let copyPathActionId = "copy-path"
 
-    /// 不可逆动作 id：菜单中按住 ⌘ 才可用（修饰键确认，替代弹窗二次确认）
-    private static let deleteDirectActionId = "delete-direct"
-
     // MARK: - Icon Helpers
 
     /// 获取 App 图标（带缓存）
@@ -577,11 +574,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         if !isHostAppRunning && action.id != Self.copyPathActionId {
             item.isEnabled = false
         }
-        // 直接删除：不可逆操作——菜单项始终可点，点击时按住 ⌘ 才真正执行删除，
-        // 否则由主程序弹出 toast 引导（标题固定带 ⌘ 提示）
-        if action.id == Self.deleteDirectActionId {
-            item.title = AppLocalization.localized("Hold ⌘ and click to delete directly")
-        }
         return item
     }
 
@@ -673,15 +665,6 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 快链路：复制路径是纯剪贴板操作，扩展内直接完成（零 IPC）
         if action.id == Self.copyPathActionId {
             copyPathsLocally(itemPaths)
-            return
-        }
-
-        // 直接删除：不可逆操作，点击回调时点读取修饰键——按住 ⌘ 才执行，
-        // 否则让主程序弹 toast 引导（回调在扩展进程执行，此处读取是可靠的）
-        if action.id == Self.deleteDirectActionId,
-           !NSEvent.modifierFlags.contains(.command) {
-            logger.info("Delete-direct clicked without ⌘, requesting toast hint")
-            messager.sendToastRequest(textKey: "Hold ⌘ and click again to delete")
             return
         }
 

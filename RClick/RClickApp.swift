@@ -170,18 +170,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
 
-            // 扩展请求显示 toast（如"按住 ⌘ 再点击直接删除"的引导）
-            messager.onExtensionMessage(.toast) { [weak self] data in
-                guard let self = self else { return }
-                if let payload: ToastPayload = messager.decodeSignedData(data) {
-                    Task { @MainActor in
-                        ToastController.shared.show(AppLocalization.localized(payload.textKey))
-                    }
-                } else {
-                    logger.warning("Invalid toast payload")
-                }
-            }
-
             messager.onExtensionMessage(.heartbeat) { [weak self] _ in
                 guard let self = self else { return }
                 logger.debug("Received heartbeat from extension")

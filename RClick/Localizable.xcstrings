@@ -3784,41 +3784,6 @@
         }
       }
     },
-    "Hold ⌘ and click again to delete" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⚠️ Hold ⌘ and click again to delete"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⚠️ Mantén pulsada ⌘ y vuelve a hacer clic para eliminar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⚠️ Maintenez ⌘ et cliquez à nouveau pour supprimer"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⚠️ ⌘ を押しながらもう一度クリックして削除"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⚠️ 请按住 ⌘ 键再点击删除"
-          }
-        }
-      }
-    },
     "Home" : {
       "extractionState" : "manual",
       "localizations" : {
