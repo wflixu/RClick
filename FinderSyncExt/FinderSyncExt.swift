@@ -245,7 +245,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             let warmedFiles = newFiles.isEmpty
                 ? [:]
                 : FileTypeIconProvider.shared.computeWorkspaceIcons(forExts: newFiles.map { $0.ext })
-            // symbol 名查表（Info.plist 磁盘读取）+ SF Symbol 渲染管线初始化
+            // Background work only reads bundle metadata; render symbols on main below.
             AppPresets.prewarm(forAppPaths: apps.compactMap { $0.appURL })
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
@@ -421,7 +421,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             CustomMenu.render(nodes, into: menu, makeItem: { type, id in
                 switch type {
                 case .action: return config.actions.first { $0.id == id }.map(self.makeActionItem)
-                case .app: return config.apps.first { $0.id == id }.map(self.makeAppItem)
+                case .app: return config.apps.first { $0.id == id && $0.isVisible(for: self.getTriggerForMenuKind()) }.map(self.makeAppItem)
                 case .newFile: return config.newFiles.first { $0.id == id }.map(self.makeNewFileItem)
                 case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
                 }
@@ -453,12 +453,8 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             }
         }
 
-        // 构建应用菜单（按触发来源过滤：工具栏/右键菜单各自只显示勾选了对应
-        // 开关的应用；自定义布局不在此过滤——节点是显式摆放的，缺 id 会让
-        // CustomMenu 解析回退默认布局）
-        let visibleApps = config.apps.filter { app in
-            currentMenuKind == .toolbarItemMenu ? app.showInToolbar : app.showInContextMenu
-        }
+        // Apply the same per-app visibility to default and custom layouts.
+        let visibleApps = config.apps.filter { $0.isVisible(for: getTriggerForMenuKind()) }
         if !visibleApps.isEmpty {
             if config.appsCollapsed {
                 // 折叠：使用子菜单

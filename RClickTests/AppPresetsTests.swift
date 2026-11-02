@@ -14,7 +14,7 @@ struct AppPresetsTests {
     }
 
     @Test func targetsRespectPresetOverridesAndKeepDirectoriesAndMissingPaths() throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
         let file = root.appendingPathComponent("a file.txt")
@@ -32,6 +32,10 @@ struct AppPresetsTests {
         #expect(AppPresets.resolveOpenTargets(appPath: nil, explicit: true, targetPaths: targets).map(\.url) == [root, root, missing])
         #expect(AppPresets.resolveOpenTargets(appPath: nil, explicit: nil, targetPaths: targets).map(\.url) == [file, root, missing])
         #expect(AppPresets.resolveOpenTargets(appPath: nil, explicit: true, targetPaths: []).isEmpty)
+        let encodedFile = file.path.replacingOccurrences(of: " ", with: "%20")
+        let resolved = AppPresets.resolveOpenTargets(appPath: nil, explicit: true, targetPaths: [encodedFile])
+        #expect(resolved.first?.path == file.path)
+        #expect(resolved.first?.url == root)
     }
 
     @Test func symbolsReuseImagesWithinEachAppearance() throws {

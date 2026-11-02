@@ -322,6 +322,10 @@ struct AppMenuItem: Codable {
         self.opensContainingDir = opensContainingDir
     }
 
+    func isVisible(for trigger: MenuTrigger) -> Bool {
+        trigger == .toolbar ? showInToolbar : showInContextMenu
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, name, icon, tag, appURL, opensNewInstance
         case showInToolbar, showInContextMenu, opensContainingDir
