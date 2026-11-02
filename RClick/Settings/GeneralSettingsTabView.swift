@@ -25,10 +25,6 @@ struct GeneralSettingsTabView: View {
     @State private var finderSyncStatus: PermissionStatus = .unknown
     @State private var accessibilityStatus: PermissionStatus = .unknown
     @State private var showFolderPermissionsSheet = false
-    @State private var menuConfigError: String?
-    @State private var menuConfigErrorTitle = "Unable to Open Menu Config"
-    @State private var showMenuConfigError = false
-    @State private var customMenuStatus = CustomMenuStatus(applied: .defaultLayout, notice: .none)
 
     @State private var showDirImporter = false
     @State private var wrongFold = false
@@ -51,6 +47,26 @@ struct GeneralSettingsTabView: View {
                 Text(appLocalized: "Main Controls")
             }
 
+            // MARK: - 应用图标样式（全局，作用于「打开方式」里的应用项图标）
+            Section {
+                Picker(selection: $store.appIconStyle) {
+                    Text(AppLocalization.localized("No Icons")).tag(RCAppIconStyle.none.rawValue)
+                    Text(AppLocalization.localized("Simple Icons")).tag(RCAppIconStyle.simple.rawValue)
+                    Text(AppLocalization.localized("Original Icons")).tag(RCAppIconStyle.original.rawValue)
+                } label: {
+                    Text(AppLocalization.localized("Icon Style"))
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: store.appIconStyle) {
+                    NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                }
+            } header: {
+                Text(AppLocalization.localized("Icon Style"))
+            } footer: {
+                Text(appLocalized: "Applies to app icons in the Open With menu: none / simple (monochrome) / original")
+                    .foregroundColor(.secondary)
+            }
+
             // MARK: - 第二组：权限
             Section {
                 // Finder 扩展状态
@@ -59,7 +75,7 @@ struct GeneralSettingsTabView: View {
                         Text(finderSyncStatus.description)
                             .foregroundColor(.secondary)
                         Button(AppLocalization.localized("Settings…")) {
-                            openFileProviderSettings()
+                            openFinderExtensionSettings()
                         }
                     }
                 } label: {
@@ -67,13 +83,14 @@ struct GeneralSettingsTabView: View {
                         .foregroundColor(finderSyncStatus.color)
                 }
 
-                // 辅助功能权限
+                // 辅助功能权限（行标签跟随系统设置的实际叫法：
+                // macOS 26 前叫"辅助功能"，27 起叫"设备控制和数据访问"）
                 LabeledContent {
                     Button(AppLocalization.localized("Settings…")) {
                         openAccessibilitySettings()
                     }
                 } label: {
-                    Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
+                    Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
                         .foregroundColor(accessibilityStatus.color)
                 }
 
@@ -92,71 +109,17 @@ struct GeneralSettingsTabView: View {
             } header: {
                 Text(appLocalized: "Permissions")
             } footer: {
-                Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Section {
-                LabeledContent {
-                    Text(customMenuStatusDetail)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.trailing)
-                } label: {
-                    Label(customMenuStatusTitle, systemImage: customMenuStatusIcon)
-                        .foregroundStyle(customMenuStatusColor)
-                }
-
-                switch customMenuStatus.notice {
-                case .none:
-                    EmptyView()
-                case .edited:
-                    Text(appLocalized: "Changed since it was applied, so the menu still shows the previous layout.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                case .broken(let reason):
-                    Label {
-                        Text(reason)
-                            .textSelection(.enabled)
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-
-                HStack {
-                    Button(AppLocalization.localized("Edit Menu Config…")) {
-                        revealMenuConfig()
-                    }
-                    .help(AppLocalization.localized("Locates custom_menu.json in Finder so you can open it with the editor you prefer. Creates it first if it does not exist yet."))
-
-                    Button(AppLocalization.localized("Apply Custom Menu")) {
-                        applyCustomMenu()
-                    }
-                    .disabled(!customMenuHasPendingChanges)
-                    .help(AppLocalization.localized("Reads the file again and puts it into effect. If it has errors the menu is left as it was."))
-
-                    Spacer()
-
-                    Button(AppLocalization.localized("Restore Default Layout")) {
-                        restoreDefaultLayout()
-                    }
-                    .disabled(!customMenuFileExists)
-                    .help(AppLocalization.localized("Deletes the file and returns to the default layout, keeping a backup."))
-                }
-            } header: {
-                Text(appLocalized: "Custom Menu")
-            } footer: {
-                VStack(alignment: .leading, spacing: 6) {
-                    if customMenuStatus.applied == .defaultLayout {
-                        Text(appLocalized: "Customize top-level items and nested submenus with custom_menu.json. 💡 Tip: Give this file to an AI assistant (such as ChatGPT / Claude) to help arrange your menu.")
-                    }
-                    Text(appLocalized: "Editing the file changes nothing until you apply it.")
-                }
-                .foregroundStyle(.secondary)
+                // 条目名按系统版本取实际叫法（27+ 的「扩展」「隐私与安全」「设备控制和数据访问」，
+                // 15/26 的「访达」「隐私与安全性」「辅助功能」）
+                Text(String(
+                    format: AppLocalization.localized(
+                        "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+                    ),
+                    SystemSettingsNaming.finderExtensionRow,
+                    SystemSettingsNaming.privacySecuritySection,
+                    SystemSettingsNaming.accessibilitySection
+                ))
+                .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -203,18 +166,20 @@ struct GeneralSettingsTabView: View {
         .formStyle(.grouped)
         .onAppear {
             updatePermissionStatus()
-            refreshCustomMenuStatus()
         }
         .onForeground {
             updatePermissionStatus()
-            refreshCustomMenuStatus()
         }
-        // Keeps the Apply button's enabled state honest. App activation covers the
-        // normal "edit elsewhere, switch back" path; this covers a writer that never
-        // takes activation away - a script, a sync tool, another process. Without
-        // it a stale status would leave the button disabled and unclickable.
+        // 权限状态挂在定时器上：授权发生在系统设置里（本应用在后台），
+        // macOS 的 scenePhase 对窗口级焦点切换不可靠，回到本应用时 onForeground
+        // 不保证触发。两个权限检测都是廉价系统调用，2 秒轮询无性能顾虑。
         .onReceive(Timer.publish(every: 2, on: .main, in: .common).autoconnect()) { _ in
-            refreshCustomMenuStatus()
+            updatePermissionStatus()
+        }
+        // 从系统设置切回时立即刷新（窗口重新成为 key window 的那一刻），
+        // 不等下一个 2 秒轮询
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            updatePermissionStatus()
         }
         .alert(
             Text(appLocalized: "Invalid Folder"),
@@ -236,161 +201,9 @@ struct GeneralSettingsTabView: View {
         } message: {
             Text(appLocalized: "Folder access permission is required to use this feature.")
         }
-        .alert(menuConfigErrorTitle, isPresented: $showMenuConfigError) {
-            Button(AppLocalization.localized("OK"), role: .cancel) {}
-        } message: {
-            Text(menuConfigError ?? "")
-        }
         .sheet(isPresented: $showFolderPermissionsSheet) {
             FolderPermissionsSheetView(bookmarkManager: bookmarkManager)
         }
-    }
-
-    /// Locates the file in Finder so the user can open it with an editor they chose.
-    ///
-    /// Deliberately does not open it: the system default editor is whatever happens
-    /// to be installed, which is not a choice the user made. A missing file is
-    /// seeded first so there is something to reveal - and that no longer changes
-    /// the menu, which now waits for Apply.
-    private func revealMenuConfig() {
-        guard let url = RCRuntime.shared.menuService.customMenuURL else {
-            presentConfigError(
-                title: "Unable to Open Menu Config",
-                message: AppLocalization.localized("The shared configuration folder is unavailable.")
-            )
-            return
-        }
-        do {
-            try MenuService.prepareCustomMenu(at: url, config: MenuService.makePayload(from: store))
-        } catch {
-            presentConfigError(title: "Unable to Open Menu Config", message: CustomMenuDiagnostics.message(for: error))
-        }
-        NSWorkspace.shared.activateFileViewerSelecting([url])
-        refreshCustomMenuStatus()
-    }
-
-    // MARK: - 自定义菜单
-
-    private var customMenuFileExists: Bool {
-        guard let url = RCRuntime.shared.menuService.customMenuURL else { return false }
-        return FileManager.default.fileExists(atPath: url.path)
-    }
-
-    /// Whether the file differs from what is in effect. Also what makes the button
-    /// going grey a form of confirmation that applying worked.
-    private var customMenuHasPendingChanges: Bool {
-        switch customMenuStatus.notice {
-        case .edited, .broken: true
-        case .none: false
-        }
-    }
-
-    private var customMenuIsBroken: Bool {
-        if case .broken = customMenuStatus.notice { return true }
-        return false
-    }
-
-    private var customMenuStatusTitle: String {
-        switch customMenuStatus.applied {
-        case .unavailable:
-            AppLocalization.localized("Unavailable")
-        case .defaultLayout:
-            customMenuIsBroken
-                ? AppLocalization.localized("Configuration invalid")
-                : AppLocalization.localized("Not enabled")
-        case .empty, .custom:
-            AppLocalization.localized("Enabled")
-        }
-    }
-
-    private var customMenuStatusDetail: String {
-        switch customMenuStatus.applied {
-        case .unavailable: ""
-        case .defaultLayout: AppLocalization.localized("Using the default layout")
-        case .empty: AppLocalization.localized("Empty menu")
-        case .custom(let count): String(format: AppLocalization.localized("%lld items"), count)
-        }
-    }
-
-    private var customMenuStatusIcon: String {
-        switch customMenuStatus.applied {
-        case .unavailable: "exclamationmark.triangle.fill"
-        case .defaultLayout: customMenuIsBroken ? "exclamationmark.triangle.fill" : "circle.dashed"
-        case .empty, .custom: "checkmark.circle.fill"
-        }
-    }
-
-    private var customMenuStatusColor: Color {
-        switch customMenuStatus.applied {
-        case .unavailable: .orange
-        case .defaultLayout: customMenuIsBroken ? .orange : .secondary
-        case .empty, .custom: .green
-        }
-    }
-
-    /// Guarded by an equality check so the polling timer does not dirty the view on
-    /// every tick.
-    private func refreshCustomMenuStatus() {
-        let fresh = RCRuntime.shared.menuService.customMenuStatus(from: store)
-        if fresh != customMenuStatus {
-            customMenuStatus = fresh
-        }
-    }
-
-    private func presentConfigError(title: String, message: String) {
-        menuConfigErrorTitle = AppLocalization.localized(title)
-        menuConfigError = message
-        showMenuConfigError = true
-    }
-
-    /// Re-reads the file and only then commits it.
-    ///
-    /// Nothing is pushed unless the file validated, so a bad edit leaves the live
-    /// menu exactly as it was instead of taking it down behind the user's back.
-    private func applyCustomMenu() {
-        do {
-            try RCRuntime.shared.menuService.applyCustomMenu(from: store)
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-        } catch {
-            presentConfigError(
-                title: "Configuration Not Applied",
-                message: CustomMenuDiagnostics.message(for: error)
-                    + "\n\n" + AppLocalization.localized("The menu is unchanged.")
-            )
-        }
-        refreshCustomMenuStatus()
-    }
-
-    private func restoreDefaultLayout() {
-        guard let url = RCRuntime.shared.menuService.customMenuURL else {
-            presentConfigError(
-                title: "Unable to Restore Default Layout",
-                message: AppLocalization.localized("The shared configuration folder is unavailable.")
-            )
-            return
-        }
-
-        let alert = NSAlert()
-        alert.messageText = AppLocalization.localized("Restore the default layout?")
-        alert.informativeText = AppLocalization.localized("This deletes custom_menu.json and returns to the default menu. A copy is kept as custom_menu.backup.json.")
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: AppLocalization.localized("Restore"))
-        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
-        alert.buttons[0].hasDestructiveAction = true
-
-        guard alert.runModal() == .alertFirstButtonReturn else { return }
-
-        do {
-            try MenuService.removeCustomMenu(at: url)
-            // Forgetting the snapshot matters: without it, recreating the file with
-            // the same bytes (restoring the backup, say) would silently bring the
-            // custom layout back without an Apply.
-            RCRuntime.shared.menuService.discardAppliedCustomMenu()
-            NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
-        } catch {
-            presentConfigError(title: "Unable to Restore Default Layout", message: CustomMenuDiagnostics.message(for: error))
-        }
-        refreshCustomMenuStatus()
     }
 
     // MARK: - 权限状态检测
@@ -409,9 +222,10 @@ struct GeneralSettingsTabView: View {
 
     // MARK: - 权限设置打开
 
-    private func openFileProviderSettings() {
-        // 打开系统设置的"文件提供程序"扩展管理界面
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.AppleFileProvider")!)
+    private func openFinderExtensionSettings() {
+        // macOS 13+ 的系统设置：Finder 扩展开关在"通用 → 登录项与扩展"面板里
+        // （扩展区域底部）。旧锚点 com.apple.AppleFileProvider 在新版设置里无效。
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension")!)
     }
 
     private func openAccessibilitySettings() {

@@ -57,8 +57,8 @@ struct MenuConfigPayload: Codable {
     let newFilesCollapsed: Bool
     /// 是否折叠常用目录菜单（默认 true）
     let commonDirsCollapsed: Bool
-    /// nil preserves the legacy layout; [] intentionally renders no items.
-    var customMenu: [MenuNode]?
+    /// 应用图标样式：0=无图标 1=简单图标（单色 template） 2=原始图标（默认）
+    let iconStyle: Int
 
     init(
         version: Int = 1,
@@ -69,7 +69,8 @@ struct MenuConfigPayload: Codable {
         actionsCollapsed: Bool = false,
         appsCollapsed: Bool = false,
         newFilesCollapsed: Bool = true,
-        commonDirsCollapsed: Bool = true
+        commonDirsCollapsed: Bool = true,
+        iconStyle: Int = RCAppIconStyle.simple.rawValue
     ) {
         self.version = version
         self.actions = actions
@@ -80,7 +81,30 @@ struct MenuConfigPayload: Codable {
         self.appsCollapsed = appsCollapsed
         self.newFilesCollapsed = newFilesCollapsed
         self.commonDirsCollapsed = commonDirsCollapsed
+        self.iconStyle = iconStyle
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case version, actions, apps, newFiles, commonDirs
+        case actionsCollapsed, appsCollapsed, newFilesCollapsed, commonDirsCollapsed
+        case iconStyle
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        version = try values.decode(Int.self, forKey: .version)
+        actions = try values.decode([ActionMenuItem].self, forKey: .actions)
+        apps = try values.decode([AppMenuItem].self, forKey: .apps)
+        newFiles = try values.decode([NewFileMenuItem].self, forKey: .newFiles)
+        commonDirs = try values.decode([CommonDirMenuItem].self, forKey: .commonDirs)
+        actionsCollapsed = try values.decode(Bool.self, forKey: .actionsCollapsed)
+        appsCollapsed = try values.decode(Bool.self, forKey: .appsCollapsed)
+        newFilesCollapsed = try values.decode(Bool.self, forKey: .newFilesCollapsed)
+        commonDirsCollapsed = try values.decode(Bool.self, forKey: .commonDirsCollapsed)
+        // Payloads produced before icon styles existed used original app icons.
+        iconStyle = try values.decodeIfPresent(Int.self, forKey: .iconStyle) ?? RCAppIconStyle.original.rawValue
+    }
+
 }
 
 /// 点击事件消息载荷
@@ -93,17 +117,21 @@ struct ClickEventPayload: Codable {
     let target: [String]
     /// 触发来源
     let trigger: MenuTrigger
+    /// 点击时是否按住 Option。「直接删除」据此跳过确认
+    let optionKeyPressed: Bool?
 
     init(
         itemId: String,
         itemType: MenuItemType,
         target: [String] = [],
-        trigger: MenuTrigger
+        trigger: MenuTrigger,
+        optionKeyPressed: Bool? = nil
     ) {
         self.itemId = itemId
         self.itemType = itemType
         self.target = target
         self.trigger = trigger
+        self.optionKeyPressed = optionKeyPressed
     }
 }
 

@@ -54,15 +54,29 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     // MARK: - 连接状态（UX 优化，非可靠性机制）
 
     /// 最近一次收到主程序消息的时间
-    private var lastMainActivity = Date()
+    private var mainActivity = PeerActivity()
 
     /// 是否认为主程序可通信（连续 3 次心跳未收到即判离线）
     private var isHostAppRunning: Bool {
-        Date().timeIntervalSince(lastMainActivity) < 30
+        mainActivity.isActive()
     }
 
     /// 待确认的点击事件 ack 计时器
     private var pendingAckWorkItem: DispatchWorkItem?
+
+    // MARK: - Option 键状态
+
+    /// 菜单构建时是否按住 Option。Finder 负责显示菜单，点击回调可能晚于
+    /// 用户松开按键，所以除了回调时的实时检测，还要记住菜单打开那一刻的状态。
+    private var menuOptionPressed = false
+
+    /// 菜单打开期间最近一次观察到 Option 按下的时间
+    private var optionSeenAt: Date?
+
+    /// 菜单打开期间轮询修饰键的计时器（沙盒下 NSEvent/CGEventSource 均可用）
+    private var optionPollTimer: Timer?
+
+    private static let optionRecentWindow: TimeInterval = 1.0
 
     // MARK: - Initialization
 
@@ -112,10 +126,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的菜单配置
         messager.onMainMessage(.menuConfig) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             // 使用 decodeSignedData 解码签名数据
             if let config = self.messager.decodeSignedData(data, as: MenuConfigPayload.self) {
-                self.handleMenuConfig(config)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    _ = self.mainActivity.receive()
+                    self.handleMenuConfig(config)
+                }
             } else {
                 logger.warning("Invalid menu config data")
             }
@@ -124,9 +141,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的 running 通知
         messager.onMainMessage(.running) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             if let payload = self.messager.decodeSignedData(data, as: RunningPayload.self) {
-                logger.info("Received running notification: \(payload.directories)")
+                self.markMainActivity()
+                logger.debug("Received running notification: \(payload.directories)")
                 // 可以根据 payload 更新监听目录
             }
         }
@@ -150,14 +167,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 记录主程序最近活动（统一到主线程，避免 DNC 回调线程写 / menu 主线程读竞争）
     private func markMainActivity() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = Date()
+            _ = self?.mainActivity.receive()
         }
     }
 
     /// 标记主程序离线（收到 .quit 时立即生效）
     private func markMainOffline() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = .distantPast
+            self?.mainActivity.disconnect()
         }
     }
 
@@ -206,10 +223,58 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     /// 处理菜单配置
+    ///
+    /// 注意：不要在这里清 iconCache。缓存键是图标名 / App 路径 / SF Symbol 名，
+    /// 配置内容不变就不会脏。此前每次收到配置都 removeAll，而主程序曾每 10 秒随
+    /// 心跳推送一次配置，下一次右键就得在 Finder 主线程同步重建全部 App 图标
+    /// （NSWorkspace.icon(forFile:) 是磁盘查询），菜单弹出明显卡顿。
     private func handleMenuConfig(_ config: MenuConfigPayload) {
+        let apps = config.apps
+        DispatchQueue.global(qos: .utility).async {
+            AppPresets.prewarm(forAppPaths: apps.compactMap { $0.appURL })
+            DispatchQueue.main.async {
+                for app in apps { _ = AppPresets.simpleIcon(forAppPath: app.appURL) }
+            }
+        }
         cachedMenuConfig = config
-        iconCache.removeAll()
-        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count), icons cleared")
+        preloadIcons(for: config)
+        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
+    }
+
+    /// 后台预热图标缓存
+    ///
+    /// 图标缓存是懒加载的：扩展每次重启后（重装、系统重启、Finder 回收进程）
+    /// 首次构建菜单都要在 Finder 主线程同步执行 NSWorkspace.icon(forFile:)——
+    /// LaunchServices 磁盘查询，每个 App 项几十毫秒，第一次右键明显偏慢。
+    /// 这里在配置到达/更新时于后台把 App 图标先加载好，再一次性合并回缓存。
+    ///
+    /// 线程安全：iconCache 只在主线程读写，后台先把结果装进局部字典，回主线程
+    /// 合并，无数据竞争。NSWorkspace.icon(forFile:) 官方文档标注为线程安全。
+    private func preloadIcons(for config: MenuConfigPayload) {
+        let apps = config.apps
+        let newFiles = config.newFiles
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            var warmed: [String: NSImage] = [:]
+            for app in apps {
+                guard let url = app.appURL else { continue }
+                let key = "app:\(url)"
+                let icon = NSWorkspace.shared.icon(forFile: url)
+                if icon.size.width > 0 { warmed[key] = icon }
+            }
+            // 新建文件图标：iconProvider 首次构建会同步查询 NSWorkspace（实测首次 30-40ms），
+            // 同样在后台预热，主线程只做合并
+            let warmedFiles = newFiles.isEmpty
+                ? [:]
+                : FileTypeIconProvider.shared.computeWorkspaceIcons(forExts: newFiles.map { $0.ext })
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                for (key, icon) in warmed where self.iconCache[key] == nil {
+                    self.iconCache[key] = icon
+                }
+                FileTypeIconProvider.shared.mergeWarmedIcons(warmedFiles)
+                logger.debug("图标预热完成: app \(warmed.count) 项, file \(warmedFiles.count) 项")
+            }
+        }
     }
 
     /// 请求菜单配置
@@ -277,10 +342,25 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 当前菜单触发类型（工具栏 or 右键）
     private var currentMenuKind: FIMenuKind = .contextualMenuForItems
 
+    /// 快链路动作 id：主程序离线时仍可在扩展内完成的操作
+    private static let copyPathActionId = "copy-path"
+
+    /// 「直接删除」动作 id：按住 Option 时跳过二次确认
+    private static let deleteDirectActionId = "delete-direct"
+
     // MARK: - Icon Helpers
 
     /// 获取 App 图标（带缓存）
     private func cachedAppIcon(app: AppMenuItem) -> NSImage? {
+        let style = cachedMenuConfig.flatMap { RCAppIconStyle(rawValue: $0.iconStyle) } ?? .original
+        switch style {
+        case .none: return nil
+        case .simple: return AppPresets.simpleIcon(forAppPath: app.appURL) ?? cachedOriginalAppIcon(app: app)
+        case .original: return cachedOriginalAppIcon(app: app)
+        }
+    }
+
+    private func cachedOriginalAppIcon(app: AppMenuItem) -> NSImage? {
         if let appURL = app.appURL {
             let cacheKey = "app:\(appURL)"
             if let cached = iconCache[cacheKey] { return cached }
@@ -299,15 +379,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         return templateSymbol(app.icon)
     }
 
-    /// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式（带缓存）
+    /// 加载 SF Symbol，缓存按名称、尺寸与外观区分。
     private func templateSymbol(_ name: String) -> NSImage? {
-        let cacheKey = "sf:\(name)"
-        if let cached = iconCache[cacheKey] { return cached }
-        let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
-        guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-            .withSymbolConfiguration(config) else { return nil }
-        iconCache[cacheKey] = image
-        return image
+        MenuSymbolIcon.image(named: name)
     }
 
     /// 从 Assets 或 SF Symbol 加载图标（带缓存）
@@ -315,24 +389,37 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         let cacheKey = "load:\(iconName)"
         if let cached = iconCache[cacheKey] { return cached }
         if let icon = NSImage(named: iconName) {
+            // Assets 位图不受系统外观影响，可以缓存
             iconCache[cacheKey] = icon
             return icon
         }
-        if let icon = templateSymbol(iconName) {
-            iconCache[cacheKey] = icon
-            return icon
-        }
-        if let fallback = iconFallbackMap[iconName],
-           let icon = templateSymbol(fallback) {
-            iconCache[cacheKey] = icon
-            return icon
+        // SF Symbol 兜底：MenuSymbolIcon 使用外观感知缓存。
+        if let icon = templateSymbol(iconName) { return icon }
+        if let fallback = iconFallbackMap[iconName] {
+            return templateSymbol(fallback)
         }
         return nil
     }
 
     /// 构建并返回 Finder 上下文菜单
     override func menu(for menuKind: FIMenuKind) -> NSMenu {
+        let start = DispatchTime.now()
+        let menu = buildMenu(for: menuKind)
+        let ms = Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000
+        logger.info("菜单构建耗时: \(ms, format: .fixed(precision: 1), privacy: .public)ms")
+        return menu
+    }
+
+    private func buildMenu(for menuKind: FIMenuKind) -> NSMenu {
         currentMenuKind = menuKind
+
+        // 菜单会被 Finder 复制并在 Finder 进程里跟踪，扩展拿不到点击事件。
+        // 这里记下菜单打开瞬间的 Option 状态，并持续采样，覆盖用户"先开菜单、
+        // 再按 Option、立即点击"的操作顺序（点击回调可能晚于松开按键）。
+        menuOptionPressed = isOptionKeyPressed()
+        optionSeenAt = menuOptionPressed ? Date() : nil
+        startOptionPolling()
+        logger.info("菜单打开时 Option 状态: \(self.menuOptionPressed) [\(self.optionKeySnapshot(), privacy: .public)]")
         let menuKindLabel: String = {
             switch menuKind {
             case .contextualMenuForItems: return "右键菜单(选中项)"
@@ -345,30 +432,23 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.info("构建菜单，触发方式: \(menuKindLabel)")
 
         let menu = NSMenu(title: "RClick")
+        // 关闭自动校验：FIFinderSync 的菜单跨进程交给 Finder 显示，跟踪循环在 Finder
+        // 进程里执行，扩展侧的 validateMenuItem 不会被回调——启用状态必须在构建时
+        // （menu(for:) 调用时刻）通过显式 isEnabled 定死。
+        menu.autoenablesItems = false
 
-        // 连接状态缓存：主程序离线时，显示置灰提示而非可点击菜单（避免"点了没反应"）
-        guard isHostAppRunning else {
-            menu.addItem(withTitle: AppLocalization.localized("RClick is not running"), action: nil, keyEquivalent: "")
-            menu.addItem(withTitle: AppLocalization.localized("Restart RClick to restore the menu"), action: nil, keyEquivalent: "")
-            return menu
-        }
+        // 主程序离线时快链路项（复制路径）照常可用，其余项由 make*Item 置灰，
+        // 菜单尾部追加说明。
+        let offline = !isHostAppRunning
 
         // 如果缓存为空，触发请求并返回加载中的菜单
         guard let config = cachedMenuConfig else {
-            requestMenuConfig()
-            menu.addItem(withTitle: AppLocalization.localized("RClick (loading...)"), action: nil, keyEquivalent: "")
-            return menu
-        }
-
-        if let nodes = config.customMenu {
-            CustomMenu.render(nodes, into: menu, makeItem: { type, id in
-                switch type {
-                case .action: return config.actions.first { $0.id == id }.map(self.makeActionItem)
-                case .app: return config.apps.first { $0.id == id }.map(self.makeAppItem)
-                case .newFile: return config.newFiles.first { $0.id == id }.map(self.makeNewFileItem)
-                case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
-                }
-            }, loadIcon: { self.loadIcon(named: $0, accessibilityDescription: $0) })
+            if offline {
+                appendOfflineHint(menu, offline: true)
+            } else {
+                requestMenuConfig()
+                menu.addItem(withTitle: AppLocalization.localized("RClick (loading...)"), action: nil, keyEquivalent: "")
+            }
             return menu
         }
 
@@ -395,13 +475,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             }
         }
 
-        // 构建应用菜单
-        if !config.apps.isEmpty {
+        // Apply the same per-app visibility to default and custom layouts.
+        let visibleApps = config.apps.filter { $0.isVisible(for: getTriggerForMenuKind()) }
+        if !visibleApps.isEmpty {
             if config.appsCollapsed {
                 // 折叠：使用子菜单
                 let appsTitle = AppLocalization.localized("Open With")
                 let appsSubMenu = NSMenu(title: appsTitle)
-                for app in config.apps {
+                for app in visibleApps {
                     let item = makeAppItem(app)
                     appsSubMenu.addItem(item)
                 }
@@ -411,7 +492,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 menu.addItem(appsItem)
             } else {
                 // 不折叠：直接显示菜单项
-                for app in config.apps {
+                for app in visibleApps {
                     let item = makeAppItem(app)
                     menu.addItem(item)
                 }
@@ -464,15 +545,67 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             }
         }
 
+        appendOfflineHint(menu, offline: offline)
         return menu
     }
 
+    /// 主程序离线时在菜单尾部追加持灰说明（快链路项不受影响，仍可点击）。
+    /// 两行提示均可点击：启动主程序（仅菜单栏常驻，不弹设置窗口）。
+    private func appendOfflineHint(_ menu: NSMenu, offline: Bool) {
+        guard offline else { return }
+        menu.addItem(NSMenuItem.separator())
+        let gray = [NSAttributedString.Key.foregroundColor: NSColor.secondaryLabelColor]
+        let titles = [
+            AppLocalization.localized("RClick is not running"),
+            AppLocalization.localized("Restart RClick to restore the menu"),
+        ]
+        for title in titles {
+            let item = menu.addItem(withTitle: "", action: #selector(handleLaunchHostClick(_:)), keyEquivalent: "")
+            item.attributedTitle = NSAttributedString(string: title, attributes: gray)
+            item.target = self
+        }
+    }
+
+    /// 点击离线提示：启动主程序。不带任何文档 URL，纯启动不受 TCC 文件弹窗限制；
+    /// activates = false 不抢焦点。主程序对这种启动保持静默（不打开设置窗口），
+    /// 识别信号见 HintClickLaunch。
+    @objc private func handleLaunchHostClick(_ sender: NSMenuItem) {
+        let hostURL = Bundle.main.bundleURL
+            .deletingLastPathComponent()   // PlugIns/
+            .deletingLastPathComponent()   // Contents/
+            .deletingLastPathComponent()   // RClick.app
+        let config = NSWorkspace.OpenConfiguration()
+        config.activates = false
+        // RC_QUIET_LAUNCH=1 只在「本次真的拉起新进程」时送达主程序；App 已在运行
+        // （刚点过退出还没退完、或启动后菜单尚未刷新）时系统会忽略环境变量、只
+        // 派发 reopen——所以同时写一个时间戳，主程序在两条路径上都能识别提示点击
+        config.environment = ["RC_QUIET_LAUNCH": "1"]
+        HintClickLaunch.mark()
+        NSWorkspace.shared.openApplication(at: hostURL, configuration: config) { _, error in
+            if let error {
+                logger.warning("Launch host app failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
+    }
+
     private func makeActionItem(_ action: ActionMenuItem) -> NSMenuItem {
-        let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
+        // 菜单打开时按住了 Option：直接改标题告诉用户本次会跳过确认。
+        // Finder 只复制 title/action/tag 等有限属性，标题是最可靠的提示通道。
+        let title: String
+        if menuOptionPressed, action.id == Self.deleteDirectActionId {
+            title = String(format: AppLocalization.localized("%@ (skip confirmation)"), action.name)
+        } else {
+            title = action.name
+        }
+        let item = NSMenuItem(title: title, action: #selector(handleActionClick(_:)), keyEquivalent: "")
         item.tag = hashForAction(action)
         item.target = self
         if let icon = templateSymbol(action.icon) {
             item.image = icon
+        }
+        // 主程序离线时只有复制路径是快链路，其余动作需要主程序的授权与执行，置灰
+        if !isHostAppRunning && action.id != Self.copyPathActionId {
+            item.isEnabled = false
         }
         return item
     }
@@ -482,6 +615,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.tag = hashForApp(app)
         item.target = self
         item.image = cachedAppIcon(app: app)
+        // 沙盒限制：扩展内 NSWorkspace.open 传递文件 URL 必触发 TCC 弹窗，
+        // 离线快开不可行，维持与主程序一致的离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -491,6 +629,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.target = self
         item.image = iconProvider.icon(for: newFile.ext, fallbackSymbol: newFile.icon)
         item.image?.accessibilityDescription = newFile.name
+        // 新建文件需要往目标目录写入，必须由主程序执行，离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -499,6 +641,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         item.tag = hashForCommonDir(commonDir)
         item.target = self
         item.image = loadIcon(named: commonDir.icon, accessibilityDescription: commonDir.name)
+        // 打开目录需要主程序执行，离线置灰
+        if !isHostAppRunning {
+            item.isEnabled = false
+        }
         return item
     }
 
@@ -530,23 +676,44 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         }
 
         logger.debug("Action clicked: \(action.name) (id: \(action.id))")
+        stopOptionPolling()
 
         // 获取选中的文件/目录
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
         let itemPaths = selectedItems.map { $0.path }
         logger.info("[Action] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
-        // 发送点击事件到主程序
+        // 快链路：复制路径是纯剪贴板操作，扩展内直接完成（零 IPC）
+        if action.id == Self.copyPathActionId {
+            copyPathsLocally(itemPaths)
+            return
+        }
+
+        // 慢链路：删除/隐藏/取消隐藏/AirDrop 需要主程序的 bookmark 授权与执行
+        // 发送点击事件到主程序。Finder 的点击回调可能晚于用户松开 Option，
+        // 所以把三个来源合并：菜单打开时的状态、菜单期间轮询到的状态、点击瞬间的状态。
+        let optionPressed = resolvedOptionState()
+        logger.info("Action click option pressed: \(optionPressed) [\(self.optionKeySnapshot(), privacy: .public)]")
         let event = ClickEventPayload(
             itemId: action.id,
             itemType: .action,
             target: itemPaths,
-            trigger: getTriggerForMenuKind()
+            trigger: getTriggerForMenuKind(),
+            optionKeyPressed: optionPressed
         )
         sendClickEvent(event)
     }
 
+    /// 快链路：复制路径（与主程序 ActionService.copyPath 语义一致，取第一项）
+    private func copyPathsLocally(_ itemPaths: [String]) {
+        guard let first = itemPaths.first else { return }
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(first.removingPercentEncoding ?? first, forType: .string)
+    }
+
     @objc private func handleAppClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         logger.debug("handleAppClick called with sender: \(sender.title), tag: \(sender.tag)")
 
         guard let config = cachedMenuConfig,
@@ -558,20 +725,27 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.debug("App clicked: \(app.name) (id: \(app.id))")
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
-        let itemPaths = selectedItems.map { $0.path }
+        var itemPaths = selectedItems.map { $0.path }
         logger.info("[App] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
+        // 工具栏触发没有选中项：用当前 Finder 窗口目录作为打开目标
+        if itemPaths.isEmpty, let targetURL = FIFinderSyncController.default().targetedURL() {
+            itemPaths = [targetURL.path]
+        }
+
+        // 打开动作统一由主程序处理 bookmark 授权与失败重试。
+        // 主程序离线时，makeAppItem 会将应用菜单项置灰。
         let event = ClickEventPayload(
             itemId: app.id,
             itemType: .app,
             target: itemPaths,
             trigger: getTriggerForMenuKind()
         )
-        logger.debug("Sending click event for app: \(app.name)")
         sendClickEvent(event)
     }
 
     @objc private func handleNewFileClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         guard let config = cachedMenuConfig,
               let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
             logger.warning("NewFile not found for tag: \(sender.tag)")
@@ -590,6 +764,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleCommonDirClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         guard let config = cachedMenuConfig,
               let commonDir = config.commonDirs.first(where: { hashForCommonDir($0) == sender.tag }) else {
             logger.warning("CommonDir not found for tag: \(sender.tag)")
@@ -598,19 +773,77 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
         logger.debug("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
 
-        // 使用常用目录自身的路径，而不是 Finder 当前选中的路径
-        let target = commonDir.url.map { [$0] } ?? []
-
+        // 打开目录统一交给主程序，由 ActionService 检查 bookmark 权限，
+        // 必要时请求用户授权；扩展只转发目标路径。
         let event = ClickEventPayload(
             itemId: commonDir.id,
             itemType: .commonDir,
-            target: target,
+            target: commonDir.url.map { [$0] } ?? [],
             trigger: getTriggerForMenuKind()
         )
         sendClickEvent(event)
     }
 
     // MARK: - Helper Methods
+
+    /// 综合判断本次点击是否应视为"按住 Option"。
+    ///
+    /// 用户可能在菜单打开后才按下 Option，也可能点完立刻松开；而 Finder 的
+    /// 回调到达扩展时按键状态可能已经消失。三者取并集可以覆盖这几种时序。
+    private func resolvedOptionState() -> Bool {
+        if isOptionKeyPressed() { return true }
+        if menuOptionPressed { return true }
+        if let seen = optionSeenAt, Date().timeIntervalSince(seen) <= Self.optionRecentWindow {
+            return true
+        }
+        return false
+    }
+
+    /// 菜单打开期间持续采样修饰键状态。点击回调通常只有几十毫秒的延迟，
+    /// 1 秒的窗口足以覆盖"按住 Option → 点击 → 立即松开"。
+    private func startOptionPolling() {
+        stopOptionPolling()
+        let timer = Timer(timeInterval: 0.1, target: self, selector: #selector(pollOptionKey), userInfo: nil, repeats: true)
+        RunLoop.main.add(timer, forMode: .common)
+        optionPollTimer = timer
+        // 用户打开菜单但什么都不点时也要回收计时器。只回收自己这一轮，
+        // 避免旧菜单的超时回调误停掉新菜单的计时器。
+        DispatchQueue.main.asyncAfter(deadline: .now() + 60) { [weak self, weak timer] in
+            guard let self, let timer, self.optionPollTimer === timer else { return }
+            self.stopOptionPolling()
+        }
+    }
+
+    private func stopOptionPolling() {
+        optionPollTimer?.invalidate()
+        optionPollTimer = nil
+    }
+
+    @objc private func pollOptionKey() {
+        if isOptionKeyPressed() {
+            optionSeenAt = Date()
+        }
+    }
+
+    /// 当前是否按住 Option。
+    ///
+    /// 扩展进程里通常没有自己的 `NSEvent`，所以除了 `NSEvent.modifierFlags`
+    /// 还要查窗口服务器的修饰键状态；沙盒下这两条读取通道都可用。
+    private func isOptionKeyPressed() -> Bool {
+        if NSEvent.modifierFlags.contains(.option) { return true }
+        if let event = NSApp.currentEvent, event.modifierFlags.contains(.option) { return true }
+        if CGEventSource.flagsState(.combinedSessionState).contains(.maskAlternate) { return true }
+        if CGEventSource.flagsState(.hidSystemState).contains(.maskAlternate) { return true }
+        return false
+    }
+
+    /// 供诊断日志使用：各来源分别看到什么。
+    private func optionKeySnapshot() -> String {
+        let combined = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlternate)
+        let hid = CGEventSource.flagsState(.hidSystemState).contains(.maskAlternate)
+        let current = NSApp.currentEvent?.modifierFlags.contains(.option)
+        return "NSEvent=\(NSEvent.modifierFlags.contains(.option)) current=\(current.map(String.init) ?? "nil") combined=\(combined) hid=\(hid)"
+    }
 
     /// 获取触发来源
     private func getTriggerForMenuKind() -> MenuTrigger {

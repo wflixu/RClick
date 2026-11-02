@@ -6,7 +6,7 @@
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-ED523F.svg?style=flat)](https://swift.org/)
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-✓-orange)](https://developer.apple.com/xcode/swiftui/)
 [![macOS 15.6+](https://img.shields.io/badge/macOS_15.6+-Compatible-green)](https://www.apple.com/macos/macos-sequoia/)
-[![Xcode 16.4+](https://img.shields.io/badge/Xcode-16.4+-blue)](https://developer.apple.com/xcode/)
+[![Xcode 26+](https://img.shields.io/badge/Xcode-26%2B-blue)](https://developer.apple.com/xcode/)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/wflixu/RClick)](https://github.com/wflixu/RClick/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/wflixu/RClick/total)](https://github.com/wflixu/RClick/releases)
@@ -15,14 +15,24 @@ Enhance your macOS Finder context menu with custom actions. Built with Swift 6.2
 
 ## 🚀 Features
 
-- [x] **Open with External App** — Open files or directories with any installed application, with support for custom arguments and environment variables.
+- [x] **Open with External App** — Open files or directories with any installed application, with support for custom arguments and environment variables. Ships with presets for popular editors, terminals and IDEs, per-app visibility for the toolbar and context menus, and none/simple/original icon styles.
 - [x] **Copy Path** — Copy the full path of selected files or folders to clipboard.
-- [x] **Delete Directly** — Delete files or folders directly, bypassing Trash.
+- [x] **Delete Direct** — Delete files or folders directly, bypassing Trash. RClick asks for confirmation first; hold **Option** while choosing the action to skip it.
 - [x] **Hide / Unhide** — Toggle file visibility in Finder.
 - [x] **AirDrop** — Share files instantly via AirDrop.
 - [x] **Create New Files** — Generate new files from templates directly in Finder. Supports `.txt`, `.json`, `.md`, `.docx`, `.pptx`, `.xlsx`, as well as Apple iWork formats: `.pages`, `.key`, `.numbers`.
 - [x] **Quick Access Folders** — Pin frequently used directories to the right-click menu.
+- [x] **Terminal-aware Opening** — Terminal presets hand the containing folder to the app by default, with an automatic/on/off override per app.
 - [x] **Dark Mode** — Full light/dark appearance support with adaptive icons and SF Symbols.
+
+## 📱 More Apps
+
+If RClick is useful to you, here are two other apps I maintain:
+
+| App | What it does | Download |
+|-----|--------------|----------|
+| [![iMonet icon](images/apps/imonet-icon.png)](https://apps.apple.com/cn/app/imonet/id6770070921?mt=12) **iMonet** | A mouse-first image viewer for macOS. Zoom follows your cursor, with native animated GIF, APNG and WebP playback. | [Mac App Store](https://apps.apple.com/cn/app/imonet/id6770070921?mt=12) |
+| [![LiveCam icon](images/apps/livecam-icon.png)](https://apps.apple.com/cn/app/livecam/id6476108478?mt=12) **LiveCam** | Show your avatar while recording your screen or live streaming, with configurable size, border and shape. | [Mac App Store](https://apps.apple.com/cn/app/livecam/id6476108478?mt=12) |
 
 ## 🏗 Architecture
 
@@ -60,7 +70,7 @@ cd RClick
 open RClick.xcodeproj
 ```
 
-- Requires **Xcode 16.4+** and **macOS 15.6+**
+- Requires **Xcode 26+** and **macOS 15.6+**
 - Select the **RClick** scheme, then **Product → Build** (⌘B)
 - The FinderSync extension will be automatically registered
 
@@ -118,7 +128,9 @@ Thanks to all the people who have contributed to RClick!
 
 Recent contributions:
 
-- **[@Juns-g](https://github.com/Juns-g)** — declarative hierarchical tree menus ([#151](https://github.com/wflixu/RClick/pull/151)), and watching mounted volumes so external and network drives show the menu ([#152](https://github.com/wflixu/RClick/pull/152))
+- **[@SonneFish](https://github.com/SonneFish)** — built-in app presets, per-app visibility and icon styles ([#168](https://github.com/wflixu/RClick/pull/168)); Finder icon-cache and heartbeat performance ([#167](https://github.com/wflixu/RClick/pull/167)); permission status refresh ([#169](https://github.com/wflixu/RClick/pull/169)); quiet offline relaunch and settings reopen ([#170](https://github.com/wflixu/RClick/pull/170))
+- **[@Consciencieux](https://github.com/Consciencieux)** — confirmation before Direct Delete ([#163](https://github.com/wflixu/RClick/pull/163))
+- **[@Juns-g](https://github.com/Juns-g)** — watching mounted volumes so external and network drives show the menu ([#152](https://github.com/wflixu/RClick/pull/152))
 - **[@Dam0rt](https://github.com/Dam0rt)** — French localization ([#149](https://github.com/wflixu/RClick/pull/149))
 - **[@stors789](https://github.com/stors789)** — App Groups provisioning in the release pipeline ([#141](https://github.com/wflixu/RClick/pull/141))
 - **[@EliasMatDev](https://github.com/EliasMatDev)** — Latin American Spanish localization ([#138](https://github.com/wflixu/RClick/pull/138))
@@ -143,11 +155,3 @@ We welcome contributions! Here's how you can help:
 - **[Security Policy](SECURITY.md)** — How to responsibly report vulnerabilities.
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
-
-## Hierarchical Custom Menus
-
-Top-level items can be mixed with arbitrarily nested submenus, separators, and custom titles and icons.
-
-Drop a declarative `custom_menu.json` into the App Group container, then go to **Settings → General → Custom Menu** and press "Apply" for it to take effect. Editing the file on its own changes nothing, so an edit that is still half-written cannot break your menu. With no file present the default layout is used; with an invalid one the menu stays exactly as it was and Settings shows which element failed to parse.
-
-See [configuration examples and usage](examples/README.md).

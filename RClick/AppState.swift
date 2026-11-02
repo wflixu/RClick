@@ -42,6 +42,10 @@ class AppState: ObservableObject, ActionStateProviding {
     // 常用文件夹总开关（默认关闭）
     @AppStorage("showCommonDirs", store: .group) var showCommonDirs: Bool = false
 
+    /// 应用图标样式：0=无图标 1=简单图标（默认） 2=原始图标。
+    /// 存在 App Group 里，扩展通过 MenuConfigPayload.iconStyle 拿到。
+    @AppStorage("appIconStyle", store: .group) var appIconStyle: Int = RCAppIconStyle.simple.rawValue
+
     // 菜单栏显示走 RClickApp / GeneralSettingsTabView 里的那份（store: .group）。
     // 这里曾有一份重复声明，没有任何地方读它；两份 store 不同，留着就是个陷阱。
 
@@ -114,6 +118,29 @@ class AppState: ObservableObject, ActionStateProviding {
             updatedApp.arguments = arguments
             updatedApp.environment = environment
             updatedApp.opensNewInstance = opensNewInstance
+            apps[index] = updatedApp
+            persist()
+        }
+    }
+
+    /// 更新某个应用在工具栏/右键菜单中的可见性（应用列表行的两个开关）
+    @MainActor
+    func updateAppVisibility(id: String, showInToolbar: Bool, showInContextMenu: Bool) {
+        if let index = apps.firstIndex(where: { $0.id == id }) {
+            var updatedApp = apps[index]
+            updatedApp.showInToolbar = showInToolbar
+            updatedApp.showInContextMenu = showInContextMenu
+            apps[index] = updatedApp
+            persist()
+        }
+    }
+
+    /// 更新某个应用的「选中文件时打开所在目录」开关（`nil` 恢复为跟随预设终端分类）
+    @MainActor
+    func updateAppOpensContainingDir(id: String, value: Bool?) {
+        if let index = apps.firstIndex(where: { $0.id == id }) {
+            var updatedApp = apps[index]
+            updatedApp.opensContainingDir = value
             apps[index] = updatedApp
             persist()
         }

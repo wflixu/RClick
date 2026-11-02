@@ -17,6 +17,7 @@ struct EditAppSheetView: View {
     @State private var arguments: String
     @State private var environment: String
     @State private var opensNewInstance: Bool
+    @State private var opensContainingDir: Bool?
 
     let messager = Messager.shared
 
@@ -27,6 +28,7 @@ struct EditAppSheetView: View {
         _arguments = State(initialValue: app.arguments.joined(separator: "; "))
         _environment = State(initialValue: app.environment.map { "\($0.key)=\($0.value)" }.joined(separator: "\n"))
         _opensNewInstance = State(initialValue: app.opensNewInstance)
+        _opensContainingDir = State(initialValue: app.opensContainingDir)
     }
 
     var body: some View {
@@ -76,6 +78,19 @@ struct EditAppSheetView: View {
                     Text(appLocalized: "For browser-like apps, launch a new instance instead of opening a new tab in the running one")
                         .foregroundColor(.secondary)
                 }
+
+                Section {
+                    Picker(selection: $opensContainingDir) {
+                        Text(appLocalized: "Follow App Preset").tag(nil as Bool?)
+                        Text(appLocalized: "On").tag(true as Bool?)
+                        Text(appLocalized: "Off").tag(false as Bool?)
+                    } label: {
+                        Text(appLocalized: "Open Containing Folder")
+                    }
+                } footer: {
+                    Text(appLocalized: "When a file is selected, open its containing folder instead")
+                        .foregroundColor(.secondary)
+                }
             }
             .formStyle(.grouped)
 
@@ -104,6 +119,7 @@ struct EditAppSheetView: View {
             environment: parseEnvironmentVariables(environment),
             opensNewInstance: opensNewInstance
         )
+        appState.updateAppOpensContainingDir(id: app.id, value: opensContainingDir)
         messager.sendRunningNotification()
     }
 

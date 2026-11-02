@@ -3,7 +3,7 @@
 //  RClick
 //
 //  文件操作 / 动作执行服务。从原 AppDelegate 迁移而来，是主 app 的"动作执行层"。
-//  依赖 AppState（只读状态）与 PermissionService（经协议注入，可 mock 单测）。
+//  依赖 AppState（只读状态）、PermissionService 与删除确认（经协议注入，可 mock 单测）。
 //  注意：第一版不过度拆分，用私有方法 + MARK 分组（FileActions / AppActions / FinderActions / SystemActions）。
 //
 
@@ -19,10 +19,12 @@ final class ActionService {
 
     private let state: ActionStateProviding
     private let permission: PermissionProviding
+    private let confirmation: DeleteConfirmationProviding
 
-    init(state: ActionStateProviding, permission: PermissionProviding) {
+    init(state: ActionStateProviding, permission: PermissionProviding, confirmation: DeleteConfirmationProviding) {
         self.state = state
         self.permission = permission
+        self.confirmation = confirmation
     }
 
     // MARK: - SystemActions
@@ -48,10 +50,11 @@ final class ActionService {
         let appUrl = rcitem.url
         logger.debug("openApp: rid=\(rid) app=\(appUrl.path) target=\(target) opensNewInstance=\(rcitem.opensNewInstance)")
 
-        for dirPath in target {
-            let decodedPath = dirPath.removingPercentEncoding ?? dirPath
-            let url = URL(fileURLWithPath: decodedPath)
-            await openWithApp(url, appUrl: appUrl, opensNewInstance: rcitem.opensNewInstance)
+        // 通过共享目标解析处理「选中文件时打开所在目录」选项
+        for resolved in AppPresets.resolveOpenTargets(
+            appPath: appUrl.path, explicit: rcitem.opensContainingDir, targetPaths: target
+        ) {
+            await openWithApp(resolved.url, appUrl: appUrl, opensNewInstance: rcitem.opensNewInstance)
         }
     }
 
@@ -121,7 +124,7 @@ final class ActionService {
     // MARK: - FileActions
 
     /// 动作分发入口
-    func actionHandler(rid: String, target: [String], trigger: String) async {
+    func actionHandler(rid: String, target: [String], trigger: String, optionKeyPressed: Bool = false) async {
         guard let rcitem = state.getActionItem(rid: rid) else {
             logger.warning("when actionHandler, but not have action \(rid)")
             return
@@ -131,7 +134,7 @@ final class ActionService {
         case "copy-path":
             copyPath(target)
         case "delete-direct":
-            await deleteFoldorFile(target, trigger)
+            await deleteFoldorFile(target, trigger, optionKeyPressed: optionKeyPressed)
         case "unhide":
             await unhideFilesAndDirs(target, trigger)
         case "hide":
@@ -324,8 +327,8 @@ final class ActionService {
         logger.info("隐藏操作完成")
     }
 
-    func deleteFoldorFile(_ target: [String], _ trigger: String) async {
-        logger.info("---- deleteFoldorFile trigger:\(trigger)")
+    func deleteFoldorFile(_ target: [String], _ trigger: String, optionKeyPressed: Bool = false) async {
+        logger.info("---- deleteFoldorFile trigger:\(trigger) option:\(optionKeyPressed)")
         let fm = FileManager.default
 
         if trigger == "ctx-container" {
@@ -338,6 +341,7 @@ final class ActionService {
             return
         }
 
+        var pathsToDelete: [String] = []
         for item in target {
             let decodedPath = item.removingPercentEncoding ?? item
 
@@ -352,21 +356,43 @@ final class ActionService {
                 continue
             }
 
-            // 确保有父目录的访问权限
-            let url = URL(fileURLWithPath: decodedPath)
-            let dirURL = url.deletingLastPathComponent()
+            pathsToDelete.append(decodedPath)
+        }
+
+        guard !pathsToDelete.isEmpty else { return }
+
+        // 先把授权问完，再让确认框当最后一道关卡：确认框里的条目数就是
+        // "确认后真的会被删掉的数量"，取消授权的项在确认之前就已经出局。
+        // 授权由 BookmarkManager 持有到进程结束，提前检查不会失效。
+        var authorized: [String] = []
+        for decodedPath in pathsToDelete {
+            let dirURL = URL(fileURLWithPath: decodedPath).deletingLastPathComponent()
             if !permission.hasAccess(to: dirURL) {
                 guard await permission.promptForPermission(for: dirURL) != nil else {
                     logger.warning("用户取消授权，跳过删除：\(decodedPath)")
                     continue
                 }
+                guard permission.hasAccess(to: dirURL) else {
+                    logger.warning("授权未覆盖目标目录，跳过删除：\(decodedPath)")
+                    continue
+                }
             }
+            authorized.append(decodedPath)
+        }
 
-            do {
-                try fm.removeItem(atPath: decodedPath)
-            } catch {
-                logger.error("delete \(target) file run error \(error)")
+        guard !authorized.isEmpty else { return }
+
+        // 绕过废纸篓的删除默认必须确认；按住 Option 点击是唯一跳过确认的方式。
+        if !optionKeyPressed {
+            guard confirmation.confirmPermanentDelete(paths: authorized) else {
+                logger.info("用户取消了删除确认，共 \(authorized.count) 项未删除")
+                return
             }
+        }
+
+        for decodedPath in authorized {
+            do { try fm.removeItem(atPath: decodedPath) }
+            catch { logger.error("delete \(decodedPath) file run error \(error)") }
         }
     }
 

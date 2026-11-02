@@ -13,7 +13,7 @@ RClick is a macOS desktop application that extends Finder's context menu with cu
 - SwiftData (persistence)
 - FinderSync framework (Finder extension)
 - DistributedNotificationCenter (inter-process communication)
-- Xcode 16+ (required for development)
+- Xcode 26+ (required for development)
 
 ## Architecture
 
@@ -66,7 +66,7 @@ xcodebuild -project RClick.xcodeproj -scheme RClick -configuration Release
 ```
 
 ### Running
-- Open `RClick.xcodeproj` in Xcode 16+
+- Open `RClick.xcodeproj` in Xcode 26+
 - Select the RClick scheme
 - Press Cmd+R to build and run
 - The FinderSync extension will be automatically registered

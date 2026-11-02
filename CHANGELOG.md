@@ -5,6 +5,26 @@ All notable changes to RClick are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Keep Finder workspace icon caches warm with background preloading and main-thread image resizing
+- Use lightweight heartbeat replies and reconnect from the last peer activity
+- Direct Delete now always asks for confirmation before permanently removing files. Hold Option while choosing it to skip the prompt
+
+### Added
+- Built-in app presets, per-app toolbar/context-menu visibility, and none/simple/original icon styles
+- Automatic/on/off containing-folder behavior for terminal and other apps, with compatible persistence and IPC
+- Offline Copy Path and a clickable hint that quietly relaunches the host
+- Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
+
+### Fixed
+- Update Finder extension and Accessibility settings links and version-specific guidance
+- Refresh permission status on window focus and while the page is visible
+
+### Removed
+- The `custom_menu.json` layout and the Settings → General → Custom Menu controls. The menu is now always built from the apps, actions, new-file types and common folders configured in Settings
+
 ## [2.3.1] - 2026-10-14
 
 ### Fixed

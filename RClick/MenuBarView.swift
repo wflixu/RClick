@@ -6,7 +6,40 @@
 //
 
 import AppKit
+import Combine
 import SwiftUI
+
+// MARK: - 打开设置窗口
+
+/// 调出设置窗口：不存在则由 SwiftUI 创建，已存在则前置，最后激活 App——
+/// LSUIElement 应用不会自己抢焦点，必须显式 activate。
+@MainActor
+func showSettingsWindow(openWindow: OpenWindowAction) {
+    openWindow(id: Constants.settingsWindowID)
+
+    if let existingWindow = NSApplication.shared.windows.first(where: {
+        $0.identifier?.rawValue == Constants.settingsWindowID
+    }) {
+        existingWindow.makeKeyAndOrderFront(nil)
+    }
+    NSApplication.shared.activate(ignoringOtherApps: true)
+}
+
+/// MenuBarExtra 的标签视图。菜单栏图标从 App 启动第一刻就常驻渲染，这个视图
+/// 连同它对 `openSettingsRequested` 的订阅从启动早期就存在；而 MenuBarExtra 的
+/// 内容视图（MenuBarView）要等用户第一次点开菜单才构建——启动期的"打开设置"
+/// 请求（手动 open 的 applicationDidFinishLaunching、已运行时的 reopen）只能
+/// 由这里接住。
+struct MenuBarExtraLabel: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Image("MenuBar")
+            .onReceive(NotificationCenter.default.publisher(for: .openSettingsRequested)) { _ in
+                showSettingsWindow(openWindow: openWindow)
+            }
+    }
+}
 
 struct MenuBarView: View {
     @Environment(\.openWindow) var openWindow: OpenWindowAction
@@ -31,15 +64,7 @@ struct MenuBarView: View {
 
     @MainActor
     private func actionSettings() {
-        openWindow(id: Constants.settingsWindowID)
-
-        let windows = NSApplication.shared.windows
-
-        // 查找已存在的目标窗口
-        if let existingWindow = windows.first(where: { $0.identifier?.rawValue == Constants.settingsWindowID }) {
-            existingWindow.makeKeyAndOrderFront(nil) // 将窗口置于最前
-            NSApplication.shared.activate(ignoringOtherApps: true) // 激活应用
-        }
+        showSettingsWindow(openWindow: openWindow)
     }
 
     @MainActor

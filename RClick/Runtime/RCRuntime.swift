@@ -29,8 +29,8 @@ final class RCRuntime {
         self.state = AppState.shared
         self.configService = state.configService
         self.permissionService = PermissionService(bookmarkManager: state.bookmarkManager)
-        self.menuService = MenuService(customMenuURL: MenuService.defaultCustomMenuURL)
-        self.actionService = ActionService(state: state, permission: permissionService)
+        self.menuService = MenuService()
+        self.actionService = ActionService(state: state, permission: permissionService, confirmation: AlertDeleteConfirmation())
         self.messager = Messager.shared
     }
 }
