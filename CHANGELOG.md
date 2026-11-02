@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Keep Finder workspace icon caches warm with background preloading and main-thread image resizing
+- Use lightweight heartbeat replies and reconnect from the last peer activity
+
 ### Added
 - Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
 
