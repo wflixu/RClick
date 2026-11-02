@@ -10,12 +10,14 @@ import SwiftUI
 
 struct AboutSettingsTabView: View {
     @EnvironmentObject var updateManager: UpdateManager
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         Form {
             identitySection
             updateSection
             communitySection
+            appsSection
         }
         .formStyle(.grouped)
         // 带缓存，缓存新鲜时这里只是读一下 UserDefaults，不会真的发请求
@@ -187,6 +189,65 @@ struct AboutSettingsTabView: View {
             } label: {
                 Label(AppLocalization.localized("Feedback & Issues"), systemImage: "exclamationmark.bubble")
             }
+        }
+    }
+
+    // MARK: - 更多应用
+
+    /// 作者的其他 App。仅在 About 页展示，不参与功能；链接直接开到 App Store。
+    private struct PromotedApp: Identifiable {
+        let id: String
+        let name: String
+        let icon: String
+        let summary: String
+        let appStoreURL: URL
+    }
+
+    private var promotedApps: [PromotedApp] {
+        [
+            PromotedApp(
+                id: "imonet",
+                name: "iMonet",
+                icon: "iMonetIcon",
+                summary: AppLocalization.localized("A mouse-first image viewer with animated GIF, APNG and WebP playback."),
+                appStoreURL: URL(string: "https://apps.apple.com/cn/app/imonet/id6770070921?mt=12")!
+            ),
+            PromotedApp(
+                id: "livecam",
+                name: "LiveCam",
+                icon: "LiveCamIcon",
+                summary: AppLocalization.localized("Show your avatar while recording your screen or live streaming."),
+                appStoreURL: URL(string: "https://apps.apple.com/cn/app/livecam/id6476108478?mt=12")!
+            ),
+        ]
+    }
+
+    private var appsSection: some View {
+        Section {
+            ForEach(promotedApps) { app in
+                LabeledContent {
+                    Button(AppLocalization.localized("View on the App Store")) {
+                        openURL(app.appStoreURL)
+                    }
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(app.icon)
+                            .resizable()
+                            .interpolation(.high)
+                            .frame(width: 32, height: 32)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(app.name)
+                            Text(app.summary)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        } header: {
+            Text(appLocalized: "More Apps")
         }
     }
 
