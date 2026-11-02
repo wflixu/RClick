@@ -43,6 +43,9 @@ final class ConfigService {
             app.arguments = entity.arguments
             app.environment = entity.environment
             app.opensNewInstance = entity.opensNewInstance
+            app.showInToolbar = entity.showInToolbar
+            app.showInContextMenu = entity.showInContextMenu
+            app.opensContainingDir = entity.opensContainingDir
             return app
         } ?? []
 

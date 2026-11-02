@@ -22,6 +22,13 @@ final class AppEntity {
     var isEnabled: Bool
     /// 注意：必须带默认值，否则 SwiftData 迁移旧库（已有数据）时无法为旧行赋值而失败
     var opensNewInstance: Bool = false
+    /// 是否在 Finder 自定义工具栏菜单中显示（带默认值，原因同上）
+    var showInToolbar: Bool = true
+    /// 是否在右键菜单中显示（带默认值，原因同上）
+    var showInContextMenu: Bool = true
+    /// 选中文件交给该应用时是否改为打开所在目录（终端类行为）
+    /// `nil` 表示未手动设置，运行时按预设终端分类（AppPresets.terminalBundleIDs）兜底
+    var opensContainingDir: Bool? = nil
     var createdAt: Date
     var updatedAt: Date
 
@@ -34,7 +41,10 @@ final class AppEntity {
          environment: [String: String] = [:],
          sortOrder: Int = 0,
          isEnabled: Bool = true,
-         opensNewInstance: Bool = false) {
+         opensNewInstance: Bool = false,
+         showInToolbar: Bool = true,
+         showInContextMenu: Bool = true,
+         opensContainingDir: Bool? = nil) {
         self.id = id
         self.urlString = url.path(percentEncoded: false)
         self.itemName = itemName
@@ -43,6 +53,9 @@ final class AppEntity {
         self.sortOrder = sortOrder
         self.isEnabled = isEnabled
         self.opensNewInstance = opensNewInstance
+        self.showInToolbar = showInToolbar
+        self.showInContextMenu = showInContextMenu
+        self.opensContainingDir = opensContainingDir
         self.createdAt = Date()
         self.updatedAt = Date()
 
@@ -90,7 +103,10 @@ final class AppEntity {
             arguments: openWithApp.arguments,
             environment: openWithApp.environment,
             sortOrder: sortOrder,
-            opensNewInstance: openWithApp.opensNewInstance
+            opensNewInstance: openWithApp.opensNewInstance,
+            showInToolbar: openWithApp.showInToolbar,
+            showInContextMenu: openWithApp.showInContextMenu,
+            opensContainingDir: openWithApp.opensContainingDir
         )
     }
 }
