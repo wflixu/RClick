@@ -54,11 +54,11 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     // MARK: - 连接状态（UX 优化，非可靠性机制）
 
     /// 最近一次收到主程序消息的时间
-    private var lastMainActivity = Date()
+    private var mainActivity = PeerActivity()
 
     /// 是否认为主程序可通信（连续 3 次心跳未收到即判离线）
     private var isHostAppRunning: Bool {
-        Date().timeIntervalSince(lastMainActivity) < 30
+        mainActivity.isActive()
     }
 
     /// 待确认的点击事件 ack 计时器
@@ -112,10 +112,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的菜单配置
         messager.onMainMessage(.menuConfig) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             // 使用 decodeSignedData 解码签名数据
             if let config = self.messager.decodeSignedData(data, as: MenuConfigPayload.self) {
-                self.handleMenuConfig(config)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    _ = self.mainActivity.receive()
+                    self.handleMenuConfig(config)
+                }
             } else {
                 logger.warning("Invalid menu config data")
             }
@@ -124,9 +127,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         // 处理主程序发送的 running 通知
         messager.onMainMessage(.running) { [weak self] data in
             guard let self = self else { return }
-            self.markMainActivity()
             if let payload = self.messager.decodeSignedData(data, as: RunningPayload.self) {
-                logger.info("Received running notification: \(payload.directories)")
+                self.markMainActivity()
+                logger.debug("Received running notification: \(payload.directories)")
                 // 可以根据 payload 更新监听目录
             }
         }
@@ -150,14 +153,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 记录主程序最近活动（统一到主线程，避免 DNC 回调线程写 / menu 主线程读竞争）
     private func markMainActivity() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = Date()
+            _ = self?.mainActivity.receive()
         }
     }
 
     /// 标记主程序离线（收到 .quit 时立即生效）
     private func markMainOffline() {
         DispatchQueue.main.async { [weak self] in
-            self?.lastMainActivity = .distantPast
+            self?.mainActivity.disconnect()
         }
     }
 
@@ -206,10 +209,51 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     /// 处理菜单配置
+    ///
+    /// 注意：不要在这里清 iconCache。缓存键是图标名 / App 路径 / SF Symbol 名，
+    /// 配置内容不变就不会脏。此前每次收到配置都 removeAll，而主程序曾每 10 秒随
+    /// 心跳推送一次配置，下一次右键就得在 Finder 主线程同步重建全部 App 图标
+    /// （NSWorkspace.icon(forFile:) 是磁盘查询），菜单弹出明显卡顿。
     private func handleMenuConfig(_ config: MenuConfigPayload) {
         cachedMenuConfig = config
-        iconCache.removeAll()
-        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count), icons cleared")
+        preloadIcons(for: config)
+        logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
+    }
+
+    /// 后台预热图标缓存
+    ///
+    /// 图标缓存是懒加载的：扩展每次重启后（重装、系统重启、Finder 回收进程）
+    /// 首次构建菜单都要在 Finder 主线程同步执行 NSWorkspace.icon(forFile:)——
+    /// LaunchServices 磁盘查询，每个 App 项几十毫秒，第一次右键明显偏慢。
+    /// 这里在配置到达/更新时于后台把 App 图标先加载好，再一次性合并回缓存。
+    ///
+    /// 线程安全：iconCache 只在主线程读写，后台先把结果装进局部字典，回主线程
+    /// 合并，无数据竞争。NSWorkspace.icon(forFile:) 官方文档标注为线程安全。
+    private func preloadIcons(for config: MenuConfigPayload) {
+        let apps = config.apps
+        let newFiles = config.newFiles
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            var warmed: [String: NSImage] = [:]
+            for app in apps {
+                guard let url = app.appURL else { continue }
+                let key = "app:\(url)"
+                let icon = NSWorkspace.shared.icon(forFile: url)
+                if icon.size.width > 0 { warmed[key] = icon }
+            }
+            // 新建文件图标：iconProvider 首次构建会同步查询 NSWorkspace（实测首次 30-40ms），
+            // 同样在后台预热，主线程只做合并
+            let warmedFiles = newFiles.isEmpty
+                ? [:]
+                : FileTypeIconProvider.shared.computeWorkspaceIcons(forExts: newFiles.map { $0.ext })
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                for (key, icon) in warmed where self.iconCache[key] == nil {
+                    self.iconCache[key] = icon
+                }
+                FileTypeIconProvider.shared.mergeWarmedIcons(warmedFiles)
+                logger.debug("图标预热完成: app \(warmed.count) 项, file \(warmedFiles.count) 项")
+            }
+        }
     }
 
     /// 请求菜单配置
@@ -332,6 +376,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     /// 构建并返回 Finder 上下文菜单
     override func menu(for menuKind: FIMenuKind) -> NSMenu {
+        let start = DispatchTime.now()
+        let menu = buildMenu(for: menuKind)
+        let ms = Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000
+        logger.info("菜单构建耗时: \(ms, format: .fixed(precision: 1), privacy: .public)ms")
+        return menu
+    }
+
+    private func buildMenu(for menuKind: FIMenuKind) -> NSMenu {
         currentMenuKind = menuKind
         let menuKindLabel: String = {
             switch menuKind {

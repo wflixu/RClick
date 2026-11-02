@@ -78,6 +78,31 @@ final class FileTypeIconProvider: @unchecked Sendable {
         cache.removeAll()
     }
 
+    /// 后台预热：批量计算扩展名对应的工作区图标（UTType + NSWorkspace 查询，首次很贵）。
+    /// 只做 icon(for:) 的第 1 级（系统图标）；无专属图标的扩展名留给 png/symbol 兜底。
+    /// 返回结果经主线程 mergeWarmedIcons 合并，避免与菜单构建竞争 cache。
+    func computeWorkspaceIcons(forExts exts: [String]) -> [String: NSImage] {
+        var result: [String: NSImage] = [:]
+        for ext in exts {
+            let cleanExt = ext.hasPrefix(".") ? String(ext.dropFirst()) : ext
+            guard !cleanExt.isEmpty else { continue }
+            let contentType = UTType(filenameExtension: cleanExt) ?? .data
+            let icon = NSWorkspace.shared.icon(for: contentType)
+            // 与 workspaceIcon 相同的判定：拿不到专属图标（通用灰图标）就跳过
+            guard icon !== NSWorkspace.shared.icon(for: .data) else { continue }
+            // Return the workspace image untouched; resizing/drawing happens on main.
+            result[ext] = icon
+        }
+        return result
+    }
+
+    /// 合并后台预热结果（主线程调用）；已有缓存不覆盖
+    func mergeWarmedIcons(_ icons: [String: NSImage]) {
+        for (ext, icon) in icons where cache[ext] == nil {
+            cache[ext] = icon.resized(to: NSSize(width: iconSize, height: iconSize))
+        }
+    }
+
     // MARK: - Private
 
     private let logger = Logger(subsystem: "RClick.Shared", category: "FileTypeIconProvider")

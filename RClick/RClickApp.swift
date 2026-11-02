@@ -64,7 +64,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// 所以必须等 `init` 里 `bootstrap()` 成功之后才碰它。写成默认值属性会在 init 体
     /// 之前求值，正好把顺序反过来。
     lazy var appState: AppState = .shared
-    var pluginRunning: Bool = false
+    private var pluginActivity = PeerActivity()
+    var pluginRunning: Bool { pluginActivity.isActive() }
     var heartBeatCount = 0
 
     let messager = Messager.shared
@@ -144,8 +145,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             messager.onExtensionMessage(.heartbeat) { [weak self] _ in
                 guard let self = self else { return }
                 logger.debug("Received heartbeat from extension")
-                pluginRunning = true
-                sendMenuConfigurationUpdate()
+                // Acknowledge every heartbeat without re-sending the menu configuration.
+                // The extension needs a reply to keep its own liveness cache online.
+                let reconnected = pluginActivity.receive()
+                messager.sendRunningNotification()
+                if reconnected {
+                    sendMenuConfigurationUpdate()
+                }
             }
 
             // 处理 Extension 请求菜单配置
@@ -155,8 +161,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.sendMenuConfigurationUpdate()
             }
 
-            // 启动心跳超时检测
-            startHeartbeatMonitoring()
             // 启动 running 消息重试机制
             startRunningMessageRetry()
 
@@ -226,26 +230,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - 重连机制
 
-    /// 心跳监控 Task（可取消）
-    private var heartbeatMonitorTask: Task<Void, Never>?
-
-    /// 启动心跳监控（15 秒超时检测）
-    private func startHeartbeatMonitoring() {
-        heartbeatMonitorTask?.cancel()
-        heartbeatMonitorTask = Task { @MainActor in
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(15))
-                guard !Task.isCancelled else { break }
-                if pluginRunning {
-                    pluginRunning = false
-                } else {
-                    logger.warning("Heartbeat timeout detected, triggering reconnection")
-                    performReconnection()
-                }
-            }
-        }
-    }
-
     /// 启动 running 消息重试机制（每 5 秒发送一次，持续 30 秒）
     private func startRunningMessageRetry() {
         Task { @MainActor in
@@ -259,9 +243,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// 执行重连：重置 pluginRunning 状态，等待心跳恢复
-    @MainActor private func performReconnection() {
-        logger.debug("Performing reconnection: requesting menu config from main app")
-        pluginRunning = false
-    }
 }
