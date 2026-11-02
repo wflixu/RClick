@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Keep Finder workspace icon caches warm with background preloading and main-thread image resizing
 - Use lightweight heartbeat replies and reconnect from the last peer activity
+- Direct Delete now always asks for confirmation before permanently removing files. Hold Option while choosing it to skip the prompt
 
 ### Added
 - Built-in app presets, per-app toolbar/context-menu visibility, and none/simple/original icon styles
 - Automatic/on/off containing-folder behavior for terminal and other apps, with compatible persistence and IPC
-- Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
 - Offline Copy Path and a clickable hint that quietly relaunches the host
 - Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 

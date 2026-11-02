@@ -64,6 +64,20 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 待确认的点击事件 ack 计时器
     private var pendingAckWorkItem: DispatchWorkItem?
 
+    // MARK: - Option 键状态
+
+    /// 菜单构建时是否按住 Option。Finder 负责显示菜单，点击回调可能晚于
+    /// 用户松开按键，所以除了回调时的实时检测，还要记住菜单打开那一刻的状态。
+    private var menuOptionPressed = false
+
+    /// 菜单打开期间最近一次观察到 Option 按下的时间
+    private var optionSeenAt: Date?
+
+    /// 菜单打开期间轮询修饰键的计时器（沙盒下 NSEvent/CGEventSource 均可用）
+    private var optionPollTimer: Timer?
+
+    private static let optionRecentWindow: TimeInterval = 1.0
+
     // MARK: - Initialization
 
     override init() {
@@ -331,6 +345,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 快链路动作 id：主程序离线时仍可在扩展内完成的操作
     private static let copyPathActionId = "copy-path"
 
+    /// 「直接删除」动作 id：按住 Option 时跳过二次确认
+    private static let deleteDirectActionId = "delete-direct"
+
     // MARK: - Icon Helpers
 
     /// 获取 App 图标（带缓存）
@@ -395,6 +412,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     private func buildMenu(for menuKind: FIMenuKind) -> NSMenu {
         currentMenuKind = menuKind
+
+        // 菜单会被 Finder 复制并在 Finder 进程里跟踪，扩展拿不到点击事件。
+        // 这里记下菜单打开瞬间的 Option 状态，并持续采样，覆盖用户"先开菜单、
+        // 再按 Option、立即点击"的操作顺序（点击回调可能晚于松开按键）。
+        menuOptionPressed = isOptionKeyPressed()
+        optionSeenAt = menuOptionPressed ? Date() : nil
+        startOptionPolling()
+        logger.info("菜单打开时 Option 状态: \(self.menuOptionPressed) [\(self.optionKeySnapshot(), privacy: .public)]")
         let menuKindLabel: String = {
             switch menuKind {
             case .contextualMenuForItems: return "右键菜单(选中项)"
@@ -564,7 +589,15 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     private func makeActionItem(_ action: ActionMenuItem) -> NSMenuItem {
-        let item = NSMenuItem(title: action.name, action: #selector(handleActionClick(_:)), keyEquivalent: "")
+        // 菜单打开时按住了 Option：直接改标题告诉用户本次会跳过确认。
+        // Finder 只复制 title/action/tag 等有限属性，标题是最可靠的提示通道。
+        let title: String
+        if menuOptionPressed, action.id == Self.deleteDirectActionId {
+            title = String(format: AppLocalization.localized("%@ (skip confirmation)"), action.name)
+        } else {
+            title = action.name
+        }
+        let item = NSMenuItem(title: title, action: #selector(handleActionClick(_:)), keyEquivalent: "")
         item.tag = hashForAction(action)
         item.target = self
         if let icon = templateSymbol(action.icon) {
@@ -643,6 +676,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         }
 
         logger.debug("Action clicked: \(action.name) (id: \(action.id))")
+        stopOptionPolling()
 
         // 获取选中的文件/目录
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
@@ -656,11 +690,16 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         }
 
         // 慢链路：删除/隐藏/取消隐藏/AirDrop 需要主程序的 bookmark 授权与执行
+        // 发送点击事件到主程序。Finder 的点击回调可能晚于用户松开 Option，
+        // 所以把三个来源合并：菜单打开时的状态、菜单期间轮询到的状态、点击瞬间的状态。
+        let optionPressed = resolvedOptionState()
+        logger.info("Action click option pressed: \(optionPressed) [\(self.optionKeySnapshot(), privacy: .public)]")
         let event = ClickEventPayload(
             itemId: action.id,
             itemType: .action,
             target: itemPaths,
-            trigger: getTriggerForMenuKind()
+            trigger: getTriggerForMenuKind(),
+            optionKeyPressed: optionPressed
         )
         sendClickEvent(event)
     }
@@ -674,6 +713,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleAppClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         logger.debug("handleAppClick called with sender: \(sender.title), tag: \(sender.tag)")
 
         guard let config = cachedMenuConfig,
@@ -705,6 +745,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleNewFileClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         guard let config = cachedMenuConfig,
               let newFile = config.newFiles.first(where: { hashForNewFile($0) == sender.tag }) else {
             logger.warning("NewFile not found for tag: \(sender.tag)")
@@ -723,6 +764,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     @objc private func handleCommonDirClick(_ sender: NSMenuItem) {
+        stopOptionPolling()
         guard let config = cachedMenuConfig,
               let commonDir = config.commonDirs.first(where: { hashForCommonDir($0) == sender.tag }) else {
             logger.warning("CommonDir not found for tag: \(sender.tag)")
@@ -743,6 +785,65 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     }
 
     // MARK: - Helper Methods
+
+    /// 综合判断本次点击是否应视为"按住 Option"。
+    ///
+    /// 用户可能在菜单打开后才按下 Option，也可能点完立刻松开；而 Finder 的
+    /// 回调到达扩展时按键状态可能已经消失。三者取并集可以覆盖这几种时序。
+    private func resolvedOptionState() -> Bool {
+        if isOptionKeyPressed() { return true }
+        if menuOptionPressed { return true }
+        if let seen = optionSeenAt, Date().timeIntervalSince(seen) <= Self.optionRecentWindow {
+            return true
+        }
+        return false
+    }
+
+    /// 菜单打开期间持续采样修饰键状态。点击回调通常只有几十毫秒的延迟，
+    /// 1 秒的窗口足以覆盖"按住 Option → 点击 → 立即松开"。
+    private func startOptionPolling() {
+        stopOptionPolling()
+        let timer = Timer(timeInterval: 0.1, target: self, selector: #selector(pollOptionKey), userInfo: nil, repeats: true)
+        RunLoop.main.add(timer, forMode: .common)
+        optionPollTimer = timer
+        // 用户打开菜单但什么都不点时也要回收计时器。只回收自己这一轮，
+        // 避免旧菜单的超时回调误停掉新菜单的计时器。
+        DispatchQueue.main.asyncAfter(deadline: .now() + 60) { [weak self, weak timer] in
+            guard let self, let timer, self.optionPollTimer === timer else { return }
+            self.stopOptionPolling()
+        }
+    }
+
+    private func stopOptionPolling() {
+        optionPollTimer?.invalidate()
+        optionPollTimer = nil
+    }
+
+    @objc private func pollOptionKey() {
+        if isOptionKeyPressed() {
+            optionSeenAt = Date()
+        }
+    }
+
+    /// 当前是否按住 Option。
+    ///
+    /// 扩展进程里通常没有自己的 `NSEvent`，所以除了 `NSEvent.modifierFlags`
+    /// 还要查窗口服务器的修饰键状态；沙盒下这两条读取通道都可用。
+    private func isOptionKeyPressed() -> Bool {
+        if NSEvent.modifierFlags.contains(.option) { return true }
+        if let event = NSApp.currentEvent, event.modifierFlags.contains(.option) { return true }
+        if CGEventSource.flagsState(.combinedSessionState).contains(.maskAlternate) { return true }
+        if CGEventSource.flagsState(.hidSystemState).contains(.maskAlternate) { return true }
+        return false
+    }
+
+    /// 供诊断日志使用：各来源分别看到什么。
+    private func optionKeySnapshot() -> String {
+        let combined = CGEventSource.flagsState(.combinedSessionState).contains(.maskAlternate)
+        let hid = CGEventSource.flagsState(.hidSystemState).contains(.maskAlternate)
+        let current = NSApp.currentEvent?.modifierFlags.contains(.option)
+        return "NSEvent=\(NSEvent.modifierFlags.contains(.option)) current=\(current.map(String.init) ?? "nil") combined=\(combined) hid=\(hid)"
+    }
 
     /// 获取触发来源
     private func getTriggerForMenuKind() -> MenuTrigger {

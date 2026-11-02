@@ -29,16 +29,17 @@ final class AlertDeleteConfirmation: DeleteConfirmationProviding {
 
         let names = paths.map { URL(fileURLWithPath: $0).lastPathComponent }
         let irreversible = AppLocalization.localized("This cannot be undone and will not move items to Trash.")
+        let optionHint = AppLocalization.localized("Tip: hold Option while choosing this action to skip the confirmation.")
 
         if names.count == 1 {
             alert.messageText = String(format: AppLocalization.localized("Permanently delete “%@”?"), names[0])
-            alert.informativeText = irreversible
+            alert.informativeText = irreversible + "\n\n" + optionHint
         } else {
             alert.messageText = String(format: AppLocalization.localized("Permanently delete %lld items?"), Int64(names.count))
             var listed = names.prefix(previewLimit).joined(separator: "\n")
             let remainder = names.count - previewLimit
             if remainder > 0 { listed += "\n" + String(format: AppLocalization.localized("...and %lld more"), Int64(remainder)) }
-            alert.informativeText = listed + "\n\n" + irreversible
+            alert.informativeText = listed + "\n\n" + irreversible + "\n\n" + optionHint
         }
         return alert.runModal() == .alertFirstButtonReturn
     }

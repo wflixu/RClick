@@ -117,17 +117,21 @@ struct ClickEventPayload: Codable {
     let target: [String]
     /// 触发来源
     let trigger: MenuTrigger
+    /// 点击时是否按住 Option。「直接删除」据此跳过确认
+    let optionKeyPressed: Bool?
 
     init(
         itemId: String,
         itemType: MenuItemType,
         target: [String] = [],
-        trigger: MenuTrigger
+        trigger: MenuTrigger,
+        optionKeyPressed: Bool? = nil
     ) {
         self.itemId = itemId
         self.itemType = itemType
         self.target = target
         self.trigger = trigger
+        self.optionKeyPressed = optionKeyPressed
     }
 }
 

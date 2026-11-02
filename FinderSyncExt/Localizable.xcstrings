@@ -1,6 +1,41 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ (skip confirmation)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (skip confirmation)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (sin confirmación)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (sans confirmation)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@（確認なし）"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@（跳过确认）"
+          }
+        }
+      }
+    },
     "Actions": {
       "extractionState": "manual",
       "localizations": {

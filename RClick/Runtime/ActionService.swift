@@ -124,7 +124,7 @@ final class ActionService {
     // MARK: - FileActions
 
     /// 动作分发入口
-    func actionHandler(rid: String, target: [String], trigger: String) async {
+    func actionHandler(rid: String, target: [String], trigger: String, optionKeyPressed: Bool = false) async {
         guard let rcitem = state.getActionItem(rid: rid) else {
             logger.warning("when actionHandler, but not have action \(rid)")
             return
@@ -134,7 +134,7 @@ final class ActionService {
         case "copy-path":
             copyPath(target)
         case "delete-direct":
-            await deleteFoldorFile(target, trigger)
+            await deleteFoldorFile(target, trigger, optionKeyPressed: optionKeyPressed)
         case "unhide":
             await unhideFilesAndDirs(target, trigger)
         case "hide":
@@ -327,8 +327,8 @@ final class ActionService {
         logger.info("隐藏操作完成")
     }
 
-    func deleteFoldorFile(_ target: [String], _ trigger: String) async {
-        logger.info("---- deleteFoldorFile trigger:\(trigger)")
+    func deleteFoldorFile(_ target: [String], _ trigger: String, optionKeyPressed: Bool = false) async {
+        logger.info("---- deleteFoldorFile trigger:\(trigger) option:\(optionKeyPressed)")
         let fm = FileManager.default
 
         if trigger == "ctx-container" {
@@ -382,7 +382,8 @@ final class ActionService {
 
         guard !authorized.isEmpty else { return }
 
-        if state.confirmBeforeDelete {
+        // 绕过废纸篓的删除默认必须确认；按住 Option 点击是唯一跳过确认的方式。
+        if !optionKeyPressed {
             guard confirmation.confirmPermanentDelete(paths: authorized) else {
                 logger.info("用户取消了删除确认，共 \(authorized.count) 项未删除")
                 return

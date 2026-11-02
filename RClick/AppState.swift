@@ -41,9 +41,6 @@ class AppState: ObservableObject, ActionStateProviding {
     @AppStorage("foldCommonDirMenu", store: .group) var foldCommonDirMenu: Bool = true
     // 常用文件夹总开关（默认关闭）
     @AppStorage("showCommonDirs", store: .group) var showCommonDirs: Bool = false
-    // 直接删除前二次确认（默认开启：绕过废纸篓，误删不可恢复）
-    // Keep in sync with the default assigned in resetActionItems().
-    @AppStorage(Key.confirmBeforeDelete, store: .group) var confirmBeforeDelete: Bool = true
 
     /// 应用图标样式：0=无图标 1=简单图标（默认） 2=原始图标。
     /// 存在 App Group 里，扩展通过 MenuConfigPayload.iconStyle 拿到。
@@ -197,8 +194,6 @@ class AppState: ObservableObject, ActionStateProviding {
 
     @MainActor func resetActionItems() {
         actions = RCAction.all
-        // Keep in sync with @AppStorage confirmBeforeDelete default above.
-        confirmBeforeDelete = true
         persist()
     }
 

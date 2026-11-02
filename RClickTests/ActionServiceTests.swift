@@ -64,8 +64,6 @@ final class ActionServiceTests {
         var newFiles: [NewFile] = []
         var cdirs: [CommonDir] = []
         var showCommonDirs = false
-        /// Existing paths leave confirmation off so deleteFoldorFile skips the confirm gate.
-        var confirmBeforeDelete = false
 
         func getAppItem(rid: String) -> OpenWithApp? { nil }
         func getActionItem(rid: String) -> RCAction? { nil }
@@ -110,7 +108,7 @@ final class ActionServiceTests {
         await service.deleteFoldorFile([file.path], "ctx-items")
 
         #expect(!FileManager.default.fileExists(atPath: file.path))
-        #expect(confirmation.confirmCalls.isEmpty)
+        #expect(confirmation.confirmCalls == [[file.path]])
     }
 
     @Test func deleteIsSkippedWhenUserCancelsConfirmation() async throws {
@@ -121,9 +119,7 @@ final class ActionServiceTests {
         permission.hasAccessResult = true
         let confirmation = MockConfirmation()
         confirmation.result = false
-        let state = MockState()
-        state.confirmBeforeDelete = true
-        let service = ActionService(state: state, permission: permission, confirmation: confirmation)
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
 
         await service.deleteFoldorFile([file.path], "ctx-items")
 
@@ -140,14 +136,27 @@ final class ActionServiceTests {
         permission.hasAccessResult = true
         let confirmation = MockConfirmation()
         confirmation.result = true
-        let state = MockState()
-        state.confirmBeforeDelete = true
-        let service = ActionService(state: state, permission: permission, confirmation: confirmation)
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
 
         await service.deleteFoldorFile([file.path], "ctx-items")
 
         #expect(!FileManager.default.fileExists(atPath: file.path))
         #expect(confirmation.confirmCalls.count == 1)
+    }
+
+    @Test func optionClickSkipsConfirmation() async throws {
+        let (dir, file) = try makeTempFile()
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let permission = MockPermission()
+        permission.hasAccessResult = true
+        let confirmation = MockConfirmation()
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
+
+        await service.deleteFoldorFile([file.path], "ctx-items", optionKeyPressed: true)
+
+        #expect(!FileManager.default.fileExists(atPath: file.path))
+        #expect(confirmation.confirmCalls.isEmpty)
     }
 
     @Test func authorizationIsRequestedBeforeConfirmation() async throws {
@@ -162,9 +171,7 @@ final class ActionServiceTests {
         let confirmation = MockConfirmation()
         confirmation.result = true
         confirmation.callLog = log
-        let state = MockState()
-        state.confirmBeforeDelete = true
-        let service = ActionService(state: state, permission: permission, confirmation: confirmation)
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
 
         await service.deleteFoldorFile([file.path], "ctx-items")
 
@@ -188,9 +195,7 @@ final class ActionServiceTests {
         permission.hasAccessResult = false
         permission.promptResult = unrelated   // 面板返回了无关目录 → 目标目录仍未授权
         let confirmation = MockConfirmation()
-        let state = MockState()
-        state.confirmBeforeDelete = true
-        let service = ActionService(state: state, permission: permission, confirmation: confirmation)
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
 
         await service.deleteFoldorFile([file.path], "ctx-items")
 
@@ -210,9 +215,7 @@ final class ActionServiceTests {
         permission.authorizedDirs = [dirA.resolvingSymlinksInPath().path]
         permission.promptResult = nil          // B 的授权被取消 → B 在确认之前出局
         let confirmation = MockConfirmation()  // result 默认 true
-        let state = MockState()
-        state.confirmBeforeDelete = true
-        let service = ActionService(state: state, permission: permission, confirmation: confirmation)
+        let service = ActionService(state: MockState(), permission: permission, confirmation: confirmation)
 
         await service.deleteFoldorFile([fileA.path, fileB.path], "ctx-items")
 

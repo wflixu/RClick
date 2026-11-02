@@ -19,5 +19,4 @@ protocol ActionStateProviding: AnyObject {
     var newFiles: [NewFile] { get }
     var cdirs: [CommonDir] { get }
     var showCommonDirs: Bool { get }
-    var confirmBeforeDelete: Bool { get }
 }

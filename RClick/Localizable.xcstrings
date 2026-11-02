@@ -1404,41 +1404,6 @@
         }
       }
     },
-    "Confirm before delete" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirm before delete"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirmar antes de eliminar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirmer avant de supprimer"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "削除時に再確認"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除时二次确认"
-          }
-        }
-      }
-    },
     "Context Menu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6548,6 +6513,41 @@
         }
       }
     },
+    "Tip: hold Option while choosing this action to skip the confirmation." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip: hold Option while choosing this action to skip the confirmation."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consejo: mantén pulsada la tecla Opción al elegir esta acción para omitir la confirmación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Astuce : maintenez la touche Option en choisissant cette action pour ignorer la confirmation."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヒント：Option キーを押しながらこの操作を選ぶと、確認をスキップできます。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示：按住 Option 键选择此操作可跳过确认。"
+          }
+        }
+      }
+    },
     "Toolbar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7139,41 +7139,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选中文件时，改为打开其所在目录"
-          }
-        }
-      }
-    },
-    "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When enabled, RClick asks before permanently deleting files. Direct delete bypasses Trash and cannot be undone."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si está activado, RClick pide confirmación antes de eliminar permanentemente. La eliminación directa omite la Papelera y no se puede deshacer."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si activé, RClick demande confirmation avant une suppression définitive. La suppression directe ignore la Corbeille et est irréversible."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有効にすると、完全削除の前に確認します。直接削除はゴミ箱を経由せず、元に戻せません。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开启后，永久删除前会弹出确认。直接删除会绕过废纸篓且无法撤销。"
           }
         }
       }
