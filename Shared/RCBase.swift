@@ -28,6 +28,13 @@ struct OpenWithApp: @MainActor RCBase {
     var environment: [String: String] = [:]
     /// 是否以新实例（新窗口）打开（对应 NSWorkspace.OpenConfiguration.createsNewApplicationInstance）
     var opensNewInstance = false
+    /// 是否在 Finder 自定义工具栏菜单中显示
+    var showInToolbar = true
+    /// 是否在右键菜单中显示
+    var showInContextMenu = true
+    /// 选中文件交给该应用时是否改为打开所在目录（终端类行为）
+    /// `nil` = 未手动设置，运行时按预设终端分类（AppPresets.terminalBundleIDs）兜底
+    var opensContainingDir: Bool? = nil
 
     nonisolated var appName: String {
         FileManager.default.displayName(atPath: url.path)
@@ -292,14 +299,51 @@ struct AppMenuItem: Codable {
     let icon: String
     let tag: Int
     let appURL: String?  // 应用路径，用于获取应用图标
+    /// 是否以新实例打开（浏览器类 app 新开窗口而非新 tab）。
+    /// 扩展端快链路直接打开 App 时需要这个字段。
+    let opensNewInstance: Bool
+    /// 是否在 Finder 自定义工具栏菜单中显示
+    let showInToolbar: Bool
+    /// 是否在右键菜单中显示
+    let showInContextMenu: Bool
+    /// 「选中文件时打开所在目录」显式开关；nil = 未手动设置（跟随预设终端分类）
+    let opensContainingDir: Bool?
 
-    init(id: String, name: String, icon: String, tag: Int, appURL: String? = nil) {
+    init(id: String, name: String, icon: String, tag: Int, appURL: String? = nil, opensNewInstance: Bool = false,
+         showInToolbar: Bool = true, showInContextMenu: Bool = true, opensContainingDir: Bool? = nil) {
         self.id = id
         self.name = name
         self.icon = icon
         self.tag = tag
         self.appURL = appURL
+        self.opensNewInstance = opensNewInstance
+        self.showInToolbar = showInToolbar
+        self.showInContextMenu = showInContextMenu
+        self.opensContainingDir = opensContainingDir
     }
+
+    func isVisible(for trigger: MenuTrigger) -> Bool {
+        trigger == .toolbar ? showInToolbar : showInContextMenu
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, icon, tag, appURL, opensNewInstance
+        case showInToolbar, showInContextMenu, opensContainingDir
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(String.self, forKey: .id)
+        name = try values.decode(String.self, forKey: .name)
+        icon = try values.decode(String.self, forKey: .icon)
+        tag = try values.decode(Int.self, forKey: .tag)
+        appURL = try values.decodeIfPresent(String.self, forKey: .appURL)
+        opensNewInstance = try values.decodeIfPresent(Bool.self, forKey: .opensNewInstance) ?? false
+        showInToolbar = try values.decodeIfPresent(Bool.self, forKey: .showInToolbar) ?? true
+        showInContextMenu = try values.decodeIfPresent(Bool.self, forKey: .showInContextMenu) ?? true
+        opensContainingDir = try values.decodeIfPresent(Bool.self, forKey: .opensContainingDir)
+    }
+
 }
 
 /// Menu item for custom actions (copy path, delete, etc.)
@@ -383,7 +427,11 @@ extension OpenWithApp {
             name: name,
             icon: "app",
             tag: 0,
-            appURL: url.path
+            appURL: url.path,
+            opensNewInstance: opensNewInstance,
+            showInToolbar: showInToolbar,
+            showInContextMenu: showInContextMenu,
+            opensContainingDir: opensContainingDir
         )
     }
 }

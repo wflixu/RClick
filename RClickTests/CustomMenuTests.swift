@@ -155,6 +155,7 @@ struct CustomMenuTests {
         let oldJSON = #"{"version":1,"actions":[],"apps":[],"newFiles":[],"commonDirs":[],"actionsCollapsed":false,"appsCollapsed":false,"newFilesCollapsed":true,"commonDirsCollapsed":true}"#
         let old = try JSONDecoder().decode(MenuConfigPayload.self, from: Data(oldJSON.utf8))
         #expect(old.customMenu == nil)
+        #expect(old.iconStyle == RCAppIconStyle.original.rawValue)
         var config = catalog
         config.customMenu = try fixture()
         let encoder = JSONEncoder()

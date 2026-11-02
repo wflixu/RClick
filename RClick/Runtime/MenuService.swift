@@ -141,7 +141,8 @@ final class MenuService {
             actionsCollapsed: state.foldActionsMenu,
             appsCollapsed: state.foldAppsMenu,
             newFilesCollapsed: state.foldNewFileMenu,
-            commonDirsCollapsed: state.foldCommonDirMenu
+            commonDirsCollapsed: state.foldCommonDirMenu,
+            iconStyle: state.appIconStyle
         )
     }
 

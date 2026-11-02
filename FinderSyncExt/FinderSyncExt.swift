@@ -215,6 +215,13 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
     /// 心跳推送一次配置，下一次右键就得在 Finder 主线程同步重建全部 App 图标
     /// （NSWorkspace.icon(forFile:) 是磁盘查询），菜单弹出明显卡顿。
     private func handleMenuConfig(_ config: MenuConfigPayload) {
+        let apps = config.apps
+        DispatchQueue.global(qos: .utility).async {
+            AppPresets.prewarm(forAppPaths: apps.compactMap { $0.appURL })
+            DispatchQueue.main.async {
+                for app in apps { _ = AppPresets.simpleIcon(forAppPath: app.appURL) }
+            }
+        }
         cachedMenuConfig = config
         preloadIcons(for: config)
         logger.debug("Menu config cached: version=\(config.version), actions=\(config.actions.count), apps=\(config.apps.count)")
@@ -325,6 +332,15 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
     /// 获取 App 图标（带缓存）
     private func cachedAppIcon(app: AppMenuItem) -> NSImage? {
+        let style = cachedMenuConfig.flatMap { RCAppIconStyle(rawValue: $0.iconStyle) } ?? .original
+        switch style {
+        case .none: return nil
+        case .simple: return AppPresets.simpleIcon(forAppPath: app.appURL) ?? cachedOriginalAppIcon(app: app)
+        case .original: return cachedOriginalAppIcon(app: app)
+        }
+    }
+
+    private func cachedOriginalAppIcon(app: AppMenuItem) -> NSImage? {
         if let appURL = app.appURL {
             let cacheKey = "app:\(appURL)"
             if let cached = iconCache[cacheKey] { return cached }
@@ -343,15 +359,9 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         return templateSymbol(app.icon)
     }
 
-    /// 加载 SF Symbol 并使用 hierarchicalColor 适配亮色/暗色模式（带缓存）
+    /// 加载 SF Symbol，缓存按名称、尺寸与外观区分。
     private func templateSymbol(_ name: String) -> NSImage? {
-        let cacheKey = "sf:\(name)"
-        if let cached = iconCache[cacheKey] { return cached }
-        let config = NSImage.SymbolConfiguration(hierarchicalColor: .labelColor)
-        guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-            .withSymbolConfiguration(config) else { return nil }
-        iconCache[cacheKey] = image
-        return image
+        MenuSymbolIcon.image(named: name)
     }
 
     /// 从 Assets 或 SF Symbol 加载图标（带缓存）
@@ -359,17 +369,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         let cacheKey = "load:\(iconName)"
         if let cached = iconCache[cacheKey] { return cached }
         if let icon = NSImage(named: iconName) {
+            // Assets 位图不受系统外观影响，可以缓存
             iconCache[cacheKey] = icon
             return icon
         }
-        if let icon = templateSymbol(iconName) {
-            iconCache[cacheKey] = icon
-            return icon
-        }
-        if let fallback = iconFallbackMap[iconName],
-           let icon = templateSymbol(fallback) {
-            iconCache[cacheKey] = icon
-            return icon
+        // SF Symbol 兜底：MenuSymbolIcon 使用外观感知缓存。
+        if let icon = templateSymbol(iconName) { return icon }
+        if let fallback = iconFallbackMap[iconName] {
+            return templateSymbol(fallback)
         }
         return nil
     }
@@ -416,7 +423,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             CustomMenu.render(nodes, into: menu, makeItem: { type, id in
                 switch type {
                 case .action: return config.actions.first { $0.id == id }.map(self.makeActionItem)
-                case .app: return config.apps.first { $0.id == id }.map(self.makeAppItem)
+                case .app: return config.apps.first { $0.id == id && $0.isVisible(for: self.getTriggerForMenuKind()) }.map(self.makeAppItem)
                 case .newFile: return config.newFiles.first { $0.id == id }.map(self.makeNewFileItem)
                 case .commonDir: return config.commonDirs.first { $0.id == id }.map(self.makeCommonDirItem)
                 }
@@ -447,13 +454,14 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             }
         }
 
-        // 构建应用菜单
-        if !config.apps.isEmpty {
+        // Apply the same per-app visibility to default and custom layouts.
+        let visibleApps = config.apps.filter { $0.isVisible(for: getTriggerForMenuKind()) }
+        if !visibleApps.isEmpty {
             if config.appsCollapsed {
                 // 折叠：使用子菜单
                 let appsTitle = AppLocalization.localized("Open With")
                 let appsSubMenu = NSMenu(title: appsTitle)
-                for app in config.apps {
+                for app in visibleApps {
                     let item = makeAppItem(app)
                     appsSubMenu.addItem(item)
                 }
@@ -463,7 +471,7 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
                 menu.addItem(appsItem)
             } else {
                 // 不折叠：直接显示菜单项
-                for app in config.apps {
+                for app in visibleApps {
                     let item = makeAppItem(app)
                     menu.addItem(item)
                 }
@@ -610,16 +618,22 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         logger.debug("App clicked: \(app.name) (id: \(app.id))")
 
         let selectedItems = FIFinderSyncController.default().selectedItemURLs() ?? []
-        let itemPaths = selectedItems.map { $0.path }
+        var itemPaths = selectedItems.map { $0.path }
         logger.info("[App] selectedItemURLs 返回 \(selectedItems.count) 个文件: \(itemPaths)")
 
+        // 工具栏触发没有选中项：用当前 Finder 窗口目录作为打开目标
+        if itemPaths.isEmpty, let targetURL = FIFinderSyncController.default().targetedURL() {
+            itemPaths = [targetURL.path]
+        }
+
+        // 打开动作统一由主程序处理 bookmark 授权与失败重试。
+        // 主程序离线时，makeAppItem 会将应用菜单项置灰。
         let event = ClickEventPayload(
             itemId: app.id,
             itemType: .app,
             target: itemPaths,
             trigger: getTriggerForMenuKind()
         )
-        logger.debug("Sending click event for app: \(app.name)")
         sendClickEvent(event)
     }
 
