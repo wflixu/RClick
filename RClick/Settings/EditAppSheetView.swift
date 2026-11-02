@@ -93,7 +93,6 @@ struct EditAppSheetView: View {
                 }
             }
             .formStyle(.grouped)
-            .background(PersistentScrollbar())
 
             HStack {
                 Button(AppLocalization.localized("Cancel")) {
@@ -133,47 +132,5 @@ struct EditAppSheetView: View {
             }
         }
         return result
-    }
-}
-
-/// 让表单的滚动条常驻显示，提示下方还有配置项。
-/// SwiftUI 的 .scrollIndicators(.visible) 对 Form 不生效，只能在 AppKit 层处理：
-/// 系统默认的 overlay 滚动条不滚动时会自动隐藏，把该 NSScrollView 的
-/// scrollerStyle 设为 .legacy 后滚动条固定可见（仅影响弹窗内这一个表单）。
-private struct PersistentScrollbar: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        // 等表单布局完成后再改，否则找不到 NSScrollView
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak view] in
-            Self.apply(to: view?.window)
-        }
-        return view
-    }
-
-    func updateNSView(_ nsView: NSView, context: Context) {
-        // SwiftUI 状态更新可能重建滚动视图，顺带重新应用一次（幂等）
-        DispatchQueue.main.async { [weak nsView] in
-            Self.apply(to: nsView?.window)
-        }
-    }
-
-    private static func apply(to window: NSWindow?) {
-        guard let contentView = window?.contentView else { return }
-        scrollViews(in: contentView).forEach { scrollView in
-            scrollView.hasVerticalScroller = true
-            scrollView.scrollerStyle = .legacy
-        }
-    }
-
-    /// 递归找出窗口里的全部 NSScrollView（弹窗内只有表单一个）
-    private static func scrollViews(in view: NSView) -> [NSScrollView] {
-        var found: [NSScrollView] = []
-        if let scrollView = view as? NSScrollView {
-            found.append(scrollView)
-        }
-        for child in view.subviews {
-            found.append(contentsOf: scrollViews(in: child))
-        }
-        return found
     }
 }

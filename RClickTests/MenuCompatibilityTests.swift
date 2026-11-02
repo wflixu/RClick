@@ -14,34 +14,38 @@ struct MenuCompatibilityTests {
         #expect(app.opensContainingDir == nil)
     }
 
-    @Test(arguments: [nil, true, false] as [Bool?])
-    func appOptionsSurvivePersistenceAndIPC(explicit: Bool?) throws {
+    @Test(arguments: [nil, true, false] as [Bool?], [false, true])
+    func appOptionsSurvivePersistenceAndIPC(explicit: Bool?, toolbarVisible: Bool) throws {
         let container = try SwiftData.ModelContainer(
-            for: AppEntity.self,
+            for: AppEntity.self, ActionEntity.self, NewFileTypeEntity.self, CommonDirEntity.self,
             configurations: SwiftData.ModelConfiguration(isStoredInMemoryOnly: true)
         )
-        let context = container.mainContext
+        let service = ConfigService(modelContext: ModelContext(container))
         var app = OpenWithApp(appURL: URL(fileURLWithPath: "/Applications/Terminal.app"))
         app.opensContainingDir = explicit
-        app.showInToolbar = false
-        app.showInContextMenu = true
+        app.showInToolbar = toolbarVisible
+        app.showInContextMenu = !toolbarVisible
         app.opensNewInstance = true
-        context.insert(AppEntity(from: app))
-        try context.save()
-        let entity = try #require(context.fetch(SwiftData.FetchDescriptor<AppEntity>()).first)
-        #expect(entity.opensContainingDir == explicit)
-        #expect(!entity.showInToolbar)
-        #expect(entity.showInContextMenu)
-        let data = try JSONEncoder().encode(app.toAppMenuItem())
+        try service.save(AppConfigData(apps: [app]))
+
+        // Reload through the production mapping in a fresh context, so missing
+        // ConfigService.load fields cannot be hidden by the original app value.
+        let restored = try #require(ConfigService(modelContext: ModelContext(container)).load().apps.first)
+        #expect(restored.id == app.id)
+        #expect(restored.opensContainingDir == explicit)
+        #expect(restored.showInToolbar == toolbarVisible)
+        #expect(restored.showInContextMenu == !toolbarVisible)
+        #expect(restored.opensNewInstance)
+        let data = try JSONEncoder().encode(restored.toAppMenuItem())
         let decoded = try JSONDecoder().decode(AppMenuItem.self, from: data)
         #expect(decoded.opensContainingDir == explicit)
-        #expect(!decoded.showInToolbar)
-        #expect(decoded.showInContextMenu)
+        #expect(decoded.showInToolbar == toolbarVisible)
+        #expect(decoded.showInContextMenu == !toolbarVisible)
         #expect(decoded.opensNewInstance)
-        #expect(!decoded.isVisible(for: .toolbar))
-        #expect(decoded.isVisible(for: .contextualItems))
-        #expect(decoded.isVisible(for: .contextualContainer))
-        #expect(decoded.isVisible(for: .contextualSidebar))
+        #expect(decoded.isVisible(for: .toolbar) == toolbarVisible)
+        #expect(decoded.isVisible(for: .contextualItems) == !toolbarVisible)
+        #expect(decoded.isVisible(for: .contextualContainer) == !toolbarVisible)
+        #expect(decoded.isVisible(for: .contextualSidebar) == !toolbarVisible)
     }
 
     @Test func heartbeatsStayOnlineAcrossMonitorIntervalsAndReconnectAfterTimeout() {

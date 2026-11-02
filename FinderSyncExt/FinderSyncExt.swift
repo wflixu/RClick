@@ -706,8 +706,8 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
             itemPaths = [targetURL.path]
         }
 
-        // 打开动作统一走主程序链路（bookmark 门控与授权重试都在主程序侧，
-        // 且实测无 TCC 弹窗）。扩展离线置灰由 makeAppItem 负责，不会走到这里。
+        // 打开动作统一由主程序处理 bookmark 授权与失败重试。
+        // 主程序离线时，makeAppItem 会将应用菜单项置灰。
         let event = ClickEventPayload(
             itemId: app.id,
             itemType: .app,
@@ -744,8 +744,8 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
 
         logger.debug("CommonDir clicked: \(commonDir.name) (id: \(commonDir.id))")
 
-        // 打开目录走主程序链路：扩展是沙盒进程，NSWorkspace.open 用户目录
-        // 同样会触发 TCC 授权弹窗；主程序已去沙盒，此链路无弹窗。
+        // 打开目录统一交给主程序，由 ActionService 检查 bookmark 权限，
+        // 必要时请求用户授权；扩展只转发目标路径。
         let event = ClickEventPayload(
             itemId: commonDir.id,
             itemType: .commonDir,

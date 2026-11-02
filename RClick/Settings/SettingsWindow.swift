@@ -31,7 +31,8 @@ struct SettingsWindow: Scene {
         .defaultSize(width: 700, height: 480)
         // SwiftUI Window scene 默认随 App 启动自动打开——常驻后台工具不该如此。
         // 抑制启动时自动弹出，设置窗口只经由菜单栏图标（openWindow(id:)）
-        // 或扩展的离线提示点击打开；restorationBehavior 进一步禁止系统还原
+        // 或手动打开 App 时展示；离线提示启动保持静默。
+        // restorationBehavior 进一步禁止系统还原
         // 上次会话的窗口状态。
         .defaultLaunchBehavior(.suppressed)
         .restorationBehavior(.disabled)

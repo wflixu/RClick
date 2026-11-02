@@ -107,7 +107,7 @@ enum AppPresets {
         for path in paths { _ = symbolName(forAppPath: path) }
     }
 
-    /// 「用指定应用打开」的目标解析（主程序 ActionService 与扩展快链路共用）：
+    /// 主程序 ActionService 使用的「用指定应用打开」目标解析：
     /// 「选中文件时打开所在目录」——每应用显式开关优先，未手动设置时按预设终端分类兜底；
     /// 编辑器 / Git 客户端等保持原样（打开文件本身才是预期）。
     /// 返回 (原始路径（供日志）, 解析后的目标 URL)。

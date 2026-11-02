@@ -50,7 +50,7 @@ final class ActionService {
         let appUrl = rcitem.url
         logger.debug("openApp: rid=\(rid) app=\(appUrl.path) target=\(target) opensNewInstance=\(rcitem.opensNewInstance)")
 
-        // 目标解析（含「选中文件时打开所在目录」）收敛到 Shared，与扩展快链路共用
+        // 通过共享目标解析处理「选中文件时打开所在目录」选项
         for resolved in AppPresets.resolveOpenTargets(
             appPath: appUrl.path, explicit: rcitem.opensContainingDir, targetPaths: target
         ) {
