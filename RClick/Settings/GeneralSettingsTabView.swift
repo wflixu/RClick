@@ -79,7 +79,7 @@ struct GeneralSettingsTabView: View {
                         Text(finderSyncStatus.description)
                             .foregroundColor(.secondary)
                         Button(AppLocalization.localized("Settings…")) {
-                            openFileProviderSettings()
+                            openFinderExtensionSettings()
                         }
                     }
                 } label: {
@@ -87,13 +87,14 @@ struct GeneralSettingsTabView: View {
                         .foregroundColor(finderSyncStatus.color)
                 }
 
-                // 辅助功能权限
+                // 辅助功能权限（行标签跟随系统设置的实际叫法：
+                // macOS 26 前叫"辅助功能"，27 起叫"设备控制和数据访问"）
                 LabeledContent {
                     Button(AppLocalization.localized("Settings…")) {
                         openAccessibilitySettings()
                     }
                 } label: {
-                    Label(AppLocalization.localized("Accessibility"), systemImage: accessibilityStatus.icon)
+                    Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
                         .foregroundColor(accessibilityStatus.color)
                 }
 
@@ -112,9 +113,18 @@ struct GeneralSettingsTabView: View {
             } header: {
                 Text(appLocalized: "Permissions")
             } footer: {
-                Text(appLocalized: "File Provider: Select \"RClick\" in the list to enable the Finder context menu")
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                // 条目名按系统版本取实际叫法（27+ 的「扩展」「隐私与安全」「设备控制和数据访问」，
+                // 15/26 的「访达」「隐私与安全性」「辅助功能」）
+                Text(String(
+                    format: AppLocalization.localized(
+                        "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+                    ),
+                    SystemSettingsNaming.finderExtensionRow,
+                    SystemSettingsNaming.privacySecuritySection,
+                    SystemSettingsNaming.accessibilitySection
+                ))
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
 
             Section {
@@ -233,8 +243,18 @@ struct GeneralSettingsTabView: View {
         // normal "edit elsewhere, switch back" path; this covers a writer that never
         // takes activation away - a script, a sync tool, another process. Without
         // it a stale status would leave the button disabled and unclickable.
+        //
+        // 权限状态也挂在这个定时器上：授权发生在系统设置里（本应用在后台），
+        // macOS 的 scenePhase 对窗口级焦点切换不可靠，回到本应用时 onForeground
+        // 不保证触发。两个权限检测都是廉价系统调用，2 秒轮询无性能顾虑。
         .onReceive(Timer.publish(every: 2, on: .main, in: .common).autoconnect()) { _ in
             refreshCustomMenuStatus()
+            updatePermissionStatus()
+        }
+        // 从系统设置切回时立即刷新（窗口重新成为 key window 的那一刻），
+        // 不等下一个 2 秒轮询
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            updatePermissionStatus()
         }
         .alert(
             Text(appLocalized: "Invalid Folder"),
@@ -429,9 +449,10 @@ struct GeneralSettingsTabView: View {
 
     // MARK: - 权限设置打开
 
-    private func openFileProviderSettings() {
-        // 打开系统设置的"文件提供程序"扩展管理界面
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.AppleFileProvider")!)
+    private func openFinderExtensionSettings() {
+        // macOS 13+ 的系统设置：Finder 扩展开关在"通用 → 登录项与扩展"面板里
+        // （扩展区域底部）。旧锚点 com.apple.AppleFileProvider 在新版设置里无效。
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.LoginItems-Settings.extension")!)
     }
 
     private func openAccessibilitySettings() {
