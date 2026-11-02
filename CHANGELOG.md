@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Optional confirmation before permanent (direct) delete: a nested toggle under Direct Delete in Settings → Actions, on by default, so Trash-bypassing deletes ask once more before files are gone
 
+### Fixed
+- Update Finder extension and Accessibility settings links and version-specific guidance
+- Refresh permission status on window focus and while the page is visible
+
 ## [2.3.1] - 2026-10-14
 
 ### Fixed
