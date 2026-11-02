@@ -50,10 +50,11 @@ final class ActionService {
         let appUrl = rcitem.url
         logger.debug("openApp: rid=\(rid) app=\(appUrl.path) target=\(target) opensNewInstance=\(rcitem.opensNewInstance)")
 
-        for dirPath in target {
-            let decodedPath = dirPath.removingPercentEncoding ?? dirPath
-            let url = URL(fileURLWithPath: decodedPath)
-            await openWithApp(url, appUrl: appUrl, opensNewInstance: rcitem.opensNewInstance)
+        // 通过共享目标解析处理「选中文件时打开所在目录」选项
+        for resolved in AppPresets.resolveOpenTargets(
+            appPath: appUrl.path, explicit: rcitem.opensContainingDir, targetPaths: target
+        ) {
+            await openWithApp(resolved.url, appUrl: appUrl, opensNewInstance: rcitem.opensNewInstance)
         }
     }
 

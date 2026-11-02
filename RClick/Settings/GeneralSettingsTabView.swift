@@ -51,6 +51,26 @@ struct GeneralSettingsTabView: View {
                 Text(appLocalized: "Main Controls")
             }
 
+            // MARK: - 应用图标样式（全局，作用于「打开方式」里的应用项图标）
+            Section {
+                Picker(selection: $store.appIconStyle) {
+                    Text(AppLocalization.localized("No Icons")).tag(RCAppIconStyle.none.rawValue)
+                    Text(AppLocalization.localized("Simple Icons")).tag(RCAppIconStyle.simple.rawValue)
+                    Text(AppLocalization.localized("Original Icons")).tag(RCAppIconStyle.original.rawValue)
+                } label: {
+                    Text(AppLocalization.localized("Icon Style"))
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: store.appIconStyle) {
+                    NotificationCenter.default.post(name: .menuConfigShouldUpdate, object: nil)
+                }
+            } header: {
+                Text(AppLocalization.localized("Icon Style"))
+            } footer: {
+                Text(appLocalized: "Applies to app icons in the Open With menu: none / simple (monochrome) / original")
+                    .foregroundColor(.secondary)
+            }
+
             // MARK: - 第二组：权限
             Section {
                 // Finder 扩展状态
