@@ -86,8 +86,12 @@ struct GeneralSettingsTabView: View {
                 // 辅助功能权限（行标签跟随系统设置的实际叫法：
                 // macOS 26 前叫"辅助功能"，27 起叫"设备控制和数据访问"）
                 LabeledContent {
-                    Button(AppLocalization.localized("Settings…")) {
-                        openAccessibilitySettings()
+                    HStack(spacing: 8) {
+                        Text(accessibilityStatus.description)
+                            .foregroundColor(.secondary)
+                        Button(AppLocalization.localized("Settings…")) {
+                            openAccessibilitySettings()
+                        }
                     }
                 } label: {
                     Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
@@ -111,14 +115,22 @@ struct GeneralSettingsTabView: View {
             } footer: {
                 // 条目名按系统版本取实际叫法（27+ 的「扩展」「隐私与安全」「设备控制和数据访问」，
                 // 15/26 的「访达」「隐私与安全性」「辅助功能」）
-                Text(String(
-                    format: AppLocalization.localized(
-                        "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
-                    ),
-                    SystemSettingsNaming.finderExtensionRow,
-                    SystemSettingsNaming.privacySecuritySection,
-                    SystemSettingsNaming.accessibilitySection
-                ))
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(String(
+                        format: AppLocalization.localized(
+                            "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@."
+                        ),
+                        SystemSettingsNaming.finderExtensionRow
+                    ))
+                    Text(String(
+                        format: AppLocalization.localized(
+                            "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@."
+                        ),
+                        SystemSettingsNaming.accessibilitySection,
+                        SystemSettingsNaming.privacySecuritySection,
+                        SystemSettingsNaming.accessibilitySection
+                    ))
+                }
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             }
@@ -236,37 +248,141 @@ struct GeneralSettingsTabView: View {
 
     private func exportSettings() {
         let savePanel = NSSavePanel()
-        savePanel.allowedContentTypes = [.propertyList]
-        savePanel.nameFieldStringValue = "RClick_Settings.plist"
+        savePanel.allowedContentTypes = [.json]
+        savePanel.nameFieldStringValue = "RClick-Settings.json"
+        savePanel.canCreateDirectories = true
         savePanel.begin { response in
             guard response == .OK, let url = savePanel.url else { return }
-            // TODO: 实现设置导出逻辑
-            logger.info("导出设置到：\(url.path)")
+            Task { @MainActor in
+                do {
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                    encoder.dateEncodingStrategy = .iso8601
+                    let data = try encoder.encode(SettingsBackup(appState: store))
+                    try data.write(to: url, options: .atomic)
+                    logger.info("导出设置到：\(url.path)")
+                } catch {
+                    logger.error("export settings failed: \(error.localizedDescription)")
+                    presentError(title: "Export Failed", message: error.localizedDescription)
+                }
+            }
         }
     }
 
     private func importSettings() {
         let openPanel = NSOpenPanel()
-        openPanel.allowedContentTypes = [.propertyList]
+        openPanel.allowedContentTypes = [.json]
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
         openPanel.begin { response in
             guard response == .OK, let url = openPanel.url else { return }
-            // TODO: 实现设置导入逻辑
-            logger.info("从以下路径导入设置：\(url.path)")
+            Task { @MainActor in
+                do {
+                    let data = try Data(contentsOf: url)
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .iso8601
+                    let backup = try decoder.decode(SettingsBackup.self, from: data)
+                    guard backup.schemaVersion == SettingsBackup.currentSchemaVersion else {
+                        presentError(
+                            title: "Import Failed",
+                            message: AppLocalization.localized("The file is not a valid RClick settings backup.")
+                        )
+                        return
+                    }
+                    guard confirmImport() else { return }
+                    applyImport(backup)
+                    logger.info("从以下路径导入设置：\(url.path)")
+                } catch {
+                    logger.error("import settings failed: \(error.localizedDescription)")
+                    presentError(
+                        title: "Import Failed",
+                        message: AppLocalization.localized("The file is not a valid RClick settings backup.")
+                    )
+                }
+            }
+        }
+    }
+
+    /// 导入是整体替换，先把“会覆盖当前配置”和“文件夹授权不随备份迁移”说清楚。
+    private func confirmImport() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("Import Settings?")
+        alert.informativeText = AppLocalization.localized("This replaces all current settings. Folder permissions are not included and may need to be granted again.")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("Replace"))
+        alert.addButton(withTitle: AppLocalization.localized("Cancel"))
+        alert.buttons[0].hasDestructiveAction = true
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+
+    private func applyImport(_ backup: SettingsBackup) {
+        var skippedApps = 0
+        store.apps = backup.apps.compactMap { entry in
+            guard let app = entry.toModel() else {
+                skippedApps += 1
+                return nil
+            }
+            return app
+        }
+        store.actions = SettingsBackup.resolveActions(backup.actions)
+        store.newFiles = backup.newFiles.map { $0.toModel() }
+        store.cdirs = backup.commonDirs.map { $0.toModel() }
+        backup.preferences.apply()
+        store.sync()
+
+        if skippedApps > 0 {
+            let alert = NSAlert()
+            alert.messageText = AppLocalization.localized("Import Complete")
+            alert.informativeText = AppLocalization.localized("Some apps in the backup are not installed on this Mac and were skipped.")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: AppLocalization.localized("OK"))
+            alert.runModal()
         }
     }
 
     private func exportLogs() {
         let savePanel = NSSavePanel()
         savePanel.allowedContentTypes = [.plainText]
-        savePanel.nameFieldStringValue = "RClick_Log.txt"
+        savePanel.nameFieldStringValue = "RClick-Logs.txt"
+        savePanel.canCreateDirectories = true
         savePanel.begin { response in
             guard response == .OK, let url = savePanel.url else { return }
-            // TODO: 实现日志导出逻辑
-            logger.info("导出日志到：\(url.path)")
+            Task { @MainActor in
+                do {
+                    let text = try Self.collectLogs()
+                    try text.write(to: url, atomically: true, encoding: .utf8)
+                    logger.info("导出日志到：\(url.path)")
+                } catch {
+                    logger.error("export logs failed: \(error.localizedDescription)")
+                    presentError(title: "Export Failed", message: error.localizedDescription)
+                }
+            }
         }
+    }
+
+    /// 只导主程序当前进程的日志。Finder 扩展是独立进程，需要系统日志权限，这里不碰。
+    private static func collectLogs() throws -> String {
+        let subsystem = Bundle.main.bundleIdentifier ?? "cn.wflixu.RClick"
+        let store = try OSLogStore(scope: .currentProcessIdentifier)
+        let formatter = ISO8601DateFormatter()
+        var lines: [String] = []
+
+        for entry in try store.getEntries() {
+            guard let log = entry as? OSLogEntryLog, log.subsystem == subsystem else { continue }
+            lines.append("\(formatter.string(from: log.date)) [\(log.category)] \(log.composedMessage)")
+            if lines.count >= 5000 { break }
+        }
+        return lines.reversed().joined(separator: "\n")
+    }
+
+    private func presentError(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized(title)
+        alert.informativeText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("OK"))
+        alert.runModal()
     }
 
     private func resetAllSettings() {
@@ -280,9 +396,29 @@ struct GeneralSettingsTabView: View {
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
-            // TODO: 实现重置逻辑
-            logger.info("重置所有设置")
+            resetToDefaults()
         }
+    }
+
+    private func resetToDefaults() {
+        store.apps = OpenWithApp.defaultApps
+        store.actions = RCAction.all.sorted { $0.idx < $1.idx }
+        store.newFiles = NewFile.all.sorted { $0.idx < $1.idx }
+        store.cdirs = CommonDirEntity.createDefaultCommonDirs().map {
+            CommonDir(id: $0.id, name: $0.name, url: $0.path, icon: $0.icon)
+        }
+        SettingsBackup.Preferences(
+            foldAppsMenu: false,
+            foldActionsMenu: false,
+            foldNewFileMenu: true,
+            foldCommonDirMenu: true,
+            showCommonDirs: false,
+            appIconStyle: RCAppIconStyle.simple.rawValue,
+            showMenuBarExtra: true,
+            launchAtLogin: false
+        ).apply()
+        store.sync()
+        logger.info("重置所有设置")
     }
 }
 

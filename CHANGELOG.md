@@ -13,12 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Direct Delete now always asks for confirmation before permanently removing files. Hold Option while choosing it to skip the prompt
 
 ### Added
+- Settings backup: export the full configuration as JSON, import it on the same or another Mac, and export the app's logs
+- Copy File Name action, which puts the selected item's name (without its path) on the clipboard
 - Built-in app presets, per-app toolbar/context-menu visibility, and none/simple/original icon styles
 - Automatic/on/off containing-folder behavior for terminal and other apps, with compatible persistence and IPC
 - Offline Copy Path and a clickable hint that quietly relaunches the host
 - Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 
 ### Fixed
+- Reset All Settings now restores apps, actions, file types, common folders and preferences instead of only writing a log line
+- New-file auto-rename no longer depends on fixed delays: it waits for Finder to become active, so it stops missing the rename step on slow folders
+- Auto-rename now explains the missing Accessibility permission once (granted to the RClick app, not the Finder extension) instead of failing silently
+- Direct Delete skipped the confirmation even when the menu item was not marked "skip confirmation". It now skips only when Option was held while the menu was built, matching the title the user saw
 - Update Finder extension and Accessibility settings links and version-specific guidance
 - Refresh permission status on window focus and while the page is visible
 

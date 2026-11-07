@@ -38,6 +38,18 @@ final class ActionService {
         }
     }
 
+    /// 复制文件名（不含路径）到剪贴板
+    func copyFileName(_ target: [String]) {
+        guard let path = target.first else { return }
+        let decoded = path.removingPercentEncoding ?? path
+        let name = URL(fileURLWithPath: decoded).lastPathComponent
+        guard !name.isEmpty else { return }
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(name, forType: .string)
+    }
+
     // MARK: - AppActions
 
     /// 用指定应用打开选中文件/目录（沙盒门控：先 hasAccess，失败兜底再授权重试）
@@ -133,6 +145,8 @@ final class ActionService {
         switch rcitem.id {
         case "copy-path":
             copyPath(target)
+        case "copy-file-name":
+            copyFileName(target)
         case "delete-direct":
             await deleteFoldorFile(target, trigger, optionKeyPressed: optionKeyPressed)
         case "unhide":
@@ -512,23 +526,82 @@ final class ActionService {
     private func revealInFinderAndRename(_ fileURL: URL) {
         NSWorkspace.shared.activateFileViewerSelecting([fileURL])
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [logger] in
-            let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
-            guard AXIsProcessTrustedWithOptions(options) else {
-                logger.warning("Accessibility permission is required to trigger Finder rename for \(fileURL.path)")
-                return
+        guard AXIsProcessTrusted() else {
+            // 等 Finder 完成激活和选中再弹提示，避免提示窗口被 Finder 抢到后面。
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                self?.presentAccessibilityHintIfNeeded()
             }
-
-            NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder").first?.activate()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                let keyCodeReturn: CGKeyCode = 36
-                let source = CGEventSource(stateID: .hidSystemState)
-                let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: true)
-                let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: false)
-                keyDown?.post(tap: .cghidEventTap)
-                keyUp?.post(tap: .cghidEventTap)
-            }
+            return
         }
+
+        // 权限可用时重新武装一次性提示：用户之后撤销权限，还能再收到一次提醒。
+        UserDefaults.group.set(false, forKey: Key.didShowRenamePermissionHint)
+        waitForFinderThenRename(fileURL)
+    }
+
+    /// 缺少辅助功能权限时只提示一次，之后静默跳过自动重命名。
+    private func presentAccessibilityHintIfNeeded() {
+        let defaults = UserDefaults.group
+        guard !defaults.bool(forKey: Key.didShowRenamePermissionHint) else {
+            logger.debug("Accessibility permission still missing; auto-rename skipped")
+            return
+        }
+        defaults.set(true, forKey: Key.didShowRenamePermissionHint)
+
+        let alert = NSAlert()
+        alert.messageText = AppLocalization.localized("Auto-Rename Needs Permission")
+        alert.informativeText = String(
+            format: AppLocalization.localized(
+                "RClick needs \"%@\" permission to rename a newly created file automatically. Enable it for the RClick app in System Settings > %@."
+            ),
+            SystemSettingsNaming.accessibilitySection,
+            SystemSettingsNaming.privacySecuritySection
+        )
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: AppLocalization.localized("Open Settings"))
+        alert.addButton(withTitle: AppLocalization.localized("Later"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            PermissionChecker.openAccessibilitySettings()
+        }
+    }
+
+    /// 等 Finder 真正成为前台并稳定后再发 Return。
+    ///
+    /// 原来的固定 0.35s + 0.25s 延时在慢目录或 Finder 响应较慢时会抢跑，
+    /// 表现为“有时进入重命名、有时没有”。这里改成轮询前台应用，最多等 2 秒。
+    private func waitForFinderThenRename(
+        _ fileURL: URL,
+        deadline: Date = .now.addingTimeInterval(2),
+        activate: Bool = true
+    ) {
+        if NSWorkspace.shared.frontmostApplication?.bundleIdentifier == "com.apple.finder" {
+            // 激活和选中不是同一时刻完成，留一点稳定时间再触发重命名。
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.postReturnKey()
+            }
+            return
+        }
+
+        guard Date() < deadline else {
+            logger.warning("Finder did not become active; auto-rename skipped for \(fileURL.path)")
+            return
+        }
+
+        // 只激活一次，之后单纯轮询，避免每 50ms 重复调用 activate。
+        if activate {
+            NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder").first?.activate()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            self?.waitForFinderThenRename(fileURL, deadline: deadline, activate: false)
+        }
+    }
+
+    private func postReturnKey() {
+        let keyCodeReturn: CGKeyCode = 36
+        let source = CGEventSource(stateID: .hidSystemState)
+        let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: true)
+        let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyCodeReturn, keyDown: false)
+        keyDown?.post(tap: .cghidEventTap)
+        keyUp?.post(tap: .cghidEventTap)
     }
 }

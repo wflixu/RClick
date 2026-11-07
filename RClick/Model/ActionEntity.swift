@@ -48,10 +48,11 @@ final class ActionEntity {
     static func createDefaultActions() -> [ActionEntity] {
         return [
             ActionEntity(id: "copy-path", name: "Copy Path", icon: "doc.on.doc", isEnabled: true, sortOrder: 0),
-            ActionEntity(id: "delete-direct", name: "Delete Direct", icon: "trash", isEnabled: true, sortOrder: 1),
-            ActionEntity(id: "hide", name: "Hide", icon: "eye.slash", isEnabled: false, sortOrder: 2),
-            ActionEntity(id: "unhide", name: "Unhide", icon: "eye", isEnabled: false, sortOrder: 3),
-            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", isEnabled: false, sortOrder: 4),
+            ActionEntity(id: "copy-file-name", name: "Copy File Name", icon: "doc.text", isEnabled: true, sortOrder: 1),
+            ActionEntity(id: "delete-direct", name: "Delete Direct", icon: "trash", isEnabled: true, sortOrder: 2),
+            ActionEntity(id: "hide", name: "Hide", icon: "eye.slash", isEnabled: false, sortOrder: 3),
+            ActionEntity(id: "unhide", name: "Unhide", icon: "eye", isEnabled: false, sortOrder: 4),
+            ActionEntity(id: "airdrop", name: "AirDrop", icon: "paperplane", isEnabled: false, sortOrder: 5),
         ]
     }
 }

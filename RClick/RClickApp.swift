@@ -150,6 +150,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let context = ModelContext(SharedDataManager.sharedModelContainer)
             await SharedDataManager.initializeDefaultData(context: context)
 
+            // 补齐全默认动作后刷新内存快照，让新增动作在本次启动就进入菜单
+            appState.refresh()
+            sendMenuConfigurationUpdate()
+
             // Preload icons for all apps to improve performance
             Task { @MainActor in
                 IconCache.shared.preloadIcons(for: appState.apps.map { $0.url })
@@ -258,11 +262,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func handleClickEvent(_ event: ClickEventPayload) async {
-        // 主程序也读一次实时状态：扩展可能报告 false（没有事件上下文），
-        // 也可能是还没更新的旧版扩展根本没带这个字段。任一来源看到 Option 都算按下。
-        let liveOption = Self.isOptionKeyPressed()
-        let optionKeyPressed = (event.optionKeyPressed ?? false) || liveOption
-        logger.info("Click option: payload=\(String(describing: event.optionKeyPressed)) live=\(liveOption) resolved=\(optionKeyPressed)")
+        // 是否跳过删除确认以扩展在菜单构建时定下的标记为准。主程序不再读取
+        // 实时按键状态，避免与扩展显示的菜单标题不一致。旧版扩展未携带该字段
+        // 时按 false 处理，即弹出确认框——这是安全方向。
+        let optionKeyPressed = event.optionKeyPressed ?? false
+        logger.info("Click option: payload=\(String(describing: event.optionKeyPressed)) resolved=\(optionKeyPressed)")
         logger.debug("Handling click event: \(event.itemId) type=\(event.itemType.rawValue) trigger=\(event.trigger.rawValue) target=\(event.target)")
 
         let actionService = RCRuntime.shared.actionService
@@ -282,13 +286,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         case .commonDir:
             await actionService.openCommonDirs(target: event.target)
         }
-    }
-
-    /// 实时修饰键状态。NSEvent 与窗口服务器两条来源都试一遍，任一看到按下即算。
-    private static func isOptionKeyPressed() -> Bool {
-        if NSEvent.modifierFlags.contains(.option) { return true }
-        return CGEventSource.flagsState(.combinedSessionState).contains(.maskAlternate)
-            || CGEventSource.flagsState(.hidSystemState).contains(.maskAlternate)
     }
 
     // MARK: - 重连机制

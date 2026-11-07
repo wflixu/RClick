@@ -14,8 +14,7 @@ struct AboutSettingsTabView: View {
 
     var body: some View {
         Form {
-            identitySection
-            updateSection
+            aboutSection
             communitySection
             appsSection
         }
@@ -24,51 +23,26 @@ struct AboutSettingsTabView: View {
         .task { await updateManager.loadStarCount() }
     }
 
-    // MARK: - 应用标识
+    // MARK: - 版本与更新
 
-    /// 图标、名字、版本、简介同处一个居中的块。
+    /// 版本、构建号、更新状态和简介同处一段。
     ///
-    /// 简介原先单独占一个 Section，分组样式会在两者之间画一个框、留一段空隙，
-    /// 加上一个居中一个左对齐，看起来就是两截互不相干的内容。
-    private var identitySection: some View {
+    /// 侧边栏顶部已经有 Logo、名称和版本号，这里不再重复品牌区。原先竖排居中的
+    /// 大块（约 250pt）是整个 About 页需要滚动的直接原因；现在把版本和构建号
+    /// 作为普通设置行，简介收进 section footer，第一屏就能看到下面的内容。
+    private var aboutSection: some View {
         Section {
-            VStack(spacing: 12) {
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 96, height: 96)
-
-                VStack(spacing: 4) {
-                    Text("RClick")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    Text(String(format: AppLocalization.localized("Version %@ (%@)"), getAppVersion(), getBuildVersion()))
-                        .font(.caption)
+            LabeledContent(AppLocalization.localized("Version")) {
+                HStack(spacing: 4) {
+                    Text(getAppVersion())
+                        .monospacedDigit()
+                    Text(verbatim: "(\(getBuildVersion()))")
                         .foregroundStyle(.secondary)
+                        .monospacedDigit()
                 }
-
-                Text(appLocalized: "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 360)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-        }
-    }
 
-    // MARK: - 更新
-
-    /// 更新状态行。
-    ///
-    /// 沿用 General 里「状态行」的写法（见 `GeneralSettingsTabView` 的 Finder 扩展那一行）：
-    /// 左边是带状态色的名称，右边是状态说明 + 操作按钮。原先这里只有一个光秃秃的按钮
-    /// 单独占一段，上下都是空白，所以显得突兀——按钮旁边永远有说明它当前状态的文字，
-    /// 它才成为一句话的结尾，而不是一个孤立的控件。
-    private var updateSection: some View {
-        Section {
+            // 更新状态行：左边是带状态色的名称，右边是状态说明 + 操作按钮。
             LabeledContent {
                 HStack(spacing: 8) {
                     if let detail = updateStatus.detail {
@@ -93,6 +67,9 @@ struct AboutSettingsTabView: View {
                 Label(updateStatus.title, systemImage: updateStatus.icon)
                     .foregroundStyle(updateStatus.color)
             }
+        } footer: {
+            Text(appLocalized: "RClick is a right-click menu extension that allows you to add applications for opening folders and includes some common actions.")
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -179,7 +156,14 @@ struct AboutSettingsTabView: View {
                     }
                 }
             } label: {
-                Label(AppLocalization.localized("RClick on GitHub"), image: "github")
+                HStack(spacing: 6) {
+                    Image("github")
+                        .resizable()
+                        .interpolation(.high)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                    Text(AppLocalization.localized("RClick on GitHub"))
+                }
             }
 
             LabeledContent {

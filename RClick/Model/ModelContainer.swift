@@ -119,16 +119,34 @@ class SharedDataManager {
 
     /// 初始化默认数据
     static func initializeDefaultData(context: ModelContext) async {
-        // 检查是否已有数据
-        let actionDescriptor = FetchDescriptor<ActionEntity>()
-        let actionCount = try? context.fetchCount(actionDescriptor)
+        // 动作表按 id 补齐缺失的默认动作：既覆盖首次安装，也覆盖升级后新增的内置动作。
+        // 已有动作保持相对顺序，只在缺失项的位置插入并重新编号。
+        let actionDescriptor = FetchDescriptor<ActionEntity>(sortBy: [SortDescriptor(\.sortOrder)])
+        let existingActions = (try? context.fetch(actionDescriptor)) ?? []
+        let defaultActions = ActionEntity.createDefaultActions()
+        let existingIDs = Set(existingActions.map(\.id))
+        let missingActions = defaultActions.filter { !existingIDs.contains($0.id) }
 
-        if actionCount == 0 {
-            // 插入默认动作
-            for action in ActionEntity.createDefaultActions() {
+        if !missingActions.isEmpty {
+            var ordered = existingActions
+            for action in missingActions {
+                ordered.insert(action, at: min(action.sortOrder, ordered.count))
+            }
+            for (index, action) in ordered.enumerated() {
+                action.sortOrder = index
+            }
+            for action in missingActions {
                 context.insert(action)
             }
-            Self.logger.info("已初始化默认动作")
+            Self.logger.info("已补齐缺失的默认动作: \(missingActions.map(\.id).joined(separator: ", "))")
+        }
+
+        // 内置动作的图标由代码维护（设置页没有修改图标的入口），升级后同步一次，
+        // 避免旧的默认图标一直留在库里。
+        let defaultIcons = Dictionary(uniqueKeysWithValues: defaultActions.map { ($0.id, $0.icon) })
+        for action in existingActions {
+            guard let icon = defaultIcons[action.id], action.icon != icon else { continue }
+            action.icon = icon
         }
 
         let fileTypeDescriptor = FetchDescriptor<NewFileTypeEntity>()

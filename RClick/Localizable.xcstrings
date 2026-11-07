@@ -914,6 +914,41 @@
         }
       }
     },
+    "Auto-Rename Needs Permission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-Rename Needs Permission"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cambio de nombre automático necesita permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le renommage automatique nécessite une autorisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動名前変更には権限が必要です"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动重命名需要权限"
+          }
+        }
+      }
+    },
     "BBEdit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1470,6 +1505,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コンテキストメニュー"
+          }
+        }
+      }
+    },
+    "Copy File Name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy File Name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar nombre de archivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le nom du fichier"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名をコピー"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制文件名"
           }
         }
       }
@@ -2384,6 +2454,41 @@
         }
       }
     },
+    "Export Failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Failed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al exportar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l’exportation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エクスポートに失敗しました"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出失败"
+          }
+        }
+      }
+    },
     "Export Logs…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2769,37 +2874,72 @@
         }
       }
     },
-    "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@." : {
+    "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+            "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extensión del Finder: active \"RClick\" en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@. Accesibilidad: %@ > %@."
+            "value" : "Extensión del Finder: activa «RClick» en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@. Accessibilité : %@ > %@."
+            "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。アクセシビリティ：%@ > %@。"
+            "value" : "Finder 拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。辅助功能：在「系统设置 → %@ → %@」中授权。"
+            "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。"
+          }
+        }
+      }
+    },
+    "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» se usa para cambiar automáticamente el nombre de archivos nuevos: Ajustes del Sistema > %@ > %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » sert à renommer automatiquement les nouveaux fichiers : Réglages Système > %@ > %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」は新規ファイルの自動名前変更に使用します：システム設定 > %@ > %@。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」用于新建文件后的自动重命名：系统设置 → %@ → %@。"
           }
         }
       }
@@ -3535,6 +3675,111 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "忽略此版本"
+          }
+        }
+      }
+    },
+    "Import Complete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Complete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importación completada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importation terminée"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インポートが完了しました"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入完成"
+          }
+        }
+      }
+    },
+    "Import Failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Failed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al importar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l’importation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インポートに失敗しました"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入失败"
+          }
+        }
+      }
+    },
+    "Import Settings?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Settings?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Importar ajustes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer les réglages ?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定をインポートしますか？"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入设置？"
           }
         }
       }
@@ -4694,6 +4939,41 @@
         }
       }
     },
+    "Open Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les réglages"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定を開く"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开设置"
+          }
+        }
+      }
+    },
     "Original Icons" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5288,6 +5568,41 @@
         }
       }
     },
+    "RClick needs \"%@\" permission to rename a newly created file automatically. Enable it for the RClick app in System Settings > %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick needs \"%@\" permission to rename a newly created file automatically. Enable it for the RClick app in System Settings > %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick necesita el permiso «%@» para cambiar el nombre de un archivo recién creado automáticamente. Actívalo para la app RClick en Ajustes del Sistema > %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick a besoin de l’autorisation « %@ » pour renommer automatiquement un fichier nouvellement créé. Activez-la pour l’app RClick dans Réglages Système > %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick が新規作成したファイルの名前を自動で変更するには「%@」権限が必要です。システム設定 > %@ で RClick アプリに許可してください。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick 需要「%@」权限，才能在新建文件后自动重命名。请在系统设置 > %@ 中为 RClick 主程序开启该权限。"
+          }
+        }
+      }
+    },
     "RClick needs access to this folder to delete, create, and modify files. Choose this folder or a broader parent folder to cover its subfolders. You can manage these grants in Settings → Folder Permissions." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5424,6 +5739,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "移除文件夹权限"
+          }
+        }
+      }
+    },
+    "Replace" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplacer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "置き換える"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替换"
           }
         }
       }
@@ -6093,6 +6443,41 @@
         }
       }
     },
+    "Some apps in the backup are not installed on this Mac and were skipped." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some apps in the backup are not installed on this Mac and were skipped."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas apps de la copia de seguridad no están instaladas en este Mac y se omitieron."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certaines apps de la sauvegarde ne sont pas installées sur ce Mac et ont été ignorées."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バックアップ内の一部のアプリはこの Mac にインストールされていないため、スキップされました。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备份中的部分应用未安装在此 Mac 上，已跳过。"
+          }
+        }
+      }
+    },
     "SourceTree" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6443,6 +6828,41 @@
         }
       }
     },
+    "The file is not a valid RClick settings backup." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a valid RClick settings backup."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El archivo no es una copia de seguridad de ajustes de RClick válida."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce fichier n’est pas une sauvegarde de réglages RClick valide."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このファイルは有効な RClick 設定バックアップではありません。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该文件不是有效的 RClick 设置备份。"
+          }
+        }
+      }
+    },
     "The most likely cause is that this build is not properly signed. Rebuild it with a valid signing identity — a build signed to run locally cannot reach the App Group container." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6579,6 +6999,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此操作无法撤销，也不会将项目移到废纸篓。"
+          }
+        }
+      }
+    },
+    "This replaces all current settings. Folder permissions are not included and may need to be granted again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This replaces all current settings. Folder permissions are not included and may need to be granted again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto reemplaza toda la configuración actual. Los permisos de carpetas no se incluyen y es posible que debas concederlos de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela remplace tous les réglages actuels. Les autorisations de dossier ne sont pas incluses et devront peut-être être accordées à nouveau."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在の設定はすべて置き換えられます。フォルダの権限は含まれないため、再度許可が必要になる場合があります。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这会替换当前所有设置。文件夹权限不会包含在备份中，导入后可能需要重新授权。"
           }
         }
       }
@@ -7383,6 +7838,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "v%@"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本"
           }
         }
       }
