@@ -150,6 +150,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let context = ModelContext(SharedDataManager.sharedModelContainer)
             await SharedDataManager.initializeDefaultData(context: context)
 
+            // 补齐全默认动作后刷新内存快照，让新增动作在本次启动就进入菜单
+            appState.refresh()
+            sendMenuConfigurationUpdate()
+
             // Preload icons for all apps to improve performance
             Task { @MainActor in
                 IconCache.shared.preloadIcons(for: appState.apps.map { $0.url })

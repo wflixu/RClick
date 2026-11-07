@@ -38,6 +38,18 @@ final class ActionService {
         }
     }
 
+    /// 复制文件名（不含路径）到剪贴板
+    func copyFileName(_ target: [String]) {
+        guard let path = target.first else { return }
+        let decoded = path.removingPercentEncoding ?? path
+        let name = URL(fileURLWithPath: decoded).lastPathComponent
+        guard !name.isEmpty else { return }
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(name, forType: .string)
+    }
+
     // MARK: - AppActions
 
     /// 用指定应用打开选中文件/目录（沙盒门控：先 hasAccess，失败兜底再授权重试）
@@ -133,6 +145,8 @@ final class ActionService {
         switch rcitem.id {
         case "copy-path":
             copyPath(target)
+        case "copy-file-name":
+            copyFileName(target)
         case "delete-direct":
             await deleteFoldorFile(target, trigger, optionKeyPressed: optionKeyPressed)
         case "unhide":

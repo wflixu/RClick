@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Direct Delete now always asks for confirmation before permanently removing files. Hold Option while choosing it to skip the prompt
 
 ### Added
+- Copy File Name action, which puts the selected item's name (without its path) on the clipboard
 - Built-in app presets, per-app toolbar/context-menu visibility, and none/simple/original icon styles
 - Automatic/on/off containing-folder behavior for terminal and other apps, with compatible persistence and IPC
 - Offline Copy Path and a clickable hint that quietly relaunches the host
