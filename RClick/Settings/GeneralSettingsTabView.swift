@@ -86,17 +86,16 @@ struct GeneralSettingsTabView: View {
                 // 辅助功能权限（行标签跟随系统设置的实际叫法：
                 // macOS 26 前叫"辅助功能"，27 起叫"设备控制和数据访问"）
                 LabeledContent {
-                    Button(AppLocalization.localized("Settings…")) {
-                        openAccessibilitySettings()
+                    HStack(spacing: 8) {
+                        Text(accessibilityStatus.description)
+                            .foregroundColor(.secondary)
+                        Button(AppLocalization.localized("Settings…")) {
+                            openAccessibilitySettings()
+                        }
                     }
                 } label: {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
-                            .foregroundColor(accessibilityStatus.color)
-                        Text(appLocalized: "Used for auto-renaming new files.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                    Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
+                        .foregroundColor(accessibilityStatus.color)
                 }
 
                 // 文件夹权限（Bookmark）
@@ -119,13 +118,18 @@ struct GeneralSettingsTabView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(String(
                         format: AppLocalization.localized(
-                            "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+                            "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@."
                         ),
-                        SystemSettingsNaming.finderExtensionRow,
+                        SystemSettingsNaming.finderExtensionRow
+                    ))
+                    Text(String(
+                        format: AppLocalization.localized(
+                            "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@."
+                        ),
+                        SystemSettingsNaming.accessibilitySection,
                         SystemSettingsNaming.privacySecuritySection,
                         SystemSettingsNaming.accessibilitySection
                     ))
-                    Text(appLocalized: "Grant this permission to the RClick app, not the Finder extension.")
                 }
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

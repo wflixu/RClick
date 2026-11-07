@@ -2839,37 +2839,72 @@
         }
       }
     },
-    "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@." : {
+    "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+            "value" : "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extensión del Finder: active \"RClick\" en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@. Accesibilidad: %@ > %@."
+            "value" : "Extensión del Finder: activa «RClick» en Ajustes del Sistema > General > Inicio de sesión y extensiones > %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@. Accessibilité : %@ > %@."
+            "value" : "Extension Finder : activez « RClick » dans Réglages Système > Général > Ouverture et extensions > %@."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。アクセシビリティ：%@ > %@。"
+            "value" : "Finder 拡張：システム設定 > 一般 > ログイン項目と拡張機能 > %@ で RClick を有効にしてください。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。辅助功能：在「系统设置 → %@ → %@」中授权。"
+            "value" : "Finder 扩展：在「系统设置 → 通用 → 登录项与扩展 → %@」中开启 RClick。"
+          }
+        }
+      }
+    },
+    "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" is used for auto-renaming new files: System Settings > %@ > %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«%@» se usa para cambiar automáticamente el nombre de archivos nuevos: Ajustes del Sistema > %@ > %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » sert à renommer automatiquement les nouveaux fichiers : Réglages Système > %@ > %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」は新規ファイルの自動名前変更に使用します：システム設定 > %@ > %@。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」用于新建文件后的自动重命名：系统设置 → %@ → %@。"
           }
         }
       }
@@ -3395,41 +3430,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授予权限"
-          }
-        }
-      }
-    },
-    "Grant this permission to the RClick app, not the Finder extension." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grant this permission to the RClick app, not the Finder extension."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Concede este permiso a la app RClick, no a la extensión de Finder."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accordez cette autorisation à l’app RClick, pas à l’extension Finder."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この権限は Finder 拡張ではなく、RClick アプリに許可してください。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此权限请授予 RClick 主程序，而不是 Finder 扩展。"
           }
         }
       }
@@ -7244,41 +7244,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通过 Mac App Store 更新"
-          }
-        }
-      }
-    },
-    "Used for auto-renaming new files." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Used for auto-renaming new files."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se usa para cambiar el nombre de archivos nuevos automáticamente."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utilisée pour renommer automatiquement les nouveaux fichiers."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新規ファイルの名前を自動で変更するために使用します。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用于新建文件后自动重命名。"
           }
         }
       }
