@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 
 ### Fixed
+- New-file auto-rename no longer depends on fixed delays: it waits for Finder to become active, so it stops missing the rename step on slow folders
+- Auto-rename now explains the missing Accessibility permission once (granted to the RClick app, not the Finder extension) instead of failing silently
 - Direct Delete skipped the confirmation even when the menu item was not marked "skip confirmation". It now skips only when Option was held while the menu was built, matching the title the user saw
 - Update Finder extension and Accessibility settings links and version-specific guidance
 - Refresh permission status on window focus and while the page is visible

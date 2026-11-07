@@ -90,8 +90,13 @@ struct GeneralSettingsTabView: View {
                         openAccessibilitySettings()
                     }
                 } label: {
-                    Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
-                        .foregroundColor(accessibilityStatus.color)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Label(SystemSettingsNaming.accessibilitySection, systemImage: accessibilityStatus.icon)
+                            .foregroundColor(accessibilityStatus.color)
+                        Text(appLocalized: "Used for auto-renaming new files.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 // 文件夹权限（Bookmark）
@@ -111,14 +116,17 @@ struct GeneralSettingsTabView: View {
             } footer: {
                 // 条目名按系统版本取实际叫法（27+ 的「扩展」「隐私与安全」「设备控制和数据访问」，
                 // 15/26 的「访达」「隐私与安全性」「辅助功能」）
-                Text(String(
-                    format: AppLocalization.localized(
-                        "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
-                    ),
-                    SystemSettingsNaming.finderExtensionRow,
-                    SystemSettingsNaming.privacySecuritySection,
-                    SystemSettingsNaming.accessibilitySection
-                ))
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(String(
+                        format: AppLocalization.localized(
+                            "Finder extension: enable \"RClick\" under System Settings > General > Login Items & Extensions > %@. Accessibility: %@ > %@."
+                        ),
+                        SystemSettingsNaming.finderExtensionRow,
+                        SystemSettingsNaming.privacySecuritySection,
+                        SystemSettingsNaming.accessibilitySection
+                    ))
+                    Text(appLocalized: "Grant this permission to the RClick app, not the Finder extension.")
+                }
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             }

@@ -914,6 +914,41 @@
         }
       }
     },
+    "Auto-Rename Needs Permission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-Rename Needs Permission"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cambio de nombre automático necesita permiso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le renommage automatique nécessite une autorisation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動名前変更には権限が必要です"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动重命名需要权限"
+          }
+        }
+      }
+    },
     "BBEdit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3364,6 +3399,41 @@
         }
       }
     },
+    "Grant this permission to the RClick app, not the Finder extension." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grant this permission to the RClick app, not the Finder extension."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concede este permiso a la app RClick, no a la extensión de Finder."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accordez cette autorisation à l’app RClick, pas à l’extension Finder."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この権限は Finder 拡張ではなく、RClick アプリに許可してください。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此权限请授予 RClick 主程序，而不是 Finder 扩展。"
+          }
+        }
+      }
+    },
     "Hide" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4729,6 +4799,41 @@
         }
       }
     },
+    "Open Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les réglages"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定を開く"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开设置"
+          }
+        }
+      }
+    },
     "Original Icons" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5319,6 +5424,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RClick 是从 Mac App Store 安装的。请从 App Store 更新。"
+          }
+        }
+      }
+    },
+    "RClick needs \"%@\" permission to rename a newly created file automatically. Enable it for the RClick app in System Settings > %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick needs \"%@\" permission to rename a newly created file automatically. Enable it for the RClick app in System Settings > %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick necesita el permiso «%@» para cambiar el nombre de un archivo recién creado automáticamente. Actívalo para la app RClick en Ajustes del Sistema > %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick a besoin de l’autorisation « %@ » pour renommer automatiquement un fichier nouvellement créé. Activez-la pour l’app RClick dans Réglages Système > %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick が新規作成したファイルの名前を自動で変更するには「%@」権限が必要です。システム設定 > %@ で RClick アプリに許可してください。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RClick 需要「%@」权限，才能在新建文件后自动重命名。请在系统设置 > %@ 中为 RClick 主程序开启该权限。"
           }
         }
       }
@@ -7104,6 +7244,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通过 Mac App Store 更新"
+          }
+        }
+      }
+    },
+    "Used for auto-renaming new files." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used for auto-renaming new files."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se usa para cambiar el nombre de archivos nuevos automáticamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisée pour renommer automatiquement les nouveaux fichiers."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規ファイルの名前を自動で変更するために使用します。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于新建文件后自动重命名。"
           }
         }
       }
