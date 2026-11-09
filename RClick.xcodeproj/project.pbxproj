@@ -76,6 +76,13 @@
 			);
 			target = 5C8A29172F83D74A00FE687C /* FinderSyncExt */;
 		};
+		5C96A3902F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClick" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5C8A28D92F83D65900FE687C /* RClick */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -84,6 +91,7 @@
 			exceptions = (
 				5C96A3872F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClickTests" target */,
 				5C96A3892F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "FinderSyncExt" target */,
+				5C96A3902F8A9E2B00D022F8 /* Exceptions for "RClick" folder in "RClick" target */,
 			);
 			path = RClick;
 			sourceTree = "<group>";
@@ -489,13 +497,14 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClickDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20261107001;
+				CURRENT_PROJECT_VERSION = 20261109001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -527,13 +536,14 @@
 				CODE_SIGN_ENTITLEMENTS = RClick/RClick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20261107001;
+				CURRENT_PROJECT_VERSION = 20261109001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RClick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RClick;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -606,7 +616,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20261107001;
+				CURRENT_PROJECT_VERSION = 20261109001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;
@@ -641,7 +651,7 @@
 				CODE_SIGN_ENTITLEMENTS = FinderSyncExt/FinderSyncExt.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20261107001;
+				CURRENT_PROJECT_VERSION = 20261109001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4L3563XCBN;
 				ENABLE_APP_SANDBOX = YES;

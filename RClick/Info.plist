@@ -2,16 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppTransportSecurity</key>
+	<!--
+	  Finder draws this symbol on the sidebar entries of every root the Finder Sync
+	  extension observes (#158). Without it, the sidebar shows RClick's app icon on
+	  every external disk and mounted disk image instead of a drive icon.
+	  See specs/external-volumes-observation.md.
+	-->
+	<key>CFBundleIcons</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleSymbolName</key>
+			<string>externaldrive</string>
+		</dict>
 	</dict>
-	<key>NSApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSServices</key>
-	<array>
-		<dict/>
-	</array>
 </dict>
 </plist>

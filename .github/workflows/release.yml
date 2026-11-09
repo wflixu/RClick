@@ -406,7 +406,7 @@ jobs:
 
       # --- 9. 创建 GitHub Release ---
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             ${{ env.ZIP_NAME }}

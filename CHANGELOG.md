@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 
 ### Fixed
+- External disks and mounted disk images no longer wear RClick's app icon in the Finder sidebar. RClick declares the `externaldrive` symbol, so those entries keep a drive icon instead
 - Reset All Settings now restores apps, actions, file types, common folders and preferences instead of only writing a log line
 - New-file auto-rename no longer depends on fixed delays: it waits for Finder to become active, so it stops missing the rename step on slow folders
 - Auto-rename now explains the missing Accessibility permission once (granted to the RClick app, not the Finder extension) instead of failing silently
