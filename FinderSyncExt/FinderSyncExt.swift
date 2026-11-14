@@ -695,12 +695,10 @@ class FinderSyncExt: FIFinderSync, @unchecked Sendable {
         sendClickEvent(event)
     }
 
-    /// 快链路：复制路径（与主程序 ActionService.copyPath 语义一致，取第一项）
+    /// 快链路：复制全部选中项的路径（每行一个），同时写入文件 URL。
+    /// 与主程序 ActionService.copyPath 共用 Clipboard 实现，语义不会分叉。
     private func copyPathsLocally(_ itemPaths: [String]) {
-        guard let first = itemPaths.first else { return }
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(first.removingPercentEncoding ?? first, forType: .string)
+        Clipboard.copyPaths(itemPaths)
     }
 
     @objc private func handleAppClick(_ sender: NSMenuItem) {

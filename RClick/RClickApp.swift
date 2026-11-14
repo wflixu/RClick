@@ -97,6 +97,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         logger.info("applicationDidFinishLaunching called")
 
+        // 更新后 /Applications 里是新副本，废纸篓或原位置可能还留着旧副本，两者
+        // 可以同时运行，并且都会响应 Finder 扩展的点击。在注册任何消息处理器之前
+        // 先收敛成一个；如果另一个副本更该留下，这里直接退出。
+        guard SingleInstanceGuard.enforceTermination() else { return }
+
         // 设置窗口打开策略。注意 RClick 是 LSUIElement 应用，启动时系统不会
         // 激活它（NSApp.isActive 恒为 false），无法用激活状态区分启动来源，
         // 改用两个显式信号：

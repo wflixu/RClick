@@ -30,24 +30,15 @@ final class ActionService {
     // MARK: - SystemActions
 
     /// 复制路径到剪贴板
+    /// 复制全部选中项的路径到剪贴板（一行一个），并写入文件 URL。
+    /// 与扩展内的离线快链路共用 Clipboard 实现。
     func copyPath(_ target: [String]) {
-        if let dirPath = target.first {
-            let pasteboard = NSPasteboard.general
-            pasteboard.clearContents()
-            pasteboard.setString(dirPath.removingPercentEncoding ?? dirPath, forType: .string)
-        }
+        Clipboard.copyPaths(target)
     }
 
-    /// 复制文件名（不含路径）到剪贴板
+    /// 复制全部选中项的文件名（不含路径）到剪贴板，一行一个。
     func copyFileName(_ target: [String]) {
-        guard let path = target.first else { return }
-        let decoded = path.removingPercentEncoding ?? path
-        let name = URL(fileURLWithPath: decoded).lastPathComponent
-        guard !name.isEmpty else { return }
-
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(name, forType: .string)
+        Clipboard.copyFileNames(target)
     }
 
     // MARK: - AppActions

@@ -165,7 +165,7 @@ class GitHubReleaseChecker {
                 return .upToDate
             }
 
-            if compareVersions(currentVersion, latestRelease.version) == .orderedAscending {
+            if Version.compare(currentVersion, latestRelease.version) == .orderedAscending {
                 return .updateAvailable(latestRelease)
             }
 
@@ -173,30 +173,6 @@ class GitHubReleaseChecker {
         } catch {
             return .failed(error.localizedDescription)
         }
-    }
-    
-    // 语义化版本比较
-    private func compareVersions(_ version1: String, _ version2: String) -> ComparisonResult {
-        let components1 = version1.components(separatedBy: ".")
-        let components2 = version2.components(separatedBy: ".")
-        
-        for i in 0 ..< max(components1.count, components2.count) {
-            let part1 = i < components1.count ? components1[i] : "0"
-            let part2 = i < components2.count ? components2[i] : "0"
-            
-            if let num1 = Int(part1), let num2 = Int(part2) {
-                if num1 < num2 { return .orderedAscending }
-                if num1 > num2 { return .orderedDescending }
-            } else {
-                // 处理非数字部分（如beta、rc等）
-                let comparison = part1.compare(part2)
-                if comparison != .orderedSame {
-                    return comparison
-                }
-            }
-        }
-        
-        return .orderedSame
     }
 }
 
@@ -348,18 +324,22 @@ class UpdateManager: ObservableObject {
             // 2. 解压到临时目录
             let appURL = try await extractAppZip(zipURL: downloadedURL)
             
-            // 3. 安装应用到应用程序目录
-            try await installApplication(appURL: appURL)
-            
+            // 3. 安装应用到应用程序目录（失败会抛出来，不会再假装成功）
+            try await installApplication(appURL: appURL, expectedVersion: release.version)
+
             // 4. 清理临时文件
             try? FileManager.default.removeItem(at: downloadedURL)
             try? FileManager.default.removeItem(at: appURL.deletingLastPathComponent())
-            
+
             // 5. 提示用户安装完成
             showInstallationCompleteAlert()
-            
+
         } catch {
-            updateError = String(format: AppLocalization.localized("Installation failed: %@"), error.localizedDescription)
+            let message = String(format: AppLocalization.localized("Installation failed: %@"), error.localizedDescription)
+            updateError = message
+            // 更新弹窗在 availableUpdate 非空时仍显示「发现新版本」，错误只会
+            // 写进 updateError 而用户看不到——所以失败必须单独弹出来。
+            presentUpdateAlert(title: message, message: nil)
         }
         
         isDownloading = false
@@ -478,36 +458,75 @@ class UpdateManager: ObservableObject {
         }
     }
     // MARK: - 安装应用到应用程序目录
-    private func installApplication(appURL: URL) async throws {
-        let fileManager = FileManager.default
-        let applicationsURL = fileManager.urls(for: .applicationDirectory, in: .localDomainMask).first!
+
+    /// 把下载的 app 装进 /Applications 并替换旧版本。
+    ///
+    /// 三条约束：
+    /// - 失败必须抛出去。旧版本还在原处、界面却报「已更新」，比更新失败本身更糟。
+    /// - 先写暂存副本再换位：任何一步失败都不会留下「/Applications 里没有 RClick」的空窗。
+    /// - 沙盒写 /Applications 需要用户授权，而 `isWritableFile` 只检查 POSIX 权限、
+    ///   看不到沙盒拒绝。所以第一次失败后再弹面板授权、重试一次。
+    private func installApplication(appURL: URL, expectedVersion: String) async throws {
+        let applicationsURL = FileManager.default.urls(for: .applicationDirectory, in: .localDomainMask).first!
         let destinationAppURL = applicationsURL.appendingPathComponent(appURL.lastPathComponent)
         print("start install \(appURL.path) --- \(destinationAppURL.path)")
-        // 安装之前，先检查一下destinationAppURL 是否有权限读写，如果没有权限，请求权限
-         // 检查对应用程序文件夹的写入权限
-        if !fileManager.isWritableFile(atPath: applicationsURL.path) {
-            print("没有应用程序文件夹的写入权限，正在请求权限...")
-            try await requestApplicationsFolderAccess()
-        }
+
         do {
-            // 检查目标位置是否已存在应用
-            if fileManager.fileExists(atPath: destinationAppURL.path) {
-                // 先尝试移动到废纸篓而不是直接删除
-                try fileManager.trashItem(at: destinationAppURL, resultingItemURL: nil)
-            }
-            
-            // 复制应用到应用程序目录
-            try fileManager.copyItem(at: appURL, to: destinationAppURL)
-            
-            // 验证应用程序是否有效
-            guard Bundle(url: destinationAppURL) != nil else {
-//                try fileManager.removeItem(at: destinationAppURL)
+            try replaceApplication(at: destinationAppURL, with: appURL, expectedVersion: expectedVersion)
+        } catch {
+            print("首次安装失败，请求 /Applications 授权后重试：\(error)")
+            try await requestApplicationsFolderAccess()
+            try replaceApplication(at: destinationAppURL, with: appURL, expectedVersion: expectedVersion)
+        }
+
+        removeOriginalCopyIfNeeded(installedAt: destinationAppURL)
+    }
+
+    /// 暂存 → 校验版本 → 移走旧版本 → 换位。暂存副本放在同一目录，`moveItem`
+    /// 是同卷重命名，不会出现复制到一半的状态。
+    private func replaceApplication(at destinationAppURL: URL, with appURL: URL, expectedVersion: String) throws {
+        let fileManager = FileManager.default
+        let stagingURL = destinationAppURL
+            .deletingLastPathComponent()
+            .appendingPathComponent(".\(destinationAppURL.lastPathComponent).update-\(UUID().uuidString).app")
+
+        try fileManager.copyItem(at: appURL, to: stagingURL)
+        do {
+            guard let stagedBundle = Bundle(url: stagingURL),
+                  let stagedVersion = stagedBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                  stagedVersion == expectedVersion
+            else {
                 throw InstallationError.invalidAppBundle(AppLocalization.localized("The application bundle is invalid or damaged."))
             }
+
+            if fileManager.fileExists(atPath: destinationAppURL.path) {
+                // 正在运行的旧版本移进废纸篓后进程仍继续存活，重启才真正切到新版本
+                try fileManager.trashItem(at: destinationAppURL, resultingItemURL: nil)
+            }
+            try fileManager.moveItem(at: stagingURL, to: destinationAppURL)
         } catch {
-            print("❌ 安装失败: \(error)")
+            try? fileManager.removeItem(at: stagingURL)
+            throw error
         }
-        
+    }
+
+    /// 从下载目录、挂载的 DMG 或改过名字的副本启动时，更新会装到 /Applications，
+    /// 原位置那份就留了下来——两份不同版本可以同时运行。安装成功后把正在运行的
+    /// 旧副本移进废纸篓；沙盒不允许时只记录日志，单实例守护仍然兜底。
+    private func removeOriginalCopyIfNeeded(installedAt destinationAppURL: URL) {
+        let fileManager = FileManager.default
+        let currentURL = Bundle.main.bundleURL.standardizedFileURL
+        let installedURL = destinationAppURL.standardizedFileURL
+        guard currentURL.path != installedURL.path,
+              fileManager.fileExists(atPath: currentURL.path)
+        else { return }
+
+        do {
+            try fileManager.trashItem(at: currentURL, resultingItemURL: nil)
+            print("旧副本已移入废纸篓：\(currentURL.path)")
+        } catch {
+            print("旧副本无法移入废纸篓：\(error)")
+        }
     }
 
     // MARK: - App Store 更新引导
@@ -526,18 +545,20 @@ class UpdateManager: ObservableObject {
 
     // MARK: - 显示安装完成提示
 
+    /// 安装成功后立即重启，不提供「稍后重启」。
+    ///
+    /// 沙盒应用不能终止其他进程，已经发布的旧版本也没有「发现新实例就自我让位」
+    /// 的逻辑。如果让旧进程继续运行，用户之后打开新版本就会变成两个实例同时
+    /// 响应 Finder 的点击——这正是 #179 报告的现象。旧进程自己退出是唯一可靠的
+    /// 收尾方式，所以这里直接重启。
     private func showInstallationCompleteAlert() {
         let alert = NSAlert()
         alert.messageText = AppLocalization.localized("Update Installed")
         alert.informativeText = AppLocalization.localized("The application has been updated successfully. Restart the app to finish the update.")
         alert.addButton(withTitle: AppLocalization.localized("Restart Now"))
-        alert.addButton(withTitle: AppLocalization.localized("Restart Later"))
-        
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            // 启动新应用并退出当前应用
-            launchNewApplicationAndExit()
-        }
+
+        _ = alert.runModal()
+        launchNewApplicationAndExit()
     }
 
     // MARK: - 启动新应用并退出
@@ -547,17 +568,34 @@ class UpdateManager: ObservableObject {
         let applicationsURL = fileManager.urls(for: .applicationDirectory, in: .localDomainMask).first!
         let currentAppName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "RClick"
         let newAppURL = applicationsURL.appendingPathComponent("\(currentAppName).app")
-        
+
         let configuration = NSWorkspace.OpenConfiguration()
         NSWorkspace.shared.openApplication(at: newAppURL, configuration: configuration) { _, error in
-            if error != nil {
-                print("启动新应用失败，可能需要手动启动")
-            }
-            // 无论如何都退出当前应用（切回主线程）
+            // 切回主线程
             Task { @MainActor in
+                if let error {
+                    // 新版本启动失败时保留当前进程：直接退出会让用户以为程序崩了
+                    print("启动新应用失败：\(error)")
+                    self.presentUpdateAlert(
+                        title: AppLocalization.localized("Update Installed"),
+                        message: AppLocalization.localized("The updated application could not be opened. Please start RClick manually.")
+                    )
+                    return
+                }
                 NSApp.terminate(nil)
             }
         }
+    }
+
+    /// 更新流程里的错误提示。`updateError` 只在更新弹窗没有可用版本时才显示，
+    /// 安装失败、重启失败都要单独弹窗，否则用户看不到任何反馈。
+    private func presentUpdateAlert(title: String, message: String?) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message ?? ""
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: AppLocalization.localized("OK"))
+        alert.runModal()
     }
 
     // 忽略当前可用更新
