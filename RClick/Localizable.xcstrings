@@ -6933,6 +6933,41 @@
         }
       }
     },
+    "The updated application could not be opened. Please start RClick manually." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The updated application could not be opened. Please start RClick manually."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo abrir la aplicación actualizada. Inicia RClick manualmente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’ouvrir l’application mise à jour. Veuillez lancer RClick manuellement."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新後のアプリを開けませんでした。RClick を手動で起動してください。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法打开更新后的应用，请手动启动 RClick。"
+          }
+        }
+      }
+    },
     "The user cancelled authorization." : {
       "extractionState" : "manual",
       "localizations" : {

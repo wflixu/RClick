@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Settings open on manual launch/reopen while hint-triggered and detected login launches stay quiet
 
 ### Fixed
+- Updates no longer report success when the install failed. Installation errors are surfaced, the staged bundle's version is checked before it replaces the old app, and a failed relaunch keeps the current app running instead of quitting
+- Updating from outside /Applications installs the new version and moves the old copy to the Trash, and an older RClick instance now quits itself as soon as a newer one starts. Two copies used to stay on disk and handle every Finder click twice
 - External disks and mounted disk images no longer wear RClick's app icon in the Finder sidebar. RClick declares the `externaldrive` symbol, so those entries keep a drive icon instead
 - Reset All Settings now restores apps, actions, file types, common folders and preferences instead of only writing a log line
 - New-file auto-rename no longer depends on fixed delays: it waits for Finder to become active, so it stops missing the rename step on slow folders
